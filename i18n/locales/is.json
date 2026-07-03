@@ -1,0 +1,156 @@
+{
+  "common": {
+    "language": "Tungumál",
+    "english": "English",
+    "icelandic": "Íslenska",
+    "requestOffer": "Óska eftir tilboði",
+    "viewFleet": "Skoða flotann",
+    "yes": "Já"
+  },
+  "nav": {
+    "home": "Forsíða",
+    "fleet": "Flotinn",
+    "about": "Um okkur",
+    "contact": "Hafa samband"
+  },
+  "hero": {
+    "kicker": "Bílaleiga fyrir kvikmyndaverkefni — Ísland",
+    "title": "Framleiðslubílar fyrir tökur á Íslandi",
+    "subtitle": "Húsbílar, tökuliðsbílar, stuðningsbílar og eftirvagnar — tilbúnir á sett, vetrarreyndir og afhentir á tökustað.",
+    "availability": "Laust fyrir verkefni"
+  },
+  "home": {
+    "categoriesKicker": "Flotinn",
+    "categoriesTitle": "Bílar fyrir allar deildir",
+    "featuredKicker": "Í sviðsljósinu",
+    "featuredTitle": "Vinsælustu bílarnir",
+    "featuredAll": "Sjá allan flotann",
+    "whyKicker": "Af hverju við",
+    "whyTitle": "Hannað fyrir kvikmyndavinnu",
+    "why1Title": "Tilbúið á sett",
+    "why1Text": "Rafstöðvar, hiti, myrkvun og rafmagn á tökustað — útbúið fyrir tökudaga, ekki frí.",
+    "why2Title": "4x4 og vetrarfært",
+    "why2Text": "Hálendisslóðar, vöð og vetrartökur. Flotinn er útbúinn fyrir íslenskar aðstæður allt árið.",
+    "why3Title": "Afhent á tökustað",
+    "why3Text": "Við komum bílunum á settið, í grunnbúðir eða á flugvöllinn — hvert á land sem er, á þinni stundaskrá."
+  },
+  "categories": {
+    "campers": "Húsbílar",
+    "crew-trucks": "Tökuliðsbílar",
+    "support-vehicles": "Stuðningsbílar",
+    "trailers": "Eftirvagnar"
+  },
+  "catalogue": {
+    "kicker": "Flotinn",
+    "title": "Framleiðslubílar",
+    "intro": "Allir bílar eru þjónustaðir fyrir kvikmyndavinnu og fást afhentir hvert á land sem er. Engin verð birt — segðu okkur frá verkefninu og við setjum saman tilboð.",
+    "all": "Allir bílar",
+    "empty": "Engir bílar í þessum flokki eins og er — hafðu samband og við finnum lausn."
+  },
+  "vehicle": {
+    "highlightsTitle": "Helstu kostir",
+    "specsTitle": "Tæknilýsing",
+    "requestTitle": "Óska eftir tilboði",
+    "requestIntro": "Engin verð birt — hvert verkefni er einstakt. Segðu okkur frá tökunum og við svörum með sérsniðnu tilboði.",
+    "moreInCategory": "Fleiri í þessum flokki",
+    "backToFleet": "Til baka í flotann",
+    "specs": {
+      "seats": "Sæti",
+      "sleeps": "Svefnpláss",
+      "lengthM": "Lengd",
+      "heightM": "Hæð",
+      "drivetrain": "Drif",
+      "transmission": "Skipting",
+      "fuel": "Eldsneyti",
+      "powerOutput": "Rafmagn",
+      "generator": "Rafstöð",
+      "heating": "Hiti",
+      "blackoutReady": "Myrkvun",
+      "winterEquipped": "Vetrarútbúnaður",
+      "towHitch": "Dráttarkrókur",
+      "wifi": "Wi-Fi",
+      "automatic": "Sjálfskiptur",
+      "manual": "Beinskiptur",
+      "diesel": "Dísel",
+      "petrol": "Bensín",
+      "hybrid": "Tvinnbíll"
+    }
+  },
+  "form": {
+    "name": "Nafn",
+    "email": "Netfang",
+    "phone": "Sími",
+    "company": "Framleiðslufyrirtæki",
+    "dates": "Tökudagar",
+    "datesPlaceholder": "t.d. 12.–24. september, eða „3 vikur í október“",
+    "vehicle": "Bíll sem þú hefur áhuga á",
+    "generalInquiry": "Almenn fyrirspurn",
+    "message": "Skilaboð",
+    "messagePlaceholder": "Segðu okkur frá verkefninu — tökustaðir, stærð tökuliðs og hvað vantar á settið.",
+    "submit": "Senda fyrirspurn",
+    "sending": "Sendi…",
+    "successTitle": "Fyrirspurn móttekin",
+    "successText": "Takk fyrir — við svörum innan eins virks dags.",
+    "errorTitle": "Eitthvað fór úrskeiðis",
+    "errorText": "Ekki tókst að senda skilaboðin. Sendu okkur tölvupóst beint á {email} og við tökum það þaðan.",
+    "required": "Þennan reit þarf að fylla út",
+    "invalidEmail": "Sláðu inn gilt netfang"
+  },
+  "about": {
+    "kicker": "Um okkur",
+    "title": "Teymið á bak við bílana",
+    "p1": "Creative Filmmaking leigir framleiðslubíla til kvikmynda- og sjónvarpsverkefna á Íslandi. Við byrjuðum sjálf á setti og flotinn er því byggður í kringum það sem framleiðslur raunverulega þurfa: hlý hvíldarrými, áreiðanlegt rafmagn, pláss fyrir búnað og bíla sem stoppa ekki þótt veðrið snúist.",
+    "p2": "Frá grunnbúðum á hálendinu til næturtaka í miðborginni höfum við stutt kvikmyndir, þáttaraðir, auglýsingar og tónlistarmyndbönd um allt land. Við þekkjum vegina, vöðin og veðurspána — og skipuleggjum flutningana með þér.",
+    "p3": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn á sett. Ef eitthvað óvænt kemur upp í miðjum tökum svörum við í símann.",
+    "statVehicles": "Bílar í flotanum",
+    "statSupport": "Aðstoð á tökudögum",
+    "statArea": "Þjónustusvæði"
+  },
+  "contact": {
+    "kicker": "Hafa samband",
+    "title": "Ræðum verkefnið þitt",
+    "intro": "Sendu okkur grófa lýsingu á tökunum og við svörum með lausum bílum og sérsniðnu tilboði — yfirleitt innan eins virks dags.",
+    "directTitle": "Beint samband",
+    "emailLabel": "Netfang",
+    "phoneLabel": "Sími",
+    "addressLabel": "Staðsetning",
+    "responseNote": "Við svörum innan eins virks dags — hraðar á tökutímabilinu."
+  },
+  "cta": {
+    "title": "Ertu að skipuleggja tökur á Íslandi?",
+    "text": "Segðu okkur hvað þú ert að taka upp og við setjum saman réttu bílana og tilboð — án skuldbindinga.",
+    "button": "Óska eftir tilboði"
+  },
+  "footer": {
+    "tagline": "Bílaleiga fyrir kvikmynda- og sjónvarpstökulið á Íslandi.",
+    "navTitle": "Vefurinn",
+    "contactTitle": "Samband",
+    "rights": "Allur réttur áskilinn."
+  },
+  "error": {
+    "kicker": "Taka 404",
+    "title": "Senan fannst ekki",
+    "text": "Þessi síða komst ekki í lokaklippuna. Farðu til baka í flotann og veldu annað skot.",
+    "button": "Til baka í flotann",
+    "genericTitle": "Eitthvað fór úrskeiðis",
+    "genericText": "Óvænt villa kom upp. Reyndu aftur eða farðu á forsíðuna."
+  },
+  "meta": {
+    "home": {
+      "title": "Bílaleiga fyrir kvikmyndaverkefni á Íslandi",
+      "description": "Húsbílar, tökuliðsbílar, stuðningsbílar og eftirvagnar fyrir kvikmynda- og sjónvarpsverkefni á Íslandi. Tilbúnir á sett, vetrarreyndir, afhentir á tökustað. Hafðu samband fyrir tilboð."
+    },
+    "vehicles": {
+      "title": "Flotinn",
+      "description": "Skoðaðu flotann okkar af framleiðslubílum fyrir kvikmynda- og sjónvarpstökur á Íslandi — húsbílar, tökuliðsbílar, 4x4 stuðningsbílar og eftirvagnar. Engin verð birt; óskaðu eftir tilboði."
+    },
+    "about": {
+      "title": "Um okkur",
+      "description": "Creative Filmmaking leigir framleiðslubíla, tilbúna á sett, til kvikmynda- og sjónvarpstökuliða á Íslandi — með þekkingu á flutningum sem fylgir."
+    },
+    "contact": {
+      "title": "Hafa samband",
+      "description": "Segðu okkur frá verkefninu þínu á Íslandi og við svörum með lausum bílum og sérsniðnu tilboði innan eins virks dags."
+    }
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "icelandic": "Íslenska",
+    "requestOffer": "Request an offer",
+    "viewFleet": "View the fleet",
+    "yes": "Yes"
+  },
+  "nav": {
+    "home": "Home",
+    "fleet": "The Fleet",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "kicker": "Production vehicle rental — Iceland",
+    "title": "Production vehicles for filming in Iceland",
+    "subtitle": "Campers, crew trucks, support vehicles and trailers — set-ready, winter-proven and delivered to your location.",
+    "availability": "Available for production"
+  },
+  "home": {
+    "categoriesKicker": "The fleet",
+    "categoriesTitle": "Built for every department",
+    "featuredKicker": "Featured",
+    "featuredTitle": "Production favourites",
+    "featuredAll": "See the full fleet",
+    "whyKicker": "Why us",
+    "whyTitle": "Made for film work",
+    "why1Title": "Set-ready",
+    "why1Text": "Generators, heating, blackout options and power on location — equipped for shoot days, not holidays.",
+    "why2Title": "4x4 & winter capable",
+    "why2Text": "Highland tracks, river crossings and winter shoots. Our fleet is specced for Icelandic conditions year-round.",
+    "why3Title": "Delivered to location",
+    "why3Text": "We bring the vehicles to your set, basecamp or airport pickup — anywhere in Iceland, on your schedule."
+  },
+  "categories": {
+    "campers": "Campers",
+    "crew-trucks": "Crew Trucks",
+    "support-vehicles": "Support Vehicles",
+    "trailers": "Trailers"
+  },
+  "catalogue": {
+    "kicker": "The fleet",
+    "title": "Production vehicles",
+    "intro": "Every vehicle is maintained for production work and can be delivered anywhere in Iceland. No listed prices — tell us about your shoot and we'll put together an offer.",
+    "all": "All vehicles",
+    "empty": "No vehicles in this category yet — contact us and we'll find a solution."
+  },
+  "vehicle": {
+    "highlightsTitle": "Highlights",
+    "specsTitle": "Specifications",
+    "requestTitle": "Request an offer",
+    "requestIntro": "No listed prices — every production is different. Tell us about your shoot and we'll reply with a tailored offer.",
+    "moreInCategory": "More in this category",
+    "backToFleet": "Back to the fleet",
+    "specs": {
+      "seats": "Seats",
+      "sleeps": "Sleeps",
+      "lengthM": "Length",
+      "heightM": "Height",
+      "drivetrain": "Drivetrain",
+      "transmission": "Transmission",
+      "fuel": "Fuel",
+      "powerOutput": "Power output",
+      "generator": "Generator",
+      "heating": "Heating",
+      "blackoutReady": "Blackout-ready",
+      "winterEquipped": "Winter equipped",
+      "towHitch": "Tow hitch",
+      "wifi": "Wi-Fi",
+      "automatic": "Automatic",
+      "manual": "Manual",
+      "diesel": "Diesel",
+      "petrol": "Petrol",
+      "hybrid": "Hybrid"
+    }
+  },
+  "form": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Production company",
+    "dates": "Shooting dates",
+    "datesPlaceholder": "e.g. 12–24 September, or \"3 weeks in October\"",
+    "vehicle": "Vehicle of interest",
+    "generalInquiry": "General inquiry",
+    "message": "Message",
+    "messagePlaceholder": "Tell us about the production — locations, crew size, what you need on set.",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "successTitle": "Request received",
+    "successText": "Thanks — we'll get back to you within one business day.",
+    "errorTitle": "Something went wrong",
+    "errorText": "The message couldn't be sent. Email us directly at {email} and we'll take it from there.",
+    "required": "This field is required",
+    "invalidEmail": "Enter a valid email address"
+  },
+  "about": {
+    "kicker": "About us",
+    "title": "The crew behind the wheels",
+    "p1": "Creative Filmmaking rents production vehicles to film and TV crews shooting in Iceland. We started on set ourselves, so the fleet is built around what productions actually need: warm places to rest, reliable power, room for gear and vehicles that don't stop when the weather turns.",
+    "p2": "From highland basecamps to city-centre night shoots, we've supported features, series, commercials and music videos across the country. We know the roads, the river crossings and the forecast — and we plan the logistics with you.",
+    "p3": "Every vehicle is serviced, cleaned and delivered set-ready. If something unexpected comes up mid-shoot, we answer the phone.",
+    "statVehicles": "Vehicles in the fleet",
+    "statSupport": "Support on shoot days",
+    "statArea": "Service area"
+  },
+  "contact": {
+    "kicker": "Contact",
+    "title": "Let's talk about your production",
+    "intro": "Send us the outline of your shoot and we'll reply with availability and a tailored offer — usually within one business day.",
+    "directTitle": "Reach us directly",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "addressLabel": "Location",
+    "responseNote": "We reply within one business day — faster during production season."
+  },
+  "cta": {
+    "title": "Planning a production in Iceland?",
+    "text": "Tell us what you're shooting and we'll put together the right vehicles and an offer — no obligation.",
+    "button": "Request an offer"
+  },
+  "footer": {
+    "tagline": "Production vehicle rental for film & TV crews shooting in Iceland.",
+    "navTitle": "Site",
+    "contactTitle": "Contact",
+    "rights": "All rights reserved."
+  },
+  "error": {
+    "kicker": "Take 404",
+    "title": "Scene not found",
+    "text": "This page didn't make the final cut. Head back to the fleet and pick another shot.",
+    "button": "Back to the fleet",
+    "genericTitle": "Something went wrong",
+    "genericText": "An unexpected error occurred. Try again, or head back to the homepage."
+  },
+  "meta": {
+    "home": {
+      "title": "Film Production Vehicle Rental in Iceland",
+      "description": "Campers, crew trucks, support vehicles and trailers for film & TV productions in Iceland. Set-ready, winter-proven, delivered to your location. Contact us for an offer."
+    },
+    "vehicles": {
+      "title": "The Fleet",
+      "description": "Browse our fleet of production vehicles for film & TV shoots in Iceland — campers, crew trucks, 4x4 support vehicles and trailers. No listed prices; request an offer."
+    },
+    "about": {
+      "title": "About Us",
+      "description": "Creative Filmmaking rents set-ready production vehicles to film & TV crews shooting in Iceland — with the logistics know-how to match."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Tell us about your production in Iceland and we'll reply with availability and a tailored vehicle offer within one business day."
+    }
+  }
+}

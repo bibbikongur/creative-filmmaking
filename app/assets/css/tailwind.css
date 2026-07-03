@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-950 text-bone-100 font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-gold-500 text-ink-950;
+  }
+}
+
+@layer components {
+  /* Letter-spaced uppercase gold label above headings — the site's signature */
+  .kicker {
+    @apply text-gold-500 uppercase tracking-[0.25em] text-xs font-semibold;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 bg-gold-500 text-ink-950
+      font-heading font-semibold uppercase tracking-wider text-sm px-7 py-3.5
+      transition-colors duration-200 hover:bg-gold-400;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border border-ink-700
+      text-bone-100 font-heading font-semibold uppercase tracking-wider text-sm
+      px-7 py-3.5 transition-colors duration-200 hover:border-gold-500 hover:text-gold-400;
+  }
+
+  .input-dark {
+    @apply w-full bg-ink-900 border border-ink-700 text-bone-100 placeholder-ink-500
+      px-4 py-3 text-sm focus:outline-none focus:border-gold-500 transition-colors;
+  }
+}
+
+@layer utilities {
+  /* Subtle film-grain overlay — hero only */
+  .film-grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}

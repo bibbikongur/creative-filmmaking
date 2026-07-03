@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Clapperboard mark: gold slate, ink stripes -->
+  <g>
+    <path d="M6 22h52v34a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V22z" fill="#C9962E"/>
+    <path d="M7.2 8.6 57.4 17l-1.6 9.8L5.5 18.4a2 2 0 0 1 .1-2.3l1.6-7.5z" fill="#C9962E" transform="rotate(-2 32 16)"/>
+    <path d="m12 10 6 8-5 .8-6-8L12 10zm12 2 6 8-5 .8-6-8 5-.8zm12 2 6 8-5 .8-6-8 5-.8zm12 2 6 8-5 .8-6-8 5-.8z" fill="#09090B" transform="rotate(-2 32 16)"/>
+    <rect x="12" y="30" width="40" height="3" fill="#09090B"/>
+    <rect x="12" y="38" width="28" height="3" fill="#09090B" opacity="0.55"/>
+    <circle cx="49" cy="47" r="3" fill="#D6453D"/>
+  </g>
+</svg>
