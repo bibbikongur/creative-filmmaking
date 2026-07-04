@@ -72,6 +72,10 @@ export default defineNuxtConfig({
     // Unsplash hosts the placeholder fleet imagery; swap for /images/* files
     // (no domain entry needed) when real photos arrive.
     domains: ['images.unsplash.com'],
+    // Register the pass-through provider — imgProvider() routes admin-uploaded
+    // /uploads/* photos here (they live outside public/, so IPX can't see them).
+    // Without this key the provider isn't bundled and SSR throws "Unknown provider".
+    none: {},
   },
 
   fonts: {
