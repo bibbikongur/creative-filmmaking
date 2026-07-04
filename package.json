@@ -28,7 +28,10 @@
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/nodemailer": "^6.4.17",
-    "@types/pdfkit": "^0.17.6"
+    "@types/pdfkit": "^0.17.6",
+    "cac": "^6.7.14",
+    "commander": "^13.1.0",
+    "crossws": "^0.4.9"
   },
   "overrides": {
     "tailwindcss": "3.4.19"
