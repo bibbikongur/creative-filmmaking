@@ -4,7 +4,7 @@
 
     <p v-if="!loaded" class="mt-8 text-sm text-bone-400">Loading…</p>
     <div v-else-if="!vehicle" class="mt-8 text-sm text-signal-500">
-      Vehicle not found — it may have been deleted.
+      Vehicle not found. It may have been deleted.
     </div>
     <template v-else>
       <h1 class="mt-3 text-3xl font-semibold uppercase tracking-wide text-bone-100">
@@ -47,7 +47,7 @@ const save = async (payload: Record<string, unknown>) => {
     await navigateTo('/admin')
   }
   catch (e: any) {
-    error.value = e?.data?.data?.errors || e?.data?.statusMessage || 'Save failed — please try again.'
+    error.value = e?.data?.data?.errors || e?.data?.statusMessage || 'Save failed. Please try again.'
   }
   finally {
     saving.value = false

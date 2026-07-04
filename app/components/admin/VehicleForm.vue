@@ -17,7 +17,7 @@
           <input v-model.trim="form.slug" type="text" class="input-dark font-mono" placeholder="arctic-base-4x4-camper" @input="slugTouched = true">
           <p class="mt-1 text-xs text-bone-400">
             Page address: /vehicles/{{ form.slug || '…' }}
-            <span v-if="isEdit" class="text-signal-500/80"> — changing it breaks links already shared.</span>
+            <span v-if="isEdit" class="text-signal-500/80"> (changing it breaks links already shared).</span>
           </p>
         </div>
         <div>
@@ -29,14 +29,14 @@
       </div>
       <label class="mt-4 flex items-center gap-2.5 text-sm text-bone-100 cursor-pointer">
         <input v-model="form.featured" type="checkbox" class="accent-gold-500 w-4 h-4">
-        Featured — show on the home page
+        Featured: show on the home page
       </label>
     </section>
 
     <!-- Text -->
     <section>
       <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Text</h2>
-      <p class="mt-1 text-xs text-bone-400">Icelandic fields are optional — the site falls back to English when empty.</p>
+      <p class="mt-1 text-xs text-bone-400">Icelandic fields are optional; the site falls back to English when empty.</p>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
         <div>
           <label class="admin-label">Tagline (English) *</label>
@@ -78,7 +78,7 @@
     <!-- Photos -->
     <section>
       <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Photos</h2>
-      <p class="mt-1 text-xs text-bone-400">The first photo is the card and social-share image. Drag order matters — use the arrows.</p>
+      <p class="mt-1 text-xs text-bone-400">The first photo is the card and social-share image. Order matters, so use the arrows.</p>
 
       <div v-if="form.images.length" class="mt-4 grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         <div v-for="(src, i) in form.images" :key="src" class="relative group border border-ink-700">
@@ -107,7 +107,7 @@
     <!-- Specs -->
     <section>
       <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Specs</h2>
-      <p class="mt-1 text-xs text-bone-400">Leave anything that doesn't apply empty — empty rows are hidden on the site.</p>
+      <p class="mt-1 text-xs text-bone-400">Leave anything that doesn't apply empty; empty rows are hidden on the site.</p>
       <div class="mt-4 grid gap-5 grid-cols-2 lg:grid-cols-4">
         <div>
           <label class="admin-label">Seats</label>
@@ -204,7 +204,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ save: [payload: Record<string, unknown>] }>()
 
-const CATEGORIES: VehicleCategory[] = ['campers', 'crew-trucks', 'support-vehicles', 'trailers']
+const CATEGORIES: VehicleCategory[] = ['campers', 'equipment-cars', 'support-vehicles', 'trailers']
 const FLAGS = [
   { key: 'generator', label: 'Generator' },
   { key: 'heating', label: 'Standing heat' },

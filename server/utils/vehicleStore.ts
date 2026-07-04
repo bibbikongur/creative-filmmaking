@@ -46,7 +46,7 @@ export async function saveVehicles(vehicles: Vehicle[]) {
 
 // ── Payload validation ───────────────────────────────────────────────────────
 
-const CATEGORIES: VehicleCategory[] = ['campers', 'crew-trucks', 'support-vehicles', 'trailers']
+const CATEGORIES: VehicleCategory[] = ['campers', 'equipment-cars', 'support-vehicles', 'trailers']
 const DRIVETRAINS = ['4x4', '2wd', '6x6'] as const
 const TRANSMISSIONS = ['automatic', 'manual'] as const
 const FUELS = ['diesel', 'petrol', 'hybrid'] as const

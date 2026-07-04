@@ -45,7 +45,7 @@
       </div>
 
       <p v-if="!vehicles.length" class="p-8 text-center text-sm text-bone-400">
-        No vehicles yet — add the first one.
+        No vehicles yet. Add the first one.
       </p>
     </div>
   </div>
@@ -70,7 +70,7 @@ const load = async () => {
     loaded.value = true
   }
   catch {
-    loadError.value = 'Could not load the fleet — is the server running?'
+    loadError.value = 'Could not load the fleet. Is the server running?'
   }
 }
 

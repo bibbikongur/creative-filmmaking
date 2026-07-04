@@ -13,7 +13,7 @@ export const categories: CategoryInfo[] = [
     image: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=1200&q=80',
   },
   {
-    id: 'crew-trucks',
+    id: 'equipment-cars',
     image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1200&q=80',
   },
   {

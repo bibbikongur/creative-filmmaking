@@ -5,6 +5,14 @@
         <NuxtLink to="/admin" class="font-heading font-semibold uppercase tracking-wider text-bone-100">
           Creative Filmmaking <span class="text-gold-500">· Admin</span>
         </NuxtLink>
+        <nav v-if="authed" class="flex items-center gap-5 text-xs uppercase tracking-widest sm:ml-4 sm:mr-auto">
+          <NuxtLink to="/admin" class="transition-colors hover:text-gold-400" :class="onEquipment ? 'text-bone-400' : 'text-gold-400'">
+            Vehicles
+          </NuxtLink>
+          <NuxtLink to="/admin/equipment" class="transition-colors hover:text-gold-400" :class="onEquipment ? 'text-gold-400' : 'text-bone-400'">
+            Equipment
+          </NuxtLink>
+        </nav>
         <div class="flex items-center gap-5 text-sm">
           <a href="/" target="_blank" class="text-bone-400 hover:text-gold-400 transition-colors">View site ↗</a>
           <button
@@ -62,6 +70,9 @@
 <script setup lang="ts">
 const { authed, configured, check, login, logout } = useAdminAuth()
 
+const route = useRoute()
+const onEquipment = computed(() => route.path.includes('/admin/equipment'))
+
 const password = ref('')
 const error = ref('')
 const pending = ref(false)
@@ -76,7 +87,7 @@ const submit = async () => {
     password.value = ''
   }
   catch (e: any) {
-    error.value = e?.data?.statusMessage || 'Login failed — please try again.'
+    error.value = e?.data?.statusMessage || 'Login failed. Please try again.'
   }
   finally {
     pending.value = false

@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
       from: `"Creative Filmmaking" <${mailer.smtpUser || mailer.contactTo}>`,
       to: mailer.contactTo,
       replyTo: `"${name.replace(/"/g, '')}" <${email}>`,
-      subject: `[Creative Filmmaking] Offer request — ${vehicle}`,
+      subject: `[Creative Filmmaking] Offer request: ${vehicle}`,
       text: lines,
     })
   }

@@ -3,7 +3,7 @@ export type LocaleCode = 'en' | 'is'
 /** Per-locale text — English is the required source, Icelandic falls back to it. */
 export type LocalizedText = Record<LocaleCode, string>
 
-export type VehicleCategory = 'campers' | 'crew-trucks' | 'support-vehicles' | 'trailers'
+export type VehicleCategory = 'campers' | 'equipment-cars' | 'support-vehicles' | 'trailers'
 
 export interface VehicleSpecs {
   seats?: number
@@ -46,6 +46,19 @@ export interface Vehicle {
   images: string[]
   /** Featured vehicles appear on the home page */
   featured: boolean
+}
+
+export type EquipmentCategory = 'heating' | 'shelter' | 'safety' | 'furniture'
+
+export interface EquipmentItem {
+  /** Stable internal key, e.g. 'e-001' */
+  id: string
+  category: EquipmentCategory
+  name: LocalizedText
+  /** One-liner shown under the name on the card */
+  tagline: LocalizedText
+  /** First image is the card image */
+  images: string[]
 }
 
 export interface ContactPayload {

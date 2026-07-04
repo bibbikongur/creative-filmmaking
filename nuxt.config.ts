@@ -107,7 +107,7 @@ export default defineNuxtConfig({
       // contact page. Override per-environment with the matching NUXT_PUBLIC_* var.
       contact: {
         address: process.env.NUXT_PUBLIC_CONTACT_ADDRESS || 'Reykjavík, Iceland',
-        phone: process.env.NUXT_PUBLIC_CONTACT_PHONE || '+354 000 0000',
+        phone: process.env.NUXT_PUBLIC_CONTACT_PHONE || '+354 772 4968',
         email: process.env.NUXT_PUBLIC_CONTACT_EMAIL || 'info@creativefilmmaking.is',
       },
     },

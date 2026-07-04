@@ -86,6 +86,7 @@ const localePath = useLocalePath()
 const navItems = [
   { to: '/', label: 'nav.home' },
   { to: '/vehicles', label: 'nav.fleet' },
+  { to: '/equipment', label: 'nav.equipment' },
   { to: '/about', label: 'nav.about' },
   { to: '/contact', label: 'nav.contact' },
 ]

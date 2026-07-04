@@ -32,7 +32,7 @@ export const vehicles: Vehicle[] = [
       is: 'Fjórhjóladrifinn húsbíll af Sprinter-gerð, hannaður til að vera hlýi kjarninn á tökustað. Dísilmiðstöð heldur honum notalegum í gegnum hálendisnætur og rafkerfið keyrir skjái, hleðslutæki og kaffivél án þess að láta vélina ganga.\n\nAfturrýmið breytist úr vinnuborði fyrir fjóra í tvö svefnpláss í fullri lengd, þannig að hann nýtist jafnt sem færanleg skrifstofa, hvíldarrými fyrir leikara eða gisting fyrir lítinn hóp.',
     },
     highlights: [
-      { en: 'True 4x4 with raised suspension — highland tracks and river crossings', is: 'Alvöru fjórhjóladrif með hækkaðri fjöðrun — hálendisslóðar og vöð' },
+      { en: 'True 4x4 with raised suspension for highland tracks and river crossings', is: 'Alvöru fjórhjóladrif með hækkaðri fjöðrun fyrir hálendisslóða og vöð' },
       { en: 'Diesel standing heat rated for winter shoots', is: 'Dísilmiðstöð sem ræður við vetrartökur' },
       { en: '230V power for monitors, chargers and small appliances', is: '230V rafmagn fyrir skjái, hleðslutæki og smátæki' },
       { en: 'Converts between production office and two berths', is: 'Breytist úr skrifstofu í tvö svefnpláss' },
@@ -68,8 +68,8 @@ export const vehicles: Vehicle[] = [
       is: 'Hálendis-tökuliðshúsbíll',
     },
     tagline: {
-      en: 'Sleeps four — keeps a small unit on location overnight.',
-      is: 'Svefnpláss fyrir fjóra — heldur litlu tökuliði á staðnum yfir nótt.',
+      en: 'Sleeps four and keeps a small unit on location overnight.',
+      is: 'Svefnpláss fyrir fjóra og heldur litlu tökuliði á staðnum yfir nótt.',
     },
     description: {
       en: 'When the location is three hours from the nearest hotel, this camper keeps a small crew shooting instead of commuting. Four proper berths, a galley kitchen and a wet room mean early calls happen where the camera is.\n\nIt tows well, carries a generous gear load and its diesel heater runs all night on a fraction of a tank.',
@@ -102,15 +102,15 @@ export const vehicles: Vehicle[] = [
   {
     id: 'v-003',
     slug: 'production-crew-truck',
-    category: 'crew-trucks',
+    category: 'equipment-cars',
     featured: true,
     name: {
       en: 'Production Crew Truck',
       is: 'Framleiðslutrukkur',
     },
     tagline: {
-      en: 'A box truck with tail lift — grip, lighting and camera in one move.',
-      is: 'Kassabíll með lyftu — grip, ljós og myndavélar í einni ferð.',
+      en: 'A box truck with tail lift: grip, lighting and camera in one move.',
+      is: 'Kassabíll með lyftu: grip, ljós og myndavélar í einni ferð.',
     },
     description: {
       en: 'The workhorse. A 3.5t box truck with a full-width tail lift, interior tie-down rails and shelving configured for grip and lighting packages. E-track walls take carts, stands and pelis without improvising.\n\nDrivable on a standard car licence, so any crew member can move it between company moves.',
@@ -142,24 +142,24 @@ export const vehicles: Vehicle[] = [
   {
     id: 'v-004',
     slug: 'crew-shuttle-minibus',
-    category: 'crew-trucks',
+    category: 'equipment-cars',
     featured: false,
     name: {
       en: 'Crew Shuttle Minibus',
       is: 'Tökuliðsrúta',
     },
     tagline: {
-      en: '17 seats — moves the whole unit between basecamp and set.',
-      is: '17 sæti — flytur allt tökuliðið milli grunnbúða og setts.',
+      en: '17 seats, moves the whole unit between basecamp and set.',
+      is: '17 sæti, flytur allt tökuliðið milli grunnbúða og setts.',
     },
     description: {
-      en: 'A 17-seat minibus for unit moves, airport pickups and daily crew shuttles. Big luggage bay for kit bags, USB power at every row and a PA mic up front for location managers who like a captive audience.\n\nWinter tires and a pre-heater come standard — the 06:00 pickup is warm before anyone boards.',
-      is: '17 sæta rúta fyrir hópflutninga, flugvallarsóttir og daglegan akstur tökuliðs. Stórt farangursrými fyrir töskur, USB-hleðsla í hverri sætaröð og hljóðkerfi frammí fyrir staðarstjóra sem kunna að meta fanginn áheyrendahóp.\n\nVetrardekk og forhitari fylgja — bíllinn er orðinn hlýr fyrir sóttina klukkan 06:00.',
+      en: 'A 17-seat minibus for unit moves, airport pickups and daily crew shuttles. Big luggage bay for kit bags, USB power at every row and a PA mic up front for location managers who like a captive audience.\n\nWinter tires and a pre-heater come standard, so the 06:00 pickup is warm before anyone boards.',
+      is: '17 sæta rúta fyrir hópflutninga, flugvallarsóttir og daglegan akstur tökuliðs. Stórt farangursrými fyrir töskur, USB-hleðsla í hverri sætaröð og hljóðkerfi frammí fyrir staðarstjóra sem kunna að meta fanginn áheyrendahóp.\n\nVetrardekk og forhitari fylgja, svo bíllinn er orðinn hlýr fyrir sóttina klukkan 06:00.',
     },
     highlights: [
       { en: '17 comfortable seats + large luggage bay', is: '17 þægileg sæti + stórt farangursrými' },
       { en: 'USB power at every row', is: 'USB-hleðsla í hverri sætaröð' },
-      { en: 'Engine pre-heater — warm at early calls', is: 'Forhitari — hlýr fyrir snemmköll' },
+      { en: 'Engine pre-heater, warm at early calls', is: 'Forhitari, hlýr fyrir snemmköll' },
       { en: 'Experienced local drivers available on request', is: 'Reyndir bílstjórar í boði sé þess óskað' },
     ],
     specs: {
@@ -189,8 +189,8 @@ export const vehicles: Vehicle[] = [
       is: 'Land Cruiser leitarbíll',
     },
     tagline: {
-      en: 'Goes where the recce goes — 33" tires, snorkel, full recovery kit.',
-      is: 'Kemst þangað sem leitin fer — 33" dekk, snorkel og full björgunartaska.',
+      en: 'Goes where the recce goes: 33" tires, snorkel, full recovery kit.',
+      is: 'Kemst þangað sem leitin fer: 33" dekk, snorkel og full björgunartaska.',
     },
     description: {
       en: 'A properly built Land Cruiser for location scouting, tech recces and producer transport into the rough parts of the map. 33-inch tires, raised suspension and a snorkel handle glacial rivers and washboard F-roads.\n\nInside it stays civilised: heated leather seats, dual-zone climate and a 230V outlet for laptops between stops.',
@@ -234,13 +234,13 @@ export const vehicles: Vehicle[] = [
       is: 'Eltiskot og myndavélahreyfingar á hvaða undirlagi sem er.',
     },
     description: {
-      en: 'A Defender configured as a camera support vehicle: roof rails and bumper plates take standard hi-hat and suction mounts, and the load bay is padded for lens cases. The long-travel suspension keeps footage usable on gravel at speed.\n\nA popular pairing with the Location Scout — one carries the crew, the other carries the shot.',
-      is: 'Defender útbúinn sem stuðningsbíll fyrir myndavélar: þakbogar og stuðaraplötur taka staðlaðar hi-hat og sogfestingar og skottið er bólstrað fyrir linsutöskur. Löng fjöðrun heldur efninu nothæfu á malarvegi á ferð.\n\nVinsæl samsetning með leitarbílnum — annar ber tökuliðið, hinn ber skotið.',
+      en: 'A Defender configured as a camera support vehicle: roof rails and bumper plates take standard hi-hat and suction mounts, and the load bay is padded for lens cases. The long-travel suspension keeps footage usable on gravel at speed.\n\nA popular pairing with the Location Scout: one carries the crew, the other carries the shot.',
+      is: 'Defender útbúinn sem stuðningsbíll fyrir myndavélar: þakbogar og stuðaraplötur taka staðlaðar hi-hat og sogfestingar og skottið er bólstrað fyrir linsutöskur. Löng fjöðrun heldur efninu nothæfu á malarvegi á ferð.\n\nVinsæl samsetning með leitarbílnum: annar ber tökuliðið, hinn ber skotið.',
     },
     highlights: [
       { en: 'Roof rails + bumper plates for camera mounts', is: 'Þakbogar + stuðaraplötur fyrir myndavélafestingar' },
       { en: 'Padded load bay for lens and body cases', is: 'Bólstrað skott fyrir linsu- og vélatöskur' },
-      { en: 'Long-travel suspension — stable at speed on gravel', is: 'Löng fjöðrun — stöðugur á ferð á möl' },
+      { en: 'Long-travel suspension, stable at speed on gravel', is: 'Löng fjöðrun, stöðugur á ferð á möl' },
       { en: 'Tow hitch for camera trailers', is: 'Dráttarkrókur fyrir myndavélavagna' },
     ],
     specs: {
@@ -268,15 +268,15 @@ export const vehicles: Vehicle[] = [
       is: 'Leikaravagn',
     },
     tagline: {
-      en: 'Blackout, heated and quiet — proper rest between takes.',
-      is: 'Myrkvaður, upphitaður og hljóðlátur — alvöru hvíld milli taka.',
+      en: 'Blackout, heated and quiet, for proper rest between takes.',
+      is: 'Myrkvaður, upphitaður og hljóðlátur, fyrir alvöru hvíld milli taka.',
     },
     description: {
       en: 'A dedicated talent trailer with full blackout, thermostat heating and a quiet ventilation system. Inside: a daybed, a make-up-friendly mirror station with daylight-balanced lighting, a kitchenette and a private WC.\n\nBlackout plus heating makes it just as useful as a night-shoot rest area or a dark review room for the DoP.',
       is: 'Sérhæfður leikaravagn með fullri myrkvun, hitastýringu og hljóðlátri loftræstingu. Að innan: hvíldarbekkur, spegilstöð með dagsbirtulýsingu sem hentar förðun, eldhúskrókur og einkasalerni.\n\nMyrkvun og hiti gera hann jafn nothæfan sem hvíldarrými á næturtökum eða dimmt skoðunarherbergi fyrir tökustjórann.',
     },
     highlights: [
-      { en: 'Full blackout — night shoots and daytime rest', is: 'Full myrkvun — næturtökur og hvíld að degi' },
+      { en: 'Full blackout for night shoots and daytime rest', is: 'Full myrkvun fyrir næturtökur og hvíld að degi' },
       { en: 'Thermostat heating + quiet ventilation', is: 'Hitastýring + hljóðlát loftræsting' },
       { en: 'Mirror station with daylight-balanced lighting', is: 'Spegilstöð með dagsbirtujafnaðri lýsingu' },
       { en: 'Private WC and kitchenette', is: 'Einkasalerni og eldhúskrókur' },
@@ -347,8 +347,8 @@ export const vehicles: Vehicle[] = [
       is: 'Hljóðlát 20 kVA rafstöð ásamt þurri, læsanlegri búnaðargeymslu.',
     },
     description: {
-      en: 'Location power without the drone: a sound-attenuated 20 kVA diesel generator in its own compartment, with distribution to standard 63A/32A/16A outlets. The rest of the trailer is dry, lockable storage with tie-down points for gear that has to stay on location overnight.\n\nTows behind any of our 4x4s — one hook-up brings power and storage to basecamps beyond the grid.',
-      is: 'Rafmagn á tökustað án suðsins: hljóðdempuð 20 kVA dísilrafstöð í sérhólfi með dreifingu í staðlaða 63A/32A/16A tengla. Restin af vagninum er þurr, læsanleg geymsla með festipunktum fyrir búnað sem þarf að vera á staðnum yfir nótt.\n\nHengist aftan í hvaða fjórhjóladrifsbíl sem er hjá okkur — ein tenging færir rafmagn og geymslu í grunnbúðir utan raforkukerfisins.',
+      en: 'Location power without the drone: a sound-attenuated 20 kVA diesel generator in its own compartment, with distribution to standard 63A/32A/16A outlets. The rest of the trailer is dry, lockable storage with tie-down points for gear that has to stay on location overnight.\n\nTows behind any of our 4x4s, so one hook-up brings power and storage to basecamps beyond the grid.',
+      is: 'Rafmagn á tökustað án suðsins: hljóðdempuð 20 kVA dísilrafstöð í sérhólfi með dreifingu í staðlaða 63A/32A/16A tengla. Restin af vagninum er þurr, læsanleg geymsla með festipunktum fyrir búnað sem þarf að vera á staðnum yfir nótt.\n\nHengist aftan í hvaða fjórhjóladrifsbíl sem er hjá okkur, svo ein tenging færir rafmagn og geymslu í grunnbúðir utan raforkukerfisins.',
     },
     highlights: [
       { en: 'Sound-attenuated 20 kVA diesel generator', is: 'Hljóðdempuð 20 kVA dísilrafstöð' },
@@ -359,7 +359,7 @@ export const vehicles: Vehicle[] = [
     specs: {
       lengthM: 5.5,
       heightM: 2.4,
-      powerOutput: '20 kVA — 63A/32A/16A outlets',
+      powerOutput: '20 kVA, 63A/32A/16A outlets',
       generator: true,
       winterEquipped: true,
     },

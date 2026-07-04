@@ -17,7 +17,7 @@ const sessionOptions = () => {
   if (!adminPassword) {
     throw createError({
       statusCode: 503,
-      statusMessage: 'Admin panel is not configured — set the NUXT_ADMIN_PASSWORD environment variable.',
+      statusMessage: 'Admin panel is not configured. Set the NUXT_ADMIN_PASSWORD environment variable.',
     })
   }
   return {

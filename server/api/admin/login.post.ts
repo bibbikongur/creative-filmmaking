@@ -8,14 +8,14 @@ export default defineEventHandler(async (event) => {
   if (!adminConfigured()) {
     throw createError({
       statusCode: 503,
-      statusMessage: 'Admin panel is not configured — set the NUXT_ADMIN_PASSWORD environment variable.',
+      statusMessage: 'Admin panel is not configured. Set the NUXT_ADMIN_PASSWORD environment variable.',
     })
   }
 
   const ip = getRequestIP(event, { xForwardedFor: true }) || 'unknown'
   const entry = attempts.get(ip)
   if (entry && entry.lockedUntil > Date.now()) {
-    throw createError({ statusCode: 429, statusMessage: 'Too many failed attempts — try again in 15 minutes.' })
+    throw createError({ statusCode: 429, statusMessage: 'Too many failed attempts. Try again in 15 minutes.' })
   }
 
   const body = await readBody<{ password?: string }>(event).catch(() => ({} as { password?: string }))
