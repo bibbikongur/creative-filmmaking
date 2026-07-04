@@ -19,5 +19,11 @@ export const getMailer = () => {
     })
   }
 
-  return { isConfigured, createTransport, contactTo: config.contactTo, smtpUser: config.smtpUser }
+  // Sender address. With providers like Resend the SMTP username is not a
+  // mailbox ("resend"), so NUXT_MAIL_FROM takes precedence when set.
+  const fromAddress = config.mailFrom
+    || (config.smtpUser.includes('@') ? config.smtpUser : '')
+    || config.contactTo
+
+  return { isConfigured, createTransport, contactTo: config.contactTo, smtpUser: config.smtpUser, fromAddress }
 }

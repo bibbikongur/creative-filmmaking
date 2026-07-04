@@ -59,7 +59,7 @@ export async function sendOfferEmail(quote: Quote, offer: Offer, pdf: Buffer) {
   ].join('\n')
 
   await mailer.createTransport().sendMail({
-    from: `"Creative Filmmaking" <${mailer.smtpUser || mailer.contactTo}>`,
+    from: `"Creative Filmmaking" <${mailer.fromAddress}>`,
     to: quote.email,
     replyTo: mailer.contactTo,
     bcc: mailer.contactTo,

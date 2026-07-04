@@ -101,6 +101,9 @@ export default defineNuxtConfig({
     smtpPort: '587',
     smtpUser: '',
     smtpPass: '',
+    // From address for outgoing mail (NUXT_MAIL_FROM). Needed when the SMTP
+    // username isn't a mailbox (e.g. Resend uses the literal user "resend").
+    mailFrom: '',
     contactTo: '',
     // Password for /admin (NUXT_ADMIN_PASSWORD). Unset = admin panel disabled.
     adminPassword: '',

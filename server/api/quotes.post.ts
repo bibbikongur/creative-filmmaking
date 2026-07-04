@@ -108,7 +108,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     await mailer.createTransport().sendMail({
-      from: `"Creative Filmmaking" <${mailer.smtpUser || mailer.contactTo}>`,
+      from: `"Creative Filmmaking" <${mailer.fromAddress}>`,
       to: mailer.contactTo,
       replyTo: `"${name.replace(/"/g, '')}" <${email}>`,
       subject: `[Creative Filmmaking] Quote request: ${name}${quote.company ? ` · ${quote.company}` : ''} (${items.length} items)`,
