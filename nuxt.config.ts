@@ -68,13 +68,6 @@ export default defineNuxtConfig({
     enabled: false,
   },
 
-  nitro: {
-    // pdfkit loads its .afm font metrics with readFileSync at runtime — force
-    // the whole package into the server bundle so those files ship too.
-    externals: {
-      traceInclude: ['pdfkit'],
-    },
-  },
 
   image: {
     // Unsplash hosts the placeholder fleet imagery; swap for /images/* files
