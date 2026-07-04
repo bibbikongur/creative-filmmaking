@@ -68,6 +68,14 @@ export default defineNuxtConfig({
     enabled: false,
   },
 
+  nitro: {
+    // pdfkit loads its .afm font metrics with readFileSync at runtime — force
+    // the whole package into the server bundle so those files ship too.
+    externals: {
+      traceInclude: ['pdfkit'],
+    },
+  },
+
   image: {
     // Unsplash hosts the placeholder fleet imagery; swap for /images/* files
     // (no domain entry needed) when real photos arrive.
@@ -107,6 +115,9 @@ export default defineNuxtConfig({
     // ./.data — point it at a persistent volume in production (e.g. /data).
     dataDir: '',
     public: {
+      // Absolute origin for links in server-sent emails (quote notifications,
+      // offers). Same source as site.url; NUXT_PUBLIC_SITE_URL overrides.
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://creativefilmmaking.is',
       // Business contact details — single source of truth for the footer and
       // contact page. Override per-environment with the matching NUXT_PUBLIC_* var.
       contact: {

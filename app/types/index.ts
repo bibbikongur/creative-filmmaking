@@ -61,6 +61,98 @@ export interface EquipmentItem {
   images: string[]
 }
 
+// ── Cart, quote requests & offers ────────────────────────────────────────────
+
+export type CartItemType = 'vehicle' | 'equipment'
+
+/** A line in the visitor's cart — resolved against the catalogue on submit. */
+export interface CartEntry {
+  type: CartItemType
+  id: string
+  qty: number
+}
+
+export type QuoteStatus = 'new' | 'offered' | 'won' | 'lost'
+
+/** Catalogue snapshot taken when the quote was submitted (survives deletions). */
+export interface QuoteItem {
+  id: number
+  itemType: CartItemType
+  itemId: string
+  slug?: string
+  name: LocalizedText
+  image?: string
+  qty: number
+}
+
+export interface Quote {
+  id: string
+  createdAt: string
+  status: QuoteStatus
+  locale: LocaleCode
+  name: string
+  email: string
+  phone?: string
+  company?: string
+  dates?: string
+  message?: string
+}
+
+export interface QuoteSummary extends Quote {
+  itemCount: number
+  lastOfferAt?: string
+  lastOfferTotal?: number
+  lastOfferCurrency?: string
+}
+
+export type OfferCurrency = 'ISK' | 'EUR'
+export type DiscountType = 'percent' | 'fixed'
+
+/** A priced line inside an offer — frozen at send time so PDFs are regenerable. */
+export interface OfferItem {
+  quoteItemId: number
+  name: LocalizedText
+  image?: string
+  qty: number
+  unitPrice: number
+  lineTotal: number
+}
+
+export interface Offer {
+  id: number
+  quoteId: string
+  createdAt: string
+  sentAt?: string
+  currency: OfferCurrency
+  discountType?: DiscountType
+  discountValue?: number
+  note?: string
+  validUntil?: string
+  items: OfferItem[]
+  subtotal: number
+  discountAmount: number
+  total: number
+}
+
+export interface QuoteDetail extends Quote {
+  items: QuoteItem[]
+  offers: Offer[]
+}
+
+/** Body of POST /api/quotes (public cart submission). */
+export interface QuotePayload {
+  name: string
+  email: string
+  phone?: string
+  company?: string
+  dates?: string
+  message?: string
+  locale: LocaleCode
+  items: CartEntry[]
+  /** Honeypot — must come back empty */
+  website?: string
+}
+
 export interface ContactPayload {
   name: string
   email: string

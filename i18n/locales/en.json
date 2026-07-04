@@ -90,6 +90,22 @@
       "hybrid": "Hybrid"
     }
   },
+  "cart": {
+    "kicker": "Your selection",
+    "title": "Quote request",
+    "add": "Add to quote",
+    "added": "On the list",
+    "remove": "Remove",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "empty": "Your quote list is empty. Add vehicles or equipment and we'll price the whole package for you.",
+    "emptyCta": "Browse the fleet",
+    "formTitle": "Your details",
+    "formIntro": "Tell us who you are and when you're shooting. We'll reply with one tailored offer for everything on your list.",
+    "submit": "Request an offer",
+    "successTitle": "Request received",
+    "successText": "Thanks! We'll put together an offer for your list and get back to you within one business day."
+  },
   "form": {
     "name": "Name",
     "email": "Email",

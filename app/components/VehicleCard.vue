@@ -57,12 +57,15 @@
       </div>
 
       <!-- CTA -->
-      <p class="mt-5 pt-4 border-t border-ink-700 text-sm font-heading font-semibold uppercase tracking-wider text-gold-500 group-hover:text-gold-400 transition-colors flex items-center gap-2">
-        {{ t('common.requestOffer') }}
-        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-        </svg>
-      </p>
+      <div class="mt-5 pt-4 border-t border-ink-700 flex items-center justify-between gap-3">
+        <p class="text-sm font-heading font-semibold uppercase tracking-wider text-gold-500 group-hover:text-gold-400 transition-colors flex items-center gap-2">
+          {{ t('common.requestOffer') }}
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </p>
+        <AddToCartButton type="vehicle" :id="vehicle.id" compact />
+      </div>
     </div>
   </NuxtLink>
 </template>

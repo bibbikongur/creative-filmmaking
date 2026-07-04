@@ -90,6 +90,22 @@
       "hybrid": "Tvinnbíll"
     }
   },
+  "cart": {
+    "kicker": "Þitt val",
+    "title": "Tilboðsbeiðni",
+    "add": "Setja í tilboð",
+    "added": "Á listanum",
+    "remove": "Fjarlægja",
+    "increase": "Fjölga",
+    "decrease": "Fækka",
+    "empty": "Tilboðslistinn er tómur. Bættu við bílum eða búnaði og við verðleggjum allan pakkann fyrir þig.",
+    "emptyCta": "Skoða flotann",
+    "formTitle": "Þínar upplýsingar",
+    "formIntro": "Segðu okkur hver þú ert og hvenær tökurnar fara fram. Við svörum með einu sérsniðnu tilboði fyrir allt á listanum.",
+    "submit": "Óska eftir tilboði",
+    "successTitle": "Beiðni móttekin",
+    "successText": "Takk fyrir! Við setjum saman tilboð fyrir listann þinn og svörum innan eins virks dags."
+  },
   "form": {
     "name": "Nafn",
     "email": "Netfang",

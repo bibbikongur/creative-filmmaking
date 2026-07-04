@@ -42,9 +42,12 @@
           </li>
         </ul>
 
-        <a href="#request-offer" class="btn-gold w-full mt-8">
-          {{ t('common.requestOffer') }}
-        </a>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="#request-offer" class="btn-gold flex-1 text-center">
+            {{ t('common.requestOffer') }}
+          </a>
+          <AddToCartButton type="vehicle" :id="vehicle.id" class="justify-center flex-1" />
+        </div>
       </div>
     </div>
 

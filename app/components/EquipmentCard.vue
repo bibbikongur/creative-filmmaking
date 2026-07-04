@@ -23,6 +23,10 @@
       <p v-if="lt(item.tagline)" class="mt-2 text-sm text-bone-400 leading-relaxed">
         {{ lt(item.tagline) }}
       </p>
+
+      <div class="mt-4 pt-4 border-t border-ink-700">
+        <AddToCartButton type="equipment" :id="item.id" compact />
+      </div>
     </div>
   </div>
 </template>

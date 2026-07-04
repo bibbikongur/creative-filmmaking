@@ -6,11 +6,14 @@
           Creative Filmmaking <span class="text-gold-500">· Admin</span>
         </NuxtLink>
         <nav v-if="authed" class="flex items-center gap-5 text-xs uppercase tracking-widest sm:ml-4 sm:mr-auto">
-          <NuxtLink to="/admin" class="transition-colors hover:text-gold-400" :class="onEquipment ? 'text-bone-400' : 'text-gold-400'">
+          <NuxtLink to="/admin" class="transition-colors hover:text-gold-400" :class="section === 'vehicles' ? 'text-gold-400' : 'text-bone-400'">
             Vehicles
           </NuxtLink>
-          <NuxtLink to="/admin/equipment" class="transition-colors hover:text-gold-400" :class="onEquipment ? 'text-gold-400' : 'text-bone-400'">
+          <NuxtLink to="/admin/equipment" class="transition-colors hover:text-gold-400" :class="section === 'equipment' ? 'text-gold-400' : 'text-bone-400'">
             Equipment
+          </NuxtLink>
+          <NuxtLink to="/admin/quotes" class="transition-colors hover:text-gold-400" :class="section === 'quotes' ? 'text-gold-400' : 'text-bone-400'">
+            Quotes
           </NuxtLink>
         </nav>
         <div class="flex items-center gap-5 text-sm">
@@ -71,7 +74,10 @@
 const { authed, configured, check, login, logout } = useAdminAuth()
 
 const route = useRoute()
-const onEquipment = computed(() => route.path.includes('/admin/equipment'))
+const section = computed(() =>
+  route.path.includes('/admin/equipment')
+    ? 'equipment'
+    : route.path.includes('/admin/quotes') ? 'quotes' : 'vehicles')
 
 const password = ref('')
 const error = ref('')

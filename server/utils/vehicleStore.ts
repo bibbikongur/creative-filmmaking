@@ -1,47 +1,23 @@
-import { promises as fs } from 'node:fs'
-import { join, resolve } from 'node:path'
-import { vehicles as seedVehicles } from '~~/app/data/vehicles'
 import type { LocalizedText, Vehicle, VehicleCategory, VehicleSpecs } from '~~/app/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Runtime fleet store — a JSON file in the data dir, seeded once from
-// app/data/vehicles.ts. The admin panel edits this file; the static TS file
-// is only the initial content. Set NUXT_DATA_DIR to a persistent volume in
-// production (e.g. /data on Railway) so edits survive redeploys.
+// Runtime fleet store — rows in the SQLite database (see db.ts), stored as
+// JSON documents so this API stays a plain Vehicle[] in/out. The admin panel
+// edits the database; app/data/vehicles.ts is only the first-boot seed.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const dataDir = () =>
-  resolve(process.cwd(), useRuntimeConfig().dataDir || '.data')
-
-export const uploadsDir = () => join(dataDir(), 'uploads')
-
-const storeFile = () => join(dataDir(), 'vehicles.json')
-
-let cache: Vehicle[] | null = null
-
 export async function getVehicles(): Promise<Vehicle[]> {
-  if (cache) return cache
-  try {
-    cache = JSON.parse(await fs.readFile(storeFile(), 'utf8')) as Vehicle[]
-  }
-  catch {
-    // First run (or unreadable file): seed from the static data file.
-    cache = seedVehicles
-    await persist(cache).catch(() => {}) // read-only FS shouldn't break the site
-  }
-  return cache
-}
-
-async function persist(vehicles: Vehicle[]) {
-  await fs.mkdir(dataDir(), { recursive: true })
-  const tmp = `${storeFile()}.tmp`
-  await fs.writeFile(tmp, JSON.stringify(vehicles, null, 2), 'utf8')
-  await fs.rename(tmp, storeFile())
+  const rows = getDb().prepare('SELECT data FROM vehicles ORDER BY sort').all() as { data: string }[]
+  return rows.map(r => JSON.parse(r.data) as Vehicle)
 }
 
 export async function saveVehicles(vehicles: Vehicle[]) {
-  cache = vehicles
-  await persist(vehicles)
+  const db = getDb()
+  const insert = db.prepare('INSERT INTO vehicles (id, slug, sort, data) VALUES (?, ?, ?, ?)')
+  db.transaction(() => {
+    db.prepare('DELETE FROM vehicles').run()
+    vehicles.forEach((v, i) => insert.run(v.id, v.slug, i, JSON.stringify(v)))
+  })()
 }
 
 // ── Payload validation ───────────────────────────────────────────────────────
