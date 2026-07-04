@@ -51,13 +51,15 @@ export default defineNuxtConfig({
   // Vehicle detail URLs come from the fleet store via a tiny server route.
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
-    exclude: ['/admin', '/admin/**'],
+    exclude: ['/admin', '/admin/**', '/is/admin', '/is/admin/**'],
   },
 
   // The admin panel is a client-side app behind a login — no SSR, no indexing.
   routeRules: {
     '/admin': { ssr: false, robots: false },
     '/admin/**': { ssr: false, robots: false },
+    '/is/admin': { ssr: false, robots: false },
+    '/is/admin/**': { ssr: false, robots: false },
   },
 
   // Dynamic OG-image generation needs a heavy native renderer; we set explicit

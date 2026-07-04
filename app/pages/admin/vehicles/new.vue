@@ -9,7 +9,6 @@
 </template>
 
 <script setup lang="ts">
-defineI18nRoute(false)
 definePageMeta({ layout: 'admin' })
 
 const saving = ref(false)

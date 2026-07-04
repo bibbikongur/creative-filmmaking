@@ -20,7 +20,6 @@
 <script setup lang="ts">
 import type { Vehicle } from '~/types'
 
-defineI18nRoute(false)
 definePageMeta({ layout: 'admin' })
 
 const route = useRoute()
