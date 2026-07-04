@@ -48,9 +48,16 @@ export default defineNuxtConfig({
     },
   },
 
-  // Vehicle detail URLs come from the data file via a tiny server route.
+  // Vehicle detail URLs come from the fleet store via a tiny server route.
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
+    exclude: ['/admin', '/admin/**'],
+  },
+
+  // The admin panel is a client-side app behind a login — no SSR, no indexing.
+  routeRules: {
+    '/admin': { ssr: false, robots: false },
+    '/admin/**': { ssr: false, robots: false },
   },
 
   // Dynamic OG-image generation needs a heavy native renderer; we set explicit
@@ -88,6 +95,11 @@ export default defineNuxtConfig({
     smtpUser: '',
     smtpPass: '',
     contactTo: '',
+    // Password for /admin (NUXT_ADMIN_PASSWORD). Unset = admin panel disabled.
+    adminPassword: '',
+    // Where vehicles.json + uploaded photos live (NUXT_DATA_DIR). Defaults to
+    // ./.data — point it at a persistent volume in production (e.g. /data).
+    dataDir: '',
     public: {
       // Business contact details — single source of truth for the footer and
       // contact page. Override per-environment with the matching NUXT_PUBLIC_* var.

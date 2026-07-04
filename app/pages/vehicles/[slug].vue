@@ -97,7 +97,7 @@ const { t } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
 const route = useRoute()
-const { bySlug, byCategory } = useVehicles()
+const { bySlug, byCategory } = await useVehicles()
 
 const found = bySlug(route.params.slug as string)
 if (!found) {

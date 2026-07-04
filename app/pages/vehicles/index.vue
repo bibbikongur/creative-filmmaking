@@ -29,7 +29,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const router = useRouter()
-const { all } = useVehicles()
+const { all } = await useVehicles()
 
 const isCategory = (v: unknown): v is VehicleCategory =>
   typeof v === 'string' && categories.some(c => c.id === v)

@@ -16,17 +16,21 @@ npm install
 npm run dev        # http://localhost:3000
 ```
 
-## Edit the fleet
+## Edit the fleet — admin panel
 
-All vehicle content lives in **`app/data/vehicles.ts`** — one entry per vehicle with
-English + Icelandic text side by side (`{ en: '...', is: '...' }`). Add, remove or edit
-entries there; the catalogue, detail pages, sitemap and contact-form dropdown all update
-automatically.
+Go to **`/admin`** and log in with the password set in `NUXT_ADMIN_PASSWORD`.
+From there you can add, edit, delete and reorder vehicles (both languages, specs,
+highlights) and upload photos. Changes go live immediately — the catalogue, detail
+pages, sitemap and contact-form dropdown all read from the same store.
 
-To replace the placeholder Unsplash photos with real ones:
+How it works:
 
-1. Drop images in `public/images/` (e.g. `public/images/arctic-base-1.jpg`)
-2. Change the vehicle's `images` array to `['/images/arctic-base-1.jpg', ...]`
+- The fleet lives in **`<data dir>/vehicles.json`**, seeded on first run from
+  `app/data/vehicles.ts` (which is only the initial content after that).
+- Uploaded photos land in `<data dir>/uploads/` and are served at `/uploads/*`.
+- The data dir defaults to `./.data` (gitignored). In production set
+  `NUXT_DATA_DIR` to a persistent volume — otherwise edits are lost on redeploy.
+- Icelandic fields are optional; the site falls back to English when empty.
 
 UI text (buttons, labels, headings) lives in `i18n/locales/en.json` and `is.json`.
 
@@ -42,6 +46,9 @@ console; production returns an error so the UI shows the direct email address in
 1. Railway dashboard → **New Project → Deploy from GitHub repo** → select this repo.
    `railway.json` drives the build (`NIXPACKS`) and start (`node .output/server/index.mjs`).
 2. Set service variables: `NUXT_PUBLIC_SITE_URL` (the Railway/custom domain), the SMTP
-   vars above, and optionally `NUXT_PUBLIC_CONTACT_ADDRESS/PHONE/EMAIL`.
-3. Settings → Networking → **Generate Domain** (or attach a custom domain, then update
+   vars above, `NUXT_ADMIN_PASSWORD`, and optionally `NUXT_PUBLIC_CONTACT_ADDRESS/PHONE/EMAIL`.
+3. **Persist admin edits**: service → right-click → **Attach Volume**, mount path `/data`,
+   and set `NUXT_DATA_DIR=/data`. Without this, vehicles edited in `/admin` and uploaded
+   photos reset on every redeploy.
+4. Settings → Networking → **Generate Domain** (or attach a custom domain, then update
    `NUXT_PUBLIC_SITE_URL`).

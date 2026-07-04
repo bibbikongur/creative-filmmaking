@@ -75,7 +75,7 @@ import { categories } from '~/data/categories'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
-const { byCategory, featured } = useVehicles()
+const { byCategory, featured } = await useVehicles()
 
 const whyItems = [
   {

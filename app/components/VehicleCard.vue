@@ -7,6 +7,7 @@
     <div class="relative overflow-hidden aspect-card">
       <NuxtImg
         :src="vehicle.images[0]"
+        :provider="imgProvider(vehicle.images[0])"
         :alt="lt(vehicle.name)"
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         sizes="sm:100vw md:50vw lg:33vw"

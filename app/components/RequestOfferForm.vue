@@ -91,7 +91,7 @@ const props = defineProps<{
 const { t } = useI18n()
 const { lt } = useLocalized()
 const contact = useRuntimeConfig().public.contact
-const allVehicles = useVehicles().all()
+const allVehicles = (await useVehicles()).all()
 const uid = useId()
 
 const form = reactive({

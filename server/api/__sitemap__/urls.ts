@@ -1,9 +1,8 @@
-import { vehicles } from '~~/app/data/vehicles'
-
 // Feed vehicle detail URLs to @nuxtjs/seo's sitemap module. The i18n
 // integration expands each into its per-locale variant with hreflang links.
-export default defineSitemapEventHandler(() =>
-  vehicles.map(v => ({
+// Reads the runtime store so admin-added vehicles appear too.
+export default defineSitemapEventHandler(async () =>
+  (await getVehicles()).map(v => ({
     loc: `/vehicles/${v.slug}`,
     _i18nTransform: true,
   })),
