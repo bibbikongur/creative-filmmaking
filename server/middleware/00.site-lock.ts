@@ -23,11 +23,13 @@ export default defineEventHandler((event) => {
     if (user === expectedUser && pass === password) return // authorized
   }
 
+  // Set the challenge header BEFORE throwing so the browser shows its native
+  // login prompt; then short-circuit with a proper 401 (throwing is the only
+  // way to stop a Nitro middleware — returning a body 500s instead).
   setResponseHeader(
     event,
     'WWW-Authenticate',
     'Basic realm="Creative Filmmaking — private preview", charset="UTF-8"',
   )
-  setResponseStatus(event, 401)
-  return 'Authentication required.'
+  throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
 })
