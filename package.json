@@ -10,7 +10,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test": "vitest run"
   },
   "dependencies": {
     "better-sqlite3": "^12.11.1",
@@ -31,7 +32,8 @@
     "@types/pdfkit": "^0.17.6",
     "cac": "^6.7.14",
     "commander": "^13.1.0",
-    "crossws": "^0.4.9"
+    "crossws": "^0.4.9",
+    "vitest": "^4.1.9"
   },
   "overrides": {
     "tailwindcss": "3.4.19"

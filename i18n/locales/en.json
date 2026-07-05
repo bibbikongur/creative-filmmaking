@@ -188,5 +188,165 @@
       "title": "Contact",
       "description": "Tell us about your production in Iceland and we'll reply with availability and a tailored vehicle offer within one business day."
     }
+  },
+  "portal": {
+    "title": "Timesheets",
+    "loading": "Loading…",
+    "loadFailed": "Something went wrong. Please try again.",
+    "notConfigured": "The portal is not configured",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "nav": {
+      "timesheet": "My timesheet",
+      "history": "History",
+      "review": "Review",
+      "jobs": "Jobs",
+      "dashboard": "Dashboard",
+      "logout": "Log out"
+    },
+    "login": {
+      "title": "Portal login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
+      "loggingIn": "Logging in…",
+      "failed": "Login failed. Please try again.",
+      "forgot": "Forgot password?",
+      "forgotSent": "If an account exists for that email, a reset link is on its way."
+    },
+    "invite": {
+      "kicker": "Invitation",
+      "title": "Create your account",
+      "for": "Account for",
+      "adminOf": "Administrator of",
+      "name": "Your name",
+      "password": "Password",
+      "passwordHint": "At least 10 characters.",
+      "passwordRepeat": "Repeat password",
+      "mismatch": "The passwords do not match.",
+      "submit": "Create account",
+      "submitting": "Creating…",
+      "invalidTitle": "This invitation link is invalid or has expired",
+      "invalidBody": "Ask your company administrator to send you a new invitation."
+    },
+    "reset": {
+      "kicker": "Password reset",
+      "title": "Choose a new password",
+      "submit": "Set new password",
+      "submitting": "Saving…"
+    },
+    "status": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "altered": "Awaiting confirmation",
+      "approved": "Approved"
+    },
+    "events": {
+      "submitted": "submitted the week",
+      "altered": "adjusted the times",
+      "confirmed": "confirmed the changes",
+      "approved": "approved the week",
+      "reopened": "reopened the week"
+    },
+    "jobs": {
+      "title": "Jobs",
+      "jobName": "Job name",
+      "namePlaceholder": "e.g. Feature film — Highlands",
+      "create": "Create job",
+      "close": "Close",
+      "reopen": "Reopen",
+      "closed": "Closed",
+      "members": "member | members",
+      "pendingWeeks": "week awaiting review | weeks awaiting review",
+      "empty": "No jobs yet. Create your first job above, then add your crew to it."
+    },
+    "members": {
+      "email": "Email",
+      "name": "Name",
+      "dayRate": "Day rate (ISK)",
+      "language": "Language",
+      "add": "Add to job",
+      "invited": "Invite pending",
+      "removed": "Removed",
+      "reinvite": "Resend invite",
+      "reinviteSent": "Invite sent again.",
+      "remove": "Remove",
+      "restore": "Restore",
+      "removeConfirm": "Remove {name} from this job? Their timesheets are kept.",
+      "empty": "No crew on this job yet. Add people by email above — they get an invitation to set a password."
+    },
+    "timesheet": {
+      "kicker": "Timesheet",
+      "title": "My timesheet",
+      "job": "Job",
+      "noJobs": "You are not on any active job yet. You will get an email when a production adds you.",
+      "addShift": "Add shift",
+      "in": "In",
+      "out": "Out",
+      "endsNextDay": "ends next day",
+      "hoursShort": "h",
+      "dayOff": "No shift",
+      "summary": "Week summary",
+      "noRate": "No day rate is set for this job yet — ask your production manager.",
+      "saved": "All changes saved",
+      "unsaved": "Saving…",
+      "submitWeek": "Submit week",
+      "submitHint": "After submitting you can no longer change this week. Your production manager reviews and approves it.",
+      "submitConfirm": "Submit this week? You will not be able to change it afterwards.",
+      "submittedBanner": "This week has been submitted and is locked while it awaits review.",
+      "approvedBanner": "This week has been approved.",
+      "alteredBanner": "Your times were adjusted by the production. Please review the changes below and confirm.",
+      "confirmChanges": "Confirm changes"
+    },
+    "history": {
+      "title": "My weeks",
+      "allJobs": "All jobs",
+      "empty": "No timesheets yet."
+    },
+    "review": {
+      "title": "Timesheets for review",
+      "all": "All",
+      "empty": "Nothing here — submitted weeks appear in this queue.",
+      "day": "Day",
+      "times": "Times",
+      "amount": "Amount",
+      "totals": "Totals",
+      "approve": "Approve",
+      "approveConfirm": "Approve this week? The pay breakdown is frozen and the week is locked.",
+      "editTimes": "Edit times",
+      "sendAlteration": "Send changes to employee",
+      "notePlaceholder": "Note to the employee (optional)",
+      "reopen": "Reopen as draft",
+      "reopenConfirm": "Reopen this week? The employee can edit and must submit it again.",
+      "awaitingConfirmation": "Waiting for the employee to confirm the adjusted times.",
+      "history": "History"
+    },
+    "dashboard": {
+      "title": "Overview",
+      "thisWeek": "This week",
+      "lastWeek": "Last week",
+      "last4Weeks": "Last 4 weeks",
+      "last13Weeks": "Last 13 weeks",
+      "weeklyHours": "Hours per week",
+      "employee": "Employee",
+      "pay": "Pay",
+      "weeks": "week | weeks",
+      "pending": "awaiting review",
+      "employeesShort": "employees",
+      "empty": "No timesheet data in this period yet."
+    },
+    "pay": {
+      "estimated": "Estimated pay",
+      "daysWorked": "Days worked",
+      "daysShort": "days",
+      "hours": "Hours",
+      "otHours": "Overtime hours",
+      "otShort": "OT",
+      "otRate": "OT rate",
+      "restViolation": "Brot á hvíld",
+      "doubleDays": "Double-pay days",
+      "seventhDay": "7th day ×2"
+    }
   }
 }

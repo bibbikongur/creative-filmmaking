@@ -94,6 +94,99 @@ function initSchema(db: Database.Database) {
       total           REAL NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_offers_quote ON offers(quote_id);
+
+    -- ── Timesheet portal ─────────────────────────────────────────────────────
+
+    CREATE TABLE IF NOT EXISTS companies (
+      id         TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL,
+      name       TEXT NOT NULL,
+      status     TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'disabled'))
+    );
+
+    -- Global account: one email+password works across all jobs/companies.
+    CREATE TABLE IF NOT EXISTS portal_users (
+      id               TEXT PRIMARY KEY,
+      created_at       TEXT NOT NULL,
+      email            TEXT NOT NULL UNIQUE COLLATE NOCASE,
+      name             TEXT,
+      status           TEXT NOT NULL DEFAULT 'invited' CHECK (status IN ('invited', 'active', 'disabled')),
+      locale           TEXT NOT NULL DEFAULT 'en' CHECK (locale IN ('en', 'is')),
+      password_hash    TEXT,
+      token_hash       TEXT,
+      token_expires_at TEXT,
+      token_purpose    TEXT CHECK (token_purpose IN ('invite', 'reset'))
+    );
+
+    CREATE TABLE IF NOT EXISTS company_admins (
+      company_id TEXT NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+      user_id    TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      PRIMARY KEY (company_id, user_id)
+    );
+
+    -- Named productions, created by company admins.
+    CREATE TABLE IF NOT EXISTS jobs (
+      id         TEXT PRIMARY KEY,
+      company_id TEXT NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+      created_at TEXT NOT NULL,
+      name       TEXT NOT NULL,
+      status     TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_jobs_company ON jobs(company_id);
+
+    -- Employee membership in a job; the day rate lives here (per job, per person),
+    -- encrypted at rest (AES-256-GCM via portalCrypto).
+    CREATE TABLE IF NOT EXISTS job_members (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      job_id       TEXT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+      user_id      TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      created_at   TEXT NOT NULL,
+      status       TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'removed')),
+      day_rate_enc TEXT NOT NULL,
+      UNIQUE (job_id, user_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_job_members_user ON job_members(user_id);
+
+    CREATE TABLE IF NOT EXISTS timesheet_weeks (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      job_id       TEXT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+      user_id      TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      week_start   TEXT NOT NULL,
+      status       TEXT NOT NULL DEFAULT 'draft'
+                   CHECK (status IN ('draft', 'submitted', 'altered', 'approved')),
+      submitted_at TEXT,
+      approved_at  TEXT,
+      approved_snapshot TEXT,
+      UNIQUE (user_id, job_id, week_start)
+    );
+    CREATE INDEX IF NOT EXISTS idx_ts_weeks_job_status ON timesheet_weeks(job_id, status);
+
+    -- A shift belongs to its START date; end_min > 1440 means it crosses midnight.
+    CREATE TABLE IF NOT EXISTS time_entries (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      week_id    INTEGER NOT NULL REFERENCES timesheet_weeks(id) ON DELETE CASCADE,
+      user_id    TEXT NOT NULL,
+      job_id     TEXT NOT NULL,
+      date       TEXT NOT NULL,
+      start_min  INTEGER NOT NULL CHECK (start_min >= 0 AND start_min < 1440),
+      end_min    INTEGER NOT NULL CHECK (end_min > start_min AND end_min <= start_min + 1440),
+      note       TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_time_entries_week ON time_entries(week_id);
+    CREATE INDEX IF NOT EXISTS idx_time_entries_user_job_date ON time_entries(user_id, job_id, date);
+
+    -- Audit trail: submissions, alterations (with before/after diff), approvals.
+    CREATE TABLE IF NOT EXISTS week_events (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      week_id       INTEGER NOT NULL REFERENCES timesheet_weeks(id) ON DELETE CASCADE,
+      created_at    TEXT NOT NULL,
+      actor_user_id TEXT NOT NULL,
+      type          TEXT NOT NULL CHECK (type IN ('submitted', 'altered', 'confirmed', 'approved', 'reopened')),
+      detail        TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_week_events_week ON week_events(week_id);
   `)
 }
 

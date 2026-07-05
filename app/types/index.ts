@@ -153,6 +153,121 @@ export interface QuotePayload {
   website?: string
 }
 
+// ── Timesheet portal ─────────────────────────────────────────────────────────
+
+export type PortalUserStatus = 'invited' | 'active' | 'disabled'
+export type CompanyStatus = 'active' | 'disabled'
+export type JobStatus = 'active' | 'closed'
+export type JobMemberStatus = 'active' | 'removed'
+export type WeekStatus = 'draft' | 'submitted' | 'altered' | 'approved'
+export type WeekEventType = 'submitted' | 'altered' | 'confirmed' | 'approved' | 'reopened'
+
+/** Portal account as exposed to the client — never carries credentials. */
+export interface PortalUserPublic {
+  id: string
+  email: string
+  name?: string
+  status: PortalUserStatus
+  locale: LocaleCode
+}
+
+/** What the signed-in user can do — drives the portal nav and job picker. */
+export interface PortalMemberships {
+  adminCompanies: { id: string, name: string }[]
+  jobs: { jobId: string, jobName: string, companyName: string, status: JobStatus }[]
+}
+
+export interface CompanySummary {
+  id: string
+  createdAt: string
+  name: string
+  status: CompanyStatus
+  adminEmail?: string
+  adminStatus?: PortalUserStatus
+  jobCount: number
+  employeeCount: number
+}
+
+export interface Job {
+  id: string
+  companyId: string
+  createdAt: string
+  name: string
+  status: JobStatus
+}
+
+export interface JobMember {
+  userId: string
+  email: string
+  name?: string
+  userStatus: PortalUserStatus
+  memberStatus: JobMemberStatus
+  locale: LocaleCode
+  dayRate: number
+}
+
+export interface TimeEntry {
+  id: number
+  date: string
+  /** Minutes from midnight of `date`; endMin > 1440 = shift crosses midnight. */
+  startMin: number
+  endMin: number
+  note?: string
+}
+
+export interface TimesheetWeek {
+  id: number
+  jobId: string
+  userId: string
+  weekStart: string
+  status: WeekStatus
+  submittedAt?: string
+  approvedAt?: string
+}
+
+export interface WeekEvent {
+  id: number
+  createdAt: string
+  actorUserId: string
+  actorName?: string
+  type: WeekEventType
+  detail?: {
+    note?: string
+    changes?: {
+      date: string
+      before: { startMin: number, endMin: number } | null
+      after: { startMin: number, endMin: number } | null
+    }[]
+  }
+}
+
+export interface DayBreakdown {
+  date: string
+  hours: number
+  otHours: number
+  restViolationHours: number
+  streakIndex: number
+  doublePay: boolean
+  baseAmount: number
+  otAmount: number
+  restViolationAmount: number
+  total: number
+}
+
+export interface WeekPayroll {
+  days: DayBreakdown[]
+  totals: {
+    daysWorked: number
+    hours: number
+    otHours: number
+    restViolationHours: number
+    doubleDays: number
+    amount: number
+  }
+  dayRate: number
+  hourlyOtRate: number
+}
+
 export interface ContactPayload {
   name: string
   email: string

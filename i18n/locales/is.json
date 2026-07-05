@@ -188,5 +188,165 @@
       "title": "Hafa samband",
       "description": "Segðu okkur frá verkefninu þínu á Íslandi og við svörum með lausum bílum og sérsniðnu tilboði innan eins virks dags."
     }
+  },
+  "portal": {
+    "title": "Tímaskráning",
+    "loading": "Hleð…",
+    "loadFailed": "Eitthvað fór úrskeiðis. Reyndu aftur.",
+    "notConfigured": "Kerfið er ekki uppsett",
+    "back": "Til baka",
+    "save": "Vista",
+    "cancel": "Hætta við",
+    "nav": {
+      "timesheet": "Mín tímaskýrsla",
+      "history": "Saga",
+      "review": "Yfirferð",
+      "jobs": "Verkefni",
+      "dashboard": "Yfirlit",
+      "logout": "Útskráning"
+    },
+    "login": {
+      "title": "Innskráning",
+      "email": "Netfang",
+      "password": "Lykilorð",
+      "submit": "Skrá inn",
+      "loggingIn": "Skrái inn…",
+      "failed": "Innskráning mistókst. Reyndu aftur.",
+      "forgot": "Gleymt lykilorð?",
+      "forgotSent": "Ef aðgangur er til fyrir þetta netfang er endurstillingarhlekkur á leiðinni."
+    },
+    "invite": {
+      "kicker": "Boð",
+      "title": "Búðu til aðganginn þinn",
+      "for": "Aðgangur fyrir",
+      "adminOf": "Umsjónaraðili",
+      "name": "Nafnið þitt",
+      "password": "Lykilorð",
+      "passwordHint": "Að minnsta kosti 10 stafir.",
+      "passwordRepeat": "Endurtaktu lykilorðið",
+      "mismatch": "Lykilorðin passa ekki saman.",
+      "submit": "Stofna aðgang",
+      "submitting": "Stofna…",
+      "invalidTitle": "Þessi boðshlekkur er ógildur eða útrunninn",
+      "invalidBody": "Biddu umsjónaraðila fyrirtækisins um að senda þér nýtt boð."
+    },
+    "reset": {
+      "kicker": "Endurstilling lykilorðs",
+      "title": "Veldu nýtt lykilorð",
+      "submit": "Vista nýtt lykilorð",
+      "submitting": "Vista…"
+    },
+    "status": {
+      "draft": "Drög",
+      "submitted": "Innsend",
+      "altered": "Bíður staðfestingar",
+      "approved": "Samþykkt"
+    },
+    "events": {
+      "submitted": "sendi vikuna inn",
+      "altered": "breytti tímunum",
+      "confirmed": "staðfesti breytingarnar",
+      "approved": "samþykkti vikuna",
+      "reopened": "opnaði vikuna aftur"
+    },
+    "jobs": {
+      "title": "Verkefni",
+      "jobName": "Heiti verkefnis",
+      "namePlaceholder": "t.d. Kvikmynd — Hálendið",
+      "create": "Stofna verkefni",
+      "close": "Loka",
+      "reopen": "Opna aftur",
+      "closed": "Lokað",
+      "members": "starfsmaður | starfsmenn",
+      "pendingWeeks": "vika bíður yfirferðar | vikur bíða yfirferðar",
+      "empty": "Engin verkefni enn. Stofnaðu fyrsta verkefnið hér að ofan og bættu svo tökuliðinu við."
+    },
+    "members": {
+      "email": "Netfang",
+      "name": "Nafn",
+      "dayRate": "Dagsverð (kr.)",
+      "language": "Tungumál",
+      "add": "Bæta við verkefni",
+      "invited": "Boð í bið",
+      "removed": "Fjarlægð/ur",
+      "reinvite": "Senda boð aftur",
+      "reinviteSent": "Boð sent aftur.",
+      "remove": "Fjarlægja",
+      "restore": "Endurvekja",
+      "removeConfirm": "Fjarlægja {name} af þessu verkefni? Tímaskýrslur haldast.",
+      "empty": "Enginn á þessu verkefni enn. Bættu fólki við með netfangi hér að ofan — það fær boð um að velja lykilorð."
+    },
+    "timesheet": {
+      "kicker": "Tímaskráning",
+      "title": "Mín tímaskýrsla",
+      "job": "Verkefni",
+      "noJobs": "Þú ert ekki á neinu virku verkefni enn. Þú færð tölvupóst þegar framleiðsla bætir þér við.",
+      "addShift": "Bæta við vakt",
+      "in": "Inn",
+      "out": "Út",
+      "endsNextDay": "endar næsta dag",
+      "hoursShort": "klst.",
+      "dayOff": "Engin vakt",
+      "summary": "Samantekt viku",
+      "noRate": "Ekkert dagsverð er skráð fyrir þetta verkefni — hafðu samband við framleiðslustjóra.",
+      "saved": "Allar breytingar vistaðar",
+      "unsaved": "Vista…",
+      "submitWeek": "Senda inn viku",
+      "submitHint": "Eftir innsendingu getur þú ekki breytt vikunni. Framleiðslustjóri fer yfir og samþykkir hana.",
+      "submitConfirm": "Senda þessa viku inn? Þú getur ekki breytt henni eftir það.",
+      "submittedBanner": "Þessi vika hefur verið send inn og er læst á meðan hún bíður yfirferðar.",
+      "approvedBanner": "Þessi vika hefur verið samþykkt.",
+      "alteredBanner": "Tímunum þínum var breytt af framleiðslunni. Farðu yfir breytingarnar hér að neðan og staðfestu.",
+      "confirmChanges": "Staðfesta breytingar"
+    },
+    "history": {
+      "title": "Mínar vikur",
+      "allJobs": "Öll verkefni",
+      "empty": "Engar tímaskýrslur enn."
+    },
+    "review": {
+      "title": "Tímaskýrslur til yfirferðar",
+      "all": "Allt",
+      "empty": "Ekkert hér — innsendar vikur birtast í þessari röð.",
+      "day": "Dagur",
+      "times": "Tímar",
+      "amount": "Upphæð",
+      "totals": "Samtals",
+      "approve": "Samþykkja",
+      "approveConfirm": "Samþykkja þessa viku? Launaútreikningur er frystur og vikan læst.",
+      "editTimes": "Breyta tímum",
+      "sendAlteration": "Senda breytingar á starfsmann",
+      "notePlaceholder": "Athugasemd til starfsmanns (valfrjálst)",
+      "reopen": "Opna aftur sem drög",
+      "reopenConfirm": "Opna vikuna aftur? Starfsmaðurinn getur breytt henni og þarf að senda hana inn aftur.",
+      "awaitingConfirmation": "Beðið eftir að starfsmaðurinn staðfesti breyttu tímana.",
+      "history": "Saga"
+    },
+    "dashboard": {
+      "title": "Yfirlit",
+      "thisWeek": "Þessi vika",
+      "lastWeek": "Síðasta vika",
+      "last4Weeks": "Síðustu 4 vikur",
+      "last13Weeks": "Síðustu 13 vikur",
+      "weeklyHours": "Klukkustundir á viku",
+      "employee": "Starfsmaður",
+      "pay": "Laun",
+      "weeks": "vika | vikur",
+      "pending": "bíður yfirferðar",
+      "employeesShort": "starfsmenn",
+      "empty": "Engin tímaskráningargögn á þessu tímabili enn."
+    },
+    "pay": {
+      "estimated": "Áætluð laun",
+      "daysWorked": "Unnir dagar",
+      "daysShort": "dagar",
+      "hours": "Klukkustundir",
+      "otHours": "Yfirvinnutímar",
+      "otShort": "YV",
+      "otRate": "Yfirvinnutaxti",
+      "restViolation": "Brot á hvíld",
+      "doubleDays": "Dagar á tvöföldu",
+      "seventhDay": "7. dagur ×2"
+    }
   }
 }

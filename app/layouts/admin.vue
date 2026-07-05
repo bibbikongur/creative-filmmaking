@@ -15,6 +15,9 @@
           <NuxtLink to="/admin/quotes" class="transition-colors hover:text-gold-400" :class="section === 'quotes' ? 'text-gold-400' : 'text-bone-400'">
             Quotes
           </NuxtLink>
+          <NuxtLink to="/admin/companies" class="transition-colors hover:text-gold-400" :class="section === 'companies' ? 'text-gold-400' : 'text-bone-400'">
+            Companies
+          </NuxtLink>
         </nav>
         <div class="flex items-center gap-5 text-sm">
           <a href="/" target="_blank" class="text-bone-400 hover:text-gold-400 transition-colors">View site ↗</a>
@@ -77,7 +80,9 @@ const route = useRoute()
 const section = computed(() =>
   route.path.includes('/admin/equipment')
     ? 'equipment'
-    : route.path.includes('/admin/quotes') ? 'quotes' : 'vehicles')
+    : route.path.includes('/admin/quotes')
+      ? 'quotes'
+      : route.path.includes('/admin/companies') ? 'companies' : 'vehicles')
 
 const password = ref('')
 const error = ref('')

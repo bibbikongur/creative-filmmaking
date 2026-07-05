@@ -51,15 +51,23 @@ export default defineNuxtConfig({
   // Vehicle detail URLs come from the fleet store via a tiny server route.
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
-    exclude: ['/admin', '/admin/**', '/is/admin', '/is/admin/**'],
+    exclude: [
+      '/admin', '/admin/**', '/is/admin', '/is/admin/**',
+      '/portal', '/portal/**', '/is/portal', '/is/portal/**',
+    ],
   },
 
-  // The admin panel is a client-side app behind a login — no SSR, no indexing.
+  // The admin panel and timesheet portal are client-side apps behind a login —
+  // no SSR, no indexing.
   routeRules: {
     '/admin': { ssr: false, robots: false },
     '/admin/**': { ssr: false, robots: false },
     '/is/admin': { ssr: false, robots: false },
     '/is/admin/**': { ssr: false, robots: false },
+    '/portal': { ssr: false, robots: false },
+    '/portal/**': { ssr: false, robots: false },
+    '/is/portal': { ssr: false, robots: false },
+    '/is/portal/**': { ssr: false, robots: false },
   },
 
   // Dynamic OG-image generation needs a heavy native renderer; we set explicit
@@ -107,6 +115,12 @@ export default defineNuxtConfig({
     contactTo: '',
     // Password for /admin (NUXT_ADMIN_PASSWORD). Unset = admin panel disabled.
     adminPassword: '',
+    // Seals the timesheet-portal session cookie (NUXT_SESSION_SECRET).
+    // Use 32+ random characters; rotating it logs every portal user out.
+    sessionSecret: '',
+    // AES-256-GCM key for encrypted columns like day rates (NUXT_ENCRYPTION_KEY).
+    // Keep a copy in a password manager — losing it makes those values unrecoverable.
+    encryptionKey: '',
     // Where vehicles.json + uploaded photos live (NUXT_DATA_DIR). Defaults to
     // ./.data — point it at a persistent volume in production (e.g. /data).
     dataDir: '',
