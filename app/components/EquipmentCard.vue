@@ -1,12 +1,12 @@
 <template>
   <div class="group flex flex-col bg-ink-800 border-t-2 border-transparent hover:border-gold-500 transition-colors duration-300">
     <!-- Image -->
-    <div class="relative overflow-hidden aspect-card">
+    <div class="relative overflow-hidden aspect-card bg-bone-100">
       <NuxtImg
         :src="item.images[0]"
         :provider="imgProvider(item.images[0])"
         :alt="lt(item.name)"
-        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        class="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
         sizes="sm:100vw md:50vw lg:33vw"
         loading="lazy"
       />
