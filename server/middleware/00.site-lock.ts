@@ -29,7 +29,7 @@ export default defineEventHandler((event) => {
   setResponseHeader(
     event,
     'WWW-Authenticate',
-    'Basic realm="Creative Filmmaking — private preview", charset="UTF-8"',
+    'Basic realm="Creative Filmmaking private preview", charset="UTF-8"',
   )
   throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
 })
