@@ -64,4 +64,134 @@ export const equipment: EquipmentItem[] = [
     },
     images: [img('photo-1533473359331-0135ef1b58bf')],
   },
+  {
+    id: 'e-005',
+    category: 'heating',
+    name: {
+      en: 'Master BV 77 E Indirect Diesel Heater 21 kW',
+      is: 'Master olíuhitablásari BV 77 E – 21 kW',
+    },
+    tagline: {
+      en: 'Chimney-vented indirect heater — 100% clean, dry, odourless air for tents and basecamp; runs ~19 h per tank.',
+      is: 'Óbeinn hitablásari með skorsteini – hreint, þurrt og lyktarlaust loft í tjöld og grunnbúðir; gengur um 19 klst. á tankfylli.',
+    },
+    images: ['/images/equipment/master-bv-77.jpg'],
+  },
+  {
+    id: 'e-006',
+    category: 'heating',
+    name: {
+      en: 'Master BV 290 E Indirect Diesel Heater 81 kW',
+      is: 'Master olíuhitablásari BV 290 E – 81 kW',
+    },
+    tagline: {
+      en: 'High-output indirect heater pushing 3,300 m³/h — heats big tents, halls and large sets fast.',
+      is: 'Aflmikill óbeinn hitablásari sem skilar 3.300 m³/klst. – hitar stór tjöld, sali og stærri tökustaði hratt.',
+    },
+    images: ['/images/equipment/master-bv-290.jpg'],
+  },
+  {
+    id: 'e-007',
+    category: 'power',
+    name: {
+      en: 'Schuko Cable / Stinger',
+      is: 'Schuko snúra / stinger',
+    },
+    tagline: {
+      en: 'Heavy-duty Schuko extension cable — the standard stinger for power distribution on set.',
+      is: 'Öflug Schuko framlengingarsnúra – klassískur stinger fyrir rafmagnsdreifingu á tökustað.',
+    },
+    images: ['/images/equipment/schuko-stinger.jpg'],
+  },
+  {
+    id: 'e-008',
+    category: 'power',
+    name: {
+      en: 'Inverter Generator 3.3 kVA 230V (CGM CG3300IE)',
+      is: 'Rafstöð 3,3 kVA 230V (CGM CG3300IE)',
+    },
+    tagline: {
+      en: 'Quiet 58 dB inverter generator with electric start, AVR and USB outlets — clean power for lights and video village.',
+      is: 'Hljóðlát inverter-rafstöð (58 dB) með rafstarti, spennujafnara og USB-tengjum – hreint rafmagn fyrir ljós og myndver.',
+    },
+    images: ['/images/equipment/generator-cg3300ie.webp'],
+  },
+  {
+    id: 'e-009',
+    category: 'power',
+    name: {
+      en: 'Inverter Generator 2.2 kVA 230V (CGM CG2200I)',
+      is: 'Rafstöð 2,2 kVA 230V (CGM CG2200I)',
+    },
+    tagline: {
+      en: 'Compact 22 kg inverter generator — silent-running power for cameras, monitors and chargers.',
+      is: 'Nett 22 kg inverter-rafstöð – hljóðlát orka fyrir myndavélar, skjái og hleðslutæki.',
+    },
+    images: ['/images/equipment/generator-cg2200i.webp'],
+  },
+  {
+    id: 'e-010',
+    category: 'power',
+    name: {
+      en: 'LED Work Light NOVA 6K with Tripod',
+      is: 'Kastari LED NOVA 6K með þrífæti',
+    },
+    tagline: {
+      en: '6,000-lumen dimmable COB floodlight (IP67) on a 1.35–3 m tripod — durable work light for night setups.',
+      is: '6.000 lúmena deyfanlegur COB-kastari (IP67) á 1,35–3 m þrífæti – harðgert vinnuljós fyrir næturtökur.',
+    },
+    images: ['/images/equipment/led-nova-6k.jpg'],
+  },
+  {
+    id: 'e-011',
+    category: 'safety',
+    name: {
+      en: 'High-Visibility Safety Vest',
+      is: 'Öryggisvesti',
+    },
+    tagline: {
+      en: 'Hi-vis vest for crew working around traffic, vehicles and machinery.',
+      is: 'Endurskinsvesti fyrir tökulið sem vinnur nálægt umferð, ökutækjum og vinnuvélum.',
+    },
+    images: ['/images/equipment/safety-vest.jpg'],
+  },
+  {
+    id: 'e-012',
+    category: 'furniture',
+    name: {
+      en: 'Folding Chair',
+      is: 'Samanbrjótanlegur stóll',
+    },
+    tagline: {
+      en: 'Black folding chair for basecamp, catering and video village seating.',
+      is: 'Svartur samanbrjótanlegur stóll fyrir grunnbúðir, veitingar og myndver.',
+    },
+    images: ['/images/equipment/folding-chair.jpg'],
+  },
+  {
+    id: 'e-013',
+    category: 'furniture',
+    name: {
+      en: 'Lifetime 6\' Fold-in-Half Table (2-pack)',
+      is: 'Lifetime samanbrjótanlegt borð 183 cm (2 stk.)',
+    },
+    tagline: {
+      en: 'Commercial-grade 183 cm tables that fold in half — seat 8, indoor/outdoor, easy to carry.',
+      is: 'Atvinnuborð 183 cm sem brotna saman í tvennt – rúma 8 manns, henta úti sem inni og auðveld í flutningi.',
+    },
+    images: ['/images/equipment/folding-table-lifetime.jpg'],
+  },
+  {
+    id: 'e-014',
+    category: 'cleaning',
+    name: {
+      en: 'Push Broom 40×150 cm',
+      is: 'Kústur 40×150 cm',
+    },
+    tagline: {
+      en: 'Sturdy 40 cm push broom on a 150 cm handle for set and stage cleanup.',
+      is: 'Traustur kústur með 40 cm haus og 150 cm skafti fyrir þrif á setti og sviði.',
+    },
+    images: ['/images/equipment/broom.jpg'],
+  },
 ]

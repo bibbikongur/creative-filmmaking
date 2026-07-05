@@ -52,7 +52,9 @@
     "heating": "Hiti",
     "shelter": "Skýli og tjöld",
     "safety": "Öryggi og umferð",
-    "furniture": "Húsgögn"
+    "furniture": "Húsgögn",
+    "power": "Rafmagn og ljós",
+    "cleaning": "Þrif"
   },
   "equipmentCatalogue": {
     "kicker": "Búnaður",

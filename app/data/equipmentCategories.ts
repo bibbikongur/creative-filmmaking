@@ -8,4 +8,6 @@ export const equipmentCategories: EquipmentCategory[] = [
   'shelter',
   'safety',
   'furniture',
+  'power',
+  'cleaning',
 ]

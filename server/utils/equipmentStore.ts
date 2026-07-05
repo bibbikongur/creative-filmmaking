@@ -22,7 +22,7 @@ export async function saveEquipment(items: EquipmentItem[]) {
 
 // ── Payload validation ───────────────────────────────────────────────────────
 
-const CATEGORIES: EquipmentCategory[] = ['heating', 'shelter', 'safety', 'furniture']
+const CATEGORIES: EquipmentCategory[] = ['heating', 'shelter', 'safety', 'furniture', 'power', 'cleaning']
 
 const asText = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
 

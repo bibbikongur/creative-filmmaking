@@ -48,7 +48,7 @@ export interface Vehicle {
   featured: boolean
 }
 
-export type EquipmentCategory = 'heating' | 'shelter' | 'safety' | 'furniture'
+export type EquipmentCategory = 'heating' | 'shelter' | 'safety' | 'furniture' | 'power' | 'cleaning'
 
 export interface EquipmentItem {
   /** Stable internal key, e.g. 'e-001' */

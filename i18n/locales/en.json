@@ -52,7 +52,9 @@
     "heating": "Heating",
     "shelter": "Shelter & Tents",
     "safety": "Safety & Traffic",
-    "furniture": "Furniture"
+    "furniture": "Furniture",
+    "power": "Power & Light",
+    "cleaning": "Cleaning"
   },
   "equipmentCatalogue": {
     "kicker": "Equipment",
