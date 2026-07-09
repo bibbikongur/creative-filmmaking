@@ -17,8 +17,8 @@
   },
   "hero": {
     "kicker": "Bílaleiga fyrir kvikmyndaverkefni á Íslandi",
-    "title": "Tækjabílar og búnaður fyrir tökur á Íslandi",
-    "subtitle": "Tækjabílar, húsbílar, sexhjól, rafstöðvar og annarskonar tökubúnaður tilbúinn að fara beint á settið.",
+    "title": "Tækjabílar og búnaður fyrir kvikmyndatökur á Íslandi",
+    "subtitle": "Tækjabílar, húsbílar fyrir leikara, sexhjól, rafstöðvar og annarskonar tökubúnaður tilbúinn að fara beint á settið.",
     "availability": "Laust beint í verkefnið"
   },
   "home": {
@@ -78,6 +78,9 @@
       "sleeps": "Svefnpláss",
       "lengthM": "Lengd",
       "heightM": "Hæð",
+      "weightKg": "Þyngd",
+      "towingCapacityKg": "Dráttargeta",
+      "payloadKg": "Burðargeta",
       "drivetrain": "Drif",
       "transmission": "Skipting",
       "fuel": "Eldsneyti",

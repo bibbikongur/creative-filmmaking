@@ -33,11 +33,12 @@ export function getDb(): Database.Database {
   return db
 }
 
-// Seed vehicles added after a database was first populated. The first-boot
-// import above never re-runs, so each late addition is listed here and
-// inserted exactly once (guarded by a meta flag, and skipped entirely if the
-// admin already created something with the same id or slug).
+// Seed catalogue rows added after a database was first populated. The
+// first-boot import above never re-runs, so each late addition is listed here
+// and inserted exactly once (guarded by a meta flag, and skipped entirely if
+// the admin already created something with the same id or slug).
 const SEED_ADDITIONS = ['v-010']
+const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019']
 
 function seedCatalogueAdditions(db: Database.Database) {
   for (const id of SEED_ADDITIONS) {
@@ -52,6 +53,23 @@ function seedCatalogueAdditions(db: Database.Database) {
         db.prepare('INSERT INTO vehicles (id, slug, sort, data) VALUES (?, ?, ?, ?)')
           .run(id, vehicle.slug, m + 1, JSON.stringify(vehicle))
         console.log(`[db] vehicles: seeded late addition ${id} (${vehicle.slug})`)
+      }
+    }
+    db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  }
+
+  for (const id of SEED_EQUIPMENT_ADDITIONS) {
+    const flag = `seeded:equipment:${id}`
+    if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) continue
+
+    const item = seedEquipment.find(e => e.id === id)
+    if (item) {
+      const exists = db.prepare('SELECT id FROM equipment WHERE id = ?').get(id)
+      if (!exists) {
+        const { m } = db.prepare('SELECT COALESCE(MAX(sort), -1) AS m FROM equipment').get() as { m: number }
+        db.prepare('INSERT INTO equipment (id, sort, data) VALUES (?, ?, ?)')
+          .run(id, m + 1, JSON.stringify(item))
+        console.log(`[db] equipment: seeded late addition ${id}`)
       }
     }
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')

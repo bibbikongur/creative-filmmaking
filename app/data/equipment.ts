@@ -207,4 +207,56 @@ export const equipment: EquipmentItem[] = [
     },
     images: ['/images/equipment/cable-reel-25m.jpg'],
   },
+  {
+    id: 'e-016',
+    category: 'safety',
+    name: {
+      en: 'Tow Rope 15 m × 24 mm',
+      is: 'Dráttartóg 15 m × 24 mm',
+    },
+    tagline: {
+      en: 'Elastic nylon recovery rope with a spliced loop — for towing and recovering vehicles on location.',
+      is: 'Teygjanlegt nælontóg með splæstri lykkju – til að draga og losa ökutæki á tökustað.',
+    },
+    images: ['/images/equipment/tow-rope-15m.jpg'],
+  },
+  {
+    id: 'e-017',
+    category: 'shelter',
+    name: {
+      en: 'Heavy-Duty Tarp 3.6×4.8 m (2-pack)',
+      is: 'Yfirbreiðsla 3,6×4,8 m (2 stk.)',
+    },
+    tagline: {
+      en: 'Waterproof reversible poly tarps with reinforced corners and grommets — cover gear, vehicles or rig quick weather protection on set.',
+      is: 'Vatnsheldar yfirbreiðslur með styrktum hornum og festingaraugum – verja búnað og ökutæki eða veita skjól á tökustað.',
+    },
+    images: ['/images/equipment/tarp-heavy-duty.jpg'],
+  },
+  {
+    id: 'e-018',
+    category: 'power',
+    name: {
+      en: 'Jump Starter for Trucks 24V (NOCO GB251+)',
+      is: 'Starttæki fyrir vörubíla 24V',
+    },
+    tagline: {
+      en: '3000 A lithium jump starter for 24V diesel and petrol engines up to 32 L — trucks, buses and heavy machinery, with USB charging and LED work light.',
+      is: '3000 A starttæki fyrir 24V dísil- og bensínvélar allt að 32 L – vörubíla, rútur og vinnuvélar, með USB-hleðslu og LED-vinnuljósi.',
+    },
+    images: ['/images/equipment/jump-starter-noco-gb251.jpg'],
+  },
+  {
+    id: 'e-019',
+    category: 'power',
+    name: {
+      en: 'Steel Fuel Can 20 L (Petrol & Diesel)',
+      is: 'Bensín- og dísilbrúsi úr stáli 20 l',
+    },
+    tagline: {
+      en: 'Classic 20-litre steel jerry can for petrol or diesel — keeps generators and heaters fuelled on location.',
+      is: 'Klassískur 20 lítra stálbrúsi fyrir bensín eða dísil – heldur rafstöðvum og miðstöðvum gangandi á tökustað.',
+    },
+    images: ['/images/equipment/fuel-can-20l.jpg'],
+  },
 ]

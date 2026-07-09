@@ -12,6 +12,12 @@ export interface VehicleSpecs {
   sleeps?: number
   lengthM?: number
   heightM?: number
+  /** Vehicle weight (kg) */
+  weightKg?: number
+  /** Max braked towing capacity (kg) — only for vehicles that can tow */
+  towingCapacityKg?: number
+  /** Max cargo/payload it can carry in the back (kg) */
+  payloadKg?: number
   drivetrain?: '4x4' | '2wd' | '6x6'
   transmission?: 'automatic' | 'manual'
   fuel?: 'diesel' | 'petrol' | 'hybrid'

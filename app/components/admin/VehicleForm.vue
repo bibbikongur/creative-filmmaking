@@ -130,6 +130,18 @@
           <input v-model.number="form.specs.heightM" type="number" min="0" step="0.1" class="input-dark">
         </div>
         <div>
+          <label class="admin-label">Weight (kg)</label>
+          <input v-model.number="form.specs.weightKg" type="number" min="0" class="input-dark" placeholder="e.g. 3500">
+        </div>
+        <div>
+          <label class="admin-label">Towing capacity (kg)</label>
+          <input v-model.number="form.specs.towingCapacityKg" type="number" min="0" class="input-dark" placeholder="empty = can't tow">
+        </div>
+        <div>
+          <label class="admin-label">Payload / cargo (kg)</label>
+          <input v-model.number="form.specs.payloadKg" type="number" min="0" class="input-dark" placeholder="carrying capacity in the back">
+        </div>
+        <div>
           <label class="admin-label">Drivetrain</label>
           <select v-model="form.specs.drivetrain" class="input-dark">
             <option value="">—</option>
@@ -236,6 +248,9 @@ const form = reactive({
     sleeps: v?.specs.sleeps ?? ('' as number | ''),
     lengthM: v?.specs.lengthM ?? ('' as number | ''),
     heightM: v?.specs.heightM ?? ('' as number | ''),
+    weightKg: v?.specs.weightKg ?? ('' as number | ''),
+    towingCapacityKg: v?.specs.towingCapacityKg ?? ('' as number | ''),
+    payloadKg: v?.specs.payloadKg ?? ('' as number | ''),
     drivetrain: v?.specs.drivetrain ?? '',
     transmission: v?.specs.transmission ?? '',
     fuel: v?.specs.fuel ?? '',
@@ -326,6 +341,9 @@ const submit = () => {
       sleeps: form.specs.sleeps || undefined,
       lengthM: form.specs.lengthM || undefined,
       heightM: form.specs.heightM || undefined,
+      weightKg: form.specs.weightKg || undefined,
+      towingCapacityKg: form.specs.towingCapacityKg || undefined,
+      payloadKg: form.specs.payloadKg || undefined,
       drivetrain: form.specs.drivetrain || undefined,
       transmission: form.specs.transmission || undefined,
       fuel: form.specs.fuel || undefined,
