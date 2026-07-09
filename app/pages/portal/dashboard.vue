@@ -54,6 +54,30 @@
         </svg>
       </div>
 
+      <!-- Per-department cost -->
+      <div v-if="stats.perDepartment.length" class="mt-8 overflow-x-auto border border-ink-800">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-widest text-bone-400 border-b border-ink-800">
+              <th class="p-3 font-normal">{{ $t('portal.departments.department') }}</th>
+              <th class="p-3 font-normal text-right">{{ $t('portal.pay.hours') }}</th>
+              <th class="p-3 font-normal text-right">{{ $t('portal.pay.otHours') }}</th>
+              <th class="p-3 font-normal text-right">{{ $t('portal.pay.restViolation') }}</th>
+              <th class="p-3 font-normal text-right">{{ $t('portal.dashboard.pay') }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-800">
+            <tr v-for="d in stats.perDepartment" :key="d.key" class="bg-ink-900/50">
+              <td class="p-3 font-semibold text-bone-100">{{ d.name || $t('portal.departments.unassigned') }}</td>
+              <td class="p-3 text-right text-bone-100">{{ formatHoursNum(d.hours) }}</td>
+              <td class="p-3 text-right" :class="d.otHours ? 'text-gold-400' : 'text-bone-400'">{{ formatHoursNum(d.otHours) }}</td>
+              <td class="p-3 text-right" :class="d.restViolationHours ? 'text-signal-500' : 'text-bone-400'">{{ formatHoursNum(d.restViolationHours) }}</td>
+              <td class="p-3 text-right font-semibold text-gold-400">{{ formatIsk(d.amount, locale) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <!-- Per-employee table -->
       <div class="mt-8 overflow-x-auto border border-ink-800">
         <table class="w-full text-sm">
@@ -102,8 +126,10 @@ const { t, locale } = useI18n()
 interface Stats {
   from: string
   to: string
+  scope: 'company' | 'department'
   totals: { daysWorked: number, hours: number, otHours: number, restViolationHours: number, doubleDays: number, amount: number, employees: number }
   perEmployee: { userId: string, name?: string, email: string, weeks: number, daysWorked: number, hours: number, otHours: number, restViolationHours: number, doubleDays: number, amount: number, pendingWeeks: number }[]
+  perDepartment: { key: string, name: string, hours: number, otHours: number, restViolationHours: number, amount: number }[]
   perWeek: { weekStart: string, hours: number, amount: number }[]
 }
 

@@ -54,7 +54,7 @@ const STRINGS = {
 
 const portalUrl = (locale: LocaleCode, path = '') => {
   const base = String(useRuntimeConfig().public.siteUrl).replace(/\/$/, '')
-  return `${base}${locale === 'is' ? '/is' : ''}/portal${path}`
+  return `${base}${locale === 'en' ? '/en' : ''}/portal${path}`
 }
 
 async function send(to: string, subject: string, lines: string[]) {

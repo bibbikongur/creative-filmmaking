@@ -7,13 +7,18 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, statusMessage: 'This job is closed.' })
   }
 
-  const body = await readBody<{ email?: string, name?: string, dayRate?: number, locale?: string }>(event)
+  const body = await readBody<{
+    email?: string, name?: string, dayRate?: number, locale?: string
+    departmentId?: string | null, isDeptAdmin?: boolean
+  }>(event)
   const locale = body?.locale === 'en' ? 'en' : 'is'
   const { member, inviteToken } = addMember(id, {
     email: String(body?.email ?? ''),
     name: String(body?.name ?? '').trim() || undefined,
     dayRate: body?.dayRate as number,
     locale,
+    departmentId: body?.departmentId ?? null,
+    isDeptAdmin: Boolean(body?.isDeptAdmin),
   })
 
   const companyName = getCompanySummary(companyId)?.name ?? 'Creative Filmmaking'

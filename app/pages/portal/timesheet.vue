@@ -77,9 +77,9 @@
 
               <div v-for="(row, ri) in rowsFor(day.date)" :key="ri" class="mt-3 flex flex-wrap items-center gap-3">
                 <label class="text-xs uppercase tracking-widest text-bone-400">{{ $t('portal.timesheet.in') }}</label>
-                <input v-model="row.start" type="time" class="input-dark !w-28" :disabled="!editable">
+                <PortalTimePicker v-model="row.start" :disabled="!editable" />
                 <label class="text-xs uppercase tracking-widest text-bone-400">{{ $t('portal.timesheet.out') }}</label>
-                <input v-model="row.end" type="time" class="input-dark !w-28" :disabled="!editable">
+                <PortalTimePicker v-model="row.end" :disabled="!editable" />
                 <span v-if="endsNextDay(row)" class="text-[11px] uppercase tracking-widest text-gold-400">
                   {{ $t('portal.timesheet.endsNextDay') }}
                 </span>
@@ -96,6 +96,15 @@
                 </button>
               </div>
               <p v-if="!rowsFor(day.date).length" class="mt-2 text-xs text-bone-400/60">{{ $t('portal.timesheet.dayOff') }}</p>
+
+              <!-- Per-day pay breakdown (live from the payroll response) -->
+              <div v-if="dayBreakdown(day.date)" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-ink-800/70 pt-2 text-[11px] uppercase tracking-widest">
+                <span class="text-bone-400">{{ $t('portal.pay.hours') }} <span class="text-bone-100">{{ formatHoursNum(dayBreakdown(day.date)!.hours) }}</span></span>
+                <span v-if="dayBreakdown(day.date)!.otHours" class="text-bone-400">{{ $t('portal.pay.otShort') }} <span class="text-gold-400">{{ formatHoursNum(dayBreakdown(day.date)!.otHours) }}</span></span>
+                <span v-if="dayBreakdown(day.date)!.restViolationHours" class="text-bone-400">{{ $t('portal.pay.turnaround') }} <span class="text-signal-500">{{ formatHoursNum(dayBreakdown(day.date)!.restViolationHours) }}</span></span>
+                <span v-if="dayBreakdown(day.date)!.doublePay" class="text-gold-400">{{ $t('portal.pay.seventhDay') }}</span>
+                <span class="ml-auto text-bone-400">{{ $t('portal.timesheet.daySalary') }} <span class="font-semibold text-bone-100">{{ formatIsk(dayBreakdown(day.date)!.total, locale) }}</span></span>
+              </div>
             </div>
           </div>
 
@@ -303,6 +312,8 @@ const alterationChanges = computed(() => latestAlteration.value?.detail?.changes
 
 const dayName = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale.value === 'is' ? 'is-IS' : 'en-GB', { weekday: 'long', timeZone: 'UTC' })
+
+const dayBreakdown = (date: string) => payroll.value?.days.find(d => d.date === date) ?? null
 
 const summaryStats = computed(() => {
   if (!payroll.value) return []

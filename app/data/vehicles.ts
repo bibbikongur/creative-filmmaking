@@ -334,6 +334,48 @@ export const vehicles: Vehicle[] = [
     ],
   },
   {
+    id: 'v-010',
+    slug: 'hobby-560-wfu-prestige-caravan',
+    category: 'trailers',
+    featured: true,
+    name: {
+      en: 'Hobby 560 WFU Prestige Caravan',
+      is: 'Hobby 560 WFU Prestige hjólhýsi',
+    },
+    tagline: {
+      en: 'Four identical 2026 caravans — warm cast & crew accommodation, one unit or a whole basecamp village.',
+      is: 'Fjögur eins hjólhýsi árgerð 2026 — hlý gisting fyrir leikara og tökulið, eitt stakt eða heilar grunnbúðir.',
+    },
+    description: {
+      en: 'Brand-new Hobby 560 WFU Prestige caravans, model year 2026 — and we have four of them, so the same booking scales from a single unit for a director to a four-caravan basecamp sleeping up to sixteen. Each sleeps four in a fixed double bed plus a convertible lounge, with a full kitchen, a washroom with hot shower and thermostat heating that holds a comfortable temperature through Icelandic nights.\n\nWe tow them to location behind our own 4x4s, level them and hook them up to shore power or a generator feed, so they are warm and ready before the unit arrives. Between takes they double as green rooms, production offices or a quiet place for an early call to actually sleep.',
+      is: 'Glæný Hobby 560 WFU Prestige hjólhýsi, árgerð 2026 — og við eigum fjögur, þannig að sama bókunin skalast frá einu hýsi fyrir leikstjóra upp í fjögurra hýsa grunnbúðir með svefnplássi fyrir allt að sextán. Hvert um sig svæfir fjóra í föstu hjónarúmi auk sætakróks sem breytist í rúm, með fullbúnu eldhúsi, baðherbergi með heitri sturtu og hitastýringu sem heldur notalegum hita í gegnum íslenskar nætur.\n\nVið drögum þau á tökustað með okkar eigin fjórhjóladrifsbílum, stillum þau af og tengjum við landrafmagn eða rafstöð, svo þau eru orðin hlý áður en tökuliðið mætir. Milli taka nýtast þau sem biðrými leikara, framleiðsluskrifstofur eða hljóðlátur staður til að ná alvöru svefni fyrir snemmkall.',
+    },
+    highlights: [
+      { en: 'Four identical units — book one or the whole set, sleeps up to 16 in total', is: 'Fjögur eins hjólhýsi — leigðu eitt eða öll fjögur, svefnpláss fyrir allt að 16 alls' },
+      { en: 'Sleeps 4 per caravan: fixed double bed + convertible lounge', is: 'Svefnpláss fyrir 4 í hverju hýsi: fast hjónarúm + sætakrókur sem breytist í rúm' },
+      { en: 'Full kitchen, fridge and washroom with hot shower', is: 'Fullbúið eldhús, ísskápur og baðherbergi með heitri sturtu' },
+      { en: 'Thermostat heating and insulation rated for Icelandic weather', is: 'Hitastýring og einangrun sem ræður við íslenskt veður' },
+      { en: 'Delivered, levelled and hooked up on location by our drivers', is: 'Afhent, stillt af og tengt á tökustað af okkar bílstjórum' },
+    ],
+    specs: {
+      units: 4,
+      sleeps: 4,
+      lengthM: 7.5,
+      powerOutput: 'Shore power / generator feed',
+      heating: true,
+      winterEquipped: true,
+      extra: {
+        en: 'Model year 2026 · width 2.50 m · max weight 2,000 kg per unit',
+        is: 'Árgerð 2026 · breidd 2,50 m · heildarþyngd 2.000 kg á hýsi',
+      },
+    },
+    images: [
+      img('photo-1516939884455-1445c8652f83'),
+      img('photo-1504280390367-361c6d9f38f4'),
+      img('photo-1478720568477-152d9b164e26'),
+    ],
+  },
+  {
     id: 'v-009',
     slug: 'generator-equipment-trailer',
     category: 'trailers',

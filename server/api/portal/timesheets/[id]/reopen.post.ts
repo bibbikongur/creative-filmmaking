@@ -1,9 +1,9 @@
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
-  const week = Number.isInteger(id) ? getWeekById(id) : null
-  if (!week) throw createError({ statusCode: 404, statusMessage: 'Timesheet not found' })
-  const { user } = await requireJobAdmin(event, week.jobId)
-
-  reopenWeek(week, user.id)
-  return { week: getWeekById(week.id) }
+  const ctx = await requireWeekReviewer(event, id)
+  if (!weekCapabilities(ctx).canReopen) {
+    throw createError({ statusCode: 409, statusMessage: 'This week cannot be reopened at its current stage.' })
+  }
+  reopenWeek(ctx.week, ctx.user.id)
+  return { week: getWeekById(ctx.week.id) }
 })

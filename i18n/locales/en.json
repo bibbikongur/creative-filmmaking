@@ -5,6 +5,7 @@
     "icelandic": "Íslenska",
     "requestOffer": "Request an offer",
     "viewFleet": "View the fleet",
+    "viewEquipment": "View equipment",
     "yes": "Yes"
   },
   "nav": {
@@ -71,6 +72,8 @@
     "moreInCategory": "More in this category",
     "backToFleet": "Back to the fleet",
     "specs": {
+      "units": "Units in fleet",
+      "unitsShort": "in fleet",
       "seats": "Seats",
       "sleeps": "Sleeps",
       "lengthM": "Length",
@@ -239,8 +242,28 @@
     "status": {
       "draft": "Draft",
       "submitted": "Submitted",
+      "dept_approved": "Awaiting final approval",
       "altered": "Awaiting confirmation",
       "approved": "Approved"
+    },
+    "timePicker": {
+      "open": "Pick a time",
+      "hour": "Select hour",
+      "minute": "Select minute",
+      "done": "Done",
+      "cancel": "Cancel"
+    },
+    "departments": {
+      "title": "Departments",
+      "hint": "Optional — add a department admin to review before you do.",
+      "department": "Department",
+      "unassigned": "No department",
+      "namePlaceholder": "e.g. Camera",
+      "makeAdmin": "Make this person the department admin (they approve their department's timesheets first)",
+      "admin": "Admin",
+      "deptAdmin": "Dept admin",
+      "renamePrompt": "Rename department",
+      "deleteConfirm": "Delete the {name} department? Its members stay on the job, just unassigned."
     },
     "events": {
       "submitted": "submitted the week",
@@ -297,7 +320,8 @@
       "submittedBanner": "This week has been submitted and is locked while it awaits review.",
       "approvedBanner": "This week has been approved.",
       "alteredBanner": "Your times were adjusted by the production. Please review the changes below and confirm.",
-      "confirmChanges": "Confirm changes"
+      "confirmChanges": "Confirm changes",
+      "daySalary": "Day pay"
     },
     "history": {
       "title": "My weeks",
@@ -313,6 +337,8 @@
       "amount": "Amount",
       "totals": "Totals",
       "approve": "Approve",
+      "approveToJob": "Approve → send to job admin",
+      "approveFinal": "Approve (final)",
       "approveConfirm": "Approve this week? The pay breakdown is frozen and the week is locked.",
       "editTimes": "Edit times",
       "sendAlteration": "Send changes to employee",
@@ -320,6 +346,9 @@
       "reopen": "Reopen as draft",
       "reopenConfirm": "Reopen this week? The employee can edit and must submit it again.",
       "awaitingConfirmation": "Waiting for the employee to confirm the adjusted times.",
+      "awaitingJobAdmin": "Approved by the department — waiting for the job admin's final approval.",
+      "approvedNote": "This week is approved.",
+      "department": "Department",
       "history": "History"
     },
     "dashboard": {
@@ -345,6 +374,7 @@
       "otShort": "OT",
       "otRate": "OT rate",
       "restViolation": "Brot á hvíld",
+      "turnaround": "Turnaround",
       "doubleDays": "Double-pay days",
       "seventhDay": "7th day ×2"
     }

@@ -37,6 +37,7 @@
           <p class="font-semibold text-bone-100 truncate">
             {{ w.userName || w.userEmail }}
             <span class="ml-2 text-xs font-normal text-bone-400">{{ w.jobName }}</span>
+            <span v-if="w.departmentName" class="ml-1.5 text-xs font-normal text-gold-400/80">· {{ w.departmentName }}</span>
           </p>
           <p class="mt-0.5 text-xs text-bone-400">
             {{ formatWeekRange(w.weekStart, locale) }}
@@ -59,7 +60,7 @@ definePageMeta({ layout: 'portal' })
 const localePath = useLocalePath()
 const { t, locale } = useI18n()
 
-type WeekRow = TimesheetWeek & { userName?: string, userEmail: string, jobName: string, totalMinutes: number }
+type WeekRow = TimesheetWeek & { userName?: string, userEmail: string, jobName: string, departmentName?: string, totalMinutes: number }
 
 const weeks = ref<WeekRow[]>([])
 const jobs = ref<Job[]>([])
@@ -70,9 +71,9 @@ const jobFilter = ref('')
 
 const tabs = computed(() => [
   { value: 'submitted' as const, label: t('portal.status.submitted') },
+  { value: 'dept_approved' as const, label: t('portal.status.dept_approved') },
   { value: 'altered' as const, label: t('portal.status.altered') },
   { value: 'approved' as const, label: t('portal.status.approved') },
-  { value: 'draft' as const, label: t('portal.status.draft') },
   { value: '' as const, label: t('portal.review.all') },
 ])
 

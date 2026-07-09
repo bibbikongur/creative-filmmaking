@@ -3,7 +3,7 @@
 Catalogue website for production vehicles rented to film & TV productions in Iceland.
 Dark, cinematic design. No prices — every vehicle has a **"Request an offer"** call-to-action.
 
-Bilingual: English at the root (`/`), Icelandic under `/is/*`.
+Bilingual: Icelandic at the root (`/`), English under `/en/*`.
 
 ## Stack
 

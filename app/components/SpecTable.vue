@@ -24,6 +24,7 @@ const rows = computed(() => {
     if (value) out.push({ label: t(`vehicle.specs.${key}`), value })
   }
 
+  push('units', s.units?.toString())
   push('seats', s.seats?.toString())
   push('sleeps', s.sleeps?.toString())
   push('lengthM', s.lengthM ? `${s.lengthM} m` : undefined)

@@ -30,6 +30,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
         </NuxtLink>
+        <NuxtLink :to="localePath('/equipment')" class="btn-gold">
+          {{ t('common.viewEquipment') }}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </NuxtLink>
         <NuxtLink :to="localePath('/contact')" class="btn-ghost">
           {{ t('common.requestOffer') }}
         </NuxtLink>

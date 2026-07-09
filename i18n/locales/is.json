@@ -5,6 +5,7 @@
     "icelandic": "Íslenska",
     "requestOffer": "Óska eftir tilboði",
     "viewFleet": "Skoða flotann",
+    "viewEquipment": "Skoða búnað",
     "yes": "Já"
   },
   "nav": {
@@ -16,9 +17,9 @@
   },
   "hero": {
     "kicker": "Bílaleiga fyrir kvikmyndaverkefni á Íslandi",
-    "title": "Framleiðslubílar fyrir tökur á Íslandi",
-    "subtitle": "Húsbílar, tökuliðsbílar, stuðningsbílar og eftirvagnar. Tilbúnir á sett, vetrarreyndir og afhentir á tökustað.",
-    "availability": "Laust fyrir verkefni"
+    "title": "Tækjabílar og búnaður fyrir tökur á Íslandi",
+    "subtitle": "Tækjabílar, húsbílar, sexhjól, rafstöðvar og annarskonar tökubúnaður tilbúinn að fara beint á settið.",
+    "availability": "Laust beint í verkefnið"
   },
   "home": {
     "categoriesKicker": "Flotinn",
@@ -71,6 +72,8 @@
     "moreInCategory": "Fleiri í þessum flokki",
     "backToFleet": "Til baka í flotann",
     "specs": {
+      "units": "Fjöldi í flota",
+      "unitsShort": "í flota",
       "seats": "Sæti",
       "sleeps": "Svefnpláss",
       "lengthM": "Lengd",
@@ -239,8 +242,28 @@
     "status": {
       "draft": "Drög",
       "submitted": "Innsend",
+      "dept_approved": "Bíður lokasamþykkis",
       "altered": "Bíður staðfestingar",
       "approved": "Samþykkt"
+    },
+    "timePicker": {
+      "open": "Velja tíma",
+      "hour": "Veldu klukkustund",
+      "minute": "Veldu mínútur",
+      "done": "Lokið",
+      "cancel": "Hætta við"
+    },
+    "departments": {
+      "title": "Deildir",
+      "hint": "Valfrjálst — bættu við deildarstjóra sem yfirfer á undan þér.",
+      "department": "Deild",
+      "unassigned": "Engin deild",
+      "namePlaceholder": "t.d. Mynd",
+      "makeAdmin": "Gera þennan aðila að deildarstjóra (samþykkir tímaskýrslur deildarinnar fyrst)",
+      "admin": "Stjóri",
+      "deptAdmin": "Deildarstjóri",
+      "renamePrompt": "Endurnefna deild",
+      "deleteConfirm": "Eyða deildinni {name}? Meðlimir haldast á verkefninu, bara án deildar."
     },
     "events": {
       "submitted": "sendi vikuna inn",
@@ -313,6 +336,8 @@
       "amount": "Upphæð",
       "totals": "Samtals",
       "approve": "Samþykkja",
+      "approveToJob": "Samþykkja → senda á verkefnisstjóra",
+      "approveFinal": "Samþykkja (loka)",
       "approveConfirm": "Samþykkja þessa viku? Launaútreikningur er frystur og vikan læst.",
       "editTimes": "Breyta tímum",
       "sendAlteration": "Senda breytingar á starfsmann",
@@ -320,6 +345,9 @@
       "reopen": "Opna aftur sem drög",
       "reopenConfirm": "Opna vikuna aftur? Starfsmaðurinn getur breytt henni og þarf að senda hana inn aftur.",
       "awaitingConfirmation": "Beðið eftir að starfsmaðurinn staðfesti breyttu tímana.",
+      "awaitingJobAdmin": "Samþykkt af deild — bíður lokasamþykkis verkefnisstjóra.",
+      "approvedNote": "Þessi vika er samþykkt.",
+      "department": "Deild",
       "history": "Saga"
     },
     "dashboard": {
@@ -345,6 +373,7 @@
       "otShort": "YV",
       "otRate": "Yfirvinnutaxti",
       "restViolation": "Brot á hvíld",
+      "turnaround": "Hvíld",
       "doubleDays": "Dagar á tvöföldu",
       "seventhDay": "7. dagur ×2"
     }

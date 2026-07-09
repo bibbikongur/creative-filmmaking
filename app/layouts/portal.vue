@@ -14,17 +14,15 @@
               {{ $t('portal.nav.history') }}
             </NuxtLink>
           </template>
-          <template v-if="isCompanyAdmin">
-            <NuxtLink :to="localePath('/portal/timesheets')" class="transition-colors hover:text-gold-400" :class="section === 'review' ? 'text-gold-400' : 'text-bone-400'">
-              {{ $t('portal.nav.review') }}
-            </NuxtLink>
-            <NuxtLink :to="localePath('/portal/jobs')" class="transition-colors hover:text-gold-400" :class="section === 'jobs' ? 'text-gold-400' : 'text-bone-400'">
-              {{ $t('portal.nav.jobs') }}
-            </NuxtLink>
-            <NuxtLink :to="localePath('/portal/dashboard')" class="transition-colors hover:text-gold-400" :class="section === 'dashboard' ? 'text-gold-400' : 'text-bone-400'">
-              {{ $t('portal.nav.dashboard') }}
-            </NuxtLink>
-          </template>
+          <NuxtLink v-if="canReview" :to="localePath('/portal/timesheets')" class="transition-colors hover:text-gold-400" :class="section === 'review' ? 'text-gold-400' : 'text-bone-400'">
+            {{ $t('portal.nav.review') }}
+          </NuxtLink>
+          <NuxtLink v-if="isCompanyAdmin" :to="localePath('/portal/jobs')" class="transition-colors hover:text-gold-400" :class="section === 'jobs' ? 'text-gold-400' : 'text-bone-400'">
+            {{ $t('portal.nav.jobs') }}
+          </NuxtLink>
+          <NuxtLink v-if="canReview" :to="localePath('/portal/dashboard')" class="transition-colors hover:text-gold-400" :class="section === 'dashboard' ? 'text-gold-400' : 'text-bone-400'">
+            {{ $t('portal.nav.dashboard') }}
+          </NuxtLink>
         </nav>
         <div class="flex items-center gap-5 text-sm">
           <NuxtLink :to="switchLocalePath(otherLocale)" class="text-bone-400 hover:text-gold-400 transition-colors text-xs uppercase tracking-widest">
@@ -91,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-const { authed, configured, isCompanyAdmin, hasJobs, check, login, logout } = usePortalAuth()
+const { authed, configured, isCompanyAdmin, canReview, hasJobs, check, login, logout } = usePortalAuth()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const { locale } = useI18n()

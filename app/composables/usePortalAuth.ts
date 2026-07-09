@@ -50,7 +50,9 @@ export const usePortalAuth = () => {
   }
 
   const isCompanyAdmin = computed(() => (memberships.value?.adminCompanies.length ?? 0) > 0)
+  const isDeptAdmin = computed(() => (memberships.value?.deptAdmin.length ?? 0) > 0)
+  const canReview = computed(() => isCompanyAdmin.value || isDeptAdmin.value)
   const hasJobs = computed(() => (memberships.value?.jobs.length ?? 0) > 0)
 
-  return { authed, configured, user, memberships, isCompanyAdmin, hasJobs, check, login, logout }
+  return { authed, configured, user, memberships, isCompanyAdmin, isDeptAdmin, canReview, hasJobs, check, login, logout }
 }

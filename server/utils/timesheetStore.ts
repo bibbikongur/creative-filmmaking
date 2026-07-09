@@ -2,14 +2,15 @@ import type { TimeEntry, TimesheetWeek, WeekEvent, WeekEventType, WeekPayroll, W
 import type { PayrollShift } from './payroll'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Timesheet weeks and their entries. Status workflow (all transitions run in
-// one transaction together with their audit event; illegal transitions → 409):
+// Timesheet weeks and their entries. Two-stage approval (all transitions run in
+// one transaction with their audit event; illegal transitions → 409):
 //
-//   draft ──submit──> submitted ──approve──────────────> approved
-//                         │
-//                         ├──alter──> altered ──confirm──> approved
-//                         │              └──alter again──> altered
-//                         └──reopen──> draft
+//   draft ─submit─> submitted ─deptApprove─> dept_approved ─jobApprove─> approved
+//                       │  └─(no dept stage)─ jobApprove ───────────────> approved
+//                       ├─alter(dept)─> altered[→dept_approved] ─confirm─> dept_approved …
+//                       └─alter(job) ─> altered[→approved]      ─confirm─> approved
+//   dept_approved ─alter(job)─> altered[→approved] ─confirm─> approved
+//   any review state ─reopen─> draft
 //
 // Weeks are Monday-based ISO dates. Entries: a shift belongs to its start
 // date; end_min > 1440 means it runs past midnight.
@@ -47,7 +48,9 @@ export function rowToWeek(r: Record<string, unknown>): TimesheetWeek {
     weekStart: r.week_start as string,
     status: r.status as WeekStatus,
     submittedAt: (r.submitted_at as string | null) ?? undefined,
+    deptApprovedAt: (r.dept_approved_at as string | null) ?? undefined,
     approvedAt: (r.approved_at as string | null) ?? undefined,
+    alteredTarget: (r.altered_target as 'dept_approved' | 'approved' | null) ?? undefined,
   }
 }
 
@@ -82,43 +85,91 @@ export interface WeekListRow extends TimesheetWeek {
   userName?: string
   userEmail: string
   jobName: string
+  departmentName?: string
   totalMinutes: number
 }
 
-/** Review queue for company admins — scoped to their companies. */
-export function listWeeksForCompanies(companyIds: string[], filters: { jobId?: string, status?: WeekStatus, userId?: string } = {}): WeekListRow[] {
-  if (!companyIds.length) return []
-  const conditions = [`j.company_id IN (${companyIds.map(() => '?').join(', ')})`]
-  const params: unknown[] = [...companyIds]
-  if (filters.jobId) {
-    conditions.push('w.job_id = ?')
-    params.push(filters.jobId)
-  }
-  if (filters.status) {
-    conditions.push('w.status = ?')
-    params.push(filters.status)
-  }
-  if (filters.userId) {
-    conditions.push('w.user_id = ?')
-    params.push(filters.userId)
-  }
-  const rows = getDb().prepare(`
-    SELECT w.*, u.name AS user_name, u.email AS user_email, j.name AS job_name,
-      (SELECT COALESCE(SUM(e.end_min - e.start_min), 0) FROM time_entries e WHERE e.week_id = w.id) AS total_minutes
-    FROM timesheet_weeks w
-    JOIN jobs j ON j.id = w.job_id
-    JOIN portal_users u ON u.id = w.user_id
-    WHERE ${conditions.join(' AND ')}
-    ORDER BY CASE w.status WHEN 'submitted' THEN 0 WHEN 'altered' THEN 1 WHEN 'draft' THEN 2 ELSE 3 END,
-             w.week_start DESC
-  `).all(...params) as Record<string, unknown>[]
-  return rows.map(r => ({
+const SELECT_WEEK_ROW = `
+  SELECT w.*, u.name AS user_name, u.email AS user_email, j.name AS job_name,
+    d.name AS department_name,
+    (SELECT COALESCE(SUM(e.end_min - e.start_min), 0) FROM time_entries e WHERE e.week_id = w.id) AS total_minutes
+  FROM timesheet_weeks w
+  JOIN jobs j ON j.id = w.job_id
+  JOIN portal_users u ON u.id = w.user_id
+  LEFT JOIN job_members m ON m.job_id = w.job_id AND m.user_id = w.user_id
+  LEFT JOIN departments d ON d.id = m.department_id
+`
+const WEEK_ORDER = `
+  ORDER BY CASE w.status
+             WHEN 'submitted' THEN 0 WHEN 'dept_approved' THEN 1 WHEN 'altered' THEN 2
+             WHEN 'draft' THEN 3 ELSE 4 END,
+           w.week_start DESC
+`
+
+function mapWeekRow(r: Record<string, unknown>): WeekListRow {
+  return {
     ...rowToWeek(r),
     userName: (r.user_name as string | null) ?? undefined,
     userEmail: r.user_email as string,
     jobName: r.job_name as string,
+    departmentName: (r.department_name as string | null) ?? undefined,
     totalMinutes: (r.total_minutes as number) ?? 0,
-  }))
+  }
+}
+
+/** Weeks a company admin can review — scoped to their companies (used by stats too). */
+export function listWeeksForCompanies(companyIds: string[], filters: { jobId?: string, status?: WeekStatus, userId?: string, departmentId?: string } = {}): WeekListRow[] {
+  if (!companyIds.length) return []
+  const conditions = [`j.company_id IN (${companyIds.map(() => '?').join(', ')})`]
+  const params: unknown[] = [...companyIds]
+  if (filters.jobId) { conditions.push('w.job_id = ?'); params.push(filters.jobId) }
+  if (filters.status) { conditions.push('w.status = ?'); params.push(filters.status) }
+  if (filters.userId) { conditions.push('w.user_id = ?'); params.push(filters.userId) }
+  if (filters.departmentId) { conditions.push('m.department_id = ?'); params.push(filters.departmentId) }
+  const rows = getDb().prepare(`${SELECT_WEEK_ROW} WHERE ${conditions.join(' AND ')} ${WEEK_ORDER}`)
+    .all(...params) as Record<string, unknown>[]
+  return rows.map(mapWeekRow)
+}
+
+/** All weeks of a department's members (for a dept-admin cost view — includes their own). */
+export function listWeeksForCompaniesByDepartment(departmentId: string, jobId?: string): WeekListRow[] {
+  const conditions = ['m.department_id = ?']
+  const params: unknown[] = [departmentId]
+  if (jobId) { conditions.push('w.job_id = ?'); params.push(jobId) }
+  const rows = getDb().prepare(`${SELECT_WEEK_ROW} WHERE ${conditions.join(' AND ')} ${WEEK_ORDER}`)
+    .all(...params) as Record<string, unknown>[]
+  return rows.map(mapWeekRow)
+}
+
+/**
+ * Review queue for the signed-in user: every week in a company they administer,
+ * plus (excluding their own) weeks of members in a department they administer.
+ * A single WHERE unions both so dual-role users see one deduped list.
+ */
+export function listReviewableWeeks(
+  userId: string,
+  companyIds: string[],
+  departmentIds: string[],
+  filters: { jobId?: string, status?: WeekStatus, departmentId?: string } = {},
+): WeekListRow[] {
+  if (!companyIds.length && !departmentIds.length) return []
+  const scope: string[] = []
+  const params: unknown[] = []
+  if (companyIds.length) {
+    scope.push(`j.company_id IN (${companyIds.map(() => '?').join(', ')})`)
+    params.push(...companyIds)
+  }
+  if (departmentIds.length) {
+    scope.push(`(m.department_id IN (${departmentIds.map(() => '?').join(', ')}) AND w.user_id != ?)`)
+    params.push(...departmentIds, userId)
+  }
+  const conditions = [`(${scope.join(' OR ')})`]
+  if (filters.jobId) { conditions.push('w.job_id = ?'); params.push(filters.jobId) }
+  if (filters.status) { conditions.push('w.status = ?'); params.push(filters.status) }
+  if (filters.departmentId) { conditions.push('m.department_id = ?'); params.push(filters.departmentId) }
+  const rows = getDb().prepare(`${SELECT_WEEK_ROW} WHERE ${conditions.join(' AND ')} ${WEEK_ORDER}`)
+    .all(...params) as Record<string, unknown>[]
+  return rows.map(mapWeekRow)
 }
 
 // ── Entries ──────────────────────────────────────────────────────────────────
@@ -219,45 +270,57 @@ function addEvent(weekId: number, actorUserId: string, type: WeekEventType, deta
     .run(weekId, new Date().toISOString(), actorUserId, type, detail === undefined ? null : JSON.stringify(detail))
 }
 
-function transition(week: TimesheetWeek, allowedFrom: WeekStatus[], to: WeekStatus, extraSql?: { sql: string, params: unknown[] }) {
+function assertFrom(week: TimesheetWeek, allowedFrom: WeekStatus[], to: string) {
   if (!allowedFrom.includes(week.status)) {
     throw createError({ statusCode: 409, statusMessage: `Cannot change a ${week.status} week to ${to}.` })
   }
-  const db = getDb()
-  db.prepare(`UPDATE timesheet_weeks SET status = ? WHERE id = ?`).run(to, week.id)
-  if (extraSql) db.prepare(extraSql.sql).run(...extraSql.params)
 }
 
 export function submitWeek(week: TimesheetWeek, actorUserId: string) {
   const db = getDb()
   db.transaction(() => {
-    transition(week, ['draft'], 'submitted', {
-      sql: 'UPDATE timesheet_weeks SET submitted_at = ? WHERE id = ?',
-      params: [new Date().toISOString(), week.id],
-    })
+    assertFrom(week, ['draft'], 'submitted')
+    db.prepare('UPDATE timesheet_weeks SET status = \'submitted\', submitted_at = ?, altered_target = NULL WHERE id = ?')
+      .run(new Date().toISOString(), week.id)
     addEvent(week.id, actorUserId, 'submitted')
   })()
 }
 
-export function approveWeek(week: TimesheetWeek, actorUserId: string, snapshot: WeekPayroll) {
+/** Department admin's first-stage sign-off — sends the week up to the job admin. */
+export function deptApproveWeek(week: TimesheetWeek, actorUserId: string) {
   const db = getDb()
   db.transaction(() => {
-    transition(week, ['submitted'], 'approved', {
-      sql: 'UPDATE timesheet_weeks SET approved_at = ?, approved_snapshot = ? WHERE id = ?',
-      params: [new Date().toISOString(), JSON.stringify(snapshot), week.id],
-    })
-    addEvent(week.id, actorUserId, 'approved')
+    assertFrom(week, ['submitted'], 'dept_approved')
+    db.prepare('UPDATE timesheet_weeks SET status = \'dept_approved\', dept_approved_at = ?, dept_approved_by = ? WHERE id = ?')
+      .run(new Date().toISOString(), actorUserId, week.id)
+    addEvent(week.id, actorUserId, 'approved', { stage: 'dept' })
   })()
 }
 
-/** Employee accepting the admin's alteration — final approval. */
+/** Job admin's final sign-off — from dept_approved, or directly from submitted when there's no dept stage. */
+export function approveWeek(week: TimesheetWeek, actorUserId: string, snapshot: WeekPayroll) {
+  const db = getDb()
+  db.transaction(() => {
+    assertFrom(week, ['submitted', 'dept_approved'], 'approved')
+    db.prepare('UPDATE timesheet_weeks SET status = \'approved\', approved_at = ?, approved_snapshot = ? WHERE id = ?')
+      .run(new Date().toISOString(), JSON.stringify(snapshot), week.id)
+    addEvent(week.id, actorUserId, 'approved', { stage: 'job' })
+  })()
+}
+
+/** Employee accepting a reviewer's alteration — lands at the stage the reviewer edited from. */
 export function confirmWeek(week: TimesheetWeek, actorUserId: string, snapshot: WeekPayroll) {
   const db = getDb()
   db.transaction(() => {
-    transition(week, ['altered'], 'approved', {
-      sql: 'UPDATE timesheet_weeks SET approved_at = ?, approved_snapshot = ? WHERE id = ?',
-      params: [new Date().toISOString(), JSON.stringify(snapshot), week.id],
-    })
+    assertFrom(week, ['altered'], 'approved')
+    if (week.alteredTarget === 'dept_approved') {
+      db.prepare('UPDATE timesheet_weeks SET status = \'dept_approved\', dept_approved_at = ?, dept_approved_by = ?, altered_target = NULL WHERE id = ?')
+        .run(new Date().toISOString(), actorUserId, week.id)
+    }
+    else {
+      db.prepare('UPDATE timesheet_weeks SET status = \'approved\', approved_at = ?, approved_snapshot = ?, altered_target = NULL WHERE id = ?')
+        .run(new Date().toISOString(), JSON.stringify(snapshot), week.id)
+    }
     addEvent(week.id, actorUserId, 'confirmed')
   })()
 }
@@ -265,20 +328,24 @@ export function confirmWeek(week: TimesheetWeek, actorUserId: string, snapshot: 
 export function reopenWeek(week: TimesheetWeek, actorUserId: string) {
   const db = getDb()
   db.transaction(() => {
-    transition(week, ['submitted', 'altered'], 'draft', {
-      sql: 'UPDATE timesheet_weeks SET submitted_at = NULL WHERE id = ?',
-      params: [week.id],
-    })
+    assertFrom(week, ['submitted', 'dept_approved', 'altered'], 'draft')
+    db.prepare('UPDATE timesheet_weeks SET status = \'draft\', submitted_at = NULL, dept_approved_at = NULL, dept_approved_by = NULL, altered_target = NULL WHERE id = ?')
+      .run(week.id)
     addEvent(week.id, actorUserId, 'reopened')
   })()
 }
 
-/** Admin editing a submitted week — applies the new entries and records the diff. */
-export function alterWeek(week: TimesheetWeek, actorUserId: string, entries: EntryInput[], note?: string) {
+/**
+ * Reviewer editing a week — applies the new entries and records the diff. The
+ * target stage (where the employee's confirmation lands) is 'dept_approved' for
+ * a department-stage edit, else 'approved'.
+ */
+export function alterWeek(week: TimesheetWeek, actorUserId: string, entries: EntryInput[], target: 'dept_approved' | 'approved', note?: string) {
   const db = getDb()
   const before = getEntries(week.id)
   db.transaction(() => {
-    transition(week, ['submitted', 'altered'], 'altered')
+    assertFrom(week, ['submitted', 'dept_approved', 'altered'], 'altered')
+    db.prepare('UPDATE timesheet_weeks SET status = \'altered\', altered_target = ? WHERE id = ?').run(target, week.id)
     writeEntries(week.id, week, entries)
     addEvent(week.id, actorUserId, 'altered', {
       note: note || undefined,

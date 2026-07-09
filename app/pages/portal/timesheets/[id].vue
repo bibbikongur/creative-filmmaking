@@ -11,7 +11,9 @@
             {{ detail!.user?.name || detail!.user?.email }}
           </h1>
           <p class="mt-1 text-sm text-bone-400">
-            {{ detail!.job?.name }} · {{ formatWeekRange(detail!.week.weekStart, locale) }}
+            {{ detail!.job?.name }}
+            <span v-if="detail!.departmentName"> · {{ detail!.departmentName }}</span>
+            · {{ formatWeekRange(detail!.week.weekStart, locale) }}
           </p>
         </div>
         <div class="flex items-center gap-4">
@@ -55,9 +57,9 @@
                 </template>
                 <template v-else>
                   <div v-for="(row, ri) in rowsFor(day.date)" :key="ri" class="flex items-center gap-2 mb-2">
-                    <input v-model="row.start" type="time" class="input-dark !w-24 !py-1">
+                    <PortalTimePicker v-model="row.start" />
                     <span class="text-bone-400">–</span>
-                    <input v-model="row.end" type="time" class="input-dark !w-24 !py-1">
+                    <PortalTimePicker v-model="row.end" />
                     <button type="button" class="text-signal-500/80 hover:text-signal-500 text-xs" @click="removeRow(row)">✕</button>
                   </div>
                   <button type="button" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors" @click="addRow(day.date)">
@@ -101,14 +103,17 @@
 
       <!-- Actions -->
       <div class="mt-6 flex flex-wrap items-center gap-3">
-        <template v-if="!editing && ['submitted', 'altered'].includes(detail!.week.status)">
-          <button v-if="detail!.week.status === 'submitted'" type="button" class="btn-gold disabled:opacity-60" :disabled="acting" @click="approve">
-            {{ acting ? '…' : $t('portal.review.approve') }}
+        <template v-if="!editing">
+          <button v-if="caps.canDeptApprove" type="button" class="btn-gold disabled:opacity-60" :disabled="acting" @click="approve">
+            {{ acting ? '…' : $t('portal.review.approveToJob') }}
           </button>
-          <button type="button" class="btn-ghost" @click="startEditing">{{ $t('portal.review.editTimes') }}</button>
-          <button type="button" class="btn-ghost" :disabled="acting" @click="reopen">{{ $t('portal.review.reopen') }}</button>
+          <button v-else-if="caps.canJobApprove" type="button" class="btn-gold disabled:opacity-60" :disabled="acting" @click="approve">
+            {{ acting ? '…' : $t('portal.review.approveFinal') }}
+          </button>
+          <button v-if="caps.canAlter" type="button" class="btn-ghost" @click="startEditing">{{ $t('portal.review.editTimes') }}</button>
+          <button v-if="caps.canReopen" type="button" class="btn-ghost" :disabled="acting" @click="reopen">{{ $t('portal.review.reopen') }}</button>
         </template>
-        <template v-else-if="editing">
+        <template v-else>
           <input
             v-model="alterNote"
             type="text"
@@ -122,6 +127,12 @@
         </template>
         <p v-if="detail!.week.status === 'altered' && !editing" class="text-sm text-bone-400">
           {{ $t('portal.review.awaitingConfirmation') }}
+        </p>
+        <p v-else-if="detail!.week.status === 'dept_approved' && !editing && !caps.canJobApprove && !caps.canAlter" class="text-sm text-bone-400">
+          {{ $t('portal.review.awaitingJobAdmin') }}
+        </p>
+        <p v-else-if="detail!.week.status === 'approved' && !editing" class="text-sm text-emerald-400">
+          {{ $t('portal.review.approvedNote') }}
         </p>
         <ul v-if="actionErrors.length" class="w-full text-sm text-signal-500 list-disc pl-5">
           <li v-for="err in actionErrors" :key="err">{{ err }}</li>
@@ -153,7 +164,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DayBreakdown, TimeEntry, TimesheetWeek, WeekEvent, WeekPayroll } from '~/types'
+import type { DayBreakdown, TimeEntry, TimesheetWeek, WeekEvent, WeekPayroll, WeekReviewCapabilities } from '~/types'
 
 definePageMeta({ layout: 'portal' })
 
@@ -165,15 +176,20 @@ interface Detail {
   week: TimesheetWeek
   user: { id: string, email: string, name?: string } | null
   job: { id: string, name: string } | null
+  departmentName: string | null
   dayRate: number | null
   entries: TimeEntry[]
   payroll: WeekPayroll | null
   events: WeekEvent[]
+  capabilities: WeekReviewCapabilities
 }
 
 interface ShiftRow { date: string, start: string, end: string }
 
+const NO_CAPS: WeekReviewCapabilities = { canDeptApprove: false, canJobApprove: false, canAlter: false, canReopen: false }
+
 const detail = ref<Detail | null>(null)
+const caps = computed<WeekReviewCapabilities>(() => detail.value?.capabilities ?? NO_CAPS)
 const loaded = ref(false)
 const loadError = ref('')
 const editing = ref(false)

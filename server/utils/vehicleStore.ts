@@ -76,6 +76,7 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
   const s = (b.specs ?? {}) as Record<string, unknown>
   const extra = asLocalized(s.extra)
   const specs: VehicleSpecs = {
+    units: asPositive(s.units),
     seats: asPositive(s.seats),
     sleeps: asPositive(s.sleeps),
     lengthM: asPositive(s.lengthM),

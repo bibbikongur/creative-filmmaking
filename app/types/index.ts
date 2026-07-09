@@ -6,6 +6,8 @@ export type LocalizedText = Record<LocaleCode, string>
 export type VehicleCategory = 'campers' | 'equipment-cars' | 'support-vehicles' | 'trailers'
 
 export interface VehicleSpecs {
+  /** Identical units in the fleet — shown when more than one can be booked at once */
+  units?: number
   seats?: number
   sleeps?: number
   lengthM?: number
@@ -159,7 +161,7 @@ export type PortalUserStatus = 'invited' | 'active' | 'disabled'
 export type CompanyStatus = 'active' | 'disabled'
 export type JobStatus = 'active' | 'closed'
 export type JobMemberStatus = 'active' | 'removed'
-export type WeekStatus = 'draft' | 'submitted' | 'altered' | 'approved'
+export type WeekStatus = 'draft' | 'submitted' | 'dept_approved' | 'altered' | 'approved'
 export type WeekEventType = 'submitted' | 'altered' | 'confirmed' | 'approved' | 'reopened'
 
 /** Portal account as exposed to the client — never carries credentials. */
@@ -175,6 +177,14 @@ export interface PortalUserPublic {
 export interface PortalMemberships {
   adminCompanies: { id: string, name: string }[]
   jobs: { jobId: string, jobName: string, companyName: string, status: JobStatus }[]
+  deptAdmin: { jobId: string, jobName: string, departmentId: string, departmentName: string }[]
+}
+
+export interface Department {
+  id: string
+  jobId: string
+  name: string
+  memberCount: number
 }
 
 export interface CompanySummary {
@@ -204,6 +214,9 @@ export interface JobMember {
   memberStatus: JobMemberStatus
   locale: LocaleCode
   dayRate: number
+  departmentId?: string
+  departmentName?: string
+  isDeptAdmin: boolean
 }
 
 export interface TimeEntry {
@@ -222,7 +235,18 @@ export interface TimesheetWeek {
   weekStart: string
   status: WeekStatus
   submittedAt?: string
+  deptApprovedAt?: string
   approvedAt?: string
+  /** Where a confirm lands while status is 'altered'. */
+  alteredTarget?: 'dept_approved' | 'approved'
+}
+
+/** What the signed-in reviewer may do to a given week — drives the review UI. */
+export interface WeekReviewCapabilities {
+  canDeptApprove: boolean
+  canJobApprove: boolean
+  canAlter: boolean
+  canReopen: boolean
 }
 
 export interface WeekEvent {
@@ -233,6 +257,8 @@ export interface WeekEvent {
   type: WeekEventType
   detail?: {
     note?: string
+    /** On 'approved' events: which sign-off — department or final job admin. */
+    stage?: 'dept' | 'job'
     changes?: {
       date: string
       before: { startMin: number, endMin: number } | null

@@ -110,6 +110,10 @@
       <p class="mt-1 text-xs text-bone-400">Leave anything that doesn't apply empty; empty rows are hidden on the site.</p>
       <div class="mt-4 grid gap-5 grid-cols-2 lg:grid-cols-4">
         <div>
+          <label class="admin-label">Units in fleet</label>
+          <input v-model.number="form.specs.units" type="number" min="1" class="input-dark" placeholder="e.g. 4">
+        </div>
+        <div>
           <label class="admin-label">Seats</label>
           <input v-model.number="form.specs.seats" type="number" min="1" class="input-dark">
         </div>
@@ -227,6 +231,7 @@ const form = reactive({
   highlights: (v?.highlights ?? []).map(h => ({ en: h.en ?? '', is: h.is ?? '' })),
   images: [...(v?.images ?? [])],
   specs: {
+    units: v?.specs.units ?? ('' as number | ''),
     seats: v?.specs.seats ?? ('' as number | ''),
     sleeps: v?.specs.sleeps ?? ('' as number | ''),
     lengthM: v?.specs.lengthM ?? ('' as number | ''),
@@ -316,6 +321,7 @@ const submit = () => {
     images: form.images,
     specs: {
       ...form.specs,
+      units: form.specs.units || undefined,
       seats: form.specs.seats || undefined,
       sleeps: form.specs.sleeps || undefined,
       lengthM: form.specs.lengthM || undefined,

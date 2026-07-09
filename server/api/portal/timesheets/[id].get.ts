@@ -1,18 +1,19 @@
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
-  const week = Number.isInteger(id) ? getWeekById(id) : null
-  if (!week) throw createError({ statusCode: 404, statusMessage: 'Timesheet not found' })
-  await requireJobAdmin(event, week.jobId)
+  const ctx = await requireWeekReviewer(event, id)
+  const { week } = ctx
 
-  const user = getUserById(week.userId)
+  const submitter = getUserById(week.userId)
   const job = getJob(week.jobId)
   return {
     week,
-    user: user ? { id: user.id, email: user.email, name: user.name } : null,
+    user: submitter ? { id: submitter.id, email: submitter.email, name: submitter.name } : null,
     job: job ? { id: job.id, name: job.name } : null,
+    departmentName: departmentNameForMember(week.jobId, week.userId),
     dayRate: getMemberDayRate(week.jobId, week.userId),
     entries: getEntries(week.id),
     payroll: payrollForWeek(week),
     events: getWeekEvents(week.id),
+    capabilities: weekCapabilities(ctx),
   }
 })

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import type { H3Event } from 'h3'
-import type { PortalUserPublic } from '~~/app/types'
+import type { PortalUserPublic, TimesheetWeek, WeekReviewCapabilities } from '~~/app/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Portal sessions — real per-user accounts (company admins + employees), unlike
@@ -108,4 +108,58 @@ export async function requireJobMember(event: H3Event, jobId: string): Promise<P
   `).get(jobId, user.id)
   if (!row) throw createError({ statusCode: 404, statusMessage: 'Job not found' })
   return user
+}
+
+export interface WeekReviewContext {
+  user: PortalUserPublic
+  week: TimesheetWeek
+  companyId: string
+  isJobAdmin: boolean
+  /** The user is a department admin of the submitter's department (and not the submitter). */
+  isDeptApprover: boolean
+  /** The submitter's department has an approver other than themselves → a dept stage exists. */
+  hasDeptStage: boolean
+}
+
+/**
+ * Authorize the signed-in user to review a specific week. A user qualifies if
+ * they administer the week's job's company (job admin) or admin the submitter's
+ * department (dept approver, and not the submitter). Anyone else → 404.
+ */
+export async function requireWeekReviewer(event: H3Event, weekId: number): Promise<WeekReviewContext> {
+  const week = Number.isInteger(weekId) ? getWeekById(weekId) : null
+  if (!week) throw createError({ statusCode: 404, statusMessage: 'Timesheet not found' })
+  const user = await requirePortalUser(event)
+
+  const companyRow = getDb().prepare(`
+    SELECT j.company_id FROM jobs j
+    JOIN companies c ON c.id = j.company_id AND c.status = 'active'
+    WHERE j.id = ?
+  `).get(week.jobId) as { company_id: string } | undefined
+  if (!companyRow) throw createError({ statusCode: 404, statusMessage: 'Timesheet not found' })
+  const companyId = companyRow.company_id
+
+  const isJobAdmin = Boolean(getDb().prepare(
+    'SELECT 1 FROM company_admins WHERE company_id = ? AND user_id = ?',
+  ).get(companyId, user.id))
+
+  const submitterDeptId = memberDepartmentId(week.jobId, week.userId)
+  const deptAdmins = submitterDeptId ? deptAdminsFor(submitterDeptId) : []
+  const isDeptApprover = Boolean(submitterDeptId) && deptAdmins.includes(user.id) && user.id !== week.userId
+  const hasDeptStage = deptAdmins.some(id => id !== week.userId)
+
+  if (!isJobAdmin && !isDeptApprover) throw createError({ statusCode: 404, statusMessage: 'Timesheet not found' })
+  return { user, week, companyId, isJobAdmin, isDeptApprover, hasDeptStage }
+}
+
+/** What the reviewer may do to the week in its current state — drives the UI + endpoint guards. */
+export function weekCapabilities(ctx: WeekReviewContext): WeekReviewCapabilities {
+  const { week, isJobAdmin, isDeptApprover, hasDeptStage } = ctx
+  const s = week.status
+  return {
+    canDeptApprove: isDeptApprover && s === 'submitted',
+    canJobApprove: isJobAdmin && (s === 'dept_approved' || (s === 'submitted' && !hasDeptStage)),
+    canAlter: (isDeptApprover && s === 'submitted') || (isJobAdmin && (s === 'submitted' || s === 'dept_approved')),
+    canReopen: (isDeptApprover && s === 'submitted') || (isJobAdmin && (s === 'submitted' || s === 'dept_approved' || s === 'altered')),
+  }
 }

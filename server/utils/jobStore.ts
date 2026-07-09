@@ -56,7 +56,7 @@ export function listJobs(companyIds: string[]): (Job & { memberCount: number, pe
   const rows = getDb().prepare(`
     SELECT j.*,
       (SELECT COUNT(*) FROM job_members m WHERE m.job_id = j.id AND m.status = 'active') AS member_count,
-      (SELECT COUNT(*) FROM timesheet_weeks w WHERE w.job_id = j.id AND w.status IN ('submitted', 'altered')) AS pending_weeks
+      (SELECT COUNT(*) FROM timesheet_weeks w WHERE w.job_id = j.id AND w.status IN ('submitted', 'dept_approved', 'altered')) AS pending_weeks
     FROM jobs j WHERE j.company_id IN (${placeholders})
     ORDER BY j.status, j.created_at DESC
   `).all(...companyIds) as Record<string, unknown>[]
@@ -89,8 +89,12 @@ export function updateJob(id: string, input: { name?: string, status?: JobStatus
 
 export function listMembers(jobId: string): JobMember[] {
   const rows = getDb().prepare(`
-    SELECT m.status AS member_status, m.day_rate_enc, u.id AS user_id, u.email, u.name, u.status AS user_status, u.locale
-    FROM job_members m JOIN portal_users u ON u.id = m.user_id
+    SELECT m.status AS member_status, m.day_rate_enc, m.department_id, m.is_dept_admin,
+      d.name AS department_name,
+      u.id AS user_id, u.email, u.name, u.status AS user_status, u.locale
+    FROM job_members m
+    JOIN portal_users u ON u.id = m.user_id
+    LEFT JOIN departments d ON d.id = m.department_id
     WHERE m.job_id = ?
     ORDER BY m.status, u.name COLLATE NOCASE, u.email
   `).all(jobId) as Record<string, unknown>[]
@@ -102,7 +106,27 @@ export function listMembers(jobId: string): JobMember[] {
     memberStatus: r.member_status as JobMemberStatus,
     locale: r.locale as LocaleCode,
     dayRate: Number(decryptField(r.day_rate_enc as string)),
+    departmentId: (r.department_id as string | null) ?? undefined,
+    departmentName: (r.department_name as string | null) ?? undefined,
+    isDeptAdmin: Boolean(r.is_dept_admin),
   }))
+}
+
+/** The active member's department id for a job, or null (unassigned / not a member). */
+export function memberDepartmentId(jobId: string, userId: string): string | null {
+  const row = getDb().prepare(`
+    SELECT department_id FROM job_members WHERE job_id = ? AND user_id = ? AND status = 'active'
+  `).get(jobId, userId) as { department_id: string | null } | undefined
+  return row?.department_id ?? null
+}
+
+/** The member's department name for display, or null. */
+export function departmentNameForMember(jobId: string, userId: string): string | null {
+  const row = getDb().prepare(`
+    SELECT d.name FROM job_members m JOIN departments d ON d.id = m.department_id
+    WHERE m.job_id = ? AND m.user_id = ?
+  `).get(jobId, userId) as { name: string } | undefined
+  return row?.name ?? null
 }
 
 /** The member's decrypted day rate, or null when not an active member. */
@@ -118,10 +142,14 @@ export function getMemberDayRate(jobId: string, userId: string): number | null {
  * (caller sends an added-to-job notice); otherwise an invite token is issued
  * (caller sends the set-your-password invite).
  */
-export function addMember(jobId: string, input: { email: string, name?: string, dayRate: number, locale: LocaleCode }): {
-  member: JobMember
-  inviteToken: string | null
-} {
+export function addMember(jobId: string, input: {
+  email: string
+  name?: string
+  dayRate: number
+  locale: LocaleCode
+  departmentId?: string | null
+  isDeptAdmin?: boolean
+}): { member: JobMember, inviteToken: string | null } {
   const db = getDb()
   if (!isValidEmail(input.email)) {
     throw createError({
@@ -131,6 +159,9 @@ export function addMember(jobId: string, input: { email: string, name?: string, 
     })
   }
   const rateEnc = encryptField(String(parseDayRate(input.dayRate)))
+  const department = resolveDepartment(jobId, input.departmentId)
+  // A department admin must belong to a department.
+  const deptAdmin = input.isDeptAdmin && department ? 1 : 0
 
   let inviteToken: string | null = null
   let userId = ''
@@ -141,12 +172,15 @@ export function addMember(jobId: string, input: { email: string, name?: string, 
     const existing = db.prepare('SELECT id, status FROM job_members WHERE job_id = ? AND user_id = ?')
       .get(jobId, user.id) as { id: number, status: string } | undefined
     if (existing) {
-      // Re-adding someone who was removed re-activates them with the new rate.
-      db.prepare('UPDATE job_members SET status = \'active\', day_rate_enc = ? WHERE id = ?').run(rateEnc, existing.id)
+      // Re-adding someone who was removed re-activates them with the new details.
+      db.prepare('UPDATE job_members SET status = \'active\', day_rate_enc = ?, department_id = ?, is_dept_admin = ? WHERE id = ?')
+        .run(rateEnc, department, deptAdmin, existing.id)
     }
     else {
-      db.prepare('INSERT INTO job_members (job_id, user_id, created_at, status, day_rate_enc) VALUES (?, ?, ?, \'active\', ?)')
-        .run(jobId, user.id, new Date().toISOString(), rateEnc)
+      db.prepare(`
+        INSERT INTO job_members (job_id, user_id, created_at, status, day_rate_enc, department_id, is_dept_admin)
+        VALUES (?, ?, ?, 'active', ?, ?, ?)
+      `).run(jobId, user.id, new Date().toISOString(), rateEnc, department, deptAdmin)
     }
   })()
 
@@ -154,10 +188,17 @@ export function addMember(jobId: string, input: { email: string, name?: string, 
   return { member, inviteToken }
 }
 
-export function updateMember(jobId: string, userId: string, input: { dayRate?: number, status?: JobMemberStatus }): boolean {
+export function updateMember(jobId: string, userId: string, input: {
+  dayRate?: number
+  status?: JobMemberStatus
+  departmentId?: string | null
+  isDeptAdmin?: boolean
+}): boolean {
   const db = getDb()
-  const existing = db.prepare('SELECT id FROM job_members WHERE job_id = ? AND user_id = ?').get(jobId, userId)
+  const existing = db.prepare('SELECT id, department_id, is_dept_admin FROM job_members WHERE job_id = ? AND user_id = ?')
+    .get(jobId, userId) as { id: number, department_id: string | null, is_dept_admin: number } | undefined
   if (!existing) return false
+
   if (input.dayRate !== undefined) {
     db.prepare('UPDATE job_members SET day_rate_enc = ? WHERE job_id = ? AND user_id = ?')
       .run(encryptField(String(parseDayRate(input.dayRate))), jobId, userId)
@@ -166,5 +207,25 @@ export function updateMember(jobId: string, userId: string, input: { dayRate?: n
     db.prepare('UPDATE job_members SET status = ? WHERE job_id = ? AND user_id = ?')
       .run(input.status, jobId, userId)
   }
+  // department_id and is_dept_admin resolve together: an admin flag only sticks
+  // when the member ends up in a department.
+  if (input.departmentId !== undefined || input.isDeptAdmin !== undefined) {
+    const department = input.departmentId !== undefined
+      ? resolveDepartment(jobId, input.departmentId)
+      : existing.department_id
+    const wantAdmin = input.isDeptAdmin !== undefined ? input.isDeptAdmin : Boolean(existing.is_dept_admin)
+    const deptAdmin = wantAdmin && department ? 1 : 0
+    db.prepare('UPDATE job_members SET department_id = ?, is_dept_admin = ? WHERE job_id = ? AND user_id = ?')
+      .run(department, deptAdmin, jobId, userId)
+  }
   return true
+}
+
+/** Validate an incoming department id against the job; null clears the department. */
+function resolveDepartment(jobId: string, departmentId?: string | null): string | null {
+  if (!departmentId) return null
+  if (!departmentBelongsToJob(departmentId, jobId)) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid department for this job.' })
+  }
+  return departmentId
 }

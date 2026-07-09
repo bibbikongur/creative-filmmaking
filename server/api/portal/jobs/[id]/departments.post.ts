@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')!
   await requireJobAdmin(event, id)
-  return { job: getJob(id), members: listMembers(id), departments: listDepartments(id) }
+  const body = await readBody<{ name?: string }>(event)
+  return createDepartment(id, String(body?.name ?? ''))
 })

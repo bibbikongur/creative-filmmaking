@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/tailwindcss',
     '@nuxt/image',
-    // Bilingual (English default + Icelandic). Registered before @nuxtjs/seo so the
+    // Bilingual (Icelandic default + English). Registered before @nuxtjs/seo so the
     // SEO bundle picks it up and emits hreflang + per-locale canonical/sitemap.
     '@nuxtjs/i18n',
     // All-in-one SEO: sitemap, robots, schema.org, canonical & meta defaults.
@@ -15,15 +15,15 @@ export default defineNuxtConfig({
   ],
 
   i18n: {
-    // English is the default locale at the root (/, /vehicles/x) — international
-    // film productions scouting Iceland are the primary audience. Icelandic
-    // lives under /is/*.
+    // Icelandic is the default locale at the root (/, /vehicles/x) — the local
+    // market is the primary audience. English lives under /en/* for international
+    // film productions scouting Iceland.
     strategy: 'prefix_except_default',
-    defaultLocale: 'en',
+    defaultLocale: 'is',
     vueI18n: 'i18n.config.ts',
     locales: [
-      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
       { code: 'is', language: 'is-IS', name: 'Íslenska', file: 'is.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
     ],
     lazy: true,
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://creativefilmmaking.is',
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL || 'https://creativefilmmaking.is',
     name: 'Creative Filmmaking',
-    defaultLocale: 'en',
+    defaultLocale: 'is',
   },
 
   app: {
@@ -52,8 +52,8 @@ export default defineNuxtConfig({
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
     exclude: [
-      '/admin', '/admin/**', '/is/admin', '/is/admin/**',
-      '/portal', '/portal/**', '/is/portal', '/is/portal/**',
+      '/admin', '/admin/**', '/en/admin', '/en/admin/**',
+      '/portal', '/portal/**', '/en/portal', '/en/portal/**',
     ],
   },
 
@@ -62,12 +62,12 @@ export default defineNuxtConfig({
   routeRules: {
     '/admin': { ssr: false, robots: false },
     '/admin/**': { ssr: false, robots: false },
-    '/is/admin': { ssr: false, robots: false },
-    '/is/admin/**': { ssr: false, robots: false },
+    '/en/admin': { ssr: false, robots: false },
+    '/en/admin/**': { ssr: false, robots: false },
     '/portal': { ssr: false, robots: false },
     '/portal/**': { ssr: false, robots: false },
-    '/is/portal': { ssr: false, robots: false },
-    '/is/portal/**': { ssr: false, robots: false },
+    '/en/portal': { ssr: false, robots: false },
+    '/en/portal/**': { ssr: false, robots: false },
   },
 
   // Dynamic OG-image generation needs a heavy native renderer; we set explicit

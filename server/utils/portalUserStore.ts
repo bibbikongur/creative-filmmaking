@@ -168,5 +168,22 @@ export function membershipsForUser(userId: string): PortalMemberships {
       status: r.job_status as JobStatus,
     }))
 
-  return { adminCompanies, jobs }
+  const deptAdmin = (db.prepare(`
+    SELECT j.id AS job_id, j.name AS job_name, d.id AS department_id, d.name AS department_name
+    FROM job_members m
+    JOIN departments d ON d.id = m.department_id
+    JOIN jobs j ON j.id = m.job_id
+    JOIN companies c ON c.id = j.company_id
+    WHERE m.user_id = ? AND m.is_dept_admin = 1 AND m.status = 'active'
+      AND j.status = 'active' AND c.status = 'active'
+    ORDER BY j.created_at DESC, d.name
+  `).all(userId) as Record<string, unknown>[])
+    .map(r => ({
+      jobId: r.job_id as string,
+      jobName: r.job_name as string,
+      departmentId: r.department_id as string,
+      departmentName: r.department_name as string,
+    }))
+
+  return { adminCompanies, jobs, deptAdmin }
 }

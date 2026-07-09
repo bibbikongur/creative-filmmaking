@@ -194,4 +194,17 @@ export const equipment: EquipmentItem[] = [
     },
     images: ['/images/equipment/broom.jpg'],
   },
+  {
+    id: 'e-015',
+    category: 'power',
+    name: {
+      en: 'Cable Reel 25 m 3G1.5 (Brennenstuhl Bremaxx)',
+      is: 'Rafmagnskefli 25 m 3G1,5 (Brennenstuhl Bremaxx)',
+    },
+    tagline: {
+      en: 'Outdoor-rated 25 m extension reel (IP44) with three sockets — oil- and UV-resistant, usable down to −35°C.',
+      is: 'Útikefli með 25 m snúru (IP44) og þremur tenglum – olíu- og UV-þolið, nothæft niður í −35°C.',
+    },
+    images: ['/images/equipment/cable-reel-25m.jpg'],
+  },
 ]
