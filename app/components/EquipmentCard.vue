@@ -6,7 +6,7 @@
         :src="item.images[0]"
         :provider="imgProvider(item.images[0])"
         :alt="lt(item.name)"
-        class="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         sizes="sm:100vw md:50vw lg:33vw"
         loading="lazy"
       />
