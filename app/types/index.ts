@@ -18,6 +18,10 @@ export interface VehicleSpecs {
   towingCapacityKg?: number
   /** Max cargo/payload it can carry in the back (kg) */
   payloadKg?: number
+  /** Inner dimensions of the cargo box (m) — rendered as one L × W × H row */
+  boxLengthM?: number
+  boxWidthM?: number
+  boxHeightM?: number
   drivetrain?: '4x4' | '2wd' | '6x6'
   transmission?: 'automatic' | 'manual'
   fuel?: 'diesel' | 'petrol' | 'hybrid'

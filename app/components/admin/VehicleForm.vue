@@ -142,6 +142,18 @@
           <input v-model.number="form.specs.payloadKg" type="number" min="0" class="input-dark" placeholder="carrying capacity in the back">
         </div>
         <div>
+          <label class="admin-label">Box length (m)</label>
+          <input v-model.number="form.specs.boxLengthM" type="number" min="0" step="0.1" class="input-dark" placeholder="cargo box, inside">
+        </div>
+        <div>
+          <label class="admin-label">Box width (m)</label>
+          <input v-model.number="form.specs.boxWidthM" type="number" min="0" step="0.1" class="input-dark">
+        </div>
+        <div>
+          <label class="admin-label">Box height (m)</label>
+          <input v-model.number="form.specs.boxHeightM" type="number" min="0" step="0.1" class="input-dark">
+        </div>
+        <div>
           <label class="admin-label">Drivetrain</label>
           <select v-model="form.specs.drivetrain" class="input-dark">
             <option value="">—</option>
@@ -251,6 +263,9 @@ const form = reactive({
     weightKg: v?.specs.weightKg ?? ('' as number | ''),
     towingCapacityKg: v?.specs.towingCapacityKg ?? ('' as number | ''),
     payloadKg: v?.specs.payloadKg ?? ('' as number | ''),
+    boxLengthM: v?.specs.boxLengthM ?? ('' as number | ''),
+    boxWidthM: v?.specs.boxWidthM ?? ('' as number | ''),
+    boxHeightM: v?.specs.boxHeightM ?? ('' as number | ''),
     drivetrain: v?.specs.drivetrain ?? '',
     transmission: v?.specs.transmission ?? '',
     fuel: v?.specs.fuel ?? '',
@@ -344,6 +359,9 @@ const submit = () => {
       weightKg: form.specs.weightKg || undefined,
       towingCapacityKg: form.specs.towingCapacityKg || undefined,
       payloadKg: form.specs.payloadKg || undefined,
+      boxLengthM: form.specs.boxLengthM || undefined,
+      boxWidthM: form.specs.boxWidthM || undefined,
+      boxHeightM: form.specs.boxHeightM || undefined,
       drivetrain: form.specs.drivetrain || undefined,
       transmission: form.specs.transmission || undefined,
       fuel: form.specs.fuel || undefined,

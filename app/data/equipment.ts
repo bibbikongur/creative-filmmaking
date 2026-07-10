@@ -259,4 +259,69 @@ export const equipment: EquipmentItem[] = [
     },
     images: ['/images/equipment/fuel-can-20l.jpg'],
   },
+  {
+    id: 'e-020',
+    category: 'power',
+    name: {
+      en: 'Jump Starter 12V (NOCO GBX155)',
+      is: 'Starttæki 12V (NOCO GBX155)',
+    },
+    tagline: {
+      en: '4250 A lithium jump starter for 12V petrol engines up to 10 L and diesels up to 8 L — cars, vans and machinery, with USB-C charging and a 500-lumen LED light.',
+      is: '4250 A starttæki fyrir 12V bensínvélar allt að 10 L og dísilvélar allt að 8 L – bíla, sendibíla og vinnuvélar, með USB-C hleðslu og 500 lúmena LED-ljósi.',
+    },
+    images: ['/images/equipment/noco-gbx155.jpg'],
+  },
+  {
+    id: 'e-021',
+    category: 'shelter',
+    name: {
+      en: 'Eskimo Outbreak 450XDP Insulated Pop-Up Shelter',
+      is: 'Eskimo Outbreak 450XDP einangrað skjóltjald',
+    },
+    tagline: {
+      en: 'Insulated 4–5 person pop-up shelter (~7 m² floor) with StormShield fabric, 7 windows and heater ports — a warm crew refuge on winter and glacier shoots.',
+      is: 'Einangrað sprett-tjald fyrir 4–5 manns (~7 m² gólf) með StormShield-dúk, 7 gluggum og hitaraopum – hlýtt skjól fyrir tökuliðið í vetrar- og jöklatökum.',
+    },
+    images: ['/images/equipment/eskimo-outbreak-450xdp.png'],
+  },
+  {
+    id: 'e-022',
+    category: 'safety',
+    name: {
+      en: 'Portable Fence Post with Ram\'s Horn',
+      is: 'Randbeitarstaur með hrútshorni',
+    },
+    tagline: {
+      en: 'Lightweight 99 cm PVC post with a metal ground spike and ram\'s-horn hook — quick temporary fencing and perimeter marking on location.',
+      is: 'Léttur 99 cm plaststaur með málmoddi og hrútshorni – fljótleg bráðabirgðagirðing og svæðamerking á tökustað.',
+    },
+    images: ['/images/equipment/randbeitarstaur-hrutshorn.jpg'],
+  },
+  {
+    id: 'e-023',
+    category: 'safety',
+    name: {
+      en: 'Lashing Strap 0.25 t',
+      is: 'Strekkiborði 0,25 t',
+    },
+    tagline: {
+      en: 'Hampiðjan lashing belt with a 0.25-tonne breaking load, in 0.5–3 m lengths — straps down gear and cargo on trailers and trucks.',
+      is: 'Strekkiborði frá Hampiðjunni með 0,25 tonna togþoli, fáanlegur í 0,5–3 m lengdum – festir búnað og farm á kerrum og vörubílum.',
+    },
+    images: ['/images/equipment/strekkibordi-lashing-belt.jpg'],
+  },
+  {
+    id: 'e-024',
+    category: 'safety',
+    name: {
+      en: 'Ratchet Strap with Hook (orange)',
+      is: 'Strekkjari og borði með krók (appelsínugulur)',
+    },
+    tagline: {
+      en: 'Two-part Hampiðjan ratchet strap with hook — breaking loads from 0.8 to 10 tonnes and lengths up to 10 m, for securing heavy cargo and gear on trailers and trucks.',
+      is: 'Tvískiptur strekkjari frá Hampiðjunni með borða og krók – brotþol 0,8 til 10 tonn og lengdir allt að 10 m, til að festa þyngri farm og búnað á kerrum og vörubílum.',
+    },
+    images: ['/images/equipment/ratchet-strap-orange.jpg'],
+  },
 ]

@@ -32,6 +32,8 @@ const rows = computed(() => {
   push('weightKg', s.weightKg ? `${s.weightKg} kg` : undefined)
   push('towingCapacityKg', s.towingCapacityKg ? `${s.towingCapacityKg} kg` : undefined)
   push('payloadKg', s.payloadKg ? `${s.payloadKg} kg` : undefined)
+  const box = [s.boxLengthM, s.boxWidthM, s.boxHeightM].filter(Boolean)
+  push('boxDimensions', box.length ? `${box.join(' × ')} m` : undefined)
   push('drivetrain', s.drivetrain?.toUpperCase())
   push('transmission', s.transmission ? t(`vehicle.specs.${s.transmission}`) : undefined)
   push('fuel', s.fuel ? t(`vehicle.specs.${s.fuel}`) : undefined)

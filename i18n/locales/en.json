@@ -81,6 +81,7 @@
       "weightKg": "Weight",
       "towingCapacityKg": "Towing capacity",
       "payloadKg": "Payload",
+      "boxDimensions": "Box dimensions (L × W × H)",
       "drivetrain": "Drivetrain",
       "transmission": "Transmission",
       "fuel": "Fuel",

@@ -38,7 +38,7 @@
   },
   "categories": {
     "campers": "Húsbílar",
-    "equipment-cars": "Búnaðarbílar",
+    "equipment-cars": "Tækjabílar",
     "support-vehicles": "Stuðningsbílar",
     "trailers": "Eftirvagnar"
   },
@@ -81,6 +81,7 @@
       "weightKg": "Þyngd",
       "towingCapacityKg": "Dráttargeta",
       "payloadKg": "Burðargeta",
+      "boxDimensions": "Stærð kassa (L × B × H)",
       "drivetrain": "Drif",
       "transmission": "Skipting",
       "fuel": "Eldsneyti",

@@ -13,10 +13,26 @@
 
     <div v-else class="mt-8 border border-ink-800 divide-y divide-ink-800">
       <div
-        v-for="e in items"
+        v-for="(e, i) in items"
         :key="e.id"
         class="flex items-center gap-4 p-4 bg-ink-900/50 hover:bg-ink-900 transition-colors"
       >
+        <div class="flex flex-col shrink-0">
+          <button
+            type="button"
+            class="px-1.5 py-0.5 text-bone-400 hover:text-bone-100 transition-colors disabled:opacity-25 disabled:hover:text-bone-400"
+            :disabled="i === 0 || reordering"
+            aria-label="Move up"
+            @click="move(i, -1)"
+          >▲</button>
+          <button
+            type="button"
+            class="px-1.5 py-0.5 text-bone-400 hover:text-bone-100 transition-colors disabled:opacity-25 disabled:hover:text-bone-400"
+            :disabled="i === items.length - 1 || reordering"
+            aria-label="Move down"
+            @click="move(i, 1)"
+          >▼</button>
+        </div>
         <img
           :src="e.images[0]"
           :alt="e.name.en"
@@ -54,6 +70,7 @@ const items = ref<EquipmentItem[]>([])
 const loaded = ref(false)
 const loadError = ref('')
 const deleting = ref('')
+const reordering = ref(false)
 
 const load = async () => {
   loadError.value = ''
@@ -69,6 +86,29 @@ const load = async () => {
 }
 
 onMounted(load)
+
+const move = async (index: number, delta: number) => {
+  const previous = items.value
+  const next = [...previous]
+  const [moved] = next.splice(index, 1)
+  next.splice(index + delta, 0, moved!)
+  items.value = next
+  reordering.value = true
+  try {
+    await $fetch('/api/admin/equipment/reorder', {
+      method: 'PUT',
+      body: { ids: next.map(e => e.id) },
+    })
+    clearNuxtData('equipment') // public pages refetch on next visit
+  }
+  catch (err: any) {
+    items.value = previous
+    alert(err?.data?.statusMessage || 'Could not save the new order.')
+  }
+  finally {
+    reordering.value = false
+  }
+}
 
 const remove = async (e: EquipmentItem) => {
   if (!confirm(`Delete "${e.name.en}"? This removes it from the website immediately.`)) return

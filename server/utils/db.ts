@@ -38,7 +38,7 @@ export function getDb(): Database.Database {
 // and inserted exactly once (guarded by a meta flag, and skipped entirely if
 // the admin already created something with the same id or slug).
 const SEED_ADDITIONS = ['v-010']
-const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019']
+const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024']
 
 function seedCatalogueAdditions(db: Database.Database) {
   for (const id of SEED_ADDITIONS) {
