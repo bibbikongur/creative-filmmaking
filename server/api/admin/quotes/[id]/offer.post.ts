@@ -1,7 +1,7 @@
-import type { DiscountType, OfferCurrency } from '~~/app/types'
+import type { DiscountType, OfferCurrency, PricingMode } from '~~/app/types'
 
 interface OfferBody {
-  items?: { quoteItemId?: number, unitPrice?: number }[]
+  items?: { quoteItemId?: number, unitPrice?: number, pricing?: PricingMode, days?: number }[]
   currency?: OfferCurrency
   discountType?: DiscountType | ''
   discountValue?: number
@@ -28,9 +28,17 @@ export default defineEventHandler(async (event) => {
   }
 
   const items = (Array.isArray(body.items) ? body.items : [])
-    .map(i => ({ quoteItemId: Number(i?.quoteItemId), unitPrice: Number(i?.unitPrice) }))
+    .map(i => ({
+      quoteItemId: Number(i?.quoteItemId),
+      unitPrice: Number(i?.unitPrice),
+      pricing: (i?.pricing === 'day' ? 'day' : 'flat') as PricingMode,
+      days: i?.pricing === 'day' ? Number(i?.days) : undefined,
+    }))
   if (!items.length || items.some(i => !Number.isFinite(i.quoteItemId) || !Number.isFinite(i.unitPrice) || i.unitPrice < 0)) {
     errors.push('Every item needs a price (0 or higher).')
+  }
+  if (items.some(i => i.pricing === 'day' && (!Number.isFinite(i.days!) || i.days! < 1 || i.days! > 999))) {
+    errors.push('Per-day items need a number of days (1 or more).')
   }
 
   if (errors.length) {

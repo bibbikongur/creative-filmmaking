@@ -5,6 +5,7 @@
         <p class="kicker">Quotes</p>
         <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">Quote requests</h1>
       </div>
+      <NuxtLink to="/admin/quotes/new" class="btn-gold !px-5 !py-2.5">+ New quote</NuxtLink>
     </div>
 
     <p v-if="loadError" class="mt-8 text-sm text-signal-500">{{ loadError }}</p>
@@ -19,8 +20,9 @@
       >
         <div class="min-w-0 flex-1">
           <p class="font-semibold text-bone-100 truncate">
-            {{ q.name }}
+            {{ q.name || q.email }}
             <span v-if="q.company" class="text-bone-400 font-normal">· {{ q.company }}</span>
+            <span v-if="q.source === 'admin'" class="ml-1 text-[10px] uppercase tracking-widest text-gold-400/80 font-normal">· sent by you</span>
           </p>
           <p class="mt-0.5 text-xs text-bone-400 truncate">
             {{ formatDate(q.createdAt) }} · {{ q.itemCount }} {{ q.itemCount === 1 ? 'item' : 'items' }}
@@ -40,7 +42,7 @@
       </NuxtLink>
 
       <p v-if="!quotes.length" class="p-8 text-center text-sm text-bone-400">
-        No quote requests yet. They appear here when visitors submit their cart on the website.
+        No quotes yet. They appear here when visitors submit their cart — or create one yourself with “New quote”.
       </p>
     </div>
   </div>
@@ -80,7 +82,7 @@ const formatTotal = (q: QuoteSummary) =>
     : `${q.lastOfferTotal!.toLocaleString('is-IS')} kr.`
 
 const remove = async (q: QuoteSummary) => {
-  if (!confirm(`Delete the quote request from "${q.name}"? This also deletes its offers.`)) return
+  if (!confirm(`Delete the quote for "${q.name || q.email}"? This also deletes its offers.`)) return
   deleting.value = q.id
   try {
     await $fetch(`/api/admin/quotes/${q.id}`, { method: 'DELETE' })

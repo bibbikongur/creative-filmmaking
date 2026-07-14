@@ -86,6 +86,9 @@ export interface CartEntry {
 
 export type QuoteStatus = 'new' | 'offered' | 'won' | 'lost'
 
+/** 'web' = visitor cart submission; 'admin' = created from the admin panel. */
+export type QuoteSource = 'web' | 'admin'
+
 /** Catalogue snapshot taken when the quote was submitted (survives deletions). */
 export interface QuoteItem {
   id: number
@@ -101,7 +104,9 @@ export interface Quote {
   id: string
   createdAt: string
   status: QuoteStatus
+  source: QuoteSource
   locale: LocaleCode
+  /** May be empty for admin-created quotes where only an email is known. */
   name: string
   email: string
   phone?: string
@@ -119,6 +124,8 @@ export interface QuoteSummary extends Quote {
 
 export type OfferCurrency = 'ISK' | 'EUR'
 export type DiscountType = 'percent' | 'fixed'
+/** 'flat' = one price per unit; 'day' = price per unit per rental day. */
+export type PricingMode = 'flat' | 'day'
 
 /** A priced line inside an offer — frozen at send time so PDFs are regenerable. */
 export interface OfferItem {
@@ -127,6 +134,10 @@ export interface OfferItem {
   image?: string
   qty: number
   unitPrice: number
+  /** Absent on offers created before per-day pricing existed → 'flat'. */
+  pricing?: PricingMode
+  /** Number of days — only when pricing is 'day'. */
+  days?: number
   lineTotal: number
 }
 

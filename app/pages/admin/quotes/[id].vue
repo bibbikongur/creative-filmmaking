@@ -7,9 +7,10 @@
           <span class="text-ink-500 mx-1">/</span> {{ quote.id }}
         </p>
         <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">
-          {{ quote.name }}
+          {{ quote.name || quote.email }}
           <span v-if="quote.company" class="text-bone-400">· {{ quote.company }}</span>
         </h1>
+        <p v-if="quote.source === 'admin'" class="mt-1 text-xs uppercase tracking-widest text-gold-400/80">Created in the admin panel</p>
       </div>
       <AdminQuoteStatusBadge :status="quote.status" class="!text-xs" />
     </div>
@@ -29,7 +30,7 @@
         <p class="mt-1 text-bone-100">{{ quote.dates || '—' }}</p>
       </div>
       <div>
-        <p class="text-xs uppercase tracking-widest text-bone-400">Submitted</p>
+        <p class="text-xs uppercase tracking-widest text-bone-400">{{ quote.source === 'admin' ? 'Created' : 'Submitted' }}</p>
         <p class="mt-1 text-bone-100">{{ formatDateTime(quote.createdAt) }}</p>
       </div>
       <div>

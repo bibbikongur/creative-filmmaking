@@ -2,37 +2,6 @@
   <div>
     <HeroSection image="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=80" />
 
-    <!-- Category tiles -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-      <SectionHeading :kicker="t('home.categoriesKicker')" :title="t('home.categoriesTitle')" />
-      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <NuxtLink
-          v-for="c in categories"
-          :key="c.id"
-          :to="localePath({ path: '/vehicles', query: { category: c.id } })"
-          class="group relative overflow-hidden aspect-[4/5] border-t-2 border-transparent hover:border-gold-500 transition-colors"
-        >
-          <NuxtImg
-            :src="c.image"
-            :alt="t(`categories.${c.id}`)"
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="sm:100vw md:50vw lg:25vw"
-            loading="lazy"
-          />
-          <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent" aria-hidden="true" />
-          <div class="absolute bottom-0 inset-x-0 p-5">
-            <h3 class="text-lg font-semibold uppercase tracking-wide text-bone-100 group-hover:text-gold-400 transition-colors">
-              {{ t(`categories.${c.id}`) }}
-            </h3>
-            <p class="mt-1 text-xs text-bone-400 uppercase tracking-widest">
-              {{ byCategory(c.id).length }} ·
-              <span class="text-gold-500">{{ t('common.viewFleet') }}</span>
-            </p>
-          </div>
-        </NuxtLink>
-      </div>
-    </section>
-
     <!-- Featured vehicles -->
     <section class="bg-ink-900 border-y border-ink-800">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
@@ -71,11 +40,9 @@
 </template>
 
 <script setup lang="ts">
-import { categories } from '~/data/categories'
-
 const { t } = useI18n()
 const localePath = useLocalePath()
-const { byCategory, featured } = await useVehicles()
+const { featured } = await useVehicles()
 
 const whyItems = [
   {

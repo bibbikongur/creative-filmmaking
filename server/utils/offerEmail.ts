@@ -6,10 +6,12 @@ import type { Offer, Quote } from '~~/app/types'
 
 const STRINGS = {
   en: {
-    subject: (q: Quote) => `Your offer from Creative Filmmaking — ${q.company || q.name}`,
-    greeting: (q: Quote) => `Hi ${q.name},`,
-    body: (o: Offer, total: string) => [
-      'Thank you for your request. Our offer for the vehicles and equipment on your list is attached as a PDF.',
+    subject: (q: Quote) => `Your offer from Creative Filmmaking${q.company || q.name ? ` — ${q.company || q.name}` : ''}`,
+    greeting: (q: Quote) => q.name ? `Hi ${q.name},` : 'Hello,',
+    body: (q: Quote, o: Offer, total: string) => [
+      q.source === 'admin'
+        ? 'Please find attached our offer for the vehicles and equipment listed, as a PDF.'
+        : 'Thank you for your request. Our offer for the vehicles and equipment on your list is attached as a PDF.',
       '',
       `Total: ${total}${o.validUntil ? ` (valid until ${o.validUntil})` : ''}`,
       '',
@@ -19,10 +21,12 @@ const STRINGS = {
     filename: (q: Quote) => `creative-filmmaking-offer-${q.id}.pdf`,
   },
   is: {
-    subject: (q: Quote) => `Tilboð frá Creative Filmmaking — ${q.company || q.name}`,
-    greeting: (q: Quote) => `Sæl/l ${q.name},`,
-    body: (o: Offer, total: string) => [
-      'Takk fyrir fyrirspurnina. Tilboð okkar í bílana og búnaðinn á listanum þínum fylgir með sem PDF-skjal.',
+    subject: (q: Quote) => `Tilboð frá Creative Filmmaking${q.company || q.name ? ` — ${q.company || q.name}` : ''}`,
+    greeting: (q: Quote) => q.name ? `Sæl/l ${q.name},` : 'Góðan dag,',
+    body: (q: Quote, o: Offer, total: string) => [
+      q.source === 'admin'
+        ? 'Meðfylgjandi er tilboð okkar í bílana og búnaðinn á listanum, sem PDF-skjal.'
+        : 'Takk fyrir fyrirspurnina. Tilboð okkar í bílana og búnaðinn á listanum þínum fylgir með sem PDF-skjal.',
       '',
       `Samtals: ${total}${o.validUntil ? ` (gildir til ${o.validUntil})` : ''}`,
       '',
@@ -50,7 +54,7 @@ export async function sendOfferEmail(quote: Quote, offer: Offer, pdf: Buffer) {
   const text = [
     s.greeting(quote),
     '',
-    ...s.body(offer, total),
+    ...s.body(quote, offer, total),
     '',
     s.signoff,
     'Creative Filmmaking',

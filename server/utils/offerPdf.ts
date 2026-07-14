@@ -31,6 +31,7 @@ const STRINGS = {
     validUntil: 'Valid until',
     accept: 'To accept this offer — or discuss it — simply reply to the email it arrived with.',
     vat: 'All prices are without VAT unless otherwise stated.',
+    perDay: (days: number, rate: string) => `${rate}/day × ${days} ${days === 1 ? 'day' : 'days'}`,
   },
   is: {
     title: 'TILBOÐ',
@@ -48,6 +49,7 @@ const STRINGS = {
     validUntil: 'Gildir til',
     accept: 'Til að samþykkja tilboðið — eða ræða það nánar — er nóg að svara tölvupóstinum sem það fylgdi.',
     vat: 'Öll verð eru án VSK nema annað sé tekið fram.',
+    perDay: (days: number, rate: string) => `${rate}/dag × ${days} ${days === 1 ? 'dagur' : 'dagar'}`,
   },
 } as const
 
@@ -128,10 +130,10 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   let y = 160
   doc.font('Helvetica').fontSize(8).fillColor(GRAY).text(s.preparedFor.toUpperCase(), left, y)
   y += 12
-  doc.font('Helvetica-Bold').fontSize(11).fillColor(INK).text(quote.name, left, y)
+  doc.font('Helvetica-Bold').fontSize(11).fillColor(INK).text(quote.name || quote.email, left, y)
   y += 15
   doc.font('Helvetica').fontSize(9).fillColor(GRAY)
-  for (const line of [quote.company, quote.email, quote.phone].filter(Boolean) as string[]) {
+  for (const line of [quote.company, quote.name ? quote.email : undefined, quote.phone].filter(Boolean) as string[]) {
     doc.text(line, left, y)
     y += 12
   }
@@ -179,9 +181,16 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
       catch { /* corrupt image — skip the thumbnail */ }
     }
     const name = item.name[locale] || item.name.en
-    const textY = y + (thumbH - 10) / 2 - 4
+    const perDay = item.pricing === 'day' && item.days
+    // Per-day rows carry a second (gray) line, so the text block starts higher.
+    const textY = perDay ? y + (thumbH - 24) / 2 : y + (thumbH - 10) / 2 - 4
     doc.font('Helvetica-Bold').fontSize(10).fillColor(INK)
-      .text(name, col.name, textY, { width: col.qty - col.name - 10, ellipsis: true, height: 24 })
+      .text(name, col.name, textY, { width: col.qty - col.name - 10, ellipsis: true, height: 12 })
+    if (perDay) {
+      doc.font('Helvetica').fontSize(8).fillColor(GRAY)
+        .text(s.perDay(item.days!, money(item.unitPrice)), col.name, textY + 14,
+          { width: col.qty - col.name - 10, ellipsis: true, height: 10 })
+    }
     doc.font('Helvetica').fontSize(10).fillColor(INK)
     doc.text(String(item.qty), col.qty, textY, { width: 30, align: 'right' })
     doc.text(money(item.unitPrice), col.unit, textY, { width: 70, align: 'right' })

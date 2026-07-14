@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import type {
   CartItemType, DiscountType, LocaleCode, Offer, OfferCurrency, OfferItem,
-  Quote, QuoteDetail, QuoteItem, QuoteStatus, QuoteSummary,
+  PricingMode, Quote, QuoteDetail, QuoteItem, QuoteSource, QuoteStatus, QuoteSummary,
 } from '~~/app/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -15,6 +15,7 @@ export const QUOTE_STATUSES: QuoteStatus[] = ['new', 'offered', 'won', 'lost']
 
 export interface NewQuoteInput {
   locale: LocaleCode
+  source?: QuoteSource
   name: string
   email: string
   phone?: string
@@ -38,7 +39,7 @@ export interface NewOfferInput {
   discountValue?: number
   note?: string
   validUntil?: string
-  items: { quoteItemId: number, unitPrice: number }[]
+  items: { quoteItemId: number, unitPrice: number, pricing?: PricingMode, days?: number }[]
 }
 
 export function createQuote(input: NewQuoteInput): Quote {
@@ -52,9 +53,9 @@ export function createQuote(input: NewQuoteInput): Quote {
   `)
   db.transaction(() => {
     db.prepare(`
-      INSERT INTO quotes (id, created_at, status, locale, name, email, phone, company, dates, message)
-      VALUES (?, ?, 'new', ?, ?, ?, ?, ?, ?, ?)
-    `).run(id, createdAt, input.locale, input.name, input.email,
+      INSERT INTO quotes (id, created_at, status, source, locale, name, email, phone, company, dates, message)
+      VALUES (?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(id, createdAt, input.source ?? 'web', input.locale, input.name, input.email,
       input.phone ?? null, input.company ?? null, input.dates ?? null, input.message ?? null)
     for (const item of input.items) {
       insertItem.run(id, item.itemType, item.itemId, item.slug ?? null,
@@ -115,23 +116,27 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
   const quote = getQuote(quoteId)
   if (!quote) throw createError({ statusCode: 404, statusMessage: 'Quote not found' })
 
-  const priceByItem = new Map(input.items.map(i => [i.quoteItemId, i.unitPrice]))
+  const priceByItem = new Map(input.items.map(i => [i.quoteItemId, i]))
   const items: OfferItem[] = quote.items.map((qi) => {
-    const unitPrice = priceByItem.get(qi.id)
-    if (unitPrice === undefined) {
+    const priced = priceByItem.get(qi.id)
+    if (!priced || !Number.isFinite(priced.unitPrice)) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Validation failed',
         data: { errors: [`Missing price for item "${qi.name.en}".`] },
       })
     }
+    const pricing: PricingMode = priced.pricing === 'day' ? 'day' : 'flat'
+    const days = pricing === 'day' ? Math.max(1, Math.round(priced.days ?? 1)) : undefined
     return {
       quoteItemId: qi.id,
       name: qi.name,
       image: qi.image,
       qty: qi.qty,
-      unitPrice,
-      lineTotal: round2(unitPrice * qi.qty),
+      unitPrice: priced.unitPrice,
+      pricing,
+      days,
+      lineTotal: round2(priced.unitPrice * qi.qty * (days ?? 1)),
     }
   })
 
@@ -176,6 +181,7 @@ function rowToQuote(r: Record<string, unknown>): Quote {
     id: r.id as string,
     createdAt: r.created_at as string,
     status: r.status as QuoteStatus,
+    source: ((r.source as string | null) ?? 'web') as QuoteSource,
     locale: r.locale as LocaleCode,
     name: r.name as string,
     email: r.email as string,

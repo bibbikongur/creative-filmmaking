@@ -259,6 +259,52 @@ export const vehicles: Vehicle[] = [
     ],
   },
   {
+    id: 'v-011',
+    slug: 'can-am-outlander-max-6x6-850',
+    category: 'support-vehicles',
+    featured: false,
+    name: {
+      en: 'Can-Am Outlander MAX 6x6 850',
+      is: 'Can-Am Outlander MAX 6x6 850',
+    },
+    tagline: {
+      en: 'A brand-new 2026 six-wheeler that hauls gear and crew beyond the end of the road.',
+      is: 'Glænýtt sexhjól árgerð 2026 sem flytur búnað og tökulið út fyrir enda vegarins.',
+    },
+    description: {
+      en: 'The massively upgraded 2026 Outlander MAX 6x6: an 82 hp Rotax 999 cc V-twin, a pDrive primary CVT with work calibration and extra-low gear, and selectable 4WD / 6WD with a Visco-Lok QE auto-locking front differential. Tri-Mode Dynamic Power Steering, selectable engine modes and Intelligent Engine Braking keep it composed hauling camera gear up a moraine or easing it back down a river bank.\n\nIt tows 830 kg, carries 454 kg on the rear cargo bed and swallows 275 litres in built-in storage — including a 30-litre front compartment — riding on 28" XPS Trail King tires on 14" aluminum wheels with 30.5 cm of ground clearance. Road-registered (T3, 65 km/h), so it legally links basecamp and set on public roads, and the removable passenger seat carries a spotter or comes off for more cargo.',
+      is: 'Gríðarlega uppfærður 2026 Outlander MAX 6x6: 82 hestafla Rotax 999cc V2-mótor, pDrive kúpling með vinnustillingu og auka lágum gír, og veljanlegt fjór- eða sexhjóladrif með Visco-Lok QE sjálflæsandi framdrifslæsingu. Þrístillanlegt rafmagnsstýri, akstursstillingar og stillanleg mótorbremsa halda honum öruggum með myndavélabúnað upp skriðu eða rólega niður árbakka.\n\nHann dregur 830 kg, ber 454 kg á palli að aftan og rúmar 275 lítra í innbyggðum geymslum — þar af 30 lítra farangurshólf að framan — á 28" XPS Trail King dekkjum á 14" álfelgum með 30,5 cm veghæð. Götuskráður (T3, 65 km/h) svo hann tengir grunnbúðir og sett löglega um þjóðveg, og lausa farþegasætið tekur aðstoðarmann eða fer af fyrir meiri farm.',
+    },
+    highlights: [
+      { en: '82 hp Rotax 999 cc V-twin with selectable 4WD / 6WD and Visco-Lok QE auto-locking front differential', is: '82 hestafla Rotax 999cc V2-mótor með veljanlegu fjór-/sexhjóladrifi og Visco-Lok QE sjálflæsandi framdrifi' },
+      { en: '830 kg towing capacity and 454 kg cargo-bed capacity', is: '830 kg dráttargeta og 454 kg burðargeta á palli' },
+      { en: '28" XPS Trail King tires on 14" aluminum wheels, 30.5 cm ground clearance', is: '28" XPS Trail King dekk á 14" álfelgum, 30,5 cm veghæð' },
+      { en: 'Tri-Mode Dynamic Power Steering, engine modes and Intelligent Engine Braking (iEB)', is: 'Þrístillanlegt rafmagnsstýri, akstursstillingar og stillanleg mótorbremsa (iEB)' },
+      { en: 'Road-registered (T3, 65 km/h) with LED lighting, mirrors and a removable passenger seat', is: 'Götuskráður (T3, 65 km/h) með LED-lýsingu, speglum og lausu farþegasæti' },
+    ],
+    specs: {
+      seats: 2,
+      lengthM: 3.2,
+      heightM: 1.4,
+      weightKg: 631,
+      towingCapacityKg: 830,
+      payloadKg: 454,
+      drivetrain: '6x6',
+      transmission: 'automatic',
+      fuel: 'petrol',
+      towHitch: true,
+      extra: {
+        en: 'Model year 2026 · 275 L built-in storage · 19.5 L fuel tank · full skid plate · 2 in. rear hitch and tow ball',
+        is: 'Árgerð 2026 · 275 l innbyggð geymsla · 19,5 l tankur · heil botnplata · 2" dráttarkúla að aftan',
+      },
+    },
+    images: [
+      '/images/vehicles/can-am-outlander-max-6x6-a.jpg',
+      '/images/vehicles/can-am-outlander-max-6x6-b.jpg',
+      '/images/vehicles/can-am-outlander-max-6x6-c.jpg',
+    ],
+  },
+  {
     id: 'v-007',
     slug: 'talent-trailer',
     category: 'trailers',

@@ -37,7 +37,7 @@ export function getDb(): Database.Database {
 // first-boot import above never re-runs, so each late addition is listed here
 // and inserted exactly once (guarded by a meta flag, and skipped entirely if
 // the admin already created something with the same id or slug).
-const SEED_ADDITIONS = ['v-010']
+const SEED_ADDITIONS = ['v-010', 'v-011']
 const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024']
 
 function seedCatalogueAdditions(db: Database.Database) {
@@ -101,6 +101,7 @@ function initSchema(db: Database.Database) {
       created_at TEXT NOT NULL,
       status     TEXT NOT NULL DEFAULT 'new'
                  CHECK (status IN ('new', 'offered', 'won', 'lost')),
+      source     TEXT NOT NULL DEFAULT 'web' CHECK (source IN ('web', 'admin')),
       locale     TEXT NOT NULL DEFAULT 'en' CHECK (locale IN ('en', 'is')),
       name    TEXT NOT NULL,
       email   TEXT NOT NULL,
@@ -266,6 +267,9 @@ function migrate(db: Database.Database) {
   const ensureColumn = (table: string, column: string, ddl: string) => {
     if (!columns(table).includes(column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${ddl}`)
   }
+
+  // v3: admin-created quotes carry a source marker.
+  ensureColumn('quotes', 'source', "source TEXT NOT NULL DEFAULT 'web'")
 
   // v2: departments on job_members.
   ensureColumn('job_members', 'department_id', 'department_id TEXT')
