@@ -32,11 +32,11 @@
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
         <div>
           <label class="admin-label">Tagline (English)</label>
-          <input v-model.trim="form.tagline.en" type="text" class="input-dark">
+          <textarea v-model.trim="form.tagline.en" rows="3" class="input-dark resize-y" />
         </div>
         <div>
           <label class="admin-label">Tagline (Icelandic)</label>
-          <input v-model.trim="form.tagline.is" type="text" class="input-dark">
+          <textarea v-model.trim="form.tagline.is" rows="3" class="input-dark resize-y" />
         </div>
       </div>
     </section>
