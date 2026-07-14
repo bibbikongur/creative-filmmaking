@@ -37,7 +37,7 @@ export function getDb(): Database.Database {
 // first-boot import above never re-runs, so each late addition is listed here
 // and inserted exactly once (guarded by a meta flag, and skipped entirely if
 // the admin already created something with the same id or slug).
-const SEED_ADDITIONS = ['v-010', 'v-011', 'v-012']
+const SEED_ADDITIONS = ['v-010', 'v-011', 'v-012', 'v-013']
 const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024']
 
 // One-time content refreshes: bump the rev to push the current seed data over

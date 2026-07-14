@@ -27,11 +27,9 @@ export default defineNuxtConfig({
     ],
     lazy: true,
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://creativefilmmaking.is',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_locale',
-      redirectOn: 'root',
-    },
+    // No browser-language redirect: everyone lands on the Icelandic root page.
+    // English is opt-in via the language switcher (/en/*).
+    detectBrowserLanguage: false,
   },
 
   // Canonical site identity — powers absolute URLs in canonical links, OG tags & sitemap.
@@ -81,10 +79,13 @@ export default defineNuxtConfig({
     // Unsplash hosts the placeholder fleet imagery; swap for /images/* files
     // (no domain entry needed) when real photos arrive.
     domains: ['images.unsplash.com'],
-    // Register the pass-through provider — imgProvider() routes admin-uploaded
-    // /uploads/* photos here (they live outside public/, so IPX can't see them).
+    // Custom provider for admin-uploaded /uploads/* photos — imgProvider()
+    // routes them here (they live outside public/, so IPX can't see them).
+    // The provider builds resize URLs handled by server/routes/uploads/.
     // Without this key the provider isn't bundled and SSR throws "Unknown provider".
-    none: {},
+    providers: {
+      uploads: { provider: '~/providers/uploads' },
+    },
   },
 
   fonts: {

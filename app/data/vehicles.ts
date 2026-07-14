@@ -180,6 +180,43 @@ export const vehicles: Vehicle[] = [
     ],
   },
   {
+    id: 'v-013',
+    slug: 'ford-transit-cargo-van',
+    category: 'equipment-cars',
+    featured: false,
+    name: {
+      en: 'Ford Transit Cargo Van',
+      is: 'Ford Transit sendibíll',
+    },
+    tagline: {
+      en: 'A shelved panel van with roof rack for gear runs and daily hauls.',
+      is: 'Sendibíll með hillum og toppgrind fyrir búnaðarferðir og daglega flutninga.',
+    },
+    description: {
+      en: 'The everyday workhorse for gear runs, pickups and deliveries between warehouse, basecamp and set. A full-height bulkhead separates the cab from the cargo bay, where a plywood shelving unit keeps cases, consumables and smalls organized instead of sliding around loose. Interior lighting and a rubber-matted floor make dark load-ins easier on people and equipment.\n\nUp top, a full-length roof rack with a rear access ladder carries ladders, poles and lengths of timber. A side sliding door gives kerbside access, and the tow hitch adds one of our trailers when a run outgrows the cargo bay.',
+      is: 'Hversdagsvinnuhesturinn í búnaðarferðir, sóttir og sendingar milli lagers, grunnbúða og tökustaðar. Heilt skilrúm skilur ökumannshúsið frá flutningsrýminu, þar sem krossviðarhillur halda töskum, rekstrarvörum og smáhlutum skipulögðum í stað þess að renna til lausar. Innilýsing og gúmmímotta á gólfi gera dimmar hleðslur þægilegri fyrir fólk og búnað.\n\nUppi á þaki tekur toppgrind í fullri lengd með stiga að aftan stiga, rör og timbur. Rennihurð á hlið gefur aðgengi frá gangstétt og dráttarkrókurinn bætir einum af vögnunum okkar við þegar ferðin sprengir flutningsrýmið.',
+    },
+    highlights: [
+      { en: 'Plywood shelving unit keeps cases and smalls organized', is: 'Krossviðarhillur halda töskum og smáhlutum skipulögðum' },
+      { en: 'Full-length roof rack with rear access ladder', is: 'Toppgrind í fullri lengd með stiga að aftan' },
+      { en: 'Full-height bulkhead between cab and cargo bay', is: 'Heilt skilrúm milli ökumannshúss og flutningsrýmis' },
+      { en: 'Interior cargo lighting and rubber-matted floor', is: 'Innilýsing í flutningsrými og gúmmímotta á gólfi' },
+      { en: 'Tow hitch for our equipment trailers', is: 'Dráttarkrókur fyrir búnaðarvagnana okkar' },
+    ],
+    specs: {
+      fuel: 'diesel',
+      towHitch: true,
+    },
+    images: [
+      '/images/vehicles/ford-transit-a.jpg',
+      '/images/vehicles/ford-transit-b.jpg',
+      '/images/vehicles/ford-transit-c.jpg',
+      '/images/vehicles/ford-transit-d.jpg',
+      '/images/vehicles/ford-transit-e.jpg',
+      '/images/vehicles/ford-transit-f.jpg',
+    ],
+  },
+  {
     id: 'v-005',
     slug: 'land-cruiser-location-scout',
     category: 'support-vehicles',
