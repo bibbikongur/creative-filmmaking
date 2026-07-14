@@ -40,6 +40,14 @@ export function getDb(): Database.Database {
 const SEED_ADDITIONS = ['v-010', 'v-011']
 const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024']
 
+// One-time content refreshes of rows that were already seeded: bump the rev to
+// push the current seed data over what's in the database. Replaces the whole
+// row (including any admin edits to it), so only list a vehicle here when the
+// seed file is the intended source of truth for that revision.
+const SEED_UPDATES: { id: string, rev: number }[] = [
+  { id: 'v-010', rev: 2 },
+]
+
 function seedCatalogueAdditions(db: Database.Database) {
   for (const id of SEED_ADDITIONS) {
     const flag = `seeded:vehicle:${id}`
@@ -54,6 +62,19 @@ function seedCatalogueAdditions(db: Database.Database) {
           .run(id, vehicle.slug, m + 1, JSON.stringify(vehicle))
         console.log(`[db] vehicles: seeded late addition ${id} (${vehicle.slug})`)
       }
+    }
+    db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  }
+
+  for (const { id, rev } of SEED_UPDATES) {
+    const flag = `reseeded:vehicle:${id}:${rev}`
+    if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) continue
+
+    const vehicle = seedVehicles.find(v => v.id === id)
+    if (vehicle && db.prepare('SELECT id FROM vehicles WHERE id = ?').get(id)) {
+      db.prepare('UPDATE vehicles SET slug = ?, data = ? WHERE id = ?')
+        .run(vehicle.slug, JSON.stringify(vehicle), id)
+      console.log(`[db] vehicles: reseeded ${id} (${vehicle.slug}) at rev ${rev}`)
     }
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
   }

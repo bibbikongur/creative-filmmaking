@@ -415,15 +415,9 @@ export const vehicles: Vehicle[] = [
         is: 'Árgerð 2026 · staðsett í Reykjavík · breidd 2,50 m · heildarþyngd 2.000 kg á hýsi',
       },
     },
+    // Placeholder until the real interior photos are uploaded via the admin panel.
     images: [
-      '/images/vehicles/hobby-560-wfu-a.jpg',
-      '/images/vehicles/hobby-560-wfu-b.jpg',
-      '/images/vehicles/hobby-560-wfu-c.jpg',
-      '/images/vehicles/hobby-560-wfu-d.jpg',
-      '/images/vehicles/hobby-560-wfu-e.jpg',
-      '/images/vehicles/hobby-560-wfu-f.jpg',
-      '/images/vehicles/hobby-560-wfu-g.jpg',
-      '/images/vehicles/hobby-560-wfu-h.jpg',
+      img('photo-1516939884455-1445c8652f83'),
     ],
   },
   {
