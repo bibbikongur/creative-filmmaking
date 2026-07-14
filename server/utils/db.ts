@@ -193,7 +193,10 @@ function initSchema(db: Database.Database) {
       password_hash    TEXT,
       token_hash       TEXT,
       token_expires_at TEXT,
-      token_purpose    TEXT CHECK (token_purpose IN ('invite', 'reset'))
+      token_purpose    TEXT CHECK (token_purpose IN ('invite', 'reset')),
+      -- Bumped whenever credentials change (password reset / invite accept) to
+      -- invalidate every previously-issued session cookie for this user.
+      session_epoch    INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS company_admins (
@@ -302,6 +305,9 @@ function migrate(db: Database.Database) {
 
   // v3: admin-created quotes carry a source marker.
   ensureColumn('quotes', 'source', "source TEXT NOT NULL DEFAULT 'web'")
+
+  // v5: session_epoch invalidates stale cookies after a credential change.
+  ensureColumn('portal_users', 'session_epoch', 'session_epoch INTEGER NOT NULL DEFAULT 0')
 
   // v4: VAT itemized on offers. 0 on pre-VAT offers so old PDFs regenerate unchanged.
   ensureColumn('offers', 'vat_rate', 'vat_rate REAL NOT NULL DEFAULT 0')

@@ -25,6 +25,12 @@ export function getUserById(id: string): PortalUserPublic | null {
   return row ? rowToPortalUser(row) : null
 }
 
+/** Current session epoch for a user; bumped on every credential change. */
+export function getUserEpoch(id: string): number | null {
+  const row = getDb().prepare('SELECT session_epoch FROM portal_users WHERE id = ?').get(id) as { session_epoch: number } | undefined
+  return row ? row.session_epoch : null
+}
+
 export function getUserByEmail(email: string): PortalUserPublic | null {
   const row = getDb().prepare('SELECT * FROM portal_users WHERE email = ? COLLATE NOCASE')
     .get(email.trim()) as Record<string, unknown> | undefined
@@ -110,7 +116,8 @@ export function acceptInvite(rawToken: string, input: { password: string, name?:
   getDb().prepare(`
     UPDATE portal_users
     SET status = 'active', password_hash = ?, name = COALESCE(?, name),
-        token_hash = NULL, token_expires_at = NULL, token_purpose = NULL
+        token_hash = NULL, token_expires_at = NULL, token_purpose = NULL,
+        session_epoch = session_epoch + 1
     WHERE id = ?
   `).run(hashPassword(input.password), input.name?.trim() || null, user.id)
   return getUserById(user.id)
@@ -132,7 +139,8 @@ export function resetPassword(rawToken: string, password: string): PortalUserPub
   if (!user) return null
   getDb().prepare(`
     UPDATE portal_users
-    SET password_hash = ?, token_hash = NULL, token_expires_at = NULL, token_purpose = NULL
+    SET password_hash = ?, token_hash = NULL, token_expires_at = NULL, token_purpose = NULL,
+        session_epoch = session_epoch + 1
     WHERE id = ?
   `).run(hashPassword(password), user.id)
   return getUserById(user.id)

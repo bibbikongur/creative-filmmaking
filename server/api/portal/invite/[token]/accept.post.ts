@@ -1,7 +1,7 @@
 const isRateLimited = makeRateLimiter(60_000, 10)
 
 export default defineEventHandler(async (event) => {
-  const ip = getRequestIP(event, { xForwardedFor: true }) || 'unknown'
+  const ip = getClientIp(event)
   if (isRateLimited(ip)) {
     throw createError({ statusCode: 429, statusMessage: 'Too many requests.' })
   }
@@ -25,6 +25,6 @@ export default defineEventHandler(async (event) => {
   }
 
   const session = await getPortalSession(event)
-  await session.update({ uid: user.id })
+  await session.update({ uid: user.id, epoch: getUserEpoch(user.id) ?? 0 })
   return { ok: true, user, memberships: membershipsForUser(user.id) }
 })

@@ -305,6 +305,52 @@ export const vehicles: Vehicle[] = [
     ],
   },
   {
+    id: 'v-012',
+    slug: 'chevrolet-silverado-ltz',
+    category: 'support-vehicles',
+    featured: false,
+    name: {
+      en: 'Chevrolet Silverado LTZ Crew Cab',
+      is: 'Chevrolet Silverado LTZ pallbíll',
+    },
+    tagline: {
+      en: 'A lifted V8 crew-cab pickup that tows the trailers and hauls the gear.',
+      is: 'Hækkaður V8 pallbíll með tvöföldu húsi sem dregur vagnana og flytur búnaðinn.',
+    },
+    description: {
+      en: 'The fleet\'s tow rig: a lifted Silverado LTZ crew cab on all-terrain tires, with a Rough Country front bumper and LED light bars for the dark half of the Icelandic year. The V8 and tow hitch pull our caravans, talent trailers and equipment trailers without drama, and the flat lockable tonneau cover keeps cases dry and out of sight in the bed.\n\nInside it is all LTZ: leather seating for five, dual-zone climate and a quiet, comfortable ride between basecamp and set. Thule roof bars take ladders, boards and light grip up top.',
+      is: 'Dráttarbíll flotans: hækkaður Silverado LTZ með tvöföldu húsi á grófum jeppadekkjum, með Rough Country framstuðara og LED ljósabörum fyrir dimmari helming ársins. V8 vélin og dráttarkrókurinn draga hjólhýsin, leikaravagnana og búnaðarvagnana okkar án vandræða og læsanleg pallhlífin heldur töskum þurrum og úr augsýn á pallinum.\n\nAð innan er hann alvöru LTZ: leðursæti fyrir fimm, tvískipt miðstöð og hljóðlátur, þægilegur akstur milli grunnbúða og tökustaðar. Thule þakbogar taka stiga, planka og léttan gripbúnað upp á þak.',
+    },
+    highlights: [
+      { en: 'Lifted 4x4 on all-terrain tires for gravel and rough location roads', is: 'Hækkaður fjórhjóladrifinn á grófum dekkjum fyrir malarvegi og erfiða tökustaði' },
+      { en: 'V8 tow rig for our caravans, talent trailers and equipment trailers', is: 'V8 dráttarbíll fyrir hjólhýsin, leikaravagnana og búnaðarvagnana okkar' },
+      { en: 'Lockable, weatherproof bed under a flat tonneau cover', is: 'Læsanlegur, veðurþéttur pallur undir sléttri pallhlíf' },
+      { en: 'LED light bars for dark loading areas and winter shoots', is: 'LED ljósabarir fyrir dimm athafnasvæði og vetrartökur' },
+      { en: 'Leather LTZ cab seats five in comfort', is: 'LTZ leðurinnrétting með sæti fyrir fimm' },
+    ],
+    specs: {
+      seats: 5,
+      lengthM: 5.8,
+      drivetrain: '4x4',
+      transmission: 'automatic',
+      fuel: 'petrol',
+      winterEquipped: true,
+      towHitch: true,
+      extra: {
+        en: 'Rough Country front bumper with LED light bars · Thule roof bars · lockable tonneau cover',
+        is: 'Rough Country framstuðari með LED ljósabörum · Thule þakbogar · læsanleg pallhlíf',
+      },
+    },
+    images: [
+      '/images/vehicles/chevrolet-silverado-ltz-a.jpg',
+      '/images/vehicles/chevrolet-silverado-ltz-b.jpg',
+      '/images/vehicles/chevrolet-silverado-ltz-c.jpg',
+      '/images/vehicles/chevrolet-silverado-ltz-d.jpg',
+      '/images/vehicles/chevrolet-silverado-ltz-e.jpg',
+      '/images/vehicles/chevrolet-silverado-ltz-f.jpg',
+    ],
+  },
+  {
     id: 'v-007',
     slug: 'talent-trailer',
     category: 'trailers',

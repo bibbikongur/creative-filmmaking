@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   const email = normalizeEmail(String(body?.email ?? ''))
   const password = String(body?.password ?? '')
 
-  const ip = getRequestIP(event, { xForwardedFor: true }) || 'unknown'
+  const ip = getClientIp(event)
   if (isLocked(`ip:${ip}`) || (email && isLocked(`email:${email}`))) {
     throw createError({ statusCode: 429, statusMessage: 'Too many failed attempts. Try again in 15 minutes.' })
   }
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
   attempts.delete(`email:${email}`)
 
   const session = await getPortalSession(event)
-  await session.update({ uid: creds!.id })
+  await session.update({ uid: creds!.id, epoch: getUserEpoch(creds!.id) ?? 0 })
 
   const user = getUserById(creds!.id)!
   return { ok: true, user, memberships: membershipsForUser(user.id) }

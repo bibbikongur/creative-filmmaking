@@ -9,7 +9,7 @@ import type { PortalUserPublic, TimesheetWeek, WeekReviewCapabilities } from '~~
 // its company locks it out immediately.
 // ─────────────────────────────────────────────────────────────────────────────
 
-type PortalSession = { uid?: string }
+type PortalSession = { uid?: string, epoch?: number }
 
 export const portalConfigured = () =>
   Boolean(useRuntimeConfig().sessionSecret) && encryptionConfigured()
@@ -44,7 +44,13 @@ export async function getPortalUser(event: H3Event): Promise<PortalUserPublic | 
     const session = await getPortalSession(event)
     if (!session.data.uid) return null
     const user = getUserById(session.data.uid)
-    return user && user.status === 'active' ? user : null
+    if (!user || user.status !== 'active') return null
+    // Reject cookies issued before the last credential change. Cookies predating
+    // this feature carry no epoch (→ 0), matching the default epoch of accounts
+    // that never reset, so existing sessions survive the rollout.
+    const epoch = getUserEpoch(user.id) ?? 0
+    if ((session.data.epoch ?? 0) !== epoch) return null
+    return user
   }
   catch {
     return null

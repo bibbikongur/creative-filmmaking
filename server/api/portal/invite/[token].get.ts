@@ -1,7 +1,7 @@
 const isRateLimited = makeRateLimiter(60_000, 10)
 
 export default defineEventHandler(async (event) => {
-  const ip = getRequestIP(event, { xForwardedFor: true }) || 'unknown'
+  const ip = getClientIp(event)
   if (isRateLimited(ip)) {
     throw createError({ statusCode: 429, statusMessage: 'Too many requests.' })
   }
