@@ -37,15 +37,16 @@ export function getDb(): Database.Database {
 // first-boot import above never re-runs, so each late addition is listed here
 // and inserted exactly once (guarded by a meta flag, and skipped entirely if
 // the admin already created something with the same id or slug).
-const SEED_ADDITIONS = ['v-010', 'v-011']
+const SEED_ADDITIONS = ['v-010', 'v-011', 'v-012']
 const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024']
 
-// One-time content refreshes of rows that were already seeded: bump the rev to
-// push the current seed data over what's in the database. Replaces the whole
-// row (including any admin edits to it), so only list a vehicle here when the
-// seed file is the intended source of truth for that revision.
+// One-time content refreshes: bump the rev to push the current seed data over
+// what's in the database. Upserts — replaces the row if it exists (including
+// any admin edits) and re-inserts it if the admin had deleted it — so only
+// list a vehicle here when the seed file is the intended source of truth for
+// that revision. Each rev fires at most once (meta flag).
 const SEED_UPDATES: { id: string, rev: number }[] = [
-  { id: 'v-010', rev: 2 },
+  { id: 'v-010', rev: 3 },
 ]
 
 function seedCatalogueAdditions(db: Database.Database) {
@@ -71,10 +72,18 @@ function seedCatalogueAdditions(db: Database.Database) {
     if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) continue
 
     const vehicle = seedVehicles.find(v => v.id === id)
-    if (vehicle && db.prepare('SELECT id FROM vehicles WHERE id = ?').get(id)) {
-      db.prepare('UPDATE vehicles SET slug = ?, data = ? WHERE id = ?')
-        .run(vehicle.slug, JSON.stringify(vehicle), id)
-      console.log(`[db] vehicles: reseeded ${id} (${vehicle.slug}) at rev ${rev}`)
+    if (vehicle) {
+      if (db.prepare('SELECT id FROM vehicles WHERE id = ?').get(id)) {
+        db.prepare('UPDATE vehicles SET slug = ?, data = ? WHERE id = ?')
+          .run(vehicle.slug, JSON.stringify(vehicle), id)
+        console.log(`[db] vehicles: reseeded ${id} (${vehicle.slug}) at rev ${rev}`)
+      }
+      else if (!db.prepare('SELECT id FROM vehicles WHERE slug = ?').get(vehicle.slug)) {
+        const { m } = db.prepare('SELECT COALESCE(MAX(sort), -1) AS m FROM vehicles').get() as { m: number }
+        db.prepare('INSERT INTO vehicles (id, slug, sort, data) VALUES (?, ?, ?, ?)')
+          .run(id, vehicle.slug, m + 1, JSON.stringify(vehicle))
+        console.log(`[db] vehicles: re-inserted ${id} (${vehicle.slug}) at rev ${rev}`)
+      }
     }
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
   }
