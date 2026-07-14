@@ -1,6 +1,6 @@
 import PDFDocument from 'pdfkit'
 import { promises as fs } from 'node:fs'
-import { basename, join } from 'node:path'
+import { basename, join, normalize, resolve } from 'node:path'
 import type { LocaleCode, Offer, Quote } from '~~/app/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -27,10 +27,13 @@ const STRINGS = {
     lineTotal: 'Total',
     subtotal: 'Subtotal',
     discount: 'Discount',
+    vat: 'VAT',
     total: 'Total',
+    totalInclVat: 'Total incl. VAT',
     validUntil: 'Valid until',
-    accept: 'To accept this offer — or discuss it — simply reply to the email it arrived with.',
-    vat: 'All prices are without VAT unless otherwise stated.',
+    accept: 'To accept this offer, or to discuss it, simply reply to the email it arrived with.',
+    vatNote: 'All prices are without VAT unless otherwise stated.',
+    vatNoteItemized: (rate: number) => `Item prices are without VAT. ${rate}% VAT is itemized above.`,
     perDay: (days: number, rate: string) => `${rate}/day × ${days} ${days === 1 ? 'day' : 'days'}`,
   },
   is: {
@@ -45,10 +48,13 @@ const STRINGS = {
     lineTotal: 'Samtals',
     subtotal: 'Millisamtala',
     discount: 'Afsláttur',
+    vat: 'VSK',
     total: 'Samtals',
+    totalInclVat: 'Samtals með VSK',
     validUntil: 'Gildir til',
-    accept: 'Til að samþykkja tilboðið — eða ræða það nánar — er nóg að svara tölvupóstinum sem það fylgdi.',
-    vat: 'Öll verð eru án VSK nema annað sé tekið fram.',
+    accept: 'Til að samþykkja tilboðið, eða ræða það nánar, er nóg að svara tölvupóstinum sem það fylgdi.',
+    vatNote: 'Öll verð eru án VSK nema annað sé tekið fram.',
+    vatNoteItemized: (rate: number) => `Einingaverð eru án VSK. ${rate}% VSK er sundurliðaður að ofan.`,
     perDay: (days: number, rate: string) => `${rate}/dag × ${days} ${days === 1 ? 'dagur' : 'dagar'}`,
   },
 } as const
@@ -76,6 +82,9 @@ async function loadPdfImage(src?: string): Promise<Buffer | null> {
       if (!res.ok) return null
       buf = Buffer.from(await res.arrayBuffer())
     }
+    else if (src.startsWith('/')) {
+      buf = await readPublicAsset(src)
+    }
     else {
       return null
     }
@@ -86,6 +95,21 @@ async function loadPdfImage(src?: string): Promise<Buffer | null> {
   catch {
     return null
   }
+}
+
+/** Read a catalogue image (e.g. /images/vehicles/x.jpg) from the public asset
+ *  dir — public/ in dev, .output/public in the built server. */
+async function readPublicAsset(src: string): Promise<Buffer> {
+  const rel = normalize(decodeURIComponent(src.split('?')[0]!)).replace(/^[/\\]+/, '')
+  for (const dir of [join(process.cwd(), 'public'), join(process.cwd(), '.output', 'public')]) {
+    const path = resolve(dir, rel)
+    if (!path.startsWith(resolve(dir))) continue // no escaping the asset dir
+    try {
+      return await fs.readFile(path)
+    }
+    catch { /* try the next candidate dir */ }
+  }
+  throw new Error(`public asset not found: ${src}`)
 }
 
 export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buffer> {
@@ -211,17 +235,23 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     doc.text(value, col.total, y, { width: 70, align: 'right' })
     y += bold ? 20 : 16
   }
-  if (offer.discountAmount > 0) {
+  const vat = offer.vatAmount ?? 0
+  if (offer.discountAmount > 0 || vat > 0) {
     totalRow(s.subtotal, money(offer.subtotal))
+  }
+  if (offer.discountAmount > 0) {
     const discountLabel = offer.discountType === 'percent'
       ? `${s.discount} (${offer.discountValue}%)`
       : s.discount
     // ASCII hyphen — the U+2212 minus sign is outside WinAnsi and won't render.
     totalRow(discountLabel, `-${money(offer.discountAmount)}`, false, GOLD)
   }
+  if (vat > 0) {
+    totalRow(`${s.vat} (${offer.vatRate}%)`, money(vat))
+  }
   doc.moveTo(col.qty - 60, y).lineTo(right, y).lineWidth(1).strokeColor(INK).stroke()
   y += 8
-  totalRow(s.total, money(offer.total), true)
+  totalRow(vat > 0 ? s.totalInclVat : s.total, money(offer.total), true)
 
   // ── Note / validity / footer ───────────────────────────────────────────────
   y += 16
@@ -234,7 +264,7 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     y = doc.y + 12
   }
   doc.font('Helvetica').fontSize(9).fillColor(GRAY).text(s.accept, left, y, { width })
-  doc.text(s.vat, left, doc.y + 4, { width })
+  doc.text(vat > 0 ? s.vatNoteItemized(offer.vatRate) : s.vatNote, left, doc.y + 4, { width })
 
   doc.end()
   return done

@@ -82,20 +82,20 @@ export default defineEventHandler(async (event) => {
   // Owner notification — best-effort now that the quote is durable.
   const siteUrl = (useRuntimeConfig().public.siteUrl || '').replace(/\/$/, '')
   const itemLines = items.map(i =>
-    `- ${i.qty} × ${i.nameEn}${i.slug && siteUrl ? ` — ${siteUrl}/vehicles/${i.slug}` : ''}`)
+    `- ${i.qty} × ${i.nameEn}${i.slug && siteUrl ? ` - ${siteUrl}/vehicles/${i.slug}` : ''}`)
   const lines = [
     `Name:       ${name}`,
     `Email:      ${email}`,
-    `Phone:      ${quote.phone || '—'}`,
-    `Company:    ${quote.company || '—'}`,
-    `Dates:      ${quote.dates || '—'}`,
+    `Phone:      ${quote.phone || '–'}`,
+    `Company:    ${quote.company || '–'}`,
+    `Dates:      ${quote.dates || '–'}`,
     `Language:   ${quote.locale === 'is' ? 'Icelandic' : 'English'}`,
     '',
     `Requested items (${items.length}):`,
     ...itemLines,
     '',
     'Message:',
-    quote.message || '—',
+    quote.message || '–',
     '',
     `Make an offer: ${siteUrl}/admin/quotes/${quote.id}`,
   ].join('\n')

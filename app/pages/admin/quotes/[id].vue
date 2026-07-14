@@ -23,11 +23,11 @@
       </div>
       <div>
         <p class="text-xs uppercase tracking-widest text-bone-400">Phone</p>
-        <p class="mt-1 text-bone-100">{{ quote.phone || '—' }}</p>
+        <p class="mt-1 text-bone-100">{{ quote.phone || '–' }}</p>
       </div>
       <div>
         <p class="text-xs uppercase tracking-widest text-bone-400">Shooting dates</p>
-        <p class="mt-1 text-bone-100">{{ quote.dates || '—' }}</p>
+        <p class="mt-1 text-bone-100">{{ quote.dates || '–' }}</p>
       </div>
       <div>
         <p class="text-xs uppercase tracking-widest text-bone-400">{{ quote.source === 'admin' ? 'Created' : 'Submitted' }}</p>
@@ -69,11 +69,11 @@
         <div v-for="o in [...quote.offers].reverse()" :key="o.id" class="flex items-center gap-4 p-4 bg-ink-900/50 text-sm">
           <div class="min-w-0 flex-1">
             <p class="font-semibold text-bone-100">
-              Offer #{{ o.id }} — {{ formatMoneyLocal(o.total, o.currency) }}
+              Offer #{{ o.id }} · {{ formatMoneyLocal(o.total, o.currency) }}
               <span v-if="o.discountAmount" class="text-bone-400 font-normal">(incl. {{ o.discountType === 'percent' ? `${o.discountValue}%` : formatMoneyLocal(o.discountAmount, o.currency) }} discount)</span>
             </p>
             <p class="mt-0.5 text-xs text-bone-400">
-              {{ o.sentAt ? `Sent ${formatDateTime(o.sentAt)}` : `Saved ${formatDateTime(o.createdAt)} — not sent` }}
+              {{ o.sentAt ? `Sent ${formatDateTime(o.sentAt)}` : `Saved ${formatDateTime(o.createdAt)}, not sent` }}
             </p>
           </div>
           <a

@@ -23,16 +23,19 @@
   },
   "home": {
     "featuredKicker": "Í sviðsljósinu",
-    "featuredTitle": "Vinsælustu bílarnir",
+    "featuredTitle": "Vinsælustu tækin",
     "featuredAll": "Sjá allan flotann",
+    "featuredEquipmentKicker": "Búnaður",
+    "featuredEquipmentTitle": "Vinsælasti búnaðurinn",
+    "featuredEquipmentAll": "Sjá allan búnað",
     "whyKicker": "Af hverju við",
     "whyTitle": "Hannað fyrir kvikmyndavinnu",
     "why1Title": "Tilbúið á sett",
-    "why1Text": "Rafstöðvar, hiti, myrkvun og rafmagn á tökustað, útbúið fyrir tökudaga, ekki frí.",
+    "why1Text": "Sérðu ekki það sem þú ert að leita að? Sendu okkur línu og við getum séð hvað við getum gert. Við erum alltaf til í að redda hlutunum.",
     "why2Title": "4x4 og vetrarfært",
-    "why2Text": "Hálendisslóðar, vöð og vetrartökur. Flotinn er útbúinn fyrir íslenskar aðstæður allt árið.",
+    "why2Text": "Öll okkar tæki og búnaður kemur útbúinn fyrir veturinn á þeim tíma árs.",
     "why3Title": "Afhent á tökustað",
-    "why3Text": "Við komum bílunum á settið, í grunnbúðir eða á flugvöllinn, hvert á land sem er, á þinni stundaskrá."
+    "why3Text": "Þarftu okkur til að koma hlutunum til þín? Við getum boðið upp á að koma tækjum og eða búnaði hvert á land sem er."
   },
   "categories": {
     "campers": "Húsbílar",
@@ -135,10 +138,10 @@
   },
   "about": {
     "kicker": "Um okkur",
-    "title": "Teymið á bak við bílana",
-    "p1": "Creative Filmmaking leigir framleiðslubíla til kvikmynda- og sjónvarpsverkefna á Íslandi. Við byrjuðum sjálf á setti og flotinn er því byggður í kringum það sem framleiðslur raunverulega þurfa: hlý hvíldarrými, áreiðanlegt rafmagn, pláss fyrir búnað og bíla sem stoppa ekki þótt veðrið snúist.",
-    "p2": "Frá grunnbúðum á hálendinu til næturtaka í miðborginni höfum við stutt kvikmyndir, þáttaraðir, auglýsingar og tónlistarmyndbönd um allt land. Við þekkjum vegina, vöðin og veðurspána, og skipuleggjum flutningana með þér.",
-    "p3": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn á sett. Ef eitthvað óvænt kemur upp í miðjum tökum svörum við í símann.",
+    "title": "Teymið á bak við tjöldin",
+    "p1": "Creative Filmmaking leigir bíla, tæki og alls konar búnað til kvikmynda- og sjónvarpsverkefna á Íslandi. Við byrjuðum sjálf á setti og flotinn er því byggður í kringum það sem framleiðslur raunverulega þurfa.",
+    "p2": "Við höfum unnið í stórum sem smáum verkefnum og á það við um kvikmyndaverkefni, þáttaseríur, tónlistarmyndbönd og auglýsingar um land allt. Höfum við þar með mikla reynslu af því hvað hvert verkefni þarf og erum alltaf til í að hjálpa við alls konar skipulagningu. Sendu okkur línu og við sjáum hvernig við getum hjálpað.",
+    "p3": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn á sett.",
     "statVehicles": "Bílar í flotanum",
     "statSupport": "Aðstoð á tökudögum",
     "statArea": "Þjónustusvæði"
@@ -146,7 +149,7 @@
   "contact": {
     "kicker": "Hafa samband",
     "title": "Ræðum verkefnið þitt",
-    "intro": "Sendu okkur grófa lýsingu á tökunum og við svörum með lausum bílum og sérsniðnu tilboði, yfirleitt innan eins virks dags.",
+    "intro": "Sendu okkur línu um verkefnið ykkar og við svörum um hæl, við getum sérsniðið tilboð fyrir verkefnið. Ef það er eitthvað sem þú finnur ekki hjá okkur láttu okkur vita við erum með víðtæk tengsl og getum hjálpað við að redda hlutunum! Alltaf einnig hægt að hringja og heyra í okkur hljóðið.",
     "directTitle": "Beint samband",
     "emailLabel": "Netfang",
     "phoneLabel": "Sími",
@@ -257,7 +260,7 @@
     },
     "departments": {
       "title": "Deildir",
-      "hint": "Valfrjálst — bættu við deildarstjóra sem yfirfer á undan þér.",
+      "hint": "Valfrjálst: bættu við deildarstjóra sem yfirfer á undan þér.",
       "department": "Deild",
       "unassigned": "Engin deild",
       "namePlaceholder": "t.d. Mynd",
@@ -277,7 +280,7 @@
     "jobs": {
       "title": "Verkefni",
       "jobName": "Heiti verkefnis",
-      "namePlaceholder": "t.d. Kvikmynd — Hálendið",
+      "namePlaceholder": "t.d. Kvikmynd - Hálendið",
       "create": "Stofna verkefni",
       "close": "Loka",
       "reopen": "Opna aftur",
@@ -299,7 +302,7 @@
       "remove": "Fjarlægja",
       "restore": "Endurvekja",
       "removeConfirm": "Fjarlægja {name} af þessu verkefni? Tímaskýrslur haldast.",
-      "empty": "Enginn á þessu verkefni enn. Bættu fólki við með netfangi hér að ofan — það fær boð um að velja lykilorð."
+      "empty": "Enginn á þessu verkefni enn. Bættu fólki við með netfangi hér að ofan og það fær boð um að velja lykilorð."
     },
     "timesheet": {
       "kicker": "Tímaskráning",
@@ -313,7 +316,7 @@
       "hoursShort": "klst.",
       "dayOff": "Engin vakt",
       "summary": "Samantekt viku",
-      "noRate": "Ekkert dagsverð er skráð fyrir þetta verkefni — hafðu samband við framleiðslustjóra.",
+      "noRate": "Ekkert dagsverð er skráð fyrir þetta verkefni. Hafðu samband við framleiðslustjóra.",
       "saved": "Allar breytingar vistaðar",
       "unsaved": "Vista…",
       "submitWeek": "Senda inn viku",
@@ -332,7 +335,7 @@
     "review": {
       "title": "Tímaskýrslur til yfirferðar",
       "all": "Allt",
-      "empty": "Ekkert hér — innsendar vikur birtast í þessari röð.",
+      "empty": "Ekkert hér enn. Innsendar vikur birtast í þessari röð.",
       "day": "Dagur",
       "times": "Tímar",
       "amount": "Upphæð",
@@ -347,7 +350,7 @@
       "reopen": "Opna aftur sem drög",
       "reopenConfirm": "Opna vikuna aftur? Starfsmaðurinn getur breytt henni og þarf að senda hana inn aftur.",
       "awaitingConfirmation": "Beðið eftir að starfsmaðurinn staðfesti breyttu tímana.",
-      "awaitingJobAdmin": "Samþykkt af deild — bíður lokasamþykkis verkefnisstjóra.",
+      "awaitingJobAdmin": "Samþykkt af deild, bíður lokasamþykkis verkefnisstjóra.",
       "approvedNote": "Þessi vika er samþykkt.",
       "department": "Deild",
       "history": "Saga"

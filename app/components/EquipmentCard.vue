@@ -1,12 +1,12 @@
 <template>
   <div class="group flex flex-col bg-ink-800 border-t-2 border-transparent hover:border-gold-500 transition-colors duration-300">
     <!-- Image -->
-    <div class="relative overflow-hidden aspect-card bg-bone-100">
+    <div class="relative overflow-hidden aspect-card bg-white">
       <NuxtImg
         :key="active"
         :src="item.images[active]"
         :provider="imgProvider(item.images[active])"
-        :alt="`${lt(item.name)}${item.images.length > 1 ? ` — ${active + 1}/${item.images.length}` : ''}`"
+        :alt="`${lt(item.name)}${item.images.length > 1 ? ` (${active + 1}/${item.images.length})` : ''}`"
         class="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-105"
         sizes="sm:100vw md:50vw lg:33vw"
         loading="lazy"

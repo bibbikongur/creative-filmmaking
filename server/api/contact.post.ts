@@ -44,9 +44,9 @@ export default defineEventHandler(async (event) => {
   const lines = [
     `Name:       ${name}`,
     `Email:      ${email}`,
-    `Phone:      ${body.phone?.trim() || '—'}`,
-    `Company:    ${body.company?.trim() || '—'}`,
-    `Dates:      ${body.dates?.trim() || '—'}`,
+    `Phone:      ${body.phone?.trim() || '–'}`,
+    `Company:    ${body.company?.trim() || '–'}`,
+    `Dates:      ${body.dates?.trim() || '–'}`,
     `Vehicle:    ${vehicle}`,
     '',
     'Message:',

@@ -6,7 +6,7 @@
         :key="active"
         :src="images[active]"
         :provider="imgProvider(images[active])"
-        :alt="`${alt} — ${active + 1}/${images.length}`"
+        :alt="`${alt} (${active + 1}/${images.length})`"
         class="w-full h-full object-cover"
         sizes="sm:100vw lg:60vw"
         :preload="active === 0"

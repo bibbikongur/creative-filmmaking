@@ -7,7 +7,7 @@
       </p>
       <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">New quote</h1>
       <p class="mt-2 text-sm text-bone-400">
-        Pick the items and the recipient here — on the next step you set the prices (flat or per day) and send the PDF offer.
+        Pick the items and the recipient here. On the next step you set the prices (flat or per day) and send the PDF offer.
       </p>
     </div>
 

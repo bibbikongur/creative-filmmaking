@@ -137,6 +137,8 @@ function initSchema(db: Database.Database) {
       items           TEXT NOT NULL,
       subtotal        REAL NOT NULL,
       discount_amount REAL NOT NULL,
+      vat_rate        REAL NOT NULL DEFAULT 0,
+      vat_amount      REAL NOT NULL DEFAULT 0,
       total           REAL NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_offers_quote ON offers(quote_id);
@@ -270,6 +272,10 @@ function migrate(db: Database.Database) {
 
   // v3: admin-created quotes carry a source marker.
   ensureColumn('quotes', 'source', "source TEXT NOT NULL DEFAULT 'web'")
+
+  // v4: VAT itemized on offers. 0 on pre-VAT offers so old PDFs regenerate unchanged.
+  ensureColumn('offers', 'vat_rate', 'vat_rate REAL NOT NULL DEFAULT 0')
+  ensureColumn('offers', 'vat_amount', 'vat_amount REAL NOT NULL DEFAULT 0')
 
   // v2: departments on job_members.
   ensureColumn('job_members', 'department_id', 'department_id TEXT')

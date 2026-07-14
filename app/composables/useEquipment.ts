@@ -14,5 +14,7 @@ export const useEquipment = async () => {
   const byCategory = (category: EquipmentCategory): EquipmentItem[] =>
     data.value.filter(e => e.category === category)
 
-  return { all, byCategory }
+  const featured = (): EquipmentItem[] => data.value.filter(e => e.featured)
+
+  return { all, byCategory, featured }
 }

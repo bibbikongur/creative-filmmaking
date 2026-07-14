@@ -61,5 +61,6 @@ export function parseEquipmentPayload(body: unknown): Omit<EquipmentItem, 'id'> 
     name,
     tagline,
     images,
+    featured: b.featured === true,
   }
 }

@@ -13,6 +13,9 @@ import type {
 
 export const QUOTE_STATUSES: QuoteStatus[] = ['new', 'offered', 'won', 'lost']
 
+/** Icelandic standard VAT, added on top of the net amount of every new offer. */
+export const VAT_RATE = 24
+
 export interface NewQuoteInput {
   locale: LocaleCode
   source?: QuoteSource
@@ -148,17 +151,19 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
   else if (input.discountType === 'fixed' && input.discountValue) {
     discountAmount = round2(Math.min(input.discountValue, subtotal))
   }
-  const total = round2(subtotal - discountAmount)
+  const net = round2(subtotal - discountAmount)
+  const vatAmount = round2(net * VAT_RATE / 100)
+  const total = round2(net + vatAmount)
   const createdAt = new Date().toISOString()
 
   const result = db.prepare(`
     INSERT INTO offers (quote_id, created_at, currency, discount_type, discount_value,
-                        note, valid_until, items, subtotal, discount_amount, total)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        note, valid_until, items, subtotal, discount_amount, vat_rate, vat_amount, total)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(quoteId, createdAt, input.currency,
     input.discountType ?? null, input.discountType ? input.discountValue ?? null : null,
     input.note ?? null, input.validUntil ?? null,
-    JSON.stringify(items), subtotal, discountAmount, total)
+    JSON.stringify(items), subtotal, discountAmount, VAT_RATE, vatAmount, total)
 
   return getOffer(quoteId, Number(result.lastInsertRowid))!
 }
@@ -218,6 +223,8 @@ function rowToOffer(r: Record<string, unknown>): Offer {
     items: JSON.parse(r.items as string) as OfferItem[],
     subtotal: r.subtotal as number,
     discountAmount: r.discount_amount as number,
+    vatRate: (r.vat_rate as number | null) ?? 0,
+    vatAmount: (r.vat_amount as number | null) ?? 0,
     total: r.total as number,
   }
 }

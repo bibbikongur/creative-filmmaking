@@ -23,7 +23,7 @@ const save = async (payload: Record<string, unknown>) => {
     await navigateTo('/admin/equipment')
   }
   catch (e: any) {
-    error.value = e?.data?.data?.errors || e?.data?.statusMessage || 'Save failed — please try again.'
+    error.value = e?.data?.data?.errors || e?.data?.statusMessage || 'Save failed. Please try again.'
   }
   finally {
     saving.value = false

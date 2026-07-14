@@ -46,9 +46,9 @@
           <ul v-if="alterationChanges.length" class="mt-3 space-y-1 text-bone-100">
             <li v-for="(c, i) in alterationChanges" :key="i">
               <span class="text-bone-400">{{ formatShortDate(c.date, locale) }}:</span>
-              <span class="line-through text-bone-400 mx-1">{{ c.before ? `${minutesToTime(c.before.startMin)}–${minutesToTime(c.before.endMin)}` : '—' }}</span>
+              <span class="line-through text-bone-400 mx-1">{{ c.before ? `${minutesToTime(c.before.startMin)}–${minutesToTime(c.before.endMin)}` : '–' }}</span>
               →
-              <span class="text-gold-400 ml-1">{{ c.after ? `${minutesToTime(c.after.startMin)}–${minutesToTime(c.after.endMin)}` : '—' }}</span>
+              <span class="text-gold-400 ml-1">{{ c.after ? `${minutesToTime(c.after.startMin)}–${minutesToTime(c.after.endMin)}` : '–' }}</span>
             </li>
           </ul>
           <button type="button" class="btn-gold mt-4 disabled:opacity-60" :disabled="acting" @click="confirmAlteration">

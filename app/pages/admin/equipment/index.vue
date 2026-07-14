@@ -40,7 +40,10 @@
           loading="lazy"
         >
         <div class="min-w-0 flex-1">
-          <p class="font-semibold text-bone-100 truncate">{{ e.name.en }}</p>
+          <p class="font-semibold text-bone-100 truncate">
+            {{ e.name.en }}
+            <span v-if="e.featured" class="ml-2 text-[10px] uppercase tracking-widest text-gold-500 border border-gold-500/40 px-1.5 py-0.5">Featured</span>
+          </p>
           <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">{{ e.category }}</p>
         </div>
         <NuxtLink :to="`/admin/equipment/${e.id}`" class="btn-ghost !px-4 !py-2 !text-xs">Edit</NuxtLink>
@@ -55,7 +58,7 @@
       </div>
 
       <p v-if="!items.length" class="p-8 text-center text-sm text-bone-400">
-        No equipment yet — add the first item.
+        No equipment yet. Add the first item.
       </p>
     </div>
   </div>
@@ -81,7 +84,7 @@ const load = async () => {
     loaded.value = true
   }
   catch {
-    loadError.value = 'Could not load equipment — is the server running?'
+    loadError.value = 'Could not load equipment. Is the server running?'
   }
 }
 

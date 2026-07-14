@@ -17,7 +17,7 @@
         <span class="w-2 h-2 rounded-full bg-signal-500 animate-pulse" aria-hidden="true" />
         {{ t('hero.availability') }}
       </p>
-      <h1 class="mt-5 max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold uppercase tracking-wide text-bone-100 leading-[1.05]">
+      <h1 class="mt-5 max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold uppercase tracking-wide text-bone-100 leading-[1.15]">
         {{ t('hero.title') }}
       </h1>
       <p class="mt-6 max-w-2xl text-lg text-bone-400 leading-relaxed">

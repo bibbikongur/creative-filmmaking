@@ -156,7 +156,7 @@
         <div>
           <label class="admin-label">Drivetrain</label>
           <select v-model="form.specs.drivetrain" class="input-dark">
-            <option value="">—</option>
+            <option value="">–</option>
             <option value="4x4">4x4</option>
             <option value="2wd">2WD</option>
             <option value="6x6">6x6</option>
@@ -165,7 +165,7 @@
         <div>
           <label class="admin-label">Transmission</label>
           <select v-model="form.specs.transmission" class="input-dark">
-            <option value="">—</option>
+            <option value="">–</option>
             <option value="automatic">Automatic</option>
             <option value="manual">Manual</option>
           </select>
@@ -173,7 +173,7 @@
         <div>
           <label class="admin-label">Fuel</label>
           <select v-model="form.specs.fuel" class="input-dark">
-            <option value="">—</option>
+            <option value="">–</option>
             <option value="diesel">Diesel</option>
             <option value="petrol">Petrol</option>
             <option value="hybrid">Hybrid</option>

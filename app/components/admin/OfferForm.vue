@@ -88,7 +88,8 @@
         Discount{{ discountType === 'percent' ? ` (${discountValue}%)` : '' }}:
         <span class="text-gold-400 tabular-nums">−{{ fmt(discountAmount) }}</span>
       </p>
-      <p class="text-lg font-semibold text-bone-100">Total: <span class="tabular-nums">{{ fmt(total) }}</span></p>
+      <p class="text-bone-400">VAT ({{ VAT_RATE }}%): <span class="text-bone-100 tabular-nums">{{ fmt(vatAmount) }}</span></p>
+      <p class="text-lg font-semibold text-bone-100">Total incl. VAT: <span class="tabular-nums">{{ fmt(total) }}</span></p>
     </div>
 
     <p v-if="error" class="mt-4 text-sm text-signal-500">{{ error }}</p>
@@ -161,7 +162,10 @@ const discountAmount = computed(() => {
     ? subtotal.value * Math.min(v, 100) / 100
     : Math.min(v, subtotal.value)
 })
-const total = computed(() => subtotal.value - discountAmount.value)
+// Mirrors the server (quoteStore.createOffer): VAT on the net amount.
+const VAT_RATE = 24
+const vatAmount = computed(() => (subtotal.value - discountAmount.value) * VAT_RATE / 100)
+const total = computed(() => subtotal.value - discountAmount.value + vatAmount.value)
 
 const fmt = (n: number) => currency.value === 'EUR'
   ? `€${n.toLocaleString('en-US', { maximumFractionDigits: 2 })}`
@@ -216,7 +220,7 @@ const send = async () => {
     emit('saved')
   }
   catch (e: any) {
-    error.value = e?.data?.data?.errors?.join(' ') || e?.data?.statusMessage || 'Sending failed. The offer was saved — fix the issue and resend.'
+    error.value = e?.data?.data?.errors?.join(' ') || e?.data?.statusMessage || 'Sending failed. The offer was saved, so fix the issue and resend.'
     emit('saved')
   }
   finally {

@@ -53,7 +53,7 @@
                     <span v-if="e.endMin > 1440" class="text-[11px] uppercase tracking-widest text-gold-400">+1</span>
                     <span v-if="e.note" class="ml-2 text-xs text-bone-400">{{ e.note }}</span>
                   </p>
-                  <p v-if="!entriesFor(day.date).length" class="text-bone-400/60">—</p>
+                  <p v-if="!entriesFor(day.date).length" class="text-bone-400/60">–</p>
                 </template>
                 <template v-else>
                   <div v-for="(row, ri) in rowsFor(day.date)" :key="ri" class="flex items-center gap-2 mb-2">
@@ -146,14 +146,14 @@
           <div v-for="ev in detail!.events" :key="ev.id" class="p-3 bg-ink-900/50">
             <p class="text-bone-100">
               <span class="text-bone-400">{{ formatDateTime(ev.createdAt) }}</span>
-              · {{ ev.actorName || '—' }} · {{ $t(`portal.events.${ev.type}`) }}
+              · {{ ev.actorName || '–' }} · {{ $t(`portal.events.${ev.type}`) }}
             </p>
             <p v-if="ev.detail?.note" class="mt-1 text-bone-400">„{{ ev.detail.note }}"</p>
             <ul v-if="ev.detail?.changes?.length" class="mt-1 space-y-0.5 text-xs text-bone-400">
               <li v-for="(c, i) in ev.detail.changes" :key="i">
                 {{ formatShortDate(c.date, locale) }}:
-                <span class="line-through">{{ c.before ? `${minutesToTime(c.before.startMin)}–${minutesToTime(c.before.endMin)}` : '—' }}</span>
-                → {{ c.after ? `${minutesToTime(c.after.startMin)}–${minutesToTime(c.after.endMin)}` : '—' }}
+                <span class="line-through">{{ c.before ? `${minutesToTime(c.before.startMin)}–${minutesToTime(c.before.endMin)}` : '–' }}</span>
+                → {{ c.after ? `${minutesToTime(c.after.startMin)}–${minutesToTime(c.after.endMin)}` : '–' }}
               </li>
             </ul>
           </div>

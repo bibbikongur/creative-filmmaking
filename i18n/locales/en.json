@@ -25,14 +25,17 @@
     "featuredKicker": "Featured",
     "featuredTitle": "Production favourites",
     "featuredAll": "See the full fleet",
+    "featuredEquipmentKicker": "Equipment",
+    "featuredEquipmentTitle": "Popular equipment",
+    "featuredEquipmentAll": "See all equipment",
     "whyKicker": "Why us",
     "whyTitle": "Made for film work",
     "why1Title": "Set-ready",
-    "why1Text": "Generators, heating, blackout options and power on location. Equipped for shoot days, not holidays.",
+    "why1Text": "Don't see what you're looking for? Drop us a line and we'll see what we can do. We're always happy to make things happen.",
     "why2Title": "4x4 & winter capable",
-    "why2Text": "Highland tracks, river crossings and winter shoots. Our fleet is specced for Icelandic conditions year-round.",
+    "why2Text": "All our vehicles and equipment come winter-ready at that time of year.",
     "why3Title": "Delivered to location",
-    "why3Text": "We bring the vehicles to your set, basecamp or airport pickup, anywhere in Iceland, on your schedule."
+    "why3Text": "Need us to bring things to you? We can deliver vehicles and equipment anywhere in Iceland."
   },
   "categories": {
     "campers": "Campers",
@@ -135,10 +138,10 @@
   },
   "about": {
     "kicker": "About us",
-    "title": "The crew behind the wheels",
-    "p1": "Creative Filmmaking rents production vehicles to film and TV crews shooting in Iceland. We started on set ourselves, so the fleet is built around what productions actually need: warm places to rest, reliable power, room for gear and vehicles that don't stop when the weather turns.",
-    "p2": "From highland basecamps to city-centre night shoots, we've supported features, series, commercials and music videos across the country. We know the roads, the river crossings and the forecast, and we plan the logistics with you.",
-    "p3": "Every vehicle is serviced, cleaned and delivered set-ready. If something unexpected comes up mid-shoot, we answer the phone.",
+    "title": "The team behind the scenes",
+    "p1": "Creative Filmmaking rents vehicles, machinery and all kinds of equipment to film and TV productions in Iceland. We started on set ourselves, so the fleet is built around what productions actually need.",
+    "p2": "We've worked on projects big and small — features, series, music videos and commercials all across the country. That's given us plenty of experience in what each production needs, and we're always happy to help with planning of any kind. Drop us a line and we'll see how we can help.",
+    "p3": "Every vehicle is serviced, cleaned and delivered set-ready.",
     "statVehicles": "Vehicles in the fleet",
     "statSupport": "Support on shoot days",
     "statArea": "Service area"
@@ -146,7 +149,7 @@
   "contact": {
     "kicker": "Contact",
     "title": "Let's talk about your production",
-    "intro": "Send us the outline of your shoot and we'll reply with availability and a tailored offer, usually within one business day.",
+    "intro": "Drop us a line about your project and we'll get right back to you — we can tailor an offer for your production. If there's something you can't find with us, let us know: we have an extensive network and can help sort things out. And you can always just give us a call.",
     "directTitle": "Reach us directly",
     "emailLabel": "Email",
     "phoneLabel": "Phone",
@@ -257,7 +260,7 @@
     },
     "departments": {
       "title": "Departments",
-      "hint": "Optional — add a department admin to review before you do.",
+      "hint": "Optional: add a department admin to review before you do.",
       "department": "Department",
       "unassigned": "No department",
       "namePlaceholder": "e.g. Camera",
@@ -277,7 +280,7 @@
     "jobs": {
       "title": "Jobs",
       "jobName": "Job name",
-      "namePlaceholder": "e.g. Feature film — Highlands",
+      "namePlaceholder": "e.g. Feature film - Highlands",
       "create": "Create job",
       "close": "Close",
       "reopen": "Reopen",
@@ -299,7 +302,7 @@
       "remove": "Remove",
       "restore": "Restore",
       "removeConfirm": "Remove {name} from this job? Their timesheets are kept.",
-      "empty": "No crew on this job yet. Add people by email above — they get an invitation to set a password."
+      "empty": "No crew on this job yet. Add people by email above and they get an invitation to set a password."
     },
     "timesheet": {
       "kicker": "Timesheet",
@@ -313,7 +316,7 @@
       "hoursShort": "h",
       "dayOff": "No shift",
       "summary": "Week summary",
-      "noRate": "No day rate is set for this job yet — ask your production manager.",
+      "noRate": "No day rate is set for this job yet. Ask your production manager.",
       "saved": "All changes saved",
       "unsaved": "Saving…",
       "submitWeek": "Submit week",
@@ -333,7 +336,7 @@
     "review": {
       "title": "Timesheets for review",
       "all": "All",
-      "empty": "Nothing here — submitted weeks appear in this queue.",
+      "empty": "Nothing here yet. Submitted weeks appear in this queue.",
       "day": "Day",
       "times": "Times",
       "amount": "Amount",
@@ -348,7 +351,7 @@
       "reopen": "Reopen as draft",
       "reopenConfirm": "Reopen this week? The employee can edit and must submit it again.",
       "awaitingConfirmation": "Waiting for the employee to confirm the adjusted times.",
-      "awaitingJobAdmin": "Approved by the department — waiting for the job admin's final approval.",
+      "awaitingJobAdmin": "Approved by the department, waiting for the job admin's final approval.",
       "approvedNote": "This week is approved.",
       "department": "Department",
       "history": "History"

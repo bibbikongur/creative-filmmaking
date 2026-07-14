@@ -17,6 +17,19 @@
       </div>
     </section>
 
+    <!-- Featured equipment -->
+    <section v-if="featuredEquipment.length" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeading :kicker="t('home.featuredEquipmentKicker')" :title="t('home.featuredEquipmentTitle')" />
+        <NuxtLink :to="localePath('/equipment')" class="btn-ghost !px-5 !py-2.5">
+          {{ t('home.featuredEquipmentAll') }}
+        </NuxtLink>
+      </div>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" />
+      </div>
+    </section>
+
     <!-- Why us -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
       <SectionHeading :kicker="t('home.whyKicker')" :title="t('home.whyTitle')" center />
@@ -43,6 +56,14 @@
 const { t } = useI18n()
 const localePath = useLocalePath()
 const { featured } = await useVehicles()
+const { all: allEquipment, featured: featuredEquipmentItems } = await useEquipment()
+
+// Items ticked "featured" in the admin fill the home section; until any are
+// ticked, fall back to the first four so the section isn't empty.
+const featuredEquipment = computed(() => {
+  const picked = featuredEquipmentItems()
+  return picked.length ? picked : allEquipment().slice(0, 4)
+})
 
 const whyItems = [
   {

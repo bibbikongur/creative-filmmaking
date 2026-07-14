@@ -71,6 +71,8 @@ export interface EquipmentItem {
   tagline: LocalizedText
   /** First image is the card image */
   images: string[]
+  /** Featured items appear on the home page (absent on rows saved before the flag existed) */
+  featured?: boolean
 }
 
 // ── Cart, quote requests & offers ────────────────────────────────────────────
@@ -154,6 +156,10 @@ export interface Offer {
   items: OfferItem[]
   subtotal: number
   discountAmount: number
+  /** VAT percentage added on the net amount — 0 on offers made before VAT support. */
+  vatRate: number
+  vatAmount: number
+  /** Grand total: subtotal − discount + VAT. */
   total: number
 }
 

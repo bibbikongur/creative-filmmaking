@@ -42,7 +42,7 @@
       </NuxtLink>
 
       <p v-if="!quotes.length" class="p-8 text-center text-sm text-bone-400">
-        No quotes yet. They appear here when visitors submit their cart — or create one yourself with “New quote”.
+        No quotes yet. They appear here when visitors submit their cart, or create one yourself with “New quote”.
       </p>
     </div>
   </div>

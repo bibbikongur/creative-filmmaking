@@ -19,12 +19,16 @@
           </select>
         </div>
       </div>
+      <label class="mt-4 flex items-center gap-2.5 text-sm text-bone-100 cursor-pointer">
+        <input v-model="form.featured" type="checkbox" class="accent-gold-500 w-4 h-4">
+        Featured: show on the home page
+      </label>
     </section>
 
     <!-- Text -->
     <section>
       <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Text</h2>
-      <p class="mt-1 text-xs text-bone-400">A short line shown under the name on the card. Icelandic is optional — the site falls back to English when empty.</p>
+      <p class="mt-1 text-xs text-bone-400">A short line shown under the name on the card. Icelandic is optional; the site falls back to English when empty.</p>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
         <div>
           <label class="admin-label">Tagline (English)</label>
@@ -102,6 +106,7 @@ const isEdit = computed(() => Boolean(props.item))
 const e = props.item
 const form = reactive({
   category: e?.category ?? 'heating',
+  featured: e?.featured ?? false,
   name: { en: e?.name.en ?? '', is: e?.name.is ?? '' },
   tagline: { en: e?.tagline.en ?? '', is: e?.tagline.is ?? '' },
   images: [...(e?.images ?? [])],
@@ -154,6 +159,7 @@ const errorList = computed(() =>
 const submit = () => {
   emit('save', {
     category: form.category,
+    featured: form.featured,
     name: form.name,
     tagline: form.tagline,
     images: form.images,

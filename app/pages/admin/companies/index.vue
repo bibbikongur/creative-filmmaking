@@ -87,7 +87,7 @@
       </div>
 
       <p v-if="!companies.length" class="p-8 text-center text-sm text-bone-400">
-        No companies yet. Create one above — its admin gets an email to set a password
+        No companies yet. Create one above and its admin gets an email to set a password
         and can then manage jobs, staff and timesheets at /portal.
       </p>
     </div>
