@@ -114,12 +114,23 @@ const related = computed(() =>
   byCategory(vehicle.category).filter(v => v.slug !== vehicle.slug).slice(0, 3),
 )
 
+const siteUrl = useRuntimeConfig().public.siteUrl
+const absImage = (src: string) => (src.startsWith('http') ? src : `${siteUrl}${src}`)
+
+// Tagline alone is too thin for a snippet; pad it with the opening of the
+// description and trim to Google's ~160-character display window.
+const metaDescription = computed(() => {
+  const full = `${lt(vehicle.tagline)} ${lt(vehicle.description).split('\n\n')[0] ?? ''}`.trim()
+  return full.length > 160 ? `${full.slice(0, 157).trimEnd()}…` : full
+})
+
 useSeoMeta({
   title: () => lt(vehicle.name),
-  description: () => lt(vehicle.tagline),
+  description: () => metaDescription.value,
   ogTitle: () => `${lt(vehicle.name)} · Creative Filmmaking`,
   ogDescription: () => lt(vehicle.tagline),
-  ogImage: vehicle.images[0],
+  ogImage: absImage(vehicle.images[0] ?? ''),
+  ogImageAlt: () => lt(vehicle.name),
 })
 
 // No offers node on purpose — pricing is offer-on-request. Raw node because
@@ -129,7 +140,8 @@ useSchemaOrg([
     '@type': 'Vehicle',
     name: lt(vehicle.name),
     description: lt(vehicle.tagline),
-    image: vehicle.images,
+    image: vehicle.images.map(absImage),
+    ...(vehicle.specs.seats ? { seatingCapacity: vehicle.specs.seats } : {}),
   },
   defineBreadcrumb({
     itemListElement: [

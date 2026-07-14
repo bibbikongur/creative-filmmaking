@@ -63,4 +63,8 @@ useSeoMeta({
   ogTitle: `${t('meta.contact.title')} · Creative Filmmaking`,
   ogDescription: t('meta.contact.description'),
 })
+
+useSchemaOrg([
+  defineWebPage({ '@type': 'ContactPage' }),
+])
 </script>

@@ -57,4 +57,8 @@ useSeoMeta({
   ogTitle: `${t('meta.about.title')} · Creative Filmmaking`,
   ogDescription: t('meta.about.description'),
 })
+
+useSchemaOrg([
+  defineWebPage({ '@type': 'AboutPage' }),
+])
 </script>

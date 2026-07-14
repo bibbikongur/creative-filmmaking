@@ -7,6 +7,7 @@
       class="absolute inset-0 w-full h-full object-cover"
       sizes="100vw"
       preload
+      fetchpriority="high"
     />
     <!-- Legibility scrims: bottom-up black + slight vignette -->
     <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-ink-950/20" aria-hidden="true" />
@@ -17,7 +18,7 @@
         <span class="w-2 h-2 rounded-full bg-signal-500 animate-pulse" aria-hidden="true" />
         {{ t('hero.availability') }}
       </p>
-      <h1 class="mt-5 max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold uppercase tracking-wide text-bone-100 leading-[1.15]">
+      <h1 class="mt-5 max-w-4xl text-4xl/[1.15] sm:text-5xl/[1.15] lg:text-6xl/[1.15] font-semibold uppercase tracking-wide text-bone-100">
         {{ t('hero.title') }}
       </h1>
       <p class="mt-6 max-w-2xl text-lg text-bone-400 leading-relaxed">
