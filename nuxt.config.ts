@@ -76,9 +76,6 @@ export default defineNuxtConfig({
 
 
   image: {
-    // Unsplash hosts the placeholder fleet imagery; swap for /images/* files
-    // (no domain entry needed) when real photos arrive.
-    domains: ['images.unsplash.com'],
     // Custom provider for admin-uploaded /uploads/* photos — imgProvider()
     // routes them here (they live outside public/, so IPX can't see them).
     // The provider builds resize URLs handled by server/routes/uploads/.

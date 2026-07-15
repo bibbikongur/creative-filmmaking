@@ -18,11 +18,15 @@
         class="flex items-center gap-4 p-4 bg-ink-900/50 hover:bg-ink-900 transition-colors"
       >
         <img
+          v-if="v.images[0]"
           :src="v.images[0]"
           :alt="v.name.en"
           class="w-20 h-14 object-cover bg-ink-800 shrink-0"
           loading="lazy"
         >
+        <div v-else class="w-20 h-14 flex items-center justify-center bg-ink-800 shrink-0 text-[10px] uppercase tracking-widest text-bone-400/50">
+          No photo
+        </div>
         <div class="min-w-0 flex-1">
           <p class="font-semibold text-bone-100 truncate">
             {{ v.name.en }}

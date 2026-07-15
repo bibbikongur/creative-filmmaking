@@ -13,11 +13,11 @@ const CSP = [
   `object-src 'none'`,
   `frame-ancestors 'self'`,
   `form-action 'self'`,
-  `img-src 'self' data: blob: https://images.unsplash.com`,
+  `img-src 'self' data: blob:`,
   `script-src 'self' 'unsafe-inline'${isDev ? ` 'unsafe-eval'` : ''}`,
   `style-src 'self' 'unsafe-inline'`,
   `font-src 'self' data:`,
-  `connect-src 'self' https://images.unsplash.com${isDev ? ' ws: wss:' : ''}`,
+  `connect-src 'self'${isDev ? ' ws: wss:' : ''}`,
 ].join('; ')
 
 export default defineEventHandler((event) => {

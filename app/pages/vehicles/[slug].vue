@@ -129,8 +129,8 @@ useSeoMeta({
   description: () => metaDescription.value,
   ogTitle: () => `${lt(vehicle.name)} · Creative Filmmaking`,
   ogDescription: () => lt(vehicle.tagline),
-  ogImage: absImage(vehicle.images[0] ?? ''),
-  ogImageAlt: () => lt(vehicle.name),
+  ogImage: vehicle.images[0] ? absImage(vehicle.images[0]) : undefined,
+  ogImageAlt: vehicle.images[0] ? () => lt(vehicle.name) : undefined,
 })
 
 // No offers node on purpose — pricing is offer-on-request. Raw node because

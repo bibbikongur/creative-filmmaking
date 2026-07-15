@@ -1,7 +1,8 @@
 <template>
-  <section class="relative min-h-[90vh] flex items-end overflow-hidden film-grain">
-    <!-- Backdrop -->
+  <section class="relative min-h-[90vh] flex items-end overflow-hidden film-grain bg-ink-950">
+    <!-- Backdrop (optional — plain dark treatment until real photos arrive) -->
     <NuxtImg
+      v-if="image"
       :src="image"
       alt=""
       class="absolute inset-0 w-full h-full object-cover"
@@ -46,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ image: string }>()
+defineProps<{ image?: string }>()
 
 const { t } = useI18n()
 const localePath = useLocalePath()

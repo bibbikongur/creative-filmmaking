@@ -30,7 +30,35 @@ export function getDb(): Database.Database {
   migrate(db)
   importLegacyCatalogue(db)
   seedCatalogueAdditions(db)
+  stripStockPhotos(db)
   return db
+}
+
+// One-time cleanup: remove Unsplash placeholder photos from catalogue rows so
+// listings without real photography show the site's "no photo" placeholder.
+// Only images.unsplash.com URLs are dropped — real /images/* and /uploads/*
+// photos and every other field (including admin edits) are left untouched.
+function stripStockPhotos(db: Database.Database) {
+  const flag = 'cleanup:unsplash-images:1'
+  if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) return
+
+  db.transaction(() => {
+    for (const table of ['vehicles', 'equipment'] as const) {
+      const rows = db.prepare(`SELECT id, data FROM ${table}`).all() as { id: string, data: string }[]
+      const update = db.prepare(`UPDATE ${table} SET data = ? WHERE id = ?`)
+      for (const row of rows) {
+        const item = JSON.parse(row.data) as { images?: string[] }
+        if (!Array.isArray(item.images)) continue
+        const kept = item.images.filter(src => !src.includes('images.unsplash.com'))
+        if (kept.length !== item.images.length) {
+          item.images = kept
+          update.run(JSON.stringify(item), row.id)
+          console.log(`[db] ${table}: removed stock photos from ${row.id}`)
+        }
+      }
+    }
+    db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  })()
 }
 
 // Seed catalogue rows added after a database was first populated. The

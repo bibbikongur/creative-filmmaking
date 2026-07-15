@@ -3,15 +3,13 @@ import type { Vehicle } from '~/types'
 // ─────────────────────────────────────────────────────────────────────────────
 // THE FLEET — this is the only file to edit when adding/changing vehicles.
 //
-// Every text field has English + Icelandic side by side. Images are Unsplash
-// placeholders; to use real photos, drop files in /public/images and change
-// the URLs to '/images/your-photo.jpg'. `featured: true` puts a vehicle on
-// the home page. The slug is the URL — keep it lowercase-with-dashes and
-// don't change it after the site is live (it would break shared links).
+// Every text field has English + Icelandic side by side. An empty `images`
+// array renders the site's "no photo" placeholder; to add real photos, drop
+// files in /public/images and list them as '/images/your-photo.jpg'.
+// `featured: true` puts a vehicle on the home page. The slug is the URL —
+// keep it lowercase-with-dashes and don't change it after the site is live
+// (it would break shared links).
 // ─────────────────────────────────────────────────────────────────────────────
-
-const img = (id: string) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1600&q=80`
 
 export const vehicles: Vehicle[] = [
   {
@@ -51,12 +49,7 @@ export const vehicles: Vehicle[] = [
       towHitch: true,
       wifi: true,
     },
-    images: [
-      img('photo-1523987355523-c7b5b0dd90a7'),
-      img('photo-1532339142463-fd0a8979791a'),
-      img('photo-1504280390367-361c6d9f38f4'),
-      img('photo-1519681393784-d120267933ba'),
-    ],
+    images: [],
   },
   {
     id: 'v-002',
@@ -93,11 +86,7 @@ export const vehicles: Vehicle[] = [
       winterEquipped: true,
       towHitch: true,
     },
-    images: [
-      img('photo-1527018601619-a508a2be00cd'),
-      img('photo-1471479917193-f00955256257'),
-      img('photo-1506905925346-21bda4d32df4'),
-    ],
+    images: [],
   },
   {
     id: 'v-003',
@@ -133,11 +122,7 @@ export const vehicles: Vehicle[] = [
       winterEquipped: true,
       towHitch: true,
     },
-    images: [
-      img('photo-1601584115197-04ecc0da31d7'),
-      img('photo-1486262715619-67b85e0b08d3'),
-      img('photo-1512428559087-560fa5ceab42'),
-    ],
+    images: [],
   },
   {
     id: 'v-004',
@@ -173,11 +158,7 @@ export const vehicles: Vehicle[] = [
       winterEquipped: true,
       wifi: true,
     },
-    images: [
-      img('photo-1544620347-c4fd4a3d5957'),
-      img('photo-1524985069026-dd778a71c7b4'),
-      img('photo-1441974231531-c6227db76b6e'),
-    ],
+    images: [],
   },
   {
     id: 'v-013',
@@ -250,12 +231,7 @@ export const vehicles: Vehicle[] = [
       winterEquipped: true,
       towHitch: true,
     },
-    images: [
-      img('photo-1533473359331-0135ef1b58bf'),
-      img('photo-1519641471654-76ce0107ad1b'),
-      img('photo-1469474968028-56623f02e42e'),
-      img('photo-1464822759023-fed622ff2c3b'),
-    ],
+    images: [],
   },
   {
     id: 'v-006',
@@ -289,11 +265,7 @@ export const vehicles: Vehicle[] = [
       winterEquipped: true,
       towHitch: true,
     },
-    images: [
-      img('photo-1494976388531-d1058494cdd8'),
-      img('photo-1517524008697-84bbe3c3fd98'),
-      img('photo-1478131143081-80f7f84ca84d'),
-    ],
+    images: [],
   },
   {
     id: 'v-011',
@@ -420,11 +392,7 @@ export const vehicles: Vehicle[] = [
       winterEquipped: true,
       wifi: true,
     },
-    images: [
-      img('photo-1485846234645-a62644f84728'),
-      img('photo-1478720568477-152d9b164e26'),
-      img('photo-1516939884455-1445c8652f83'),
-    ],
+    images: [],
   },
   {
     id: 'v-008',
@@ -456,11 +424,7 @@ export const vehicles: Vehicle[] = [
       heating: true,
       winterEquipped: true,
     },
-    images: [
-      img('photo-1489824904134-891ab64532f1'),
-      img('photo-1522199755839-a2bacb67c546'),
-      img('photo-1508614589041-895b88991e3e'),
-    ],
+    images: [],
   },
   {
     id: 'v-010',
@@ -499,9 +463,7 @@ export const vehicles: Vehicle[] = [
       },
     },
     // Placeholder until the real interior photos are uploaded via the admin panel.
-    images: [
-      img('photo-1516939884455-1445c8652f83'),
-    ],
+    images: [],
   },
   {
     id: 'v-009',
@@ -533,10 +495,6 @@ export const vehicles: Vehicle[] = [
       generator: true,
       winterEquipped: true,
     },
-    images: [
-      img('photo-1502920514313-52581002a659'),
-      img('photo-1516035069371-29a1b244cc32'),
-      img('photo-1517940310602-26535839fe84'),
-    ],
+    images: [],
   },
 ]

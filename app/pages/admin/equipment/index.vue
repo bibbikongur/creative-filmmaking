@@ -34,11 +34,15 @@
           >▼</button>
         </div>
         <img
+          v-if="e.images[0]"
           :src="e.images[0]"
           :alt="e.name.en"
           class="w-20 h-14 object-cover bg-ink-800 shrink-0"
           loading="lazy"
         >
+        <div v-else class="w-20 h-14 flex items-center justify-center bg-ink-800 shrink-0 text-[10px] uppercase tracking-widest text-bone-400/50">
+          No photo
+        </div>
         <div class="min-w-0 flex-1">
           <p class="font-semibold text-bone-100 truncate">
             {{ e.name.en }}

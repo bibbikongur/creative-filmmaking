@@ -18,7 +18,7 @@
     "nodemailer": "^6.9.16",
     "nuxt": "^4.4.2",
     "pdfkit": "^0.19.1",
-    "sharp": "^0.35.3",
+    "sharp": "0.34.5",
     "vue": "^3.5.33",
     "vue-router": "^5.0.6"
   },
@@ -34,9 +34,11 @@
     "cac": "^6.7.14",
     "commander": "^13.1.0",
     "crossws": "^0.4.9",
+    "nuxt-og-image": "^6.7.2",
     "vitest": "^4.1.9"
   },
   "overrides": {
-    "tailwindcss": "3.4.19"
+    "tailwindcss": "3.4.19",
+    "sharp": "0.34.5"
   }
 }

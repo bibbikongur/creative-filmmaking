@@ -1,6 +1,7 @@
 <template>
   <div>
-    <HeroSection image="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=80" />
+    <!-- Hero backdrop photo removed for now — pass an image prop when a real one is ready. -->
+    <HeroSection />
 
     <!-- Featured vehicles -->
     <section class="bg-ink-900 border-y border-ink-800">
@@ -88,6 +89,5 @@ useSeoMeta({
   description: t('meta.home.description'),
   ogTitle: `${t('meta.home.title')} · Creative Filmmaking`,
   ogDescription: t('meta.home.description'),
-  ogImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80',
 })
 </script>

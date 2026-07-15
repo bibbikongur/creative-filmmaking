@@ -20,14 +20,12 @@ useHead(() => ({
 }))
 
 // Pages set a bare title (e.g. "The Fleet"); the template appends the brand once.
-// The ogImage here is the site-wide fallback — pages with a better image
-// (home hero, vehicle photos) override it with their own useSeoMeta call.
+// No site-wide ogImage until real photography lands — pages with a real image
+// (vehicle photos) set their own via useSeoMeta.
 useSeoMeta({
   titleTemplate: title => (title ? `${title} · Creative Filmmaking` : `Creative Filmmaking · ${t('meta.home.title')}`),
   ogSiteName: 'Creative Filmmaking',
   ogType: 'website',
-  ogImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80',
-  ogImageAlt: 'Creative Filmmaking · Production vehicle rental in Iceland',
   twitterCard: 'summary_large_image',
 })
 
