@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   const items: NewQuoteInput['items'] = []
   const seen = new Set<string>()
   for (const raw of body.items as CartEntry[]) {
-    const qty = Math.max(1, Math.min(Math.round(Number(raw?.qty)) || 1, 99))
+    const qty = Math.max(1, Math.round(Number(raw?.qty)) || 1)
     const key = `${raw?.type}:${raw?.id}`
     if (seen.has(key)) continue
     seen.add(key)

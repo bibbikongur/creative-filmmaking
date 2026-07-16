@@ -1,7 +1,6 @@
 import type { CartEntry, CartItemType } from '~/types'
 
 const MAX_ITEMS = 40
-const MAX_QTY = 99
 
 // The visitor's quote list ("cart") — persisted in a cookie so it survives
 // reloads and renders correctly during SSR (header badge). Entries hold only
@@ -26,7 +25,7 @@ export const useCart = () => {
     const existing = find(type, id)
     if (existing) {
       // Vehicles are unique physical units; equipment can be rented in multiples.
-      if (type === 'equipment') existing.qty = Math.min(existing.qty + 1, MAX_QTY)
+      if (type === 'equipment') existing.qty += 1
     }
     else if (entries.value.length < MAX_ITEMS) {
       entries.value = [...entries.value, { type, id, qty: 1 }]
@@ -37,7 +36,7 @@ export const useCart = () => {
   const setQty = (type: CartItemType, id: string, qty: number) => {
     const entry = find(type, id)
     if (!entry) return
-    entry.qty = Math.max(1, Math.min(Math.round(qty) || 1, MAX_QTY))
+    entry.qty = Math.max(1, Math.round(qty) || 1)
     persist()
   }
 

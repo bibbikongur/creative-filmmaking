@@ -69,6 +69,56 @@ export function createQuote(input: NewQuoteInput): Quote {
   return getQuote(id)!
 }
 
+export type UpdateQuoteInput = Omit<NewQuoteInput, 'source' | 'message'>
+
+/**
+ * Replace a quote's recipient details and item list. Existing quote_items rows
+ * are updated in place (same itemType+itemId) so their ids survive — the offer
+ * form prefills prices by quoteItemId, and sent offers keep their own snapshot
+ * anyway.
+ */
+export function updateQuote(id: string, input: UpdateQuoteInput): QuoteDetail | null {
+  const db = getDb()
+  const existing = getQuote(id)
+  if (!existing) return null
+
+  const updateItem = db.prepare(`
+    UPDATE quote_items SET slug = ?, name_en = ?, name_is = ?, image = ?, qty = ? WHERE id = ?
+  `)
+  const insertItem = db.prepare(`
+    INSERT INTO quote_items (quote_id, item_type, item_id, slug, name_en, name_is, image, qty)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `)
+  const deleteItem = db.prepare('DELETE FROM quote_items WHERE id = ?')
+
+  db.transaction(() => {
+    db.prepare(`
+      UPDATE quotes SET locale = ?, name = ?, email = ?, phone = ?, company = ?, dates = ?
+      WHERE id = ?
+    `).run(input.locale, input.name, input.email,
+      input.phone ?? null, input.company ?? null, input.dates ?? null, id)
+
+    const prevByKey = new Map(existing.items.map(i => [`${i.itemType}:${i.itemId}`, i]))
+    const kept = new Set<number>()
+    for (const item of input.items) {
+      const prev = prevByKey.get(`${item.itemType}:${item.itemId}`)
+      if (prev) {
+        kept.add(prev.id)
+        updateItem.run(item.slug ?? null, item.nameEn, item.nameIs, item.image ?? null, item.qty, prev.id)
+      }
+      else {
+        insertItem.run(id, item.itemType, item.itemId, item.slug ?? null,
+          item.nameEn, item.nameIs, item.image ?? null, item.qty)
+      }
+    }
+    for (const prev of existing.items) {
+      if (!kept.has(prev.id)) deleteItem.run(prev.id)
+    }
+  })()
+
+  return getQuote(id)
+}
+
 export function listQuotes(): QuoteSummary[] {
   const rows = getDb().prepare(`
     SELECT q.*,

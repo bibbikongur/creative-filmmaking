@@ -86,6 +86,15 @@ export interface CartEntry {
   qty: number
 }
 
+/** Editable line in the admin quote builder/editor (name/image for display only). */
+export interface QuoteDraftItem {
+  type: CartItemType
+  id: string
+  qty: number
+  name: string
+  image?: string
+}
+
 export type QuoteStatus = 'new' | 'offered' | 'won' | 'lost'
 
 /** 'web' = visitor cart submission; 'admin' = created from the admin panel. */
