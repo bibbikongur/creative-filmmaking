@@ -1,7 +1,7 @@
 import type { DiscountType, OfferCurrency, PricingMode } from '~~/app/types'
 
 interface OfferBody {
-  items?: { quoteItemId?: number, unitPrice?: number, pricing?: PricingMode, days?: number }[]
+  items?: { quoteItemId?: number, unitPrice?: number, pricing?: PricingMode, days?: number, weeks?: number }[]
   currency?: OfferCurrency
   discountType?: DiscountType | ''
   discountValue?: number
@@ -31,14 +31,18 @@ export default defineEventHandler(async (event) => {
     .map(i => ({
       quoteItemId: Number(i?.quoteItemId),
       unitPrice: Number(i?.unitPrice),
-      pricing: (i?.pricing === 'day' ? 'day' : 'flat') as PricingMode,
+      pricing: (i?.pricing === 'day' || i?.pricing === 'week' ? i.pricing : 'flat') as PricingMode,
       days: i?.pricing === 'day' ? Number(i?.days) : undefined,
+      weeks: i?.pricing === 'week' ? Number(i?.weeks) : undefined,
     }))
   if (!items.length || items.some(i => !Number.isFinite(i.quoteItemId) || !Number.isFinite(i.unitPrice) || i.unitPrice < 0)) {
     errors.push('Every item needs a price (0 or higher).')
   }
   if (items.some(i => i.pricing === 'day' && (!Number.isFinite(i.days!) || i.days! < 1 || i.days! > 999))) {
     errors.push('Per-day items need a number of days (1 or more).')
+  }
+  if (items.some(i => i.pricing === 'week' && (!Number.isFinite(i.weeks!) || i.weeks! < 1 || i.weeks! > 999))) {
+    errors.push('Per-week items need a number of weeks (1 or more).')
   }
 
   if (errors.length) {

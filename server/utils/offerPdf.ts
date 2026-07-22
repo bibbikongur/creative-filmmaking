@@ -35,6 +35,7 @@ const STRINGS = {
     vatNote: 'All prices are without VAT unless otherwise stated.',
     vatNoteItemized: (rate: number) => `Item prices are without VAT. ${rate}% VAT is itemized above.`,
     perDay: (days: number, rate: string) => `${rate}/day × ${days} ${days === 1 ? 'day' : 'days'}`,
+    perWeek: (weeks: number, rate: string) => `${rate}/week × ${weeks} ${weeks === 1 ? 'week' : 'weeks'}`,
   },
   is: {
     title: 'TILBOÐ',
@@ -56,6 +57,7 @@ const STRINGS = {
     vatNote: 'Öll verð eru án VSK nema annað sé tekið fram.',
     vatNoteItemized: (rate: number) => `Einingaverð eru án VSK. ${rate}% VSK er sundurliðaður að ofan.`,
     perDay: (days: number, rate: string) => `${rate}/dag × ${days} ${days === 1 ? 'dagur' : 'dagar'}`,
+    perWeek: (weeks: number, rate: string) => `${rate}/viku × ${weeks} ${weeks === 1 ? 'vika' : 'vikur'}`,
   },
 } as const
 
@@ -205,14 +207,18 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
       catch { /* corrupt image — skip the thumbnail */ }
     }
     const name = item.name[locale] || item.name.en
-    const perDay = item.pricing === 'day' && item.days
-    // Per-day rows carry a second (gray) line, so the text block starts higher.
-    const textY = perDay ? y + (thumbH - 24) / 2 : y + (thumbH - 10) / 2 - 4
+    const periodLine = item.pricing === 'day' && item.days
+      ? s.perDay(item.days, money(item.unitPrice))
+      : item.pricing === 'week' && item.weeks
+        ? s.perWeek(item.weeks, money(item.unitPrice))
+        : null
+    // Per-period rows carry a second (gray) line, so the text block starts higher.
+    const textY = periodLine ? y + (thumbH - 24) / 2 : y + (thumbH - 10) / 2 - 4
     doc.font('Helvetica-Bold').fontSize(10).fillColor(INK)
       .text(name, col.name, textY, { width: col.qty - col.name - 10, ellipsis: true, height: 12 })
-    if (perDay) {
+    if (periodLine) {
       doc.font('Helvetica').fontSize(8).fillColor(GRAY)
-        .text(s.perDay(item.days!, money(item.unitPrice)), col.name, textY + 14,
+        .text(periodLine, col.name, textY + 14,
           { width: col.qty - col.name - 10, ellipsis: true, height: 10 })
     }
     doc.font('Helvetica').fontSize(10).fillColor(INK)

@@ -21,6 +21,7 @@
           <select v-model="modes[item.id]" class="input-dark !w-28">
             <option value="flat">Flat price</option>
             <option value="day">Per day</option>
+            <option value="week">Per week</option>
           </select>
           <input
             v-model.number="prices[item.id]"
@@ -28,18 +29,18 @@
             min="0"
             step="any"
             class="input-dark !w-32 text-right"
-            :placeholder="modes[item.id] === 'day' ? 'Price / day' : 'Price / unit'"
+            :placeholder="pricePlaceholder(item.id)"
           >
           <input
-            v-if="modes[item.id] === 'day'"
-            v-model.number="days[item.id]"
+            v-if="modes[item.id] === 'day' || modes[item.id] === 'week'"
+            v-model.number="periods[item.id]"
             type="number"
             min="1"
             max="999"
             step="1"
             class="input-dark !w-20 text-right"
-            placeholder="Days"
-            title="Number of days"
+            :placeholder="modes[item.id] === 'week' ? 'Weeks' : 'Days'"
+            :title="modes[item.id] === 'week' ? 'Number of weeks' : 'Number of days'"
           >
           <span class="text-xs text-bone-400 w-24 text-right">
             {{ lineTotal(item) != null ? `= ${fmt(lineTotal(item)!)}` : currencySuffix }}
@@ -127,12 +128,13 @@ const emit = defineEmits<{ saved: [] }>()
 const latest = props.quote.offers[props.quote.offers.length - 1]
 const prices = reactive<Record<number, number | null>>({})
 const modes = reactive<Record<number, PricingMode>>({})
-const days = reactive<Record<number, number | null>>({})
+// Count of days or weeks, depending on the item's mode.
+const periods = reactive<Record<number, number | null>>({})
 for (const item of props.quote.items) {
   const prev = latest?.items.find(i => i.quoteItemId === item.id)
   prices[item.id] = prev ? prev.unitPrice : null
-  modes[item.id] = prev?.pricing === 'day' ? 'day' : 'flat'
-  days[item.id] = prev?.pricing === 'day' ? prev.days ?? 1 : null
+  modes[item.id] = prev?.pricing === 'day' || prev?.pricing === 'week' ? prev.pricing : 'flat'
+  periods[item.id] = prev?.pricing === 'day' ? prev.days ?? 1 : prev?.pricing === 'week' ? prev.weeks ?? 1 : null
 }
 const currency = ref<'ISK' | 'EUR'>(latest?.currency ?? 'ISK')
 const discountType = ref<'' | 'percent' | 'fixed'>(latest?.discountType ?? '')
@@ -144,14 +146,17 @@ const busy = ref<'' | 'preview' | 'send'>('')
 const error = ref('')
 const notice = ref('')
 
+const needsPeriod = (id: number) => modes[id] === 'day' || modes[id] === 'week'
 const isPriced = (id: number) => typeof prices[id] === 'number' && Number.isFinite(prices[id]!) && prices[id]! >= 0
-const hasDays = (id: number) => modes[id] !== 'day'
-  || (typeof days[id] === 'number' && Number.isFinite(days[id]!) && days[id]! >= 1)
+const hasPeriod = (id: number) => !needsPeriod(id)
+  || (typeof periods[id] === 'number' && Number.isFinite(periods[id]!) && periods[id]! >= 1)
 const lineTotal = (item: QuoteItem): number | null => {
-  if (!isPriced(item.id) || !hasDays(item.id)) return null
-  return prices[item.id]! * item.qty * (modes[item.id] === 'day' ? Math.round(days[item.id]!) : 1)
+  if (!isPriced(item.id) || !hasPeriod(item.id)) return null
+  return prices[item.id]! * item.qty * (needsPeriod(item.id) ? Math.round(periods[item.id]!) : 1)
 }
-const complete = computed(() => props.quote.items.every(i => isPriced(i.id) && hasDays(i.id)))
+const complete = computed(() => props.quote.items.every(i => isPriced(i.id) && hasPeriod(i.id)))
+const pricePlaceholder = (id: number) =>
+  modes[id] === 'day' ? 'Price / day' : modes[id] === 'week' ? 'Price / week' : 'Price / unit'
 
 const subtotal = computed(() =>
   props.quote.items.reduce((sum, i) => sum + (lineTotal(i) ?? 0), 0))
@@ -182,7 +187,8 @@ const payload = (send: boolean) => ({
     quoteItemId: i.id,
     unitPrice: prices[i.id]!,
     pricing: modes[i.id],
-    days: modes[i.id] === 'day' ? Math.round(days[i.id]!) : undefined,
+    days: modes[i.id] === 'day' ? Math.round(periods[i.id]!) : undefined,
+    weeks: modes[i.id] === 'week' ? Math.round(periods[i.id]!) : undefined,
   })),
 })
 

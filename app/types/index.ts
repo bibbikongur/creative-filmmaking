@@ -135,8 +135,8 @@ export interface QuoteSummary extends Quote {
 
 export type OfferCurrency = 'ISK' | 'EUR'
 export type DiscountType = 'percent' | 'fixed'
-/** 'flat' = one price per unit; 'day' = price per unit per rental day. */
-export type PricingMode = 'flat' | 'day'
+/** 'flat' = one price per unit; 'day'/'week' = price per unit per rental day/week. */
+export type PricingMode = 'flat' | 'day' | 'week'
 
 /** A priced line inside an offer — frozen at send time so PDFs are regenerable. */
 export interface OfferItem {
@@ -149,6 +149,8 @@ export interface OfferItem {
   pricing?: PricingMode
   /** Number of days — only when pricing is 'day'. */
   days?: number
+  /** Number of weeks — only when pricing is 'week'. */
+  weeks?: number
   lineTotal: number
 }
 

@@ -42,7 +42,7 @@ export interface NewOfferInput {
   discountValue?: number
   note?: string
   validUntil?: string
-  items: { quoteItemId: number, unitPrice: number, pricing?: PricingMode, days?: number }[]
+  items: { quoteItemId: number, unitPrice: number, pricing?: PricingMode, days?: number, weeks?: number }[]
 }
 
 export function createQuote(input: NewQuoteInput): Quote {
@@ -179,8 +179,9 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
         data: { errors: [`Missing price for item "${qi.name.en}".`] },
       })
     }
-    const pricing: PricingMode = priced.pricing === 'day' ? 'day' : 'flat'
+    const pricing: PricingMode = priced.pricing === 'day' || priced.pricing === 'week' ? priced.pricing : 'flat'
     const days = pricing === 'day' ? Math.max(1, Math.round(priced.days ?? 1)) : undefined
+    const weeks = pricing === 'week' ? Math.max(1, Math.round(priced.weeks ?? 1)) : undefined
     return {
       quoteItemId: qi.id,
       name: qi.name,
@@ -189,7 +190,8 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
       unitPrice: priced.unitPrice,
       pricing,
       days,
-      lineTotal: round2(priced.unitPrice * qi.qty * (days ?? 1)),
+      weeks,
+      lineTotal: round2(priced.unitPrice * qi.qty * (days ?? weeks ?? 1)),
     }
   })
 
