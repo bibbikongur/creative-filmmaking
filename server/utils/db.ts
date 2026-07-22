@@ -165,6 +165,7 @@ function initSchema(db: Database.Database) {
       email   TEXT NOT NULL,
       phone   TEXT,
       company TEXT,
+      kennitala TEXT,
       dates   TEXT,
       message TEXT
     );
@@ -333,6 +334,9 @@ function migrate(db: Database.Database) {
 
   // v3: admin-created quotes carry a source marker.
   ensureColumn('quotes', 'source', "source TEXT NOT NULL DEFAULT 'web'")
+
+  // v6: quotes can carry the customer's kennitala (Icelandic registration id).
+  ensureColumn('quotes', 'kennitala', 'kennitala TEXT')
 
   // v5: session_epoch invalidates stale cookies after a credential change.
   ensureColumn('portal_users', 'session_epoch', 'session_epoch INTEGER NOT NULL DEFAULT 0')

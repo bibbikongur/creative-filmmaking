@@ -28,6 +28,10 @@
           <input v-model.trim="company" type="text" class="input-dark" placeholder="Optional">
         </div>
         <div>
+          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Kennitala</label>
+          <input v-model.trim="kennitala" type="text" class="input-dark" placeholder="Optional">
+        </div>
+        <div>
           <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Phone</label>
           <input v-model.trim="phone" type="text" class="input-dark" placeholder="Optional">
         </div>
@@ -74,6 +78,7 @@ definePageMeta({ layout: 'admin' })
 const email = ref('')
 const name = ref('')
 const company = ref('')
+const kennitala = ref('')
 const phone = ref('')
 const dates = ref('')
 const locale = ref<LocaleCode>('en')
@@ -96,6 +101,7 @@ const create = async () => {
         email: email.value,
         name: name.value || undefined,
         company: company.value || undefined,
+        kennitala: kennitala.value || undefined,
         phone: phone.value || undefined,
         dates: dates.value || undefined,
         locale: locale.value,

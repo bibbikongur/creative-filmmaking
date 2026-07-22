@@ -34,6 +34,10 @@
             <p class="mt-1 text-bone-100">{{ quote.phone || '–' }}</p>
           </div>
           <div>
+            <p class="text-xs uppercase tracking-widest text-bone-400">Kennitala</p>
+            <p class="mt-1 text-bone-100">{{ quote.kennitala || '–' }}</p>
+          </div>
+          <div>
             <p class="text-xs uppercase tracking-widest text-bone-400">Shooting dates</p>
             <p class="mt-1 text-bone-100">{{ quote.dates || '–' }}</p>
           </div>
@@ -81,6 +85,10 @@
           <div>
             <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Company</label>
             <input v-model.trim="edit.company" type="text" class="input-dark" placeholder="Optional">
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Kennitala</label>
+            <input v-model.trim="edit.kennitala" type="text" class="input-dark" placeholder="Optional">
           </div>
           <div>
             <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Phone</label>
@@ -195,7 +203,7 @@ const editing = ref(false)
 const saving = ref(false)
 const saveError = ref('')
 const edit = reactive({
-  email: '', name: '', company: '', phone: '', dates: '',
+  email: '', name: '', company: '', kennitala: '', phone: '', dates: '',
   locale: 'en' as LocaleCode,
 })
 const draftItems = ref<QuoteDraftItem[]>([])
@@ -205,6 +213,7 @@ const startEdit = () => {
   edit.email = quote.value.email
   edit.name = quote.value.name
   edit.company = quote.value.company ?? ''
+  edit.kennitala = quote.value.kennitala ?? ''
   edit.phone = quote.value.phone ?? ''
   edit.dates = quote.value.dates ?? ''
   edit.locale = quote.value.locale
@@ -228,6 +237,7 @@ const saveEdit = async () => {
         email: edit.email,
         name: edit.name,
         company: edit.company || undefined,
+        kennitala: edit.kennitala || undefined,
         phone: edit.phone || undefined,
         dates: edit.dates || undefined,
         locale: edit.locale,

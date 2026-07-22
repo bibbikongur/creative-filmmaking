@@ -23,6 +23,7 @@ export interface NewQuoteInput {
   email: string
   phone?: string
   company?: string
+  kennitala?: string
   dates?: string
   message?: string
   items: {
@@ -56,10 +57,10 @@ export function createQuote(input: NewQuoteInput): Quote {
   `)
   db.transaction(() => {
     db.prepare(`
-      INSERT INTO quotes (id, created_at, status, source, locale, name, email, phone, company, dates, message)
-      VALUES (?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO quotes (id, created_at, status, source, locale, name, email, phone, company, kennitala, dates, message)
+      VALUES (?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(id, createdAt, input.source ?? 'web', input.locale, input.name, input.email,
-      input.phone ?? null, input.company ?? null, input.dates ?? null, input.message ?? null)
+      input.phone ?? null, input.company ?? null, input.kennitala ?? null, input.dates ?? null, input.message ?? null)
     for (const item of input.items) {
       insertItem.run(id, item.itemType, item.itemId, item.slug ?? null,
         item.nameEn, item.nameIs, item.image ?? null, item.qty)
@@ -93,10 +94,10 @@ export function updateQuote(id: string, input: UpdateQuoteInput): QuoteDetail | 
 
   db.transaction(() => {
     db.prepare(`
-      UPDATE quotes SET locale = ?, name = ?, email = ?, phone = ?, company = ?, dates = ?
+      UPDATE quotes SET locale = ?, name = ?, email = ?, phone = ?, company = ?, kennitala = ?, dates = ?
       WHERE id = ?
     `).run(input.locale, input.name, input.email,
-      input.phone ?? null, input.company ?? null, input.dates ?? null, id)
+      input.phone ?? null, input.company ?? null, input.kennitala ?? null, input.dates ?? null, id)
 
     const prevByKey = new Map(existing.items.map(i => [`${i.itemType}:${i.itemId}`, i]))
     const kept = new Set<number>()
@@ -244,6 +245,7 @@ function rowToQuote(r: Record<string, unknown>): Quote {
     email: r.email as string,
     phone: (r.phone as string | null) ?? undefined,
     company: (r.company as string | null) ?? undefined,
+    kennitala: (r.kennitala as string | null) ?? undefined,
     dates: (r.dates as string | null) ?? undefined,
     message: (r.message as string | null) ?? undefined,
   }

@@ -12,6 +12,7 @@ interface PatchBody {
   email?: string
   name?: string
   company?: string
+  kennitala?: string
   phone?: string
   dates?: string
   locale?: LocaleCode
@@ -104,6 +105,7 @@ export default defineEventHandler(async (event) => {
     email: email!,
     phone: body.phone?.trim() || undefined,
     company: body.company?.trim() || undefined,
+    kennitala: body.kennitala?.trim() || undefined,
     dates: body.dates?.trim() || undefined,
     items,
   })

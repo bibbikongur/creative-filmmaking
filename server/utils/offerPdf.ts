@@ -20,6 +20,7 @@ const STRINGS = {
     offerNo: 'Offer no.',
     date: 'Date',
     preparedFor: 'Prepared for',
+    kennitala: 'Reg. no.',
     dates: 'Shooting dates',
     item: 'Item',
     qty: 'Qty',
@@ -42,6 +43,7 @@ const STRINGS = {
     offerNo: 'Tilboð nr.',
     date: 'Dagsetning',
     preparedFor: 'Tilboð fyrir',
+    kennitala: 'Kt.',
     dates: 'Tökudagar',
     item: 'Liður',
     qty: 'Fj.',
@@ -138,7 +140,6 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     .fillColor(GOLD).text(' FILMMAKING')
   doc.font('Helvetica').fontSize(8).fillColor(GRAY)
   doc.text(contact.address, left, 52, { width, align: 'right' })
-  doc.text(contact.phone, { width, align: 'right' })
   doc.text(contact.email, { width, align: 'right' })
 
   doc.moveTo(left, 92).lineTo(right, 92).lineWidth(1).strokeColor(GOLD).stroke()
@@ -156,10 +157,18 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   let y = 160
   doc.font('Helvetica').fontSize(8).fillColor(GRAY).text(s.preparedFor.toUpperCase(), left, y)
   y += 12
-  doc.font('Helvetica-Bold').fontSize(11).fillColor(INK).text(quote.name || quote.email, left, y)
+  // Receiver email is intentionally omitted from the PDF, including as a fallback
+  // heading, so it never leaks when only the email is known.
+  doc.font('Helvetica-Bold').fontSize(11).fillColor(INK).text(quote.name || quote.company || '', left, y)
   y += 15
   doc.font('Helvetica').fontSize(9).fillColor(GRAY)
-  for (const line of [quote.company, quote.name ? quote.email : undefined, quote.phone].filter(Boolean) as string[]) {
+  const infoLines = [
+    // Company already used as the heading when there's no contact name → don't repeat it.
+    quote.name ? quote.company : undefined,
+    quote.kennitala ? `${s.kennitala} ${quote.kennitala}` : undefined,
+    quote.phone,
+  ].filter(Boolean) as string[]
+  for (const line of infoLines) {
     doc.text(line, left, y)
     y += 12
   }

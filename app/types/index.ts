@@ -122,6 +122,8 @@ export interface Quote {
   email: string
   phone?: string
   company?: string
+  /** Icelandic company/person registration number (kennitala). */
+  kennitala?: string
   dates?: string
   message?: string
 }
