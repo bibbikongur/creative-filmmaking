@@ -59,6 +59,7 @@
 import type { Vehicle } from '~/types'
 
 definePageMeta({ layout: 'admin' })
+const { confirmDialog, alertDialog } = useAppDialog()
 
 const vehicles = ref<Vehicle[]>([])
 const loaded = ref(false)
@@ -81,7 +82,7 @@ const load = async () => {
 onMounted(load)
 
 const remove = async (v: Vehicle) => {
-  if (!confirm(`Delete "${v.name.en}"? This removes it from the website immediately.`)) return
+  if (!await confirmDialog(`Delete "${v.name.en}"? This removes it from the website immediately.`)) return
   deleting.value = v.id
   try {
     await $fetch(`/api/admin/vehicles/${v.id}`, { method: 'DELETE' })
@@ -89,7 +90,7 @@ const remove = async (v: Vehicle) => {
     clearNuxtData('fleet') // public pages refetch on next visit
   }
   catch (e: any) {
-    alert(e?.data?.statusMessage || 'Delete failed.')
+    await alertDialog(e?.data?.statusMessage || 'Delete failed.')
   }
   finally {
     deleting.value = ''

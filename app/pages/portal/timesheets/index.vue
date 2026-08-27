@@ -1,6 +1,12 @@
 <template>
   <div>
-    <div>
+    <NuxtLink
+      :to="localePath(queryJob ? `/portal/jobs/${queryJob}` : '/portal/jobs')"
+      class="inline-block text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors"
+    >
+      ← {{ $t('portal.back') }}
+    </NuxtLink>
+    <div class="mt-4">
       <p class="kicker">{{ $t('portal.nav.review') }}</p>
       <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">{{ $t('portal.review.title') }}</h1>
     </div>
@@ -67,7 +73,8 @@ const jobs = ref<Job[]>([])
 const loaded = ref(false)
 const loadError = ref('')
 const statusFilter = ref<'' | WeekStatus>('submitted')
-const jobFilter = ref('')
+const queryJob = String(useRoute().query.job || '')
+const jobFilter = ref(queryJob)
 
 const tabs = computed(() => [
   { value: 'submitted' as const, label: t('portal.status.submitted') },
@@ -97,7 +104,10 @@ const load = async () => {
 onMounted(async () => {
   load()
   try {
-    jobs.value = await $fetch<Job[]>('/api/portal/jobs', { query: { t: Date.now() } })
+    // The endpoint also returns jobs the user merely crews on — the filter is
+    // for the companies they administer.
+    jobs.value = (await $fetch<(Job & { role: 'admin' | 'member' })[]>('/api/portal/jobs', { query: { t: Date.now() } }))
+      .filter(j => j.role === 'admin')
   }
   catch { /* job filter just stays hidden */ }
 })

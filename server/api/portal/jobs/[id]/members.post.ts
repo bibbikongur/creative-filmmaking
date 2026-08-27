@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<{
     email?: string, name?: string, dayRate?: number, locale?: string
     departmentId?: string | null, isDeptAdmin?: boolean
+    role?: string, phone?: string
   }>(event)
   const locale = body?.locale === 'en' ? 'en' : 'is'
   const { member, inviteToken } = addMember(id, {
@@ -19,6 +20,8 @@ export default defineEventHandler(async (event) => {
     locale,
     departmentId: body?.departmentId ?? null,
     isDeptAdmin: Boolean(body?.isDeptAdmin),
+    role: body?.role,
+    phone: body?.phone,
   })
 
   const companyName = getCompanySummary(companyId)?.name ?? 'Creative Filmmaking'

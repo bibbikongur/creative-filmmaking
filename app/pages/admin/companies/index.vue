@@ -98,6 +98,7 @@
 import type { CompanySummary } from '~/types'
 
 definePageMeta({ layout: 'admin' })
+const { confirmDialog, alertDialog } = useAppDialog()
 
 const companies = ref<CompanySummary[]>([])
 const loaded = ref(false)
@@ -143,10 +144,10 @@ const reinvite = async (c: CompanySummary) => {
   busy.value = c.id
   try {
     await $fetch(`/api/admin/companies/${c.id}/reinvite`, { method: 'POST' })
-    alert(`Invite resent to ${c.adminEmail}.`)
+    await alertDialog(`Invite resent to ${c.adminEmail}.`)
   }
   catch (e: any) {
-    alert(e?.data?.statusMessage || 'Could not resend the invite.')
+    await alertDialog(e?.data?.statusMessage || 'Could not resend the invite.')
   }
   finally {
     busy.value = ''
@@ -155,14 +156,14 @@ const reinvite = async (c: CompanySummary) => {
 
 const toggleStatus = async (c: CompanySummary) => {
   const next = c.status === 'active' ? 'disabled' : 'active'
-  if (next === 'disabled' && !confirm(`Disable "${c.name}"? All its portal users lose access until re-enabled.`)) return
+  if (next === 'disabled' && !await confirmDialog(`Disable "${c.name}"? All its portal users lose access until re-enabled.`)) return
   busy.value = c.id
   try {
     await $fetch(`/api/admin/companies/${c.id}`, { method: 'PATCH', body: { status: next } })
     c.status = next
   }
   catch (e: any) {
-    alert(e?.data?.statusMessage || 'Update failed.')
+    await alertDialog(e?.data?.statusMessage || 'Update failed.')
   }
   finally {
     busy.value = ''
@@ -170,14 +171,14 @@ const toggleStatus = async (c: CompanySummary) => {
 }
 
 const remove = async (c: CompanySummary) => {
-  if (!confirm(`Delete "${c.name}"? This permanently deletes its jobs, staff links and all timesheets.`)) return
+  if (!await confirmDialog(`Delete "${c.name}"? This permanently deletes its jobs, staff links and all timesheets.`)) return
   busy.value = c.id
   try {
     await $fetch(`/api/admin/companies/${c.id}`, { method: 'DELETE' })
     companies.value = companies.value.filter(x => x.id !== c.id)
   }
   catch (e: any) {
-    alert(e?.data?.statusMessage || 'Delete failed.')
+    await alertDialog(e?.data?.statusMessage || 'Delete failed.')
   }
   finally {
     busy.value = ''

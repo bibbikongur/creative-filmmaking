@@ -54,5 +54,5 @@ export default defineEventHandler(async (event) => {
   await session.update({ uid: creds!.id, epoch: getUserEpoch(creds!.id) ?? 0 })
 
   const user = getUserById(creds!.id)!
-  return { ok: true, user, memberships: membershipsForUser(user.id) }
+  return { ok: true, user, memberships: membershipsForUser(user.id), allowedTools: allowedToolsFor(user.id) }
 })

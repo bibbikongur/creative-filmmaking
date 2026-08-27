@@ -4,13 +4,14 @@
       <input
         :id="id"
         ref="field"
-        v-model="text"
+        :value="text"
         type="text"
         inputmode="numeric"
         placeholder="--:--"
         maxlength="5"
         class="input-dark !w-20 text-center tabular-nums"
         :disabled="disabled"
+        @input="onInput"
         @change="commitText"
         @keydown.enter.prevent="commitText"
         @focus="selectAll"
@@ -148,6 +149,36 @@ const hand = computed(() => {
   const angle = (step * 30 - 90) * Math.PI / 180
   return { x: 120 + r * Math.cos(angle), y: 120 + r * Math.sin(angle) }
 })
+
+// Auto-format while typing: hour jumps to minutes once complete, commits when full.
+const onInput = (e: Event) => {
+  const input = e.target as HTMLInputElement
+  // Don't re-insert the colon while the user is deleting.
+  if ((e as InputEvent).inputType?.startsWith('delete')) {
+    text.value = input.value
+    return
+  }
+  const digits = input.value.replace(/\D/g, '').slice(0, 4)
+  let out = ''
+  if (digits.length === 1) {
+    // 3-9 can only be a single-digit hour; a typed ":" also completes it.
+    out = Number(digits) >= 3 || input.value.includes(':') ? `0${digits}:` : digits
+  }
+  else if (digits.length >= 2) {
+    let h = digits.slice(0, 2)
+    let rest = digits.slice(2)
+    if (Number(h) > 23) {
+      h = `0${digits[0]}`
+      rest = digits.slice(1)
+    }
+    // A minute digit 6-9 can't start a valid pair, so pad it (12:7 -> 12:07).
+    if (rest.length === 1 && Number(rest) >= 6) rest = `0${rest}`
+    out = `${h}:${rest.slice(0, 2)}`
+  }
+  text.value = out
+  input.value = out
+  if (/^\d{2}:\d{2}$/.test(out)) commitText()
+}
 
 const commitText = () => {
   const parsed = parse(text.value)

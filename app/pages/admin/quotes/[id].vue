@@ -165,6 +165,7 @@
 import type { LocaleCode, QuoteDetail, QuoteDraftItem, QuoteStatus } from '~/types'
 
 definePageMeta({ layout: 'admin' })
+const { alertDialog } = useAppDialog()
 
 const route = useRoute()
 const quote = ref<QuoteDetail | null>(null)
@@ -193,7 +194,7 @@ const setStatus = async (status: QuoteStatus) => {
     quote.value.status = status
   }
   catch (e: any) {
-    alert(e?.data?.statusMessage || 'Could not update status.')
+    await alertDialog(e?.data?.statusMessage || 'Could not update status.')
   }
 }
 

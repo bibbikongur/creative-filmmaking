@@ -10,5 +10,6 @@ export default defineEventHandler(async (event) => {
     authenticated: true,
     user,
     memberships: membershipsForUser(user.id),
+    allowedTools: allowedToolsFor(user.id),
   }
 })

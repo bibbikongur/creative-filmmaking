@@ -34,6 +34,28 @@ describe('computePayroll', () => {
     expect(res.days[0]!.total).toBe(RATE + 2 * OT)
   })
 
+  it('pays half the day rate for a day under 6 hours', () => {
+    const res = computePayroll([shift('2026-06-29', '08:00', '13:30')], RATE, week.from, week.to) // 5.5h
+    expect(res.days[0]!.halfDay).toBe(true)
+    expect(res.days[0]!.baseAmount).toBe(RATE / 2)
+    expect(res.days[0]!.total).toBe(RATE / 2)
+  })
+
+  it('pays the full day rate from exactly 6 hours', () => {
+    const res = computePayroll([shift('2026-06-29', '08:00', '14:00')], RATE, week.from, week.to)
+    expect(res.days[0]!.halfDay).toBe(false)
+    expect(res.days[0]!.baseAmount).toBe(RATE)
+  })
+
+  it('a half day on the 7th consecutive day doubles the half rate', () => {
+    const dates = Array.from({ length: 7 }, (_, i) =>
+      new Date(Date.UTC(2026, 5, 29 + i)).toISOString().slice(0, 10))
+    const shifts = dates.map((d, i) => (i === 6 ? shift(d, '08:00', '12:00') : shift(d, '08:00', '18:00')))
+    const res = computePayroll(shifts, RATE, week.from, week.to)
+    expect(res.days[6]!.halfDay).toBe(true)
+    expect(res.days[6]!.baseAmount).toBe(RATE) // half rate ×2
+  })
+
   it('first-ever shift never triggers a rest violation', () => {
     const res = computePayroll([shift('2026-06-29', '00:30', '10:00')], RATE, week.from, week.to)
     expect(res.days[0]!.restViolationHours).toBe(0)
@@ -146,5 +168,60 @@ describe('computePayroll', () => {
     const res = computePayroll([], RATE, week.from, week.to)
     expect(res.days).toHaveLength(0)
     expect(res.totals).toMatchObject({ daysWorked: 0, hours: 0, amount: 0 })
+  })
+
+  describe('running lunch', () => {
+    const flags = { '2026-06-29': { runningLunch: true } }
+
+    it('pays dayRate/12 for the 12th hour of a 12h day', () => {
+      const res = computePayroll([shift('2026-06-29', '07:00', '19:00')], RATE, week.from, week.to, { flags })
+      expect(res.days[0]!.runningLunchAmount).toBe(RATE / 12) // 10 000
+      expect(res.days[0]!.total).toBe(RATE + RATE / 12)
+      expect(res.totals.runningLunchAmount).toBe(RATE / 12)
+    })
+
+    it('pays nothing on an 11h day', () => {
+      const res = computePayroll([shift('2026-06-29', '07:00', '18:00')], RATE, week.from, week.to, { flags })
+      expect(res.days[0]!.runningLunchAmount).toBe(0)
+      expect(res.days[0]!.total).toBe(RATE)
+    })
+
+    it('pays pro-rata between 11 and 12 hours', () => {
+      const res = computePayroll([shift('2026-06-29', '07:00', '18:30')], RATE, week.from, week.to, { flags })
+      expect(res.days[0]!.runningLunchAmount).toBe(RATE / 24) // half the lunch hour
+    })
+
+    it('caps at one hour; hours beyond 12 stay normal OT', () => {
+      const res = computePayroll([shift('2026-06-29', '07:00', '21:00')], RATE, week.from, week.to, { flags }) // 14h
+      expect(res.days[0]!.runningLunchAmount).toBe(RATE / 12)
+      expect(res.days[0]!.otAmount).toBe(2 * OT)
+      expect(res.days[0]!.total).toBe(RATE + 2 * OT + RATE / 12)
+    })
+
+    it('is ignored on days without the tick', () => {
+      const res = computePayroll([shift('2026-06-30', '07:00', '19:00')], RATE, week.from, week.to, { flags })
+      expect(res.days[0]!.runningLunchAmount).toBe(0)
+    })
+  })
+
+  describe('per diem', () => {
+    it('adds the flat allowance on ticked days only', () => {
+      const res = computePayroll([
+        shift('2026-06-29', '08:00', '18:00'),
+        shift('2026-06-30', '08:00', '18:00'),
+      ], RATE, week.from, week.to, { perDiemRate: 5000, flags: { '2026-06-29': { perDiem: true } } })
+      expect(res.days[0]!.perDiemAmount).toBe(5000)
+      expect(res.days[1]!.perDiemAmount).toBe(0)
+      expect(res.totals.perDiemAmount).toBe(5000)
+      expect(res.totals.amount).toBe(2 * RATE + 5000)
+    })
+
+    it('pays nothing when the job has no per diem rate', () => {
+      const res = computePayroll([shift('2026-06-29', '08:00', '18:00')], RATE, week.from, week.to, {
+        flags: { '2026-06-29': { perDiem: true } },
+      })
+      expect(res.days[0]!.perDiemAmount).toBe(0)
+      expect(res.days[0]!.perDiem).toBe(false)
+    })
   })
 })

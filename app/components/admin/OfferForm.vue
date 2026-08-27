@@ -119,6 +119,7 @@
 
 <script setup lang="ts">
 import type { Offer, PricingMode, QuoteDetail, QuoteItem } from '~/types'
+const { confirmDialog } = useAppDialog()
 
 const props = defineProps<{ quote: QuoteDetail }>()
 const emit = defineEmits<{ saved: [] }>()
@@ -213,7 +214,7 @@ const preview = async () => {
 }
 
 const send = async () => {
-  if (!confirm(`Send this offer (${fmt(total.value)}) to ${props.quote.email}?`)) return
+  if (!await confirmDialog(`Send this offer (${fmt(total.value)}) to ${props.quote.email}?`)) return
   busy.value = 'send'
   error.value = ''
   notice.value = ''

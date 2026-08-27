@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3'
+import { randomBytes } from 'node:crypto'
 import { mkdirSync, renameSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { vehicles as seedVehicles } from '~~/app/data/vehicles'
@@ -17,6 +18,22 @@ export const dataDir = () =>
 
 export const uploadsDir = () => join(dataDir(), 'uploads')
 
+// Contract/NDA template PDFs. Deliberately NOT under uploads/ — that route is
+// public; these are served only through an authenticated portal endpoint.
+export const docTemplatesDir = () => join(dataDir(), 'doc-templates')
+
+// Final signed contracts/NDAs (stamped PDFs). Same privacy rules as templates.
+export const signedDocsDir = () => join(dataDir(), 'signed-docs')
+
+// Purchase-order attachments (receipt photos/PDFs). Private: streamed only
+// through an authenticated portal endpoint, never via the public /uploads route.
+export const poAttachmentsDir = () => join(dataDir(), 'po-attachments')
+
+// Location-scouting photos (portal tool "tökustaðamyndir"): a downscaled full
+// image plus a thumbnail per photo. Private: streamed only through an
+// authenticated portal endpoint, never via the public /uploads route.
+export const locationPhotosDir = () => join(dataDir(), 'location-photos')
+
 let db: Database.Database | null = null
 
 export function getDb(): Database.Database {
@@ -26,6 +43,7 @@ export function getDb(): Database.Database {
   db.pragma('journal_mode = WAL')
   db.pragma('foreign_keys = ON')
   db.pragma('busy_timeout = 5000')
+  dropLegacyTables(db)
   initSchema(db)
   migrate(db)
   importLegacyCatalogue(db)
@@ -131,6 +149,21 @@ function seedCatalogueAdditions(db: Database.Database) {
       }
     }
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  }
+}
+
+/**
+ * Runs BEFORE initSchema: drops tables whose old shape would make initSchema's
+ * CREATE INDEX statements fail. member_docs briefly used DocuSign envelopes
+ * before switching to built-in signing; that version never shipped, so the
+ * table is simply rebuilt in the current shape by initSchema.
+ */
+function dropLegacyTables(db: Database.Database) {
+  const hasEnvelope = (db.prepare('PRAGMA table_info(member_docs)').all() as { name: string }[])
+    .some(c => c.name === 'envelope_id')
+  if (hasEnvelope) {
+    db.exec('DROP TABLE member_docs')
+    console.log('[db] rebuilt member_docs for built-in signing')
   }
 }
 
@@ -240,7 +273,8 @@ function initSchema(db: Database.Database) {
       company_id TEXT NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
       created_at TEXT NOT NULL,
       name       TEXT NOT NULL,
-      status     TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed'))
+      status     TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed')),
+      per_diem_rate INTEGER NOT NULL DEFAULT 0
     );
     CREATE INDEX IF NOT EXISTS idx_jobs_company ON jobs(company_id);
 
@@ -266,9 +300,183 @@ function initSchema(db: Database.Database) {
       day_rate_enc  TEXT NOT NULL,
       department_id TEXT,
       is_dept_admin INTEGER NOT NULL DEFAULT 0,
+      role          TEXT,
+      phone         TEXT,
+      po_role       TEXT CHECK (po_role IN ('none', 'log', 'log_all', 'view', 'approve')),
+      po_dept_access TEXT,
       UNIQUE (job_id, user_id)
     );
     CREATE INDEX IF NOT EXISTS idx_job_members_user ON job_members(user_id);
+
+    -- Per-job contract/NDA template: the uploaded PDF plus the admin-placed
+    -- data/signature fields (JSON TemplateField[], PDF points, top-left origin).
+    CREATE TABLE IF NOT EXISTS doc_templates (
+      id            TEXT PRIMARY KEY,
+      job_id        TEXT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+      kind          TEXT NOT NULL CHECK (kind IN ('contract', 'nda')),
+      created_at    TEXT NOT NULL,
+      file_name     TEXT NOT NULL,
+      original_name TEXT NOT NULL,
+      page_count    INTEGER NOT NULL DEFAULT 0,
+      fields        TEXT NOT NULL DEFAULT '[]',
+      UNIQUE (job_id, kind)
+    );
+
+    -- One signing request per (job, member, kind); resending overwrites the
+    -- row and invalidates the old link. Built-in signing: the member gets an
+    -- emailed token link, reviews the filled document and signs (typed name +
+    -- drawn signature); the stamped PDF lands in signed-docs. Status flows
+    -- sent → delivered (opened) → completed (signed) / declined.
+    CREATE TABLE IF NOT EXISTS member_docs (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      job_id           TEXT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+      user_id          TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      kind             TEXT NOT NULL CHECK (kind IN ('contract', 'nda')),
+      status           TEXT NOT NULL DEFAULT 'sent'
+                       CHECK (status IN ('sent', 'delivered', 'completed', 'declined')),
+      token_hash       TEXT,
+      token_expires_at TEXT,
+      sent_at          TEXT NOT NULL,
+      sent_by          TEXT NOT NULL,
+      viewed_at        TEXT,
+      completed_at     TEXT,
+      signed_name      TEXT,
+      signed_ip        TEXT,
+      signed_file      TEXT,
+      UNIQUE (job_id, user_id, kind)
+    );
+    CREATE INDEX IF NOT EXISTS idx_member_docs_token ON member_docs(token_hash);
+
+    -- Saved location maps (portal tool "tökustaðakort"). Personal documents:
+    -- each row belongs to one portal user; pages (markers, roads, text boxes,
+    -- optional uploaded background images as data URLs) live in one JSON blob.
+    -- job_id optionally ties the map to one job ("Hjálpargögn" on the job page).
+    CREATE TABLE IF NOT EXISTS location_maps (
+      id         TEXT PRIMARY KEY,
+      user_id    TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      job_id     TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      name       TEXT NOT NULL,
+      pages      TEXT NOT NULL DEFAULT '[]'
+    );
+    CREATE INDEX IF NOT EXISTS idx_location_maps_user ON location_maps(user_id);
+
+    -- Recce plans (portal tool "recce áætlun"). Personal per-user documents;
+    -- the whole plan (stops, photos as data URLs, contacts) is one JSON blob.
+    -- job_id optionally ties the plan to one job.
+    CREATE TABLE IF NOT EXISTS recce_plans (
+      id         TEXT PRIMARY KEY,
+      user_id    TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      job_id     TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      name       TEXT NOT NULL,
+      data       TEXT NOT NULL DEFAULT '{}'
+    );
+    CREATE INDEX IF NOT EXISTS idx_recce_plans_user ON recce_plans(user_id);
+
+    -- Location photo albums (portal tool "tökustaðamyndir"). Personal folders,
+    -- one per filming location; each holds uploaded scouting photos. Folders nest
+    -- via parent_id (a self-reference — NULL for a root folder; the whole subtree
+    -- is removed in the store when a folder is deleted). cover_photo_id optionally
+    -- pins a cover, otherwise the first photo in the folder (or its subtree) stands
+    -- in. lat/lng optionally place the folder on the overview map. job_id
+    -- optionally ties a ROOT folder to one job (subfolders inherit via the root).
+    CREATE TABLE IF NOT EXISTS location_albums (
+      id             TEXT PRIMARY KEY,
+      user_id        TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      job_id         TEXT,
+      created_at     TEXT NOT NULL,
+      updated_at     TEXT NOT NULL,
+      name           TEXT NOT NULL,
+      note           TEXT,
+      cover_photo_id TEXT,
+      parent_id      TEXT,
+      lat            REAL,
+      lng            REAL,
+      -- Pin color of a filming location ("tökustaður"); option subfolders inherit it.
+      color          TEXT,
+      -- 1 = this option was picked (starred) within its location.
+      chosen         INTEGER NOT NULL DEFAULT 0,
+      -- Quality rating 0–5 (0 = unrated) an option can be given.
+      rating         INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX IF NOT EXISTS idx_location_albums_user ON location_albums(user_id);
+    CREATE INDEX IF NOT EXISTS idx_location_albums_parent ON location_albums(parent_id);
+
+    -- One uploaded photo. file_name is the downscaled full image, thumb_name the
+    -- grid thumbnail; both live in <dataDir>/location-photos. Deleting the album
+    -- cascades the rows here (the files are removed in the store).
+    CREATE TABLE IF NOT EXISTS location_photos (
+      id            TEXT PRIMARY KEY,
+      album_id      TEXT NOT NULL REFERENCES location_albums(id) ON DELETE CASCADE,
+      user_id       TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      created_at    TEXT NOT NULL,
+      file_name     TEXT NOT NULL,
+      thumb_name    TEXT NOT NULL,
+      mime          TEXT NOT NULL,
+      original_name TEXT NOT NULL,
+      width         INTEGER NOT NULL DEFAULT 0,
+      height        INTEGER NOT NULL DEFAULT 0,
+      size          INTEGER NOT NULL DEFAULT 0,
+      caption       TEXT,
+      sort          INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX IF NOT EXISTS idx_location_photos_album ON location_photos(album_id);
+
+    -- Purchase orders (portal tool "innkaupabeiðnir", a light DPO). Department
+    -- admins log costs for their department; the company admin reviews every
+    -- order for the job and approves or rejects it. po_number is a per-job
+    -- sequence. Optional attachment (receipt image/PDF) lives in po-attachments.
+    CREATE TABLE IF NOT EXISTS purchase_orders (
+      id              TEXT PRIMARY KEY,
+      job_id          TEXT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+      user_id         TEXT NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+      department_id   TEXT,
+      created_at      TEXT NOT NULL,
+      po_number       INTEGER NOT NULL,
+      vendor          TEXT NOT NULL,
+      description     TEXT,
+      amount          REAL NOT NULL,
+      status          TEXT NOT NULL DEFAULT 'pending'
+                      CHECK (status IN ('pending', 'approved', 'rejected')),
+      decided_at      TEXT,
+      decided_by      TEXT,
+      decision_note   TEXT,
+      attachment_file TEXT,
+      attachment_name TEXT,
+      cost_code_id    TEXT,
+      paid_at         TEXT,
+      paid_by         TEXT,
+      vat_rate        REAL,
+      rebate_eligible INTEGER NOT NULL DEFAULT 0,
+      actual_amount   REAL,
+      timesheet_week_id INTEGER,
+      UNIQUE (job_id, po_number)
+    );
+    CREATE INDEX IF NOT EXISTS idx_purchase_orders_job ON purchase_orders(job_id);
+    -- The unique wages-order-per-week index lives in migrate(), not here: on a
+    -- pre-v21 database this schema pass runs before the column exists.
+
+    -- Cost codes (bókhaldslyklar) per job: orders are booked against a code
+    -- (e.g. 4110 Leikmynd) so the admin gets a clear breakdown of where the
+    -- money went. Managed by the company admin; a code is either shared
+    -- (department_id NULL) or tied to one department, and department admins
+    -- only see their own + shared codes. Deleting a code un-books its orders
+    -- (cost_code_id is cleared, the orders themselves stay).
+    CREATE TABLE IF NOT EXISTS po_cost_codes (
+      id            TEXT PRIMARY KEY,
+      job_id        TEXT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+      department_id TEXT,
+      created_at    TEXT NOT NULL,
+      code          TEXT NOT NULL,
+      name          TEXT NOT NULL,
+      budget        REAL,
+      is_wages      INTEGER NOT NULL DEFAULT 0,
+      UNIQUE (job_id, code)
+    );
+    CREATE INDEX IF NOT EXISTS idx_po_cost_codes_job ON po_cost_codes(job_id);
 
     -- Two-stage approval: draft → submitted → dept_approved → approved (altered
     -- branches off any review stage). altered_target records where a confirm lands.
@@ -304,6 +512,16 @@ function initSchema(db: Database.Database) {
     );
     CREATE INDEX IF NOT EXISTS idx_time_entries_week ON time_entries(week_id);
     CREATE INDEX IF NOT EXISTS idx_time_entries_user_job_date ON time_entries(user_id, job_id, date);
+
+    -- Per-day extras the employee ticks on the timesheet: per diem (flat amount
+    -- from jobs.per_diem_rate) and running lunch (dayRate/12 for the 12th hour).
+    CREATE TABLE IF NOT EXISTS timesheet_day_flags (
+      week_id       INTEGER NOT NULL REFERENCES timesheet_weeks(id) ON DELETE CASCADE,
+      date          TEXT NOT NULL,
+      per_diem      INTEGER NOT NULL DEFAULT 0,
+      running_lunch INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (week_id, date)
+    );
 
     -- Audit trail: submissions, alterations (with before/after diff), approvals.
     CREATE TABLE IF NOT EXISTS week_events (
@@ -348,6 +566,119 @@ function migrate(db: Database.Database) {
   // v2: departments on job_members.
   ensureColumn('job_members', 'department_id', 'department_id TEXT')
   ensureColumn('job_members', 'is_dept_admin', 'is_dept_admin INTEGER NOT NULL DEFAULT 0')
+
+  // v7: crew-members tab — job title and phone number per membership.
+  ensureColumn('job_members', 'role', 'role TEXT')
+  ensureColumn('job_members', 'phone', 'phone TEXT')
+
+  // v8: location-photo folders gained nesting (parent_id) and a map pin (lat/lng).
+  ensureColumn('location_albums', 'parent_id', 'parent_id TEXT')
+  ensureColumn('location_albums', 'lat', 'lat REAL')
+  ensureColumn('location_albums', 'lng', 'lng REAL')
+  db.exec('CREATE INDEX IF NOT EXISTS idx_location_albums_parent ON location_albums(parent_id)')
+
+  // v9: per-location pin color + a "chosen" (starred) flag on option folders.
+  ensureColumn('location_albums', 'color', 'color TEXT')
+  ensureColumn('location_albums', 'chosen', 'chosen INTEGER NOT NULL DEFAULT 0')
+
+  // v10: tool documents can be tied to one job ("Hjálpargögn" on the job page).
+  // No FK (ALTER TABLE can't add one) — a deleted job just leaves the document
+  // unlinked-but-visible on the global tools pages. Indexes live here, not in
+  // initSchema, so they're only created once the column exists on old DBs.
+  ensureColumn('location_maps', 'job_id', 'job_id TEXT')
+  ensureColumn('recce_plans', 'job_id', 'job_id TEXT')
+  ensureColumn('location_albums', 'job_id', 'job_id TEXT')
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_location_maps_job ON location_maps(job_id);
+    CREATE INDEX IF NOT EXISTS idx_recce_plans_job ON recce_plans(job_id);
+    CREATE INDEX IF NOT EXISTS idx_location_albums_job ON location_albums(job_id);
+  `)
+
+  // v11: options can be given a 1–5 quality rating.
+  ensureColumn('location_albums', 'rating', 'rating INTEGER NOT NULL DEFAULT 0')
+
+  // v12: purchase orders are booked against a per-job cost code (bókhaldslykill).
+  ensureColumn('purchase_orders', 'cost_code_id', 'cost_code_id TEXT')
+
+  // v13: a cost code can be tied to one department (NULL = shared by all).
+  ensureColumn('po_cost_codes', 'department_id', 'department_id TEXT')
+
+  // v14: approved purchase orders can be marked as paid.
+  ensureColumn('purchase_orders', 'paid_at', 'paid_at TEXT')
+  ensureColumn('purchase_orders', 'paid_by', 'paid_by TEXT')
+
+  // v15: an optional budget (ISK) per cost code.
+  ensureColumn('po_cost_codes', 'budget', 'budget REAL')
+
+  // v17: per-member purchase-order role. NULL = derived default (dept admins
+  // log for their department, everyone else has no access).
+  ensureColumn('job_members', 'po_role', "po_role TEXT CHECK (po_role IN ('none', 'log', 'log_all', 'view', 'approve'))")
+
+  // v18: which departments' PO budgets a 'log' member may work in — a JSON
+  // array of department ids. NULL = just their own department.
+  ensureColumn('job_members', 'po_dept_access', 'po_dept_access TEXT')
+
+  // v19: the 'log_all' role joined the po_role CHECK. A CHECK can't be widened
+  // in place, so databases that got the v17 column rebuild it: copy values
+  // aside, drop, re-add with the wider CHECK, copy back.
+  const jmSql = (db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'job_members'")
+    .get() as { sql: string }).sql
+  if (jmSql.includes('po_role') && !jmSql.includes('log_all')) {
+    db.transaction(() => {
+      db.exec(`
+        ALTER TABLE job_members ADD COLUMN po_role_tmp TEXT;
+        UPDATE job_members SET po_role_tmp = po_role;
+        ALTER TABLE job_members DROP COLUMN po_role;
+        ALTER TABLE job_members ADD COLUMN po_role TEXT CHECK (po_role IN ('none', 'log', 'log_all', 'view', 'approve'));
+        UPDATE job_members SET po_role = po_role_tmp;
+        ALTER TABLE job_members DROP COLUMN po_role_tmp;
+      `)
+    })()
+    console.log('[db] widened job_members.po_role CHECK for the log_all role')
+  }
+
+  // v16: VAT itemization, production-rebate flag and actual paid amount on POs.
+  // vat_rate stays NULL on legacy rows (unknown, not 0); actual_amount NULL
+  // means the invoice matched the logged amount.
+  ensureColumn('purchase_orders', 'vat_rate', 'vat_rate REAL')
+  ensureColumn('purchase_orders', 'rebate_eligible', 'rebate_eligible INTEGER NOT NULL DEFAULT 0')
+  ensureColumn('purchase_orders', 'actual_amount', 'actual_amount REAL')
+
+  // v15: per-user helper-tool access. NULL = every tool (the default);
+  // otherwise a JSON array of allowed tool slugs. Company admins always
+  // bypass the restriction (see toolAccessStore.allowedToolsFor).
+  ensureColumn('portal_users', 'tool_access', 'tool_access TEXT')
+
+  // v20: job-wide per diem amount (ISK per ticked day; 0 = feature off).
+  ensureColumn('jobs', 'per_diem_rate', 'per_diem_rate INTEGER NOT NULL DEFAULT 0')
+
+  // v21: approved timesheet weeks book automatically as wages purchase orders.
+  // is_wages marks the auto-created "Laun" cost codes; timesheet_week_id links
+  // a wages order to its week (unique → booking is idempotent). Existing
+  // departments are backfilled so every department has its wages code.
+  ensureColumn('po_cost_codes', 'is_wages', 'is_wages INTEGER NOT NULL DEFAULT 0')
+  ensureColumn('purchase_orders', 'timesheet_week_id', 'timesheet_week_id INTEGER')
+  db.exec(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_po_timesheet_week
+      ON purchase_orders(timesheet_week_id) WHERE timesheet_week_id IS NOT NULL
+  `)
+  // Idempotent backfill: every department gets its wages code (same shape as
+  // ensureWagesCostCode in timesheetWages.ts, inlined to keep migrate self-contained).
+  const deptsMissingWages = db.prepare(`
+    SELECT d.id, d.job_id, d.name FROM departments d
+    WHERE NOT EXISTS (
+      SELECT 1 FROM po_cost_codes cc
+      WHERE cc.job_id = d.job_id AND cc.is_wages = 1 AND cc.department_id = d.id
+    )
+  `).all() as { id: string, job_id: string, name: string }[]
+  for (const d of deptsMissingWages) {
+    let n = 1
+    while (db.prepare('SELECT 1 FROM po_cost_codes WHERE job_id = ? AND code = ?').get(d.job_id, `LAUN-${n}`)) n++
+    db.prepare('INSERT INTO po_cost_codes (id, job_id, department_id, created_at, code, name, is_wages) VALUES (?, ?, ?, ?, ?, ?, 1)')
+      .run(`cc-${Date.now().toString(36)}${randomBytes(3).toString('hex')}`, d.job_id, d.id,
+        new Date().toISOString(), `LAUN-${n}`, `Laun · ${d.name}`)
+  }
+  if (deptsMissingWages.length) console.log(`[db] created wages cost codes for ${deptsMissingWages.length} department(s)`)
 
   // v2: timesheet_weeks gained the 'dept_approved' status plus columns. The status
   // CHECK constraint can't be altered in place, so rebuild the table once. Detected

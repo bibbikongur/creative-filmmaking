@@ -13,11 +13,14 @@ const CSP = [
   `object-src 'none'`,
   `frame-ancestors 'self'`,
   `form-action 'self'`,
-  `img-src 'self' data: blob:`,
+  // The two extra hosts serve the location-map tool's map tiles (OSM streets,
+  // Esri satellite) — both on screen and when the PDF exporter redraws them.
+  `img-src 'self' data: blob: https://tile.openstreetmap.org https://server.arcgisonline.com`,
   `script-src 'self' 'unsafe-inline'${isDev ? ` 'unsafe-eval'` : ''}`,
   `style-src 'self' 'unsafe-inline'`,
   `font-src 'self' data:`,
-  `connect-src 'self'${isDev ? ' ws: wss:' : ''}`,
+  // OSRM serves the recce-plan tool's driving routes for the overview map.
+  `connect-src 'self' https://router.project-osrm.org${isDev ? ' ws: wss:' : ''}`,
 ].join('; ')
 
 export default defineEventHandler((event) => {

@@ -37,6 +37,8 @@ const STRINGS = {
     vatNoteItemized: (rate: number) => `Item prices are without VAT. ${rate}% VAT is itemized above.`,
     perDay: (days: number, rate: string) => `${rate}/day × ${days} ${days === 1 ? 'day' : 'days'}`,
     perWeek: (weeks: number, rate: string) => `${rate}/week × ${weeks} ${weeks === 1 ? 'week' : 'weeks'}`,
+    offBadge: (v: string) => `${v} DISCOUNT`,
+    afterDiscount: 'After discount',
   },
   is: {
     title: 'TILBOÐ',
@@ -60,6 +62,8 @@ const STRINGS = {
     vatNoteItemized: (rate: number) => `Einingaverð eru án VSK. ${rate}% VSK er sundurliðaður að ofan.`,
     perDay: (days: number, rate: string) => `${rate}/dag × ${days} ${days === 1 ? 'dagur' : 'dagar'}`,
     perWeek: (weeks: number, rate: string) => `${rate}/viku × ${weeks} ${weeks === 1 ? 'vika' : 'vikur'}`,
+    offBadge: (v: string) => `${v} AFSLÁTTUR`,
+    afterDiscount: 'Eftir afslátt',
   },
 } as const
 
@@ -124,6 +128,27 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
 
   // Thumbnails are fetched up front so the PDF assembly itself is synchronous.
   const thumbs = await Promise.all(offer.items.map(i => loadPdfImage(i.image)))
+
+  // Per-line totals after discount. The offer-level discount (percent or fixed)
+  // is spread across lines proportionally to lineTotal, in minor units with
+  // largest-remainder rounding, so the lines sum exactly to subtotal − discount.
+  const discounted: number[] | null = offer.discountAmount > 0
+    ? (() => {
+        const minor = offer.currency === 'ISK' ? 1 : 100
+        const totals = offer.items.map(i => Math.round(i.lineTotal * minor))
+        const sub = totals.reduce((a, b) => a + b, 0)
+        if (sub <= 0) return null
+        const disc = Math.min(Math.round(offer.discountAmount * minor), sub)
+        const raw = totals.map(t => t * disc / sub)
+        const shares = raw.map(Math.floor)
+        let rem = disc - shares.reduce((a, b) => a + b, 0)
+        raw
+          .map((r, i) => [r - shares[i]!, i] as const)
+          .sort((a, b) => b[0] - a[0])
+          .forEach(([, i]) => { if (rem > 0) { shares[i]!++; rem-- } })
+        return totals.map((t, i) => (t - shares[i]!) / minor)
+      })()
+    : null
 
   const doc = new PDFDocument({ size: 'A4', margin: 50, info: { Title: `${s.title} ${offer.quoteId}` } })
   const chunks: Buffer[] = []
@@ -194,10 +219,29 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     doc.text(s.item.toUpperCase(), col.name, y)
     doc.text(s.qty.toUpperCase(), col.qty, y, { width: 30, align: 'right' })
     doc.text(s.unitPrice.toUpperCase(), col.unit, y, { width: 70, align: 'right' })
-    doc.text(s.lineTotal.toUpperCase(), col.total, y, { width: 70, align: 'right' })
+    if (discounted) {
+      // Gold header makes it explicit the column shows the price after discount.
+      doc.fillColor(GOLD).text(s.afterDiscount.toUpperCase(), col.total - 15, y, { width: 85, align: 'right' })
+    }
+    else {
+      doc.text(s.lineTotal.toUpperCase(), col.total, y, { width: 70, align: 'right' })
+    }
     y += 14
     doc.moveTo(left, y).lineTo(right, y).lineWidth(0.5).strokeColor(LINE).stroke()
     y += 10
+  }
+
+  // ── Discount badge ─────────────────────────────────────────────────────────
+  // A gold pill above the table so the discount can't be missed.
+  if (discounted) {
+    const label = s.offBadge(offer.discountType === 'percent'
+      ? `${offer.discountValue}%`
+      : money(offer.discountAmount)).toUpperCase()
+    doc.font('Helvetica-Bold').fontSize(9)
+    const badgeW = doc.widthOfString(label) + 20
+    doc.roundedRect(right - badgeW, y, badgeW, 20, 10).fill(GOLD)
+    doc.fillColor('#FFFFFF').text(label, right - badgeW, y + 6, { width: badgeW, align: 'center' })
+    y += 30
   }
   tableHeader()
 
@@ -233,7 +277,17 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     doc.font('Helvetica').fontSize(10).fillColor(INK)
     doc.text(String(item.qty), col.qty, textY, { width: 30, align: 'right' })
     doc.text(money(item.unitPrice), col.unit, textY, { width: 70, align: 'right' })
-    doc.text(money(item.lineTotal), col.total, textY, { width: 70, align: 'right' })
+    if (discounted) {
+      // Original price struck through in gray, discounted price bold in gold —
+      // the receiver sees per line what they actually pay.
+      doc.font('Helvetica').fontSize(8).fillColor(GRAY)
+        .text(money(item.lineTotal), col.total, textY - 1, { width: 70, align: 'right', strike: true })
+      doc.font('Helvetica-Bold').fontSize(10).fillColor(GOLD)
+        .text(money(discounted[idx]!), col.total, textY + 10, { width: 70, align: 'right' })
+    }
+    else {
+      doc.text(money(item.lineTotal), col.total, textY, { width: 70, align: 'right' })
+    }
     y += rowH
     doc.moveTo(left, y - 6).lineTo(right, y - 6).lineWidth(0.5).strokeColor(LINE).stroke()
   })
@@ -244,11 +298,11 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     y = doc.page.margins.top
   }
   y += 8
-  const totalRow = (label: string, value: string, bold = false, color = INK) => {
-    doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(bold ? 12 : 10).fillColor(color)
+  const totalRow = (label: string, value: string, bold = false, color = INK, size?: number) => {
+    doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(size ?? (bold ? 12 : 10)).fillColor(color)
     doc.text(label, col.qty - 60, y, { width: col.total - col.qty + 20, align: 'right' })
     doc.text(value, col.total, y, { width: 70, align: 'right' })
-    y += bold ? 20 : 16
+    y += bold && !size ? 20 : 16
   }
   const vat = offer.vatAmount ?? 0
   if (offer.discountAmount > 0 || vat > 0) {
@@ -259,7 +313,7 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
       ? `${s.discount} (${offer.discountValue}%)`
       : s.discount
     // ASCII hyphen — the U+2212 minus sign is outside WinAnsi and won't render.
-    totalRow(discountLabel, `-${money(offer.discountAmount)}`, false, GOLD)
+    totalRow(discountLabel, `-${money(offer.discountAmount)}`, true, GOLD, 10)
   }
   if (vat > 0) {
     totalRow(`${s.vat} (${offer.vatRate}%)`, money(vat))

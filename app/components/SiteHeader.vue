@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 lg:h-20">
         <!-- Wordmark -->
-        <NuxtLink :to="localePath('/')" class="flex items-center gap-3 group" @click="mobileOpen = false">
+        <NuxtLink :to="localePath('/')" class="flex shrink-0 items-center gap-3 group" @click="mobileOpen = false">
           <img src="/logo.svg" alt="" class="w-8 h-8" >
           <span class="font-heading font-semibold uppercase tracking-widest text-bone-100 text-lg leading-none">
             Creative<span class="text-gold-500">&nbsp;Filmmaking</span>
@@ -11,17 +11,17 @@
         </NuxtLink>
 
         <!-- Desktop nav -->
-        <nav class="hidden md:flex items-center gap-8">
+        <nav class="hidden xl:flex items-center gap-5">
           <NuxtLink
             v-for="item in navItems"
             :key="item.to"
             :to="localePath(item.to)"
-            class="text-sm uppercase tracking-wider font-medium text-bone-400 hover:text-bone-100 transition-colors"
+            class="whitespace-nowrap text-sm uppercase tracking-wider font-medium text-bone-400 hover:text-bone-100 transition-colors"
             active-class="!text-gold-400"
           >
             {{ t(item.label) }}
           </NuxtLink>
-          <NuxtLink :to="localePath('/contact')" class="btn-gold !px-5 !py-2.5">
+          <NuxtLink :to="localePath('/contact')" class="btn-gold whitespace-nowrap !px-5 !py-2.5">
             {{ t('common.requestOffer') }}
           </NuxtLink>
           <NuxtLink :to="localePath('/cart')" class="relative p-2 text-bone-400 hover:text-bone-100 transition-colors" :aria-label="t('cart.title')">
@@ -36,10 +36,16 @@
             </span>
           </NuxtLink>
           <LanguageSwitcher />
+          <NuxtLink
+            :to="localePath('/portal')"
+            class="whitespace-nowrap border border-gold-500 text-gold-400 hover:bg-gold-500 hover:text-ink-950 transition-colors text-xs uppercase tracking-wider font-semibold px-3 py-2"
+          >
+            {{ t('nav.services') }}
+          </NuxtLink>
         </nav>
 
         <!-- Mobile controls -->
-        <div class="flex md:hidden items-center gap-2">
+        <div class="flex xl:hidden items-center gap-2">
           <NuxtLink :to="localePath('/cart')" class="relative p-2 text-bone-100" :aria-label="t('cart.title')" @click="mobileOpen = false">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -79,7 +85,7 @@
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <nav v-if="mobileOpen" class="md:hidden border-t border-ink-800 bg-ink-950 px-4 py-4 space-y-1">
+      <nav v-if="mobileOpen" class="xl:hidden border-t border-ink-800 bg-ink-950 px-4 py-4 space-y-1">
         <NuxtLink
           v-for="item in navItems"
           :key="item.to"
@@ -92,6 +98,13 @@
         </NuxtLink>
         <NuxtLink :to="localePath('/contact')" class="btn-gold w-full mt-2" @click="mobileOpen = false">
           {{ t('common.requestOffer') }}
+        </NuxtLink>
+        <NuxtLink
+          :to="localePath('/portal')"
+          class="flex items-center justify-center border border-gold-500 text-gold-400 text-sm uppercase tracking-wider font-medium w-full mt-2 px-3 py-3"
+          @click="mobileOpen = false"
+        >
+          {{ t('nav.services') }}
         </NuxtLink>
       </nav>
     </Transition>

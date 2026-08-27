@@ -31,8 +31,14 @@ function validateName(name: string): string {
 
 export function createDepartment(jobId: string, name: string): Department {
   const id = newPortalId('d')
-  getDb().prepare('INSERT INTO departments (id, job_id, created_at, name) VALUES (?, ?, ?, ?)')
-    .run(id, jobId, new Date().toISOString(), validateName(name))
+  const db = getDb()
+  db.transaction(() => {
+    db.prepare('INSERT INTO departments (id, job_id, created_at, name) VALUES (?, ?, ?, ?)')
+      .run(id, jobId, new Date().toISOString(), validateName(name))
+    // Every department carries its wages ("Laun") cost code from day one, so
+    // approved timesheets have a budget line to book against.
+    ensureWagesCostCode(jobId, id)
+  })()
   return getDepartment(id)!
 }
 
@@ -61,7 +67,13 @@ export function departmentBelongsToJob(departmentId: string, jobId: string): boo
 export function updateDepartment(jobId: string, departmentId: string, name: string): boolean {
   const db = getDb()
   if (!departmentBelongsToJob(departmentId, jobId)) return false
-  db.prepare('UPDATE departments SET name = ? WHERE id = ?').run(validateName(name), departmentId)
+  const trimmed = validateName(name)
+  db.transaction(() => {
+    db.prepare('UPDATE departments SET name = ? WHERE id = ?').run(trimmed, departmentId)
+    // Keep the auto wages code's display name in sync with the department.
+    db.prepare('UPDATE po_cost_codes SET name = ? WHERE job_id = ? AND department_id = ? AND is_wages = 1')
+      .run(`Laun · ${trimmed}`, jobId, departmentId)
+  })()
   return true
 }
 

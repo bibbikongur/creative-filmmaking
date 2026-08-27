@@ -1,6 +1,12 @@
 <template>
   <div>
-    <div>
+    <NuxtLink
+      :to="localePath(queryJob ? `/portal/jobs/${queryJob}` : '/portal/jobs')"
+      class="inline-block text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors"
+    >
+      ← {{ $t('portal.back') }}
+    </NuxtLink>
+    <div class="mt-4">
       <p class="kicker">{{ $t('portal.nav.history') }}</p>
       <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">{{ $t('portal.history.title') }}</h1>
     </div>
@@ -51,11 +57,13 @@ definePageMeta({ layout: 'portal' })
 
 const { memberships } = usePortalAuth()
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 
 type WeekRow = TimesheetWeek & { payroll: WeekPayroll | null, jobName: string, companyName: string }
 
 const jobs = computed(() => memberships.value?.jobs ?? [])
-const filterJob = ref('')
+const queryJob = String(useRoute().query.job || '')
+const filterJob = ref(queryJob)
 const weeks = ref<WeekRow[]>([])
 const loaded = ref(false)
 const loadError = ref('')

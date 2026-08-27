@@ -1,6 +1,12 @@
 <template>
   <div>
-    <div class="flex flex-wrap items-end justify-between gap-4">
+    <NuxtLink
+      :to="localePath(queryJob ? `/portal/jobs/${queryJob}` : '/portal/jobs')"
+      class="inline-block text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors"
+    >
+      ← {{ $t('portal.back') }}
+    </NuxtLink>
+    <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
       <div>
         <p class="kicker">{{ $t('portal.nav.dashboard') }}</p>
         <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">{{ $t('portal.dashboard.title') }}</h1>
@@ -138,7 +144,9 @@ const jobs = ref<Job[]>([])
 const loaded = ref(false)
 const loadError = ref('')
 const period = ref('4-weeks')
-const jobFilter = ref('')
+const queryJob = String(useRoute().query.job || '')
+const jobFilter = ref(queryJob)
+const localePath = useLocalePath()
 
 const range = computed(() => {
   const thisMonday = mondayOf(new Date())
@@ -171,7 +179,10 @@ const load = async () => {
 onMounted(async () => {
   load()
   try {
-    jobs.value = await $fetch<Job[]>('/api/portal/jobs', { query: { t: Date.now() } })
+    // The endpoint also returns jobs the user merely crews on — the filter is
+    // for the companies they administer.
+    jobs.value = (await $fetch<(Job & { role: 'admin' | 'member' })[]>('/api/portal/jobs', { query: { t: Date.now() } }))
+      .filter(j => j.role === 'admin')
   }
   catch { /* filter stays hidden */ }
 })

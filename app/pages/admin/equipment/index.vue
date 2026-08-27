@@ -72,6 +72,7 @@
 import type { EquipmentItem } from '~/types'
 
 definePageMeta({ layout: 'admin' })
+const { confirmDialog, alertDialog } = useAppDialog()
 
 const items = ref<EquipmentItem[]>([])
 const loaded = ref(false)
@@ -110,7 +111,7 @@ const move = async (index: number, delta: number) => {
   }
   catch (err: any) {
     items.value = previous
-    alert(err?.data?.statusMessage || 'Could not save the new order.')
+    await alertDialog(err?.data?.statusMessage || 'Could not save the new order.')
   }
   finally {
     reordering.value = false
@@ -118,7 +119,7 @@ const move = async (index: number, delta: number) => {
 }
 
 const remove = async (e: EquipmentItem) => {
-  if (!confirm(`Delete "${e.name.en}"? This removes it from the website immediately.`)) return
+  if (!await confirmDialog(`Delete "${e.name.en}"? This removes it from the website immediately.`)) return
   deleting.value = e.id
   try {
     await $fetch(`/api/admin/equipment/${e.id}`, { method: 'DELETE' })
@@ -126,7 +127,7 @@ const remove = async (e: EquipmentItem) => {
     clearNuxtData('equipment') // public pages refetch on next visit
   }
   catch (err: any) {
-    alert(err?.data?.statusMessage || 'Delete failed.')
+    await alertDialog(err?.data?.statusMessage || 'Delete failed.')
   }
   finally {
     deleting.value = ''

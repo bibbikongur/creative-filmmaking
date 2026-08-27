@@ -5,8 +5,8 @@
       <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">{{ $t('portal.jobs.title') }}</h1>
     </div>
 
-    <!-- Create job -->
-    <form class="mt-8 border border-ink-800 bg-ink-900/50 p-5 flex flex-wrap items-end gap-4" @submit.prevent="create">
+    <!-- Create job (company admins only) -->
+    <form v-if="isCompanyAdmin" class="mt-8 border border-ink-800 bg-ink-900/50 p-5 flex flex-wrap items-end gap-4" @submit.prevent="create">
       <div class="flex-1 min-w-56">
         <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.jobs.jobName') }}</label>
         <input v-model="newName" type="text" class="input-dark" :placeholder="$t('portal.jobs.namePlaceholder')" required>
@@ -38,6 +38,7 @@
           </p>
         </div>
         <button
+          v-if="j.role === 'admin'"
           type="button"
           class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors disabled:opacity-50"
           :disabled="busy === j.id"
@@ -47,7 +48,9 @@
         </button>
       </NuxtLink>
 
-      <p v-if="!jobs.length" class="p-8 text-center text-sm text-bone-400">{{ $t('portal.jobs.empty') }}</p>
+      <p v-if="!jobs.length" class="p-8 text-center text-sm text-bone-400">
+        {{ $t(isCompanyAdmin ? 'portal.jobs.empty' : 'portal.jobs.emptyMember') }}
+      </p>
     </div>
   </div>
 </template>
@@ -57,10 +60,12 @@ import type { Job } from '~/types'
 
 definePageMeta({ layout: 'portal' })
 
-type JobRow = Job & { memberCount: number, pendingWeeks: number }
+type JobRow = Job & { memberCount: number, pendingWeeks: number, role: 'admin' | 'member' }
 
 const localePath = useLocalePath()
 const { t } = useI18n()
+const { alertDialog } = useAppDialog()
+const { isCompanyAdmin } = usePortalAuth()
 
 const jobs = ref<JobRow[]>([])
 const loaded = ref(false)
@@ -107,7 +112,7 @@ const toggle = async (j: JobRow) => {
     j.status = next
   }
   catch (e: any) {
-    alert(e?.data?.statusMessage || t('portal.loadFailed'))
+    await alertDialog(e?.data?.statusMessage || t('portal.loadFailed'))
   }
   finally {
     busy.value = ''

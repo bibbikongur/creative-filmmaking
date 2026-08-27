@@ -8,6 +8,9 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<{
     dayRate?: number, status?: JobMemberStatus
     departmentId?: string | null, isDeptAdmin?: boolean
+    role?: string, phone?: string
+    poRole?: 'none' | 'log' | 'log_all' | 'view' | 'approve' | null
+    poDepartments?: string[] | null
   }>(event)
   const status = body?.status
   if (status !== undefined && !['active', 'removed'].includes(status)) {
@@ -18,6 +21,10 @@ export default defineEventHandler(async (event) => {
     status,
     departmentId: body?.departmentId,
     isDeptAdmin: body?.isDeptAdmin,
+    role: body?.role,
+    phone: body?.phone,
+    poRole: body?.poRole,
+    poDepartments: body?.poDepartments,
   })) {
     throw createError({ statusCode: 404, statusMessage: 'Member not found' })
   }

@@ -17,191 +17,215 @@
         </NuxtLink>
       </div>
 
-      <!-- Departments -->
-      <div v-if="job?.status === 'active'" class="mt-8 border border-ink-800 bg-ink-900/50 p-5">
-        <div class="flex items-center justify-between gap-4">
-          <p class="kicker">{{ $t('portal.departments.title') }}</p>
-          <span class="text-xs text-bone-400">{{ $t('portal.departments.hint') }}</span>
+      <!-- Crew lives on its own page now -->
+      <div v-if="isAdmin" class="mt-8 border border-ink-800 bg-ink-900/50 p-5 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p class="kicker">{{ $t('portal.crew.title') }}</p>
+          <p class="mt-2 text-sm text-bone-400">{{ memberCount }} {{ $t('portal.jobs.members', memberCount) }}</p>
         </div>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <span
-            v-for="d in departments"
-            :key="d.id"
-            class="inline-flex items-center gap-2 border border-ink-700 px-3 py-1.5 text-sm text-bone-100"
+        <NuxtLink :to="localePath(`/portal/crew/${jobId}`)" class="btn-gold !px-5 !py-2.5">
+          {{ $t('portal.crew.manage') }} →
+        </NuxtLink>
+      </div>
+
+      <!-- Timesheets -->
+      <div v-if="timesheetCards.length" class="mt-8 border border-ink-800 bg-ink-900/50 p-5">
+        <p class="kicker">{{ $t('portal.jobTimesheets.title') }}</p>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <NuxtLink
+            v-for="card in timesheetCards"
+            :key="card.key"
+            :to="localePath(card.to)"
+            class="group flex flex-col gap-3 border border-ink-800 bg-ink-950/40 p-5 hover:border-gold-500/60 hover:bg-ink-900 transition-colors"
           >
-            {{ d.name }}
-            <span class="text-xs text-bone-400">{{ d.memberCount }}</span>
-            <button type="button" class="text-bone-400 hover:text-gold-400 transition-colors" @click="renameDepartment(d)">✎</button>
-            <button type="button" class="text-signal-500/70 hover:text-signal-500 transition-colors" @click="removeDepartment(d)">✕</button>
-          </span>
-          <form class="inline-flex items-center gap-2" @submit.prevent="createDepartment">
-            <input v-model="newDeptName" type="text" class="input-dark !w-44 !py-1.5" :placeholder="$t('portal.departments.namePlaceholder')">
-            <button type="submit" class="btn-ghost !py-1.5" :disabled="!newDeptName.trim() || creatingDept">+</button>
-          </form>
+            <span class="flex h-11 w-11 items-center justify-center border border-ink-700 text-gold-500 group-hover:border-gold-500/60 transition-colors">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path :d="card.icon" />
+              </svg>
+            </span>
+            <div>
+              <p class="font-semibold text-bone-100">{{ $t(`portal.jobTimesheets.${card.key}.title`) }}</p>
+              <p class="mt-1 text-sm text-bone-400">{{ $t(`portal.jobTimesheets.${card.key}.desc`) }}</p>
+            </div>
+            <span class="mt-auto text-xs uppercase tracking-widest text-bone-500 group-hover:text-gold-400 transition-colors">
+              {{ $t('portal.tools.open') }} →
+            </span>
+          </NuxtLink>
         </div>
       </div>
 
-      <!-- Add member -->
-      <form v-if="job?.status === 'active'" class="mt-6 border border-ink-800 bg-ink-900/50 p-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-6" @submit.prevent="add">
-        <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.members.email') }}</label>
-          <input v-model="form.email" type="email" class="input-dark" required>
-        </div>
-        <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.members.name') }}</label>
-          <input v-model="form.name" type="text" class="input-dark">
-        </div>
-        <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.members.dayRate') }}</label>
-          <input v-model.number="form.dayRate" type="number" min="1" step="1" class="input-dark text-right" required>
-        </div>
-        <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.departments.department') }}</label>
-          <select v-model="form.departmentId" class="input-dark">
-            <option :value="null">{{ $t('portal.departments.unassigned') }}</option>
-            <option v-for="d in departments" :key="d.id" :value="d.id">{{ d.name }}</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.members.language') }}</label>
-          <select v-model="form.locale" class="input-dark">
-            <option value="is">Íslenska</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-        <div class="flex items-end">
-          <button type="submit" class="btn-gold w-full disabled:opacity-60" :disabled="adding">
-            {{ adding ? '…' : $t('portal.members.add') }}
-          </button>
-        </div>
-        <label v-if="form.departmentId" class="sm:col-span-2 lg:col-span-6 flex items-center gap-2 text-sm text-bone-400">
-          <input v-model="form.isDeptAdmin" type="checkbox" class="accent-gold-500">
-          {{ $t('portal.departments.makeAdmin') }}
-        </label>
-        <ul v-if="addErrors.length" class="sm:col-span-2 lg:col-span-6 text-sm text-signal-500 list-disc pl-5">
-          <li v-for="err in addErrors" :key="err">{{ err }}</li>
-        </ul>
-      </form>
-
-      <!-- Members -->
-      <div class="mt-8 border border-ink-800 divide-y divide-ink-800">
-        <div
-          v-for="m in members"
-          :key="m.userId"
-          class="flex flex-wrap items-center gap-4 p-4 bg-ink-900/50 transition-colors"
-          :class="m.memberStatus === 'removed' ? 'opacity-50' : 'hover:bg-ink-900'"
-        >
-          <div class="min-w-0 flex-1">
-            <p class="font-semibold text-bone-100 truncate">
-              {{ m.name || m.email }}
-              <span v-if="m.userStatus === 'invited'" class="ml-2 text-xs uppercase tracking-widest text-gold-400">{{ $t('portal.members.invited') }}</span>
-              <span v-if="m.memberStatus === 'removed'" class="ml-2 text-xs uppercase tracking-widest text-signal-500">{{ $t('portal.members.removed') }}</span>
-              <span v-if="m.isDeptAdmin" class="ml-2 text-xs uppercase tracking-widest text-sky-400">{{ $t('portal.departments.deptAdmin') }}</span>
-            </p>
-            <p class="mt-0.5 text-xs text-bone-400 truncate">{{ m.email }}</p>
-          </div>
-          <div v-if="m.memberStatus === 'active'" class="flex items-center gap-2">
-            <select
-              :value="m.departmentId ?? ''"
-              class="input-dark !w-40 !py-1.5"
-              @change="setDepartment(m, ($event.target as HTMLSelectElement).value || null)"
-            >
-              <option value="">{{ $t('portal.departments.unassigned') }}</option>
-              <option v-for="d in departments" :key="d.id" :value="d.id">{{ d.name }}</option>
-            </select>
-            <label v-if="m.departmentId" class="flex items-center gap-1 text-xs text-bone-400 whitespace-nowrap">
-              <input
-                type="checkbox"
-                class="accent-gold-500"
-                :checked="m.isDeptAdmin"
-                :disabled="busy === m.userId"
-                @change="setDeptAdmin(m, ($event.target as HTMLInputElement).checked)"
-              >
-              {{ $t('portal.departments.admin') }}
-            </label>
-          </div>
-          <div class="flex items-center gap-2">
-            <input
-              v-model.number="rates[m.userId]"
-              type="number"
-              min="1"
-              step="1"
-              class="input-dark !w-28 text-right"
-              :disabled="m.memberStatus === 'removed'"
-            >
-            <span class="text-xs text-bone-400">kr.</span>
-            <button
-              v-if="rates[m.userId] !== m.dayRate"
-              type="button"
-              class="text-xs uppercase tracking-widest text-gold-400 hover:text-gold-500 transition-colors disabled:opacity-50"
-              :disabled="busy === m.userId"
-              @click="saveRate(m)"
-            >
-              {{ $t('portal.save') }}
-            </button>
-          </div>
-          <button
-            v-if="m.userStatus === 'invited' && m.memberStatus === 'active'"
-            type="button"
-            class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors disabled:opacity-50"
-            :disabled="busy === m.userId"
-            @click="reinvite(m)"
+      <!-- Purchase orders: create, review and approve, all scoped to this job -->
+      <div v-if="canReviewHere" class="mt-8 border border-ink-800 bg-ink-900/50 p-5">
+        <p class="kicker">{{ $t('portal.jobPo.title') }}</p>
+        <p class="mt-2 text-sm text-bone-400">{{ $t('portal.jobPo.desc') }}</p>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <NuxtLink
+            v-for="card in poCards"
+            :key="card.key"
+            :to="localePath(card.to)"
+            class="group flex flex-col gap-3 border border-ink-800 bg-ink-950/40 p-5 hover:border-gold-500/60 hover:bg-ink-900 transition-colors"
           >
-            {{ $t('portal.members.reinvite') }}
-          </button>
-          <button
-            type="button"
-            class="text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
-            :class="m.memberStatus === 'active' ? 'text-signal-500/80 hover:text-signal-500' : 'text-bone-400 hover:text-gold-400'"
-            :disabled="busy === m.userId"
-            @click="toggleMember(m)"
-          >
-            {{ m.memberStatus === 'active' ? $t('portal.members.remove') : $t('portal.members.restore') }}
-          </button>
+            <span class="flex h-11 w-11 items-center justify-center border border-ink-700 text-gold-500 group-hover:border-gold-500/60 transition-colors">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path :d="card.icon" />
+              </svg>
+            </span>
+            <div>
+              <p class="font-semibold text-bone-100">{{ $t(`portal.jobPo.${card.key}.title`) }}</p>
+              <p class="mt-1 text-sm text-bone-400">{{ $t(`portal.jobPo.${card.key}.desc`) }}</p>
+            </div>
+            <span class="mt-auto text-xs uppercase tracking-widest text-bone-500 group-hover:text-gold-400 transition-colors">
+              {{ $t('portal.tools.open') }} →
+            </span>
+          </NuxtLink>
         </div>
+      </div>
 
-        <p v-if="!members.length" class="p-8 text-center text-sm text-bone-400">{{ $t('portal.members.empty') }}</p>
+      <!-- Helper tools, grouped by category: everything opens scoped on this job via ?job= -->
+      <div v-if="jobToolGroups.length" class="mt-8 border border-ink-800 bg-ink-900/50 p-5">
+        <p class="kicker">{{ $t('portal.jobTools.title') }}</p>
+        <p class="mt-2 text-sm text-bone-400">{{ $t('portal.jobTools.desc') }}</p>
+        <div v-for="group in jobToolGroups" :key="group.key" class="mt-6 first-of-type:mt-4">
+          <p class="text-xs uppercase tracking-widest text-gold-500/90 border-b border-ink-800 pb-2">{{ $t(group.labelKey) }}</p>
+          <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <NuxtLink
+              v-for="tool in group.tools"
+              :key="tool.slug"
+              :to="localePath(tool.to)"
+              class="group flex flex-col gap-3 border border-ink-800 bg-ink-950/40 p-5 hover:border-gold-500/60 hover:bg-ink-900 transition-colors"
+            >
+              <span class="flex h-11 w-11 items-center justify-center border border-ink-700 text-gold-500 group-hover:border-gold-500/60 transition-colors">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path :d="tool.icon" />
+                </svg>
+              </span>
+              <div>
+                <p class="font-semibold text-bone-100">{{ $t(tool.titleKey) }}</p>
+                <p class="mt-1 text-sm text-bone-400">{{ $t(tool.descKey) }}</p>
+              </div>
+              <span class="mt-auto text-xs uppercase tracking-widest text-bone-500 group-hover:text-gold-400 transition-colors">
+                {{ $t('portal.tools.open') }} →
+              </span>
+            </NuxtLink>
+          </div>
+        </div>
+        <p class="mt-5 text-xs text-bone-500 flex items-center gap-2">
+          <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="11" width="14" height="9" rx="1.5" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
+          </svg>
+          {{ $t('portal.tools.privacy') }}
+        </p>
       </div>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Department, Job, JobMember } from '~/types'
+import type { Job } from '~/types'
 
 definePageMeta({ layout: 'portal' })
 
 const route = useRoute()
 const localePath = useLocalePath()
 const { t } = useI18n()
+const { memberships, canUseTool } = usePortalAuth()
 const jobId = computed(() => String(route.params.id))
 
 const job = ref<Job | null>(null)
-const members = ref<JobMember[]>([])
-const departments = ref<Department[]>([])
-const rates = reactive<Record<string, number>>({})
+const memberCount = ref(0)
+const isAdmin = ref(false)
 const loaded = ref(false)
 const loadError = ref('')
-const adding = ref(false)
-const addErrors = ref<string[]>([])
-const busy = ref('')
-const newDeptName = ref('')
-const creatingDept = ref(false)
 
-const form = reactive({
-  email: '', name: '', dayRate: undefined as number | undefined, locale: 'is',
-  departmentId: null as string | null, isDeptAdmin: false,
-})
+// Role on THIS job: crew members register hours, reviewers approve them.
+const isMember = computed(() => Boolean(memberships.value?.jobs.some(j => j.jobId === jobId.value)))
+const isDeptAdminHere = computed(() => Boolean(memberships.value?.deptAdmin.some(d => d.jobId === jobId.value)))
+const canReviewHere = computed(() => isAdmin.value || isDeptAdminHere.value)
+
+// Timesheet entry points, styled like the tools cards; each opens pre-filtered on this job.
+const timesheetCards = computed(() => [
+  ...(isMember.value
+    ? [
+        {
+          key: 'register',
+          to: { path: '/portal/timesheet', query: { job: jobId.value } },
+          // Clock
+          icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.5V12l3 2',
+        },
+        {
+          key: 'history',
+          to: { path: '/portal/history', query: { job: jobId.value } },
+          // Stacked list with a check
+          icon: 'M4 5h10M4 9.5h10M4 14h6M14.5 15.5l2.5 2.5 4.5-5',
+        },
+      ]
+    : []),
+  ...(canReviewHere.value
+    ? [
+        {
+          key: 'review',
+          to: { path: '/portal/timesheets', query: { job: jobId.value } },
+          // Clipboard with a check
+          icon: 'M9 3h6v3H9zM15 4h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 13l2.5 2.5L15.5 11',
+        },
+        {
+          key: 'dashboard',
+          to: { path: '/portal/dashboard', query: { job: jobId.value } },
+          // Bar chart
+          icon: 'M4 4v16h16M8 16v-5M12.5 16V8M17 16v-3',
+        },
+      ]
+    : []),
+])
+
+// Purchase-order entry points, styled like the tools cards. All three open the
+// same PO tool scoped on this job (?job=); ?focus= tells it where to land:
+// the new-order form, the full list, or the pending queue ready to approve.
+const poCards = computed(() => [
+  {
+    key: 'create',
+    to: { path: '/portal/tools/purchase-orders', query: { job: jobId.value, focus: 'create' } },
+    // Document with a plus
+    icon: 'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9.5 14.5h5M12 12v5',
+  },
+  {
+    key: 'overview',
+    to: { path: '/portal/tools/purchase-orders', query: { job: jobId.value, focus: 'list' } },
+    // Receipt with item lines
+    icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9.5 8h5M9.5 12h5M9.5 16h3',
+  },
+  {
+    key: 'approve',
+    to: { path: '/portal/tools/purchase-orders', query: { job: jobId.value, focus: 'approve' } },
+    // Check inside a circle
+    icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM8.5 12l2.5 2.5L15.5 10',
+  },
+])
+
+// Every helper tool lives here now, grouped by category — pages open scoped
+// on this job via ?job=, so anything saved there is linked to this job only.
+// Cards honour the per-user tool access. Purchase orders have their own
+// section above, so they are dropped from this grid to avoid showing up twice.
+const { portalTools, toolCategories } = usePortalTools()
+const jobToolGroups = computed(() => toolCategories
+  .map(cat => ({
+    ...cat,
+    tools: portalTools
+      .filter(tool => tool.category === cat.key)
+      .filter(tool => tool.slug !== 'purchase-orders')
+      .filter(tool => canUseTool(tool.slug))
+      .map(tool => ({ ...tool, to: { path: `/portal/tools/${tool.slug}`, query: { job: jobId.value } } })),
+  }))
+  .filter(group => group.tools.length))
 
 const load = async () => {
   loadError.value = ''
   try {
-    const res = await $fetch<{ job: Job, members: JobMember[], departments: Department[] }>(
-      `/api/portal/jobs/${jobId.value}/members`, { query: { t: Date.now() } })
+    const res = await $fetch<{ job: Job, memberCount: number, isAdmin: boolean }>(
+      `/api/portal/jobs/${jobId.value}/summary`, { query: { t: Date.now() } })
     job.value = res.job
-    members.value = res.members
-    departments.value = res.departments
-    for (const m of res.members) rates[m.userId] = m.dayRate
+    memberCount.value = res.memberCount
+    isAdmin.value = res.isAdmin
     loaded.value = true
   }
   catch (e: any) {
@@ -210,142 +234,6 @@ const load = async () => {
 }
 
 onMounted(load)
-
-const add = async () => {
-  addErrors.value = []
-  adding.value = true
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/members`, { method: 'POST', body: { ...form } })
-    form.email = ''
-    form.name = ''
-    form.dayRate = undefined
-    form.departmentId = null
-    form.isDeptAdmin = false
-    await load()
-  }
-  catch (e: any) {
-    addErrors.value = e?.data?.data?.errors || [e?.data?.statusMessage || t('portal.loadFailed')]
-  }
-  finally {
-    adding.value = false
-  }
-}
-
-// ── Departments ──
-const createDepartment = async () => {
-  if (!newDeptName.value.trim()) return
-  creatingDept.value = true
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/departments`, { method: 'POST', body: { name: newDeptName.value } })
-    newDeptName.value = ''
-    await load()
-  }
-  catch (e: any) {
-    alert(e?.data?.data?.errors?.[0] || e?.data?.statusMessage || t('portal.loadFailed'))
-  }
-  finally {
-    creatingDept.value = false
-  }
-}
-
-const renameDepartment = async (d: Department) => {
-  const name = prompt(t('portal.departments.renamePrompt'), d.name)
-  if (!name || name.trim() === d.name) return
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/departments/${d.id}`, { method: 'PATCH', body: { name } })
-    await load()
-  }
-  catch (e: any) {
-    alert(e?.data?.data?.errors?.[0] || e?.data?.statusMessage || t('portal.loadFailed'))
-  }
-}
-
-const removeDepartment = async (d: Department) => {
-  if (!confirm(t('portal.departments.deleteConfirm', { name: d.name }))) return
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/departments/${d.id}`, { method: 'DELETE' })
-    await load()
-  }
-  catch (e: any) {
-    alert(e?.data?.statusMessage || t('portal.loadFailed'))
-  }
-}
-
-const setDepartment = async (m: JobMember, departmentId: string | null) => {
-  busy.value = m.userId
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/members/${m.userId}`, { method: 'PATCH', body: { departmentId } })
-    await load()
-  }
-  catch (e: any) {
-    alert(e?.data?.statusMessage || t('portal.loadFailed'))
-  }
-  finally {
-    busy.value = ''
-  }
-}
-
-const setDeptAdmin = async (m: JobMember, isDeptAdmin: boolean) => {
-  busy.value = m.userId
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/members/${m.userId}`, { method: 'PATCH', body: { isDeptAdmin } })
-    await load()
-  }
-  catch (e: any) {
-    alert(e?.data?.statusMessage || t('portal.loadFailed'))
-  }
-  finally {
-    busy.value = ''
-  }
-}
-
-const saveRate = async (m: JobMember) => {
-  busy.value = m.userId
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/members/${m.userId}`, {
-      method: 'PATCH',
-      body: { dayRate: rates[m.userId] },
-    })
-    m.dayRate = rates[m.userId]!
-  }
-  catch (e: any) {
-    alert(e?.data?.data?.errors?.[0] || e?.data?.statusMessage || t('portal.loadFailed'))
-    rates[m.userId] = m.dayRate
-  }
-  finally {
-    busy.value = ''
-  }
-}
-
-const reinvite = async (m: JobMember) => {
-  busy.value = m.userId
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/members/${m.userId}/reinvite`, { method: 'POST' })
-    alert(t('portal.members.reinviteSent'))
-  }
-  catch (e: any) {
-    alert(e?.data?.statusMessage || t('portal.loadFailed'))
-  }
-  finally {
-    busy.value = ''
-  }
-}
-
-const toggleMember = async (m: JobMember) => {
-  const next = m.memberStatus === 'active' ? 'removed' : 'active'
-  if (next === 'removed' && !confirm(t('portal.members.removeConfirm', { name: m.name || m.email }))) return
-  busy.value = m.userId
-  try {
-    await $fetch(`/api/portal/jobs/${jobId.value}/members/${m.userId}`, { method: 'PATCH', body: { status: next } })
-    m.memberStatus = next
-  }
-  catch (e: any) {
-    alert(e?.data?.statusMessage || t('portal.loadFailed'))
-  }
-  finally {
-    busy.value = ''
-  }
-}
 
 useHead({ title: 'Job · Portal · Creative Filmmaking' })
 </script>

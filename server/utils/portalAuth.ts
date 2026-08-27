@@ -116,6 +116,123 @@ export async function requireJobMember(event: H3Event, jobId: string): Promise<P
   return user
 }
 
+/** Does the user administer the company that owns `jobId` (company active)? */
+export function userIsJobAdmin(userId: string, jobId: string): boolean {
+  return Boolean(getDb().prepare(`
+    SELECT 1 FROM jobs j
+    JOIN company_admins ca ON ca.company_id = j.company_id AND ca.user_id = ?
+    JOIN companies c ON c.id = j.company_id AND c.status = 'active'
+    WHERE j.id = ?
+  `).get(userId, jobId))
+}
+
+/**
+ * May the user link tool documents (location maps, albums, recce plans) to this
+ * job? True for a company admin of the job's company or an active job member.
+ */
+export function userCanAccessJob(userId: string, jobId: string): boolean {
+  if (userIsJobAdmin(userId, jobId)) return true
+  return Boolean(getDb().prepare(`
+    SELECT 1 FROM job_members m
+    JOIN jobs j ON j.id = m.job_id
+    JOIN companies c ON c.id = j.company_id AND c.status = 'active'
+    WHERE m.job_id = ? AND m.user_id = ? AND m.status = 'active'
+  `).get(jobId, userId))
+}
+
+/**
+ * Optional job scope for the tools endpoints (?job= query / body.jobId): returns
+ * the job id after an access check, or null when absent. Unknown/foreign job →
+ * 404 (no existence leaks).
+ */
+export function requireToolJob(userId: string, raw: unknown): string | null {
+  const jobId = typeof raw === 'string' && raw ? raw : null
+  if (!jobId) return null
+  if (!userCanAccessJob(userId, jobId)) throw createError({ statusCode: 404, statusMessage: 'Job not found' })
+  return jobId
+}
+
+export interface PoAccessContext {
+  user: PortalUserPublic
+  /** Full rights (review, pay, cost codes): company admin or the 'approve' role. */
+  isJobAdmin: boolean
+  /** May log new costs. */
+  canLog: boolean
+  /** Sees every order on the job (admins plus the read-only 'view' role). */
+  viewAll: boolean
+  /**
+   * Department scope when not viewAll: the departments whose budgets the
+   * member may work in (po_dept_access, defaulting to their own department).
+   * A null element scopes to department-less orders.
+   */
+  departmentIds: (string | null)[]
+  /** The member's own department — the default on new orders. Null for admins. */
+  homeDepartmentId: string | null
+}
+
+/**
+ * Authorize the signed-in user to use the purchase-order tool on a job. The
+ * per-member po_role decides what they may do; NULL falls back to the derived
+ * default (department admins log for their department, others have no access).
+ * Company admins always have full rights. No access → 404 (no existence leaks).
+ */
+export async function requirePurchaseOrderAccess(event: H3Event, jobId: string): Promise<PoAccessContext> {
+  const user = await requirePortalUser(event)
+  const db = getDb()
+
+  const job = db.prepare(`
+    SELECT j.company_id FROM jobs j
+    JOIN companies c ON c.id = j.company_id AND c.status = 'active'
+    WHERE j.id = ?
+  `).get(jobId) as { company_id: string } | undefined
+  if (!job) throw createError({ statusCode: 404, statusMessage: 'Job not found' })
+
+  const isCompanyAdmin = Boolean(db.prepare(
+    'SELECT 1 FROM company_admins WHERE company_id = ? AND user_id = ?',
+  ).get(job.company_id, user.id))
+  if (isCompanyAdmin) return { user, isJobAdmin: true, canLog: true, viewAll: true, departmentIds: [], homeDepartmentId: null }
+
+  const member = db.prepare(`
+    SELECT department_id, is_dept_admin, po_role, po_dept_access FROM job_members
+    WHERE job_id = ? AND user_id = ? AND status = 'active'
+  `).get(jobId, user.id) as {
+    department_id: string | null
+    is_dept_admin: number
+    po_role: string | null
+    po_dept_access: string | null
+  } | undefined
+  if (!member) throw createError({ statusCode: 404, statusMessage: 'Job not found' })
+
+  // Department scope for the log role: the granted list, or just their own.
+  let departmentIds: (string | null)[] = [member.department_id]
+  if (member.po_dept_access) {
+    try {
+      const parsed = JSON.parse(member.po_dept_access)
+      if (Array.isArray(parsed)) {
+        const ids = parsed.filter((d): d is string => typeof d === 'string')
+        if (ids.length) departmentIds = ids
+      }
+    }
+    catch { /* unreadable → default scope */ }
+  }
+
+  const role = member.po_role
+    ?? (member.is_dept_admin && member.department_id ? 'log' : 'none')
+  switch (role) {
+    case 'approve':
+      return { user, isJobAdmin: true, canLog: true, viewAll: true, departmentIds: [], homeDepartmentId: member.department_id }
+    case 'log_all':
+      // Logs costs on any department and sees everything, but cannot review.
+      return { user, isJobAdmin: false, canLog: true, viewAll: true, departmentIds: [], homeDepartmentId: member.department_id }
+    case 'view':
+      return { user, isJobAdmin: false, canLog: false, viewAll: true, departmentIds: [], homeDepartmentId: member.department_id }
+    case 'log':
+      return { user, isJobAdmin: false, canLog: true, viewAll: false, departmentIds, homeDepartmentId: member.department_id }
+    default:
+      throw createError({ statusCode: 404, statusMessage: 'Job not found' })
+  }
+}
+
 export interface WeekReviewContext {
   user: PortalUserPublic
   week: TimesheetWeek

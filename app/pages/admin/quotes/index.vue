@@ -52,6 +52,7 @@
 import type { QuoteSummary } from '~/types'
 
 definePageMeta({ layout: 'admin' })
+const { confirmDialog, alertDialog } = useAppDialog()
 
 const quotes = ref<QuoteSummary[]>([])
 const loaded = ref(false)
@@ -82,14 +83,14 @@ const formatTotal = (q: QuoteSummary) =>
     : `${q.lastOfferTotal!.toLocaleString('is-IS')} kr.`
 
 const remove = async (q: QuoteSummary) => {
-  if (!confirm(`Delete the quote for "${q.name || q.email}"? This also deletes its offers.`)) return
+  if (!await confirmDialog(`Delete the quote for "${q.name || q.email}"? This also deletes its offers.`)) return
   deleting.value = q.id
   try {
     await $fetch(`/api/admin/quotes/${q.id}`, { method: 'DELETE' })
     quotes.value = quotes.value.filter(x => x.id !== q.id)
   }
   catch (e: any) {
-    alert(e?.data?.statusMessage || 'Delete failed.')
+    await alertDialog(e?.data?.statusMessage || 'Delete failed.')
   }
   finally {
     deleting.value = ''

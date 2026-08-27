@@ -5,23 +5,13 @@
         <NuxtLink :to="localePath('/portal')" class="font-heading font-semibold uppercase tracking-wider text-bone-100">
           Creative Filmmaking <span class="text-gold-500">· {{ $t('portal.title') }}</span>
         </NuxtLink>
+        <!-- Everything lives inside the jobs now — the nav is just the job list. -->
         <nav v-if="authed" class="flex flex-wrap items-center gap-5 text-xs uppercase tracking-widest sm:ml-4 sm:mr-auto">
-          <template v-if="hasJobs">
-            <NuxtLink :to="localePath('/portal/timesheet')" class="transition-colors hover:text-gold-400" :class="section === 'timesheet' ? 'text-gold-400' : 'text-bone-400'">
-              {{ $t('portal.nav.timesheet') }}
-            </NuxtLink>
-            <NuxtLink :to="localePath('/portal/history')" class="transition-colors hover:text-gold-400" :class="section === 'history' ? 'text-gold-400' : 'text-bone-400'">
-              {{ $t('portal.nav.history') }}
-            </NuxtLink>
-          </template>
-          <NuxtLink v-if="canReview" :to="localePath('/portal/timesheets')" class="transition-colors hover:text-gold-400" :class="section === 'review' ? 'text-gold-400' : 'text-bone-400'">
-            {{ $t('portal.nav.review') }}
-          </NuxtLink>
-          <NuxtLink v-if="isCompanyAdmin" :to="localePath('/portal/jobs')" class="transition-colors hover:text-gold-400" :class="section === 'jobs' ? 'text-gold-400' : 'text-bone-400'">
+          <NuxtLink :to="localePath('/portal/jobs')" class="transition-colors hover:text-gold-400" :class="onJobs ? 'text-gold-400' : 'text-bone-400'">
             {{ $t('portal.nav.jobs') }}
           </NuxtLink>
-          <NuxtLink v-if="canReview" :to="localePath('/portal/dashboard')" class="transition-colors hover:text-gold-400" :class="section === 'dashboard' ? 'text-gold-400' : 'text-bone-400'">
-            {{ $t('portal.nav.dashboard') }}
+          <NuxtLink v-if="isCompanyAdmin" :to="localePath('/portal/access')" class="transition-colors hover:text-gold-400" :class="onAccess ? 'text-gold-400' : 'text-bone-400'">
+            {{ $t('portal.nav.access') }}
           </NuxtLink>
         </nav>
         <div class="flex items-center gap-5 text-sm">
@@ -89,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-const { authed, configured, isCompanyAdmin, canReview, hasJobs, check, login, logout } = usePortalAuth()
+const { authed, configured, isCompanyAdmin, check, login, logout } = usePortalAuth()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const { locale } = useI18n()
@@ -98,14 +88,8 @@ const otherLocale = computed(() => (locale.value === 'is' ? 'en' : 'is'))
 
 const route = useRoute()
 const isPublicPage = computed(() => Boolean(route.meta.portalPublic))
-const section = computed(() => {
-  const p = route.path
-  if (p.includes('/portal/history')) return 'history'
-  if (p.includes('/portal/timesheets')) return 'review'
-  if (p.includes('/portal/jobs')) return 'jobs'
-  if (p.includes('/portal/dashboard')) return 'dashboard'
-  return 'timesheet'
-})
+const onJobs = computed(() => route.path.includes('/portal/jobs'))
+const onAccess = computed(() => route.path.includes('/portal/access'))
 
 const email = ref('')
 const password = ref('')

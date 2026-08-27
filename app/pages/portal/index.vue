@@ -5,14 +5,12 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'portal' })
 
-const { authed, isCompanyAdmin, hasJobs } = usePortalAuth()
+const { authed } = usePortalAuth()
 const localePath = useLocalePath()
 const router = useRouter()
 
-// Land users on the page that matches what they can do.
+// Everything is reached through the jobs now — land everyone on the job list.
 watch(authed, (v) => {
-  if (!v) return
-  if (hasJobs.value) router.replace(localePath('/portal/timesheet'))
-  else if (isCompanyAdmin.value) router.replace(localePath('/portal/dashboard'))
+  if (v) router.replace(localePath('/portal/jobs'))
 }, { immediate: true })
 </script>

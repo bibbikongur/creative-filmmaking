@@ -45,6 +45,15 @@
                 <span v-if="day.breakdown?.doublePay" class="ml-2 text-[11px] uppercase tracking-widest text-gold-400">
                   {{ $t('portal.pay.seventhDay') }}
                 </span>
+                <span v-if="day.breakdown?.halfDay" class="ml-2 text-[11px] uppercase tracking-widest text-gold-400/80">
+                  {{ $t('portal.pay.halfDay') }}
+                </span>
+                <span v-if="day.breakdown?.runningLunch" class="ml-2 text-[11px] uppercase tracking-widest text-gold-400/80">
+                  {{ $t('portal.pay.runningLunch') }}
+                </span>
+                <span v-if="day.breakdown?.perDiem" class="ml-2 text-[11px] uppercase tracking-widest text-gold-400/80">
+                  {{ $t('portal.pay.perDiem') }}
+                </span>
               </td>
               <td class="p-3 align-top">
                 <template v-if="!editing">
@@ -68,10 +77,10 @@
                 </template>
               </td>
               <td class="p-3 text-right align-top text-bone-100">{{ day.breakdown ? formatHoursNum(day.breakdown.hours) : '' }}</td>
-              <td class="p-3 text-right align-top" :class="day.breakdown?.otHours ? 'text-gold-400' : 'text-bone-400'">
+              <td class="p-3 text-right align-top" :class="day.breakdown?.otHours ? 'text-sky-400' : 'text-bone-400'">
                 {{ day.breakdown ? formatHoursNum(day.breakdown.otHours) : '' }}
               </td>
-              <td class="p-3 text-right align-top" :class="day.breakdown?.restViolationHours ? 'text-signal-500' : 'text-bone-400'">
+              <td class="p-3 text-right align-top" :class="day.breakdown?.restViolationHours ? 'text-emerald-400' : 'text-bone-400'">
                 {{ day.breakdown ? formatHoursNum(day.breakdown.restViolationHours) : '' }}
               </td>
               <td class="p-3 text-right align-top font-semibold text-bone-100">
@@ -85,6 +94,8 @@
               <td class="p-3 text-xs text-bone-400">
                 {{ payroll.totals.daysWorked }} {{ $t('portal.pay.daysShort') }}
                 <span v-if="payroll.totals.doubleDays"> · {{ payroll.totals.doubleDays }}× {{ $t('portal.pay.seventhDay') }}</span>
+                <span v-if="payroll.totals.runningLunchAmount"> · {{ $t('portal.pay.runningLunch') }} {{ formatIsk(payroll.totals.runningLunchAmount, locale) }}</span>
+                <span v-if="payroll.totals.perDiemAmount"> · {{ $t('portal.pay.perDiem') }} {{ formatIsk(payroll.totals.perDiemAmount, locale) }}</span>
               </td>
               <td class="p-3 text-right">{{ formatHoursNum(payroll.totals.hours) }}</td>
               <td class="p-3 text-right">{{ formatHoursNum(payroll.totals.otHours) }}</td>
@@ -171,6 +182,7 @@ definePageMeta({ layout: 'portal' })
 const route = useRoute()
 const localePath = useLocalePath()
 const { t, locale } = useI18n()
+const { confirmDialog } = useAppDialog()
 
 interface Detail {
   week: TimesheetWeek
@@ -257,12 +269,12 @@ const toEntries = () => rows.value
   .filter(Boolean)
 
 const approve = async () => {
-  if (!confirm(t('portal.review.approveConfirm'))) return
+  if (!await confirmDialog(t('portal.review.approveConfirm'))) return
   await act(`/api/portal/timesheets/${route.params.id}/approve`, {})
 }
 
 const reopen = async () => {
-  if (!confirm(t('portal.review.reopenConfirm'))) return
+  if (!await confirmDialog(t('portal.review.reopenConfirm'))) return
   await act(`/api/portal/timesheets/${route.params.id}/reopen`, {})
 }
 

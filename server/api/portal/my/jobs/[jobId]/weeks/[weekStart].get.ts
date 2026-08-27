@@ -7,6 +7,8 @@ export default defineEventHandler(async (event) => {
   return {
     week,
     entries: getEntries(week.id),
+    dayFlags: getDayFlags(week.id),
+    perDiemRate: getJob(jobId)?.perDiemRate ?? 0,
     payroll: payrollForWeek(week),
     events: getWeekEvents(week.id),
   }

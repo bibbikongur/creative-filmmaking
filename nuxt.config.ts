@@ -68,6 +68,14 @@ export default defineNuxtConfig({
     '/en/portal/**': { ssr: false, robots: false },
   },
 
+  // Pre-bundle Leaflet at dev-server start so the location-map editor's dynamic
+  // import never hits a stale Vite optimize-deps cache (504 Outdated Optimize Dep).
+  vite: {
+    optimizeDeps: {
+      include: ['leaflet'],
+    },
+  },
+
   // Dynamic OG-image generation needs a heavy native renderer; we set explicit
   // og:image meta tags instead (vehicle photo on detail pages).
   ogImage: {

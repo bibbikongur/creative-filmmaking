@@ -1,5 +1,5 @@
-import type { TimeEntry, TimesheetWeek, WeekEvent, WeekEventType, WeekPayroll, WeekStatus } from '~~/app/types'
-import type { PayrollShift } from './payroll'
+import type { DayFlags, TimeEntry, TimesheetWeek, WeekEvent, WeekEventType, WeekPayroll, WeekStatus } from '~~/app/types'
+import type { PayrollDayFlags, PayrollShift } from './payroll'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Timesheet weeks and their entries. Two-stage approval (all transitions run in
@@ -239,6 +239,49 @@ export function parseEntries(body: unknown, weekStart: string): EntryInput[] {
   return entries
 }
 
+// ── Per-day flags (per diem / running lunch ticks) ───────────────────────────
+
+export function getDayFlags(weekId: number): DayFlags[] {
+  return (getDb().prepare('SELECT date, per_diem, running_lunch FROM timesheet_day_flags WHERE week_id = ? ORDER BY date')
+    .all(weekId) as Record<string, unknown>[])
+    .map(r => ({
+      date: r.date as string,
+      perDiem: Boolean(r.per_diem),
+      runningLunch: Boolean(r.running_lunch),
+    }))
+}
+
+/** Optional `days` array on the entries payload; absent = leave flags untouched. */
+export function parseDayFlags(body: unknown, weekStart: string): DayFlags[] | undefined {
+  const raw = (body as Record<string, unknown>)?.days
+  if (raw === undefined) return undefined
+  if (!Array.isArray(raw) || raw.length > 7) {
+    throw createError({ statusCode: 400, statusMessage: 'Validation failed', data: { errors: ['days must be an array of at most 7 items.'] } })
+  }
+  const weekEnd = addDays(weekStart, 6)
+  const seen = new Set<string>()
+  const flags: DayFlags[] = []
+  for (const item of raw) {
+    const d = (item ?? {}) as Record<string, unknown>
+    const date = String(d.date ?? '')
+    if (!isIsoDate(date) || date < weekStart || date > weekEnd || seen.has(date)) {
+      throw createError({ statusCode: 400, statusMessage: 'Validation failed', data: { errors: [`Invalid flag date ${date || '(empty)'}.`] } })
+    }
+    seen.add(date)
+    flags.push({ date, perDiem: Boolean(d.perDiem), runningLunch: Boolean(d.runningLunch) })
+  }
+  return flags
+}
+
+function writeDayFlags(weekId: number, flags: DayFlags[]) {
+  const db = getDb()
+  db.prepare('DELETE FROM timesheet_day_flags WHERE week_id = ?').run(weekId)
+  const insert = db.prepare('INSERT INTO timesheet_day_flags (week_id, date, per_diem, running_lunch) VALUES (?, ?, ?, ?)')
+  for (const f of flags) {
+    if (f.perDiem || f.runningLunch) insert.run(weekId, f.date, f.perDiem ? 1 : 0, f.runningLunch ? 1 : 0)
+  }
+}
+
 function writeEntries(weekId: number, week: TimesheetWeek, entries: EntryInput[]) {
   const db = getDb()
   const now = new Date().toISOString()
@@ -252,15 +295,18 @@ function writeEntries(weekId: number, week: TimesheetWeek, entries: EntryInput[]
   }
 }
 
-/** Employee saving their own draft. */
-export function replaceEntries(weekId: number, entries: EntryInput[]) {
+/** Employee saving their own draft (entries + per-day ticks together). */
+export function replaceEntries(weekId: number, entries: EntryInput[], flags?: DayFlags[]) {
   const db = getDb()
   const week = getWeekById(weekId)
   if (!week) throw createError({ statusCode: 404, statusMessage: 'Week not found' })
   if (week.status !== 'draft') {
     throw createError({ statusCode: 409, statusMessage: 'This week has been submitted and can no longer be edited.' })
   }
-  db.transaction(() => writeEntries(weekId, week, entries))()
+  db.transaction(() => {
+    writeEntries(weekId, week, entries)
+    if (flags) writeDayFlags(weekId, flags)
+  })()
 }
 
 // ── Status transitions ───────────────────────────────────────────────────────
@@ -305,6 +351,7 @@ export function approveWeek(week: TimesheetWeek, actorUserId: string, snapshot: 
     db.prepare('UPDATE timesheet_weeks SET status = \'approved\', approved_at = ?, approved_snapshot = ? WHERE id = ?')
       .run(new Date().toISOString(), JSON.stringify(snapshot), week.id)
     addEvent(week.id, actorUserId, 'approved', { stage: 'job' })
+    bookWeekWages(week, snapshot, actorUserId)
   })()
 }
 
@@ -320,6 +367,7 @@ export function confirmWeek(week: TimesheetWeek, actorUserId: string, snapshot: 
     else {
       db.prepare('UPDATE timesheet_weeks SET status = \'approved\', approved_at = ?, approved_snapshot = ?, altered_target = NULL WHERE id = ?')
         .run(new Date().toISOString(), JSON.stringify(snapshot), week.id)
+      bookWeekWages(week, snapshot, actorUserId)
     }
     addEvent(week.id, actorUserId, 'confirmed')
   })()
@@ -418,7 +466,12 @@ export function computeWeekPayroll(week: TimesheetWeek): WeekPayroll | null {
   const dayRate = getMemberDayRate(week.jobId, week.userId)
   if (dayRate === null) return null
   const shifts = getShiftsForUser(week.userId, week.jobId, addDays(week.weekStart, -LOOKBACK_DAYS), addDays(week.weekStart, 6))
-  return computePayroll(shifts, dayRate, week.weekStart, addDays(week.weekStart, 6))
+  const flags: Record<string, PayrollDayFlags> = {}
+  for (const f of getDayFlags(week.id)) flags[f.date] = { perDiem: f.perDiem, runningLunch: f.runningLunch }
+  return computePayroll(shifts, dayRate, week.weekStart, addDays(week.weekStart, 6), {
+    perDiemRate: getJob(week.jobId)?.perDiemRate ?? 0,
+    flags,
+  })
 }
 
 export function getApprovedSnapshot(weekId: number): WeekPayroll | null {
