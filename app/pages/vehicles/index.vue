@@ -6,7 +6,7 @@
     </p>
 
     <div class="mt-10">
-      <CategoryFilter v-model="activeCategory" />
+      <CategoryFilter v-model="activeCategory" :available="presentCategories" />
     </div>
 
     <div v-if="filtered.length" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -46,6 +46,8 @@ const activeCategory = computed<VehicleCategory | null>({
 const filtered = computed(() =>
   activeCategory.value ? all().filter(v => v.category === activeCategory.value) : all(),
 )
+
+const presentCategories = computed(() => [...new Set(all().map(v => v.category))])
 
 useSeoMeta({
   title: t('meta.vehicles.title'),

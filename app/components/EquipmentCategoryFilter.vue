@@ -11,7 +11,7 @@
       {{ t('equipmentCatalogue.all') }}
     </button>
     <button
-      v-for="c in equipmentCategories"
+      v-for="c in shown"
       :key="c"
       type="button"
       class="px-4 py-2 text-xs uppercase tracking-widest font-semibold border transition-colors"
@@ -29,8 +29,17 @@
 import { equipmentCategories } from '~/data/equipmentCategories'
 import type { EquipmentCategory } from '~/types'
 
-defineProps<{ modelValue: EquipmentCategory | null }>()
+const props = defineProps<{
+  modelValue: EquipmentCategory | null
+  /** Categories that actually have items — empty ones are hidden so a filter
+   *  click never lands on a bare "nothing here" page. */
+  available?: EquipmentCategory[]
+}>()
 defineEmits<{ 'update:modelValue': [value: EquipmentCategory | null] }>()
+
+const shown = computed(() =>
+  props.available ? equipmentCategories.filter(c => props.available!.includes(c)) : equipmentCategories,
+)
 
 const { t } = useI18n()
 </script>

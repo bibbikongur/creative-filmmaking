@@ -12,7 +12,7 @@
     <div class="mt-8 grid gap-10 lg:grid-cols-5">
       <!-- Gallery -->
       <div class="lg:col-span-3">
-        <VehicleGallery :images="vehicle.images" :alt="lt(vehicle.name)" />
+        <VehicleGallery :images="vehicle.images" :alt="t('meta.vehicleTitle', { name: lt(vehicle.name) })" />
       </div>
 
       <!-- Summary -->
@@ -124,10 +124,12 @@ const metaDescription = computed(() => {
   return full.length > 160 ? `${full.slice(0, 157).trimEnd()}…` : full
 })
 
+// "Til leigu" / "for rent" in the tab & SERP title — that's what people
+// actually type into Google, and the bare vehicle name doesn't say it.
 useSeoMeta({
-  title: () => lt(vehicle.name),
+  title: () => t('meta.vehicleTitle', { name: lt(vehicle.name) }),
   description: () => metaDescription.value,
-  ogTitle: () => `${lt(vehicle.name)} · Creative Filmmaking`,
+  ogTitle: () => `${t('meta.vehicleTitle', { name: lt(vehicle.name) })} · Creative Filmmaking`,
   ogDescription: () => lt(vehicle.tagline),
   ogImage: vehicle.images[0] ? absImage(vehicle.images[0]) : undefined,
   ogImageAlt: vehicle.images[0] ? () => lt(vehicle.name) : undefined,
@@ -142,6 +144,8 @@ useSchemaOrg([
     description: lt(vehicle.tagline),
     image: vehicle.images.map(absImage),
     ...(vehicle.specs.seats ? { seatingCapacity: vehicle.specs.seats } : {}),
+    ...(vehicle.specs.fuel ? { fuelType: vehicle.specs.fuel } : {}),
+    ...(vehicle.specs.transmission ? { vehicleTransmission: vehicle.specs.transmission } : {}),
   },
   defineBreadcrumb({
     itemListElement: [

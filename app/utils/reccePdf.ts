@@ -66,9 +66,9 @@ const hex = (h: string) => {
   return rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255)
 }
 
-// Brand palette: band + gold headline like the location-map PDF chrome,
-// gold-600 accents on white like the offer PDF.
-const BAND = hex('#161616')
+// Brand palette: deep-navy title band with a gold headline, gold-600 accents
+// on white like the offer PDF.
+const BAND = hex('#1B2A4A')
 const TITLE_GOLD = hex('#F2E18C')
 const CREAM = hex('#F5F2E9')
 const GOLD = hex('#A87A1F')

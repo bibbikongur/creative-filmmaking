@@ -1,5 +1,8 @@
 <template>
-  <div class="group flex flex-col bg-ink-800 border-t-2 border-transparent hover:border-gold-500 transition-colors duration-300">
+  <NuxtLink
+    :to="localePath(`/equipment/${equipmentSlug(item)}`)"
+    class="group flex flex-col bg-ink-800 border-t-2 border-transparent hover:border-gold-500 transition-colors duration-300"
+  >
     <!-- Image -->
     <div class="relative overflow-hidden aspect-card" :class="item.images.length ? 'bg-white' : 'bg-ink-900'">
       <NuxtImg
@@ -27,7 +30,7 @@
           type="button"
           class="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-ink-950/60 backdrop-blur text-bone-100 hover:text-gold-400 transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
           aria-label="Previous image"
-          @click="step(-1)"
+          @click.stop.prevent="step(-1)"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -37,7 +40,7 @@
           type="button"
           class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-ink-950/60 backdrop-blur text-bone-100 hover:text-gold-400 transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
           aria-label="Next image"
-          @click="step(1)"
+          @click.stop.prevent="step(1)"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -51,7 +54,7 @@
             class="w-1.5 h-1.5 rounded-full transition-colors"
             :class="i === active ? 'bg-gold-400' : 'bg-bone-100/50 hover:bg-bone-100'"
             :aria-label="`Image ${i + 1}`"
-            @click="active = i"
+            @click.stop.prevent="active = i"
           />
         </div>
       </template>
@@ -59,7 +62,7 @@
 
     <!-- Body -->
     <div class="flex-1 flex flex-col p-5">
-      <h3 class="text-xl font-semibold uppercase tracking-wide text-bone-100">
+      <h3 class="text-xl font-semibold uppercase tracking-wide text-bone-100 group-hover:text-gold-400 transition-colors">
         {{ lt(item.name) }}
       </h3>
       <p v-if="lt(item.tagline)" class="mt-2 text-sm text-bone-400 leading-relaxed">
@@ -70,7 +73,7 @@
         <AddToCartButton type="equipment" :id="item.id" compact />
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
@@ -80,6 +83,7 @@ const props = defineProps<{ item: EquipmentItem }>()
 
 const { t } = useI18n()
 const { lt } = useLocalized()
+const localePath = useLocalePath()
 
 const active = ref(0)
 

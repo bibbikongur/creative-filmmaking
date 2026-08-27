@@ -83,7 +83,9 @@ function stripStockPhotos(db: Database.Database) {
 // first-boot import above never re-runs, so each late addition is listed here
 // and inserted exactly once (guarded by a meta flag, and skipped entirely if
 // the admin already created something with the same id or slug).
-const SEED_ADDITIONS = ['v-010', 'v-011', 'v-012', 'v-013']
+// (v-012 was removed 2026-08-27 when the seed file was trimmed to the live
+// catalogue; its flag is already set in existing databases.)
+const SEED_ADDITIONS = ['v-010', 'v-011', 'v-013']
 const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024']
 
 // One-time content refreshes: bump the rev to push the current seed data over
@@ -93,6 +95,48 @@ const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', '
 // that revision. Each rev fires at most once (meta flag).
 const SEED_UPDATES: { id: string, rev: number }[] = [
   { id: 'v-010', rev: 3 },
+  // SEO refresh 2026-08-27: rental keywords + copy that also targets private/
+  // business renters. Seed data was synced from the live catalogue first, so
+  // these upserts keep the admin's images/specs and only improve the text.
+  // (v-003 is intentionally absent: it was deleted from the live catalogue,
+  // and a rev entry would re-insert it.)
+  { id: 'v-010', rev: 4 },
+  { id: 'v-011', rev: 1 },
+  { id: 'v-013', rev: 1 },
+  { id: 'v-mr6s6va62bc8', rev: 1 },
+  { id: 'v-mre1v2ud010c', rev: 1 },
+  { id: 'v-mre45ytvabcb', rev: 1 },
+  { id: 'v-mszu795f21be', rev: 1 },
+]
+
+// Equipment copy fixes pushed 2026-08-27 (SEO pass): typo/casing/translation
+// cleanup, corrected facts (20 m stinger, 3-socket multiplug), taglines for
+// items that had none. Same upsert-once semantics as SEED_UPDATES.
+const SEED_EQUIPMENT_UPDATES: { id: string, rev: number }[] = [
+  { id: 'e-mr754bhada10', rev: 1 },
+  { id: 'e-mr754bmhf449', rev: 1 },
+  { id: 'e-mr754brqcd2c', rev: 1 },
+  { id: 'e-mr754c3jf5e5', rev: 1 },
+  { id: 'e-mr754cj10dbb', rev: 1 },
+  { id: 'e-mr754coccab2', rev: 1 },
+  { id: 'e-023', rev: 1 },
+  { id: 'e-024', rev: 1 },
+  { id: 'e-mrl0eqb86480', rev: 1 },
+  { id: 'e-mrl0gz0p4b08', rev: 1 },
+  { id: 'e-mrl0vha3a57a', rev: 1 },
+  { id: 'e-mrpk2yn45a70', rev: 1 },
+  { id: 'e-mrpkv0o93613', rev: 1 },
+  { id: 'e-mrpkwla84949', rev: 1 },
+  { id: 'e-mrpkxz90eec4', rev: 1 },
+  { id: 'e-mrpl7l4td85e', rev: 1 },
+  { id: 'e-mrpl9cphbc39', rev: 1 },
+  { id: 'e-mrw8w5pqb2c8', rev: 1 },
+  { id: 'e-mrwb9v1v7ef1', rev: 1 },
+  { id: 'e-mrzktoe5d0c9', rev: 1 },
+  { id: 'e-mrzl66ydd657', rev: 1 },
+  { id: 'e-mseixxnp32fb', rev: 1 },
+  { id: 'e-msejvh5a659c', rev: 1 },
+  { id: 'e-msoi1sx7148c', rev: 1 },
 ]
 
 function seedCatalogueAdditions(db: Database.Database) {
@@ -147,6 +191,20 @@ function seedCatalogueAdditions(db: Database.Database) {
           .run(id, m + 1, JSON.stringify(item))
         console.log(`[db] equipment: seeded late addition ${id}`)
       }
+    }
+    db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  }
+
+  // Same one-shot upsert as SEED_UPDATES, for equipment rows. Updates the row
+  // in place if it exists; a row the admin deleted stays deleted.
+  for (const { id, rev } of SEED_EQUIPMENT_UPDATES) {
+    const flag = `reseeded:equipment:${id}:${rev}`
+    if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) continue
+
+    const item = seedEquipment.find(e => e.id === id)
+    if (item && db.prepare('SELECT id FROM equipment WHERE id = ?').get(id)) {
+      db.prepare('UPDATE equipment SET data = ? WHERE id = ?').run(JSON.stringify(item), id)
+      console.log(`[db] equipment: reseeded ${id} at rev ${rev}`)
     }
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
   }

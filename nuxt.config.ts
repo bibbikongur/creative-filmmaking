@@ -58,6 +58,10 @@ export default defineNuxtConfig({
   // The admin panel and timesheet portal are client-side apps behind a login —
   // no SSR, no indexing.
   routeRules: {
+    // The tipping trailer's original admin slug was "trailer"; it now lives on
+    // a keyword slug ("kerra til leigu" searches). 301 keeps old links alive.
+    '/vehicles/trailer': { redirect: { to: '/vehicles/kerra-med-sturtu', statusCode: 301 } },
+    '/en/vehicles/trailer': { redirect: { to: '/en/vehicles/kerra-med-sturtu', statusCode: 301 } },
     '/admin': { ssr: false, robots: false },
     '/admin/**': { ssr: false, robots: false },
     '/en/admin': { ssr: false, robots: false },

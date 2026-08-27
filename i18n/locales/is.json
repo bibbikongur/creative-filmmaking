@@ -18,8 +18,8 @@
   },
   "hero": {
     "kicker": "Bílaleiga fyrir kvikmyndaverkefni á Íslandi",
-    "title": "Tækjabílar og búnaður fyrir kvikmyndatökur á Íslandi",
-    "subtitle": "Tækjabílar, húsbílar fyrir leikara, sexhjól, rafstöðvar og annarskonar tökubúnaður tilbúinn að fara beint á settið.",
+    "title": "Tækjabílar og búnaður til leigu fyrir kvikmyndatökur á Íslandi",
+    "subtitle": "Tækjabílar, hjólhýsi fyrir leikara, sexhjól, rafstöðvar og annarskonar tökubúnaður tilbúinn að fara beint á settið. Kassabílar, sendibílar, kerrur og hjólhýsi einnig til leigu fyrir einstaklinga og fyrirtæki.",
     "availability": "Laust beint í verkefnið"
   },
   "home": {
@@ -47,7 +47,7 @@
   "catalogue": {
     "kicker": "Flotinn",
     "title": "Framleiðslubílar",
-    "intro": "Allir bílar eru þjónustaðir fyrir kvikmyndavinnu og fást afhentir hvert á land sem er. Engin verð birt. Segðu okkur frá verkefninu og við setjum saman tilboð.",
+    "intro": "Allir bílar eru þjónustaðir fyrir kvikmyndavinnu og fást afhentir hvert á land sem er. Kassabílar og sendibílar eru einnig til leigu fyrir einstaklinga og fyrirtæki, t.d. í búslóðaflutninga. Engin verð birt. Segðu okkur frá verkefninu og við setjum saman tilboð.",
     "all": "Allir bílar",
     "empty": "Engir bílar í þessum flokki eins og er. Hafðu samband og við finnum lausn."
   },
@@ -64,7 +64,10 @@
     "title": "Framleiðslubúnaður",
     "intro": "Búnaður sem heldur tökum gangandi, leigður með flotanum: dísilmiðstöðvar, tjöld, öryggisbúnaður og húsgögn fyrir grunnbúðir. Engin verð birt. Segðu okkur hvað vantar og við setjum saman tilboð.",
     "all": "Allur búnaður",
-    "empty": "Enginn búnaður í þessum flokki eins og er. Hafðu samband og við finnum lausn."
+    "empty": "Enginn búnaður í þessum flokki eins og er. Hafðu samband og við finnum lausn.",
+    "seoTitle": "Hvað er til leigu?",
+    "seoText": "Við leigjum út framleiðslubúnað fyrir kvikmynda- og sjónvarpsverkefni, og margt af honum nýtist líka einstaklingum og fyrirtækjum í öðrum verkefnum. Til leigu eru meðal annars rafstöðvar, olíuhitablásarar og dísilmiðstöðvar, LED kastarar, batterí bankar, framlengingarsnúrur og rafmagnstöflur fyrir eins og þriggja fasa rafmagn, umferðarkeilur, hjáleiðaskilti og tökuskilti, öryggisvesti og hjálmar, einangruð skjóltjöld og yfirbreiðslur, samanbrjótanleg borð og stólar, skóflur og kústar.",
+    "seoText2": "Búnaðurinn leigist stakur eða með bílunum okkar og fæst afhentur hvert á land sem er. Segðu okkur hvað vantar og við setjum saman tilboð samdægurs."
   },
   "vehicle": {
     "highlightsTitle": "Helstu kostir",
@@ -179,16 +182,18 @@
   "meta": {
     "home": {
       "title": "Bílaleiga fyrir kvikmyndaverkefni á Íslandi",
-      "description": "Húsbílar, tökuliðsbílar, stuðningsbílar og eftirvagnar fyrir kvikmynda- og sjónvarpsverkefni á Íslandi. Tilbúnir á sett, vetrarreyndir, afhentir á tökustað. Hafðu samband fyrir tilboð."
+      "description": "Kassabílar, sendibílar, hjólhýsi, kerrur og sexhjól til leigu fyrir kvikmynda- og sjónvarpsverkefni á Íslandi. Einnig til leigu fyrir einstaklinga og fyrirtæki. Hafðu samband fyrir tilboð."
     },
     "vehicles": {
-      "title": "Flotinn",
-      "description": "Skoðaðu flotann okkar af framleiðslubílum fyrir kvikmynda- og sjónvarpstökur á Íslandi: húsbílar, tökuliðsbílar, 4x4 stuðningsbílar og eftirvagnar. Engin verð birt; óskaðu eftir tilboði."
+      "title": "Bílar til leigu",
+      "description": "Bílar og tæki til leigu á Íslandi: kassabílar með lyftu, sendibílar, 4x4 pallbílar, hjólhýsi, kerrur og sexhjól. Fyrir kvikmyndaverkefni jafnt sem einstaklinga og fyrirtæki. Óskaðu eftir tilboði."
     },
     "equipment": {
-      "title": "Framleiðslubúnaður",
-      "description": "Framleiðslubúnaður fyrir kvikmynda- og sjónvarpstökur á Íslandi: dísilmiðstöðvar, tjöld, öryggis- og umferðarbúnaður og húsgögn fyrir grunnbúðir. Engin verð birt; óskaðu eftir tilboði."
+      "title": "Framleiðslubúnaður til leigu",
+      "description": "Framleiðslubúnaður til leigu fyrir kvikmynda- og sjónvarpstökur á Íslandi: dísilmiðstöðvar, tjöld, öryggis- og umferðarbúnaður og húsgögn fyrir grunnbúðir. Óskaðu eftir tilboði."
     },
+    "vehicleTitle": "{name} til leigu",
+    "businessDescription": "Bíla- og tækjaleiga fyrir kvikmynda- og sjónvarpsverkefni á Íslandi. Kassabílar, sendibílar, hjólhýsi, kerrur og sexhjól einnig til leigu fyrir einstaklinga og fyrirtæki.",
     "about": {
       "title": "Um okkur",
       "description": "Creative Filmmaking leigir framleiðslubíla, tilbúna á sett, til kvikmynda- og sjónvarpstökuliða á Íslandi, með þekkingu á flutningum sem fylgir."

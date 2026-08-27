@@ -11,7 +11,7 @@
       {{ t('catalogue.all') }}
     </button>
     <button
-      v-for="c in categories"
+      v-for="c in shown"
       :key="c.id"
       type="button"
       class="px-4 py-2 text-xs uppercase tracking-widest font-semibold border transition-colors"
@@ -29,8 +29,17 @@
 import { categories } from '~/data/categories'
 import type { VehicleCategory } from '~/types'
 
-defineProps<{ modelValue: VehicleCategory | null }>()
+const props = defineProps<{
+  modelValue: VehicleCategory | null
+  /** Categories that actually have vehicles — empty ones are hidden so a
+   *  filter click never lands on a bare "nothing here" page. */
+  available?: VehicleCategory[]
+}>()
 defineEmits<{ 'update:modelValue': [value: VehicleCategory | null] }>()
+
+const shown = computed(() =>
+  props.available ? categories.filter(c => props.available!.includes(c.id)) : categories,
+)
 
 const { t } = useI18n()
 </script>

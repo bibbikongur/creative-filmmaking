@@ -32,10 +32,12 @@ useSeoMeta({
 
 // Global business identity for search engines. Vehicle nodes on detail pages
 // deliberately carry no offers/prices — the business model is offer-on-request.
+// AutoRental is the schema.org LocalBusiness subtype for vehicle rental.
 useSchemaOrg([
   defineLocalBusiness({
+    '@type': 'AutoRental',
     name: 'Creative Filmmaking',
-    description: 'Production vehicle rental for film & TV crews shooting in Iceland.',
+    description: t('meta.businessDescription'),
     url: config.public.siteUrl,
     logo: `${config.public.siteUrl}/logo.svg`,
     image: `${config.public.siteUrl}/logo.svg`,

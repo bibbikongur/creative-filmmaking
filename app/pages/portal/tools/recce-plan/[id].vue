@@ -68,10 +68,10 @@
 
       <div class="mt-3">
         <template v-for="(s, i) in plan.stops" :key="i">
-          <div class="border border-ink-800 bg-ink-900/50 p-4">
-            <div class="flex items-center justify-between gap-3">
+          <div class="border border-ink-800 border-l-2 border-l-gold-600/70 bg-ink-900/50">
+            <div class="flex items-center justify-between gap-3 border-b border-ink-800 bg-ink-900 px-4 py-2.5">
               <div class="flex items-baseline gap-3">
-                <p class="text-[10px] uppercase tracking-widest text-gold-500 font-semibold">{{ $t('portal.tools.recce.stop', { n: i + 1 }) }}</p>
+                <p class="text-xs uppercase tracking-widest text-gold-400 font-semibold">{{ $t('portal.tools.recce.stop', { n: i + 1 }) }}</p>
                 <p v-if="times[i]?.arrive" class="text-sm font-semibold text-bone-100">
                   {{ times[i]!.arrive }}<span v-if="times[i]!.depart" class="text-bone-400"> – {{ times[i]!.depart }}</span>
                 </p>
@@ -103,7 +103,8 @@
                 </button>
               </div>
             </div>
-            <div class="mt-3 grid gap-3 sm:grid-cols-6">
+            <div class="px-4 pb-4 pt-3">
+            <div class="grid gap-3 sm:grid-cols-6">
               <label class="block">
                 <span class="text-[10px] uppercase tracking-widest text-bone-500">{{ $t('portal.tools.recce.duration') }}</span>
                 <input v-model.number="s.durationMin" type="number" min="0" step="5" class="input-dark mt-1">
@@ -173,6 +174,7 @@
                 <span class="text-[10px] uppercase tracking-widest text-bone-500">{{ $t('portal.tools.recce.stopNotes') }}</span>
                 <textarea v-model="s.notes" rows="2" class="input-dark mt-1" :placeholder="$t('portal.tools.recce.stopNotesPlaceholder')" maxlength="1000" />
               </label>
+            </div>
             </div>
           </div>
 
