@@ -146,6 +146,7 @@
     "title": "The team behind the scenes",
     "p1": "Creative Filmmaking rents vehicles, machinery and all kinds of equipment to film and TV productions in Iceland. We started on set ourselves, so the fleet is built around what productions actually need.",
     "p2": "We've worked on projects big and small — features, series, music videos and commercials all across the country. That's given us plenty of experience in what each production needs, and we're always happy to help with planning of any kind. Drop us a line and we'll see how we can help.",
+    "rentals": "For rent with us are box trucks with tail lifts, cargo vans, 4x4 pickups, actor caravans, trailers and six-wheelers, along with generators, heaters, lights and other production gear. We're based in Reykjavík and deliver anywhere in Iceland, whether the shoot is in the highlands, out in the countryside or in town. And while the fleet is built for filmmaking, we also rent to private and business customers: box trucks for moving days, caravans for summer holidays, trailers for weekend projects.",
     "p3": "Every vehicle is serviced, cleaned and delivered set-ready.",
     "statVehicles": "Vehicles in the fleet",
     "statSupport": "Support on shoot days",
@@ -170,6 +171,14 @@
     "tagline": "Production vehicle rental for film & TV crews shooting in Iceland.",
     "navTitle": "Site",
     "contactTitle": "Contact",
+    "rentalsTitle": "For rent",
+    "rentals": {
+      "boxTrucks": "Box trucks for rent",
+      "van": "Cargo van for rent",
+      "caravans": "Caravans for rent",
+      "trailer": "Trailer for rent",
+      "sixWheeler": "Six-wheeler for rent"
+    },
     "rights": "All rights reserved."
   },
   "error": {
@@ -197,7 +206,7 @@
     "businessDescription": "Vehicle and equipment rental for film & TV productions in Iceland. Box trucks, cargo vans, caravans, trailers and six-wheelers also available to private and business renters.",
     "about": {
       "title": "About Us",
-      "description": "Creative Filmmaking rents set-ready production vehicles to film & TV crews shooting in Iceland, with the logistics know-how to match."
+      "description": "Creative Filmmaking rents set-ready production vehicles and gear to film & TV crews in Iceland: box trucks, cargo vans, caravans, trailers and six-wheelers. Also available to private and business renters."
     },
     "contact": {
       "title": "Contact",

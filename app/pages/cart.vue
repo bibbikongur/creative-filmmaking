@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-    <SectionHeading :kicker="t('cart.kicker')" :title="t('cart.title')" />
+    <SectionHeading as="h1" :kicker="t('cart.kicker')" :title="t('cart.title')" />
 
     <!-- Success state replaces the whole page body -->
     <div v-if="sent" class="mt-10 bg-ink-800 border border-ink-700 p-10 text-center">

@@ -1,7 +1,7 @@
 <template>
   <footer class="bg-ink-900 border-t border-ink-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      <div class="grid gap-10 md:grid-cols-3">
+      <div class="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
         <!-- Brand -->
         <div>
           <NuxtLink :to="localePath('/')" class="flex items-center gap-3">
@@ -25,6 +25,21 @@
                 class="text-sm text-bone-400 hover:text-gold-400 transition-colors"
               >
                 {{ t(item.label) }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Popular rentals — keyword-rich internal links on every page -->
+        <div>
+          <h3 class="kicker mb-4">{{ t('footer.rentalsTitle') }}</h3>
+          <ul class="space-y-2.5">
+            <li v-for="link in rentalLinks" :key="link.to">
+              <NuxtLink
+                :to="localePath(link.to)"
+                class="text-sm text-bone-400 hover:text-gold-400 transition-colors"
+              >
+                {{ t(link.label) }}
               </NuxtLink>
             </li>
           </ul>
@@ -68,8 +83,18 @@ const contact = useRuntimeConfig().public.contact
 const navItems = [
   { to: '/', label: 'nav.home' },
   { to: '/vehicles', label: 'nav.fleet' },
+  { to: '/equipment', label: 'nav.equipment' },
   { to: '/about', label: 'nav.about' },
   { to: '/contact', label: 'nav.contact' },
+]
+
+// Descriptive "X til leigu" anchors to the money pages, from every page.
+const rentalLinks = [
+  { to: '/vehicles?category=equipment-cars', label: 'footer.rentals.boxTrucks' },
+  { to: '/vehicles/ford-transit-cargo-van', label: 'footer.rentals.van' },
+  { to: '/vehicles/hobby-560-wfu-prestige-caravan', label: 'footer.rentals.caravans' },
+  { to: '/vehicles/kerra-med-sturtu', label: 'footer.rentals.trailer' },
+  { to: '/vehicles/can-am-outlander-max-6x6-850', label: 'footer.rentals.sixWheeler' },
 ]
 
 const year = new Date().getFullYear()

@@ -20,6 +20,7 @@ const RESIZABLE = new Set(['.jpg', '.jpeg', '.png', '.webp'])
 const WIDTHS = [120, 240, 320, 480, 640, 960, 1280, 1600, 2048]
 
 const OUTPUT = {
+  avif: { ext: '.avif', type: 'image/avif' },
   webp: { ext: '.webp', type: 'image/webp' },
   jpeg: { ext: '.jpg', type: 'image/jpeg' },
 } as const
@@ -64,9 +65,17 @@ export default defineEventHandler(async (event) => {
   }
 
   const width = WIDTHS.find(w => w >= rawW) ?? WIDTHS[WIDTHS.length - 1]!
-  const fmt = query.f === 'jpeg' ? 'jpeg' : 'webp'
+  // webp requests are silently upgraded to avif when the browser advertises
+  // support — smaller files, better Core Web Vitals; old browsers keep webp.
+  // Vary: Accept keeps caches from serving avif to a webp-only client.
+  const requested = query.f === 'jpeg' ? 'jpeg' as const : 'webp' as const
+  const fmt = requested === 'webp' && (getHeader(event, 'accept') ?? '').includes('image/avif')
+    ? 'avif' as const
+    : requested
+  if (requested === 'webp') setHeader(event, 'vary', 'Accept')
   const rawQ = Number.parseInt(String(query.q ?? ''), 10)
-  const quality = rawQ >= 20 && rawQ <= 100 ? rawQ : 80
+  // avif reaches webp-80 visual quality around q60 at a fraction of the bytes.
+  const quality = rawQ >= 20 && rawQ <= 100 ? rawQ : fmt === 'avif' ? 60 : 80
   const out = OUTPUT[fmt]
   setHeader(event, 'content-type', out.type)
 
@@ -79,11 +88,13 @@ export default defineEventHandler(async (event) => {
     return sendStream(event, createReadStream(cachePath))
   }
 
-  // .rotate() bakes in EXIF orientation, which webp output would otherwise lose.
+  // .rotate() bakes in EXIF orientation, which webp/avif output would otherwise lose.
   const image = sharp(path).rotate().resize({ width, withoutEnlargement: true })
   const buf = fmt === 'jpeg'
     ? await image.jpeg({ quality, mozjpeg: true }).toBuffer()
-    : await image.webp({ quality }).toBuffer()
+    : fmt === 'avif'
+      ? await image.avif({ quality, effort: 4 }).toBuffer()
+      : await image.webp({ quality }).toBuffer()
 
   // Cache best-effort: write to a unique temp name, then rename. A concurrent
   // request may win the rename race — fine, serving the buffer still works.

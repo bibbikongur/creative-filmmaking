@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-    <SectionHeading :kicker="t('contact.kicker')" :title="t('contact.title')" />
+    <SectionHeading as="h1" :kicker="t('contact.kicker')" :title="t('contact.title')" />
     <p class="mt-5 max-w-2xl text-bone-400 leading-relaxed">
       {{ t('contact.intro') }}
     </p>

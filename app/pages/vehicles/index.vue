@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-    <SectionHeading :kicker="t('catalogue.kicker')" :title="t('catalogue.title')" />
+    <SectionHeading as="h1" :kicker="t('catalogue.kicker')" :title="t('catalogue.title')" />
     <p class="mt-5 max-w-2xl text-bone-400 leading-relaxed">
       {{ t('catalogue.intro') }}
     </p>
@@ -56,10 +56,11 @@ useSeoMeta({
   ogDescription: t('meta.vehicles.description'),
 })
 
+const siteUrl = useRuntimeConfig().public.siteUrl
 useSchemaOrg([
   defineItemList({
     itemListElement: all().map(v => ({
-      url: localePath(`/vehicles/${v.slug}`),
+      url: `${siteUrl}${localePath(`/vehicles/${v.slug}`)}`,
     })),
   }),
 ])

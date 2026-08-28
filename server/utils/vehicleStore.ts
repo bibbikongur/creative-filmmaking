@@ -13,10 +13,22 @@ export async function getVehicles(): Promise<Vehicle[]> {
 
 export async function saveVehicles(vehicles: Vehicle[]) {
   const db = getDb()
-  const insert = db.prepare('INSERT INTO vehicles (id, slug, sort, data) VALUES (?, ?, ?, ?)')
+  // Full rewrite, but updated_at must survive it: keep the old stamp when a
+  // row's JSON is byte-identical, stamp now when it changed or is new. The
+  // sitemap turns these into lastmod.
+  const prev = new Map(
+    (db.prepare('SELECT id, data, updated_at FROM vehicles').all() as { id: string, data: string, updated_at: string | null }[])
+      .map(r => [r.id, r]),
+  )
+  const now = new Date().toISOString()
+  const insert = db.prepare('INSERT INTO vehicles (id, slug, sort, data, updated_at) VALUES (?, ?, ?, ?, ?)')
   db.transaction(() => {
     db.prepare('DELETE FROM vehicles').run()
-    vehicles.forEach((v, i) => insert.run(v.id, v.slug, i, JSON.stringify(v)))
+    vehicles.forEach((v, i) => {
+      const json = JSON.stringify(v)
+      const old = prev.get(v.id)
+      insert.run(v.id, v.slug, i, json, old && old.data === json ? old.updated_at : now)
+    })
   })()
 }
 

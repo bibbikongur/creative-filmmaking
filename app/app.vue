@@ -21,12 +21,15 @@ useHead(() => ({
 }))
 
 // Pages set a bare title (e.g. "The Fleet"); the template appends the brand once.
-// No site-wide ogImage until real photography lands — pages with a real image
-// (vehicle photos) set their own via useSeoMeta.
+// og-default.jpg (fleet photo, 1200×630) is the site-wide share image; detail
+// pages with their own photos override it via useSeoMeta.
 useSeoMeta({
   titleTemplate: title => (title ? `${title} · Creative Filmmaking` : `Creative Filmmaking · ${t('meta.home.title')}`),
   ogSiteName: 'Creative Filmmaking',
   ogType: 'website',
+  ogImage: `${config.public.siteUrl}/og-default.jpg`,
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
   twitterCard: 'summary_large_image',
 })
 

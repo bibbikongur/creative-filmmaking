@@ -146,6 +146,7 @@
     "title": "Teymið á bak við tjöldin",
     "p1": "Creative Filmmaking leigir bíla, tæki og alls konar búnað til kvikmynda- og sjónvarpsverkefna á Íslandi. Við byrjuðum sjálf á setti og flotinn er því byggður í kringum það sem framleiðslur raunverulega þurfa.",
     "p2": "Við höfum unnið í stórum sem smáum verkefnum og á það við um kvikmyndaverkefni, þáttaseríur, tónlistarmyndbönd og auglýsingar um land allt. Höfum við þar með mikla reynslu af því hvað hvert verkefni þarf og erum alltaf til í að hjálpa við alls konar skipulagningu. Sendu okkur línu og við sjáum hvernig við getum hjálpað.",
+    "rentals": "Til leigu hjá okkur eru meðal annars kassabílar með lyftu, sendibílar, 4x4 pallbílar, hjólhýsi fyrir leikara, kerrur og sexhjól, ásamt rafstöðvum, hitablásurum, ljósum og öðrum tökubúnaði. Við erum staðsett í Reykjavík en afhendum hvert á land sem er, hvort sem tökurnar fara fram á hálendinu, úti á landi eða innanbæjar. Og þó flotinn sé byggður fyrir kvikmyndagerð leigjum við líka til einstaklinga og fyrirtækja: kassabíla í búslóðaflutninga, hjólhýsi í sumarfríið og kerrur í helgarverkefnin.",
     "p3": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn á sett.",
     "statVehicles": "Bílar í flotanum",
     "statSupport": "Aðstoð á tökudögum",
@@ -170,6 +171,14 @@
     "tagline": "Bílaleiga fyrir kvikmynda- og sjónvarpstökulið á Íslandi.",
     "navTitle": "Vefurinn",
     "contactTitle": "Samband",
+    "rentalsTitle": "Til leigu",
+    "rentals": {
+      "boxTrucks": "Kassabílar til leigu",
+      "van": "Sendibíll til leigu",
+      "caravans": "Hjólhýsi til leigu",
+      "trailer": "Kerra til leigu",
+      "sixWheeler": "Sexhjól til leigu"
+    },
     "rights": "Allur réttur áskilinn."
   },
   "error": {
@@ -197,7 +206,7 @@
     "businessDescription": "Bíla- og tækjaleiga fyrir kvikmynda- og sjónvarpsverkefni á Íslandi. Kassabílar, sendibílar, hjólhýsi, kerrur og sexhjól einnig til leigu fyrir einstaklinga og fyrirtæki.",
     "about": {
       "title": "Um okkur",
-      "description": "Creative Filmmaking leigir framleiðslubíla, tilbúna á sett, til kvikmynda- og sjónvarpstökuliða á Íslandi, með þekkingu á flutningum sem fylgir."
+      "description": "Creative Filmmaking leigir framleiðslubíla og tökubúnað til kvikmynda- og sjónvarpsverkefna á Íslandi: kassabíla, sendibíla, hjólhýsi, kerrur og sexhjól. Einnig til leigu fyrir einstaklinga og fyrirtæki."
     },
     "contact": {
       "title": "Hafa samband",

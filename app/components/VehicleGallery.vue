@@ -56,7 +56,7 @@
         :aria-label="`Image ${i + 1}`"
         @click="active = i"
       >
-        <NuxtImg :src="image" :provider="imgProvider(image)" :alt="''" class="w-full h-full object-cover" sizes="120px" loading="lazy" />
+        <NuxtImg :src="image" :provider="imgProvider(image)" :alt="`${alt} (${i + 1})`" class="w-full h-full object-cover" sizes="120px" loading="lazy" />
       </button>
     </div>
   </div>

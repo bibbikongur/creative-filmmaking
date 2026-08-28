@@ -43,6 +43,11 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+      // Google Search Console ownership proof — set NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      // on Railway to the content= token GSC hands out, redeploy, done.
+      meta: process.env.NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+        ? [{ name: 'google-site-verification', content: process.env.NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION }]
+        : [],
     },
   },
 

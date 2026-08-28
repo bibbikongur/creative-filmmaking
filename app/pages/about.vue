@@ -1,12 +1,14 @@
 <template>
   <div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-      <SectionHeading :kicker="t('about.kicker')" :title="t('about.title')" />
+      <SectionHeading as="h1" :kicker="t('about.kicker')" :title="t('about.title')" />
 
       <!-- Photos removed for now — real ones will be added here later. -->
       <div class="mt-10 max-w-3xl space-y-5 text-bone-400 leading-relaxed">
         <p>{{ t('about.p1') }}</p>
         <p>{{ t('about.p2') }}</p>
+        <!-- SEO prose: names what's for rent, where we are and who can rent. -->
+        <p>{{ t('about.rentals') }}</p>
         <p>{{ t('about.p3') }}</p>
 
         <div class="grid grid-cols-3 gap-6 pt-6 border-t border-ink-800">

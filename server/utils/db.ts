@@ -163,15 +163,16 @@ function seedCatalogueAdditions(db: Database.Database) {
 
     const vehicle = seedVehicles.find(v => v.id === id)
     if (vehicle) {
+      const now = new Date().toISOString()
       if (db.prepare('SELECT id FROM vehicles WHERE id = ?').get(id)) {
-        db.prepare('UPDATE vehicles SET slug = ?, data = ? WHERE id = ?')
-          .run(vehicle.slug, JSON.stringify(vehicle), id)
+        db.prepare('UPDATE vehicles SET slug = ?, data = ?, updated_at = ? WHERE id = ?')
+          .run(vehicle.slug, JSON.stringify(vehicle), now, id)
         console.log(`[db] vehicles: reseeded ${id} (${vehicle.slug}) at rev ${rev}`)
       }
       else if (!db.prepare('SELECT id FROM vehicles WHERE slug = ?').get(vehicle.slug)) {
         const { m } = db.prepare('SELECT COALESCE(MAX(sort), -1) AS m FROM vehicles').get() as { m: number }
-        db.prepare('INSERT INTO vehicles (id, slug, sort, data) VALUES (?, ?, ?, ?)')
-          .run(id, vehicle.slug, m + 1, JSON.stringify(vehicle))
+        db.prepare('INSERT INTO vehicles (id, slug, sort, data, updated_at) VALUES (?, ?, ?, ?, ?)')
+          .run(id, vehicle.slug, m + 1, JSON.stringify(vehicle), now)
         console.log(`[db] vehicles: re-inserted ${id} (${vehicle.slug}) at rev ${rev}`)
       }
     }
@@ -203,7 +204,8 @@ function seedCatalogueAdditions(db: Database.Database) {
 
     const item = seedEquipment.find(e => e.id === id)
     if (item && db.prepare('SELECT id FROM equipment WHERE id = ?').get(id)) {
-      db.prepare('UPDATE equipment SET data = ? WHERE id = ?').run(JSON.stringify(item), id)
+      db.prepare('UPDATE equipment SET data = ?, updated_at = ? WHERE id = ?')
+        .run(JSON.stringify(item), new Date().toISOString(), id)
       console.log(`[db] equipment: reseeded ${id} at rev ${rev}`)
     }
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
@@ -607,6 +609,11 @@ function migrate(db: Database.Database) {
   const ensureColumn = (table: string, column: string, ddl: string) => {
     if (!columns(table).includes(column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${ddl}`)
   }
+
+  // v8: catalogue rows carry updated_at (stamped on admin saves and seed
+  // upserts) so the sitemap can emit lastmod and Google recrawls changes fast.
+  ensureColumn('vehicles', 'updated_at', 'updated_at TEXT')
+  ensureColumn('equipment', 'updated_at', 'updated_at TEXT')
 
   // v3: admin-created quotes carry a source marker.
   ensureColumn('quotes', 'source', "source TEXT NOT NULL DEFAULT 'web'")

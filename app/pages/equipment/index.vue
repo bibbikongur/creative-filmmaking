@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-      <SectionHeading :kicker="t('equipmentCatalogue.kicker')" :title="t('equipmentCatalogue.title')" />
+      <SectionHeading as="h1" :kicker="t('equipmentCatalogue.kicker')" :title="t('equipmentCatalogue.title')" />
       <p class="mt-5 max-w-2xl text-bone-400 leading-relaxed">
         {{ t('equipmentCatalogue.intro') }}
       </p>
@@ -83,7 +83,7 @@ useSchemaOrg([
     itemListElement: all().map(e => ({
       '@type': 'Product',
       name: lt(e.name),
-      url: localePath(`/equipment/${equipmentSlug(e)}`),
+      url: `${siteUrl}${localePath(`/equipment/${equipmentSlug(e)}`)}`,
       ...(e.images[0]
         ? { image: e.images[0].startsWith('http') ? e.images[0] : `${siteUrl}${e.images[0]}` }
         : {}),
