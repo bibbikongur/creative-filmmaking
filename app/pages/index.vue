@@ -26,6 +26,10 @@
           {{ t('home.featuredEquipmentAll') }}
         </NuxtLink>
       </div>
+      <!-- SEO prose: names the rental categories in plain words on the home page. -->
+      <p class="mt-5 max-w-3xl text-sm text-bone-400 leading-relaxed">
+        {{ t('home.featuredEquipmentIntro') }}
+      </p>
       <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" />
       </div>
