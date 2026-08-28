@@ -167,6 +167,11 @@
     "text": "Segðu okkur hvað þú ert að taka upp og við setjum saman réttu bílana og tilboð, án skuldbindinga.",
     "button": "Óska eftir tilboði"
   },
+  "consent": {
+    "text": "Við notum vefkökur til að mæla umferð um vefinn svo við sjáum hvað virkar og getum gert síðuna betri. Engar auglýsingakökur.",
+    "accept": "Samþykkja",
+    "decline": "Hafna"
+  },
   "footer": {
     "tagline": "Bílaleiga fyrir kvikmynda- og sjónvarpstökulið á Íslandi.",
     "navTitle": "Vefurinn",

@@ -1,3 +1,23 @@
+// Seed-catalogue vehicles that were live on the site July–August 2026 and then
+// removed from the catalogue. Google still holds their URLs; 301 them to the
+// fleet page so old links and index entries land somewhere useful.
+const REMOVED_VEHICLE_SLUGS = [
+  'arctic-base-4x4-camper',
+  'highland-crew-camper',
+  'production-crew-truck',
+  'crew-shuttle-minibus',
+  'land-cruiser-location-scout',
+  'camera-support-defender',
+  'talent-trailer',
+  'makeup-costume-trailer',
+  'generator-equipment-trailer',
+  'chevrolet-silverado-ltz',
+]
+const removedVehicleRedirects = Object.fromEntries(REMOVED_VEHICLE_SLUGS.flatMap(slug => [
+  [`/vehicles/${slug}`, { redirect: { to: '/vehicles', statusCode: 301 } }],
+  [`/en/vehicles/${slug}`, { redirect: { to: '/en/vehicles', statusCode: 301 } }],
+]))
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2026-07-03',
@@ -67,6 +87,7 @@ export default defineNuxtConfig({
     // a keyword slug ("kerra til leigu" searches). 301 keeps old links alive.
     '/vehicles/trailer': { redirect: { to: '/vehicles/kerra-med-sturtu', statusCode: 301 } },
     '/en/vehicles/trailer': { redirect: { to: '/en/vehicles/kerra-med-sturtu', statusCode: 301 } },
+    ...removedVehicleRedirects,
     '/admin': { ssr: false, robots: false },
     '/admin/**': { ssr: false, robots: false },
     '/en/admin': { ssr: false, robots: false },

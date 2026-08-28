@@ -49,7 +49,25 @@ export function getDb(): Database.Database {
   importLegacyCatalogue(db)
   seedCatalogueAdditions(db)
   stripStockPhotos(db)
+  backfillCatalogueTimestamps(db)
   return db
+}
+
+// One-time cleanup: rows that existed before updated_at stamping went live
+// (or whose seed upsert ran on an older deploy) carry NULL — give them a
+// baseline stamp so the sitemap emits lastmod for every catalogue URL.
+function backfillCatalogueTimestamps(db: Database.Database) {
+  const flag = 'cleanup:catalogue-updated-at:1'
+  if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) return
+
+  const now = new Date().toISOString()
+  db.transaction(() => {
+    for (const table of ['vehicles', 'equipment'] as const) {
+      const { changes } = db.prepare(`UPDATE ${table} SET updated_at = ? WHERE updated_at IS NULL`).run(now)
+      if (changes) console.log(`[db] ${table}: backfilled updated_at on ${changes} rows`)
+    }
+    db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  })()
 }
 
 // One-time cleanup: remove Unsplash placeholder photos from catalogue rows so

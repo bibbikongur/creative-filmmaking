@@ -167,6 +167,11 @@
     "text": "Tell us what you're shooting and we'll put together the right vehicles and an offer, no obligation.",
     "button": "Request an offer"
   },
+  "consent": {
+    "text": "We use cookies to measure site traffic, so we can see what works and keep improving the site. No advertising cookies.",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
   "footer": {
     "tagline": "Production vehicle rental for film & TV crews shooting in Iceland.",
     "navTitle": "Site",
