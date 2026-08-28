@@ -17,6 +17,7 @@
           <option v-for="j in jobs" :key="j.id" :value="j.id">{{ j.name }}</option>
         </select>
         <select v-model="period" class="input-dark !w-auto">
+          <option value="all">{{ $t('portal.dashboard.allWeeks') }}</option>
           <option value="this-week">{{ $t('portal.dashboard.thisWeek') }}</option>
           <option value="last-week">{{ $t('portal.dashboard.lastWeek') }}</option>
           <option value="4-weeks">{{ $t('portal.dashboard.last4Weeks') }}</option>
@@ -143,7 +144,7 @@ const stats = ref<Stats | null>(null)
 const jobs = ref<Job[]>([])
 const loaded = ref(false)
 const loadError = ref('')
-const period = ref('4-weeks')
+const period = ref('all')
 const queryJob = String(useRoute().query.job || '')
 const jobFilter = ref(queryJob)
 const localePath = useLocalePath()
@@ -151,6 +152,8 @@ const localePath = useLocalePath()
 const range = computed(() => {
   const thisMonday = mondayOf(new Date())
   switch (period.value) {
+    // Every registered week, including ones logged ahead of time.
+    case 'all': return { from: '2000-01-06', to: '2100-01-04' }
     case 'this-week': return { from: thisMonday, to: thisMonday }
     case 'last-week': return { from: addDaysIso(thisMonday, -7), to: addDaysIso(thisMonday, -7) }
     case '13-weeks': return { from: addDaysIso(thisMonday, -7 * 12), to: thisMonday }

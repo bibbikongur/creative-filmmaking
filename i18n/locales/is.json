@@ -1017,6 +1017,7 @@
     },
     "dashboard": {
       "title": "Yfirlit",
+      "allWeeks": "Allar vikur",
       "thisWeek": "Þessi vika",
       "lastWeek": "Síðasta vika",
       "last4Weeks": "Síðustu 4 vikur",

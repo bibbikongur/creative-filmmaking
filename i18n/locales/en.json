@@ -18,7 +18,7 @@
   },
   "hero": {
     "kicker": "Production vehicle rental in Iceland",
-    "title": "Production vehicles for rent for filming in Iceland",
+    "title": "Production vehicles and equipment for rent for filming in Iceland",
     "subtitle": "Box trucks, actor caravans, six-wheelers, generators and set-ready production gear, winter-proven and delivered to your location. Vans, trailers and caravans also available to private and business renters.",
     "availability": "Available for production"
   },
@@ -181,7 +181,7 @@
   },
   "meta": {
     "home": {
-      "title": "Film Production Vehicle Rental in Iceland",
+      "title": "Film Production Vehicle & Equipment Rental in Iceland",
       "description": "Box trucks, cargo vans, actor caravans, trailers and six-wheelers for rent for film & TV productions in Iceland. Also available to private and business renters. Contact us for an offer."
     },
     "vehicles": {
@@ -1017,6 +1017,7 @@
     },
     "dashboard": {
       "title": "Overview",
+      "allWeeks": "All weeks",
       "thisWeek": "This week",
       "lastWeek": "Last week",
       "last4Weeks": "Last 4 weeks",

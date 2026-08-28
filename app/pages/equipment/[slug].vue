@@ -18,8 +18,10 @@
       <!-- Summary -->
       <div class="lg:col-span-2">
         <p class="kicker">{{ t(`equipmentCategories.${item.category}`) }}</p>
+        <!-- "til leigu" in the visible H1 — the headline matches what people
+             actually search for, without polluting the item names themselves. -->
         <h1 class="mt-3 text-3xl sm:text-4xl font-semibold uppercase tracking-wide text-bone-100">
-          {{ lt(item.name) }}
+          {{ t('meta.vehicleTitle', { name: lt(item.name) }) }}
         </h1>
         <p v-if="lt(item.tagline)" class="mt-3 text-lg text-bone-400 leading-relaxed">
           {{ lt(item.tagline) }}
@@ -87,11 +89,22 @@ const related = computed(() =>
 const siteUrl = useRuntimeConfig().public.siteUrl
 const absImage = (src: string) => (src.startsWith('http') ? src : `${siteUrl}${src}`)
 
+// Make sure the rental phrase appears in the SERP snippet: when the tagline
+// doesn't already say it, prefix "{name} til leigu." — Google bolds the query
+// terms in descriptions, which lifts click-through.
+const metaDescription = computed(() => {
+  const tagline = lt(item.tagline)
+  if (!tagline) return `${t('meta.vehicleTitle', { name: lt(item.name) })}. ${t('meta.equipment.description')}`
+  return /til leigu|for rent/i.test(tagline)
+    ? tagline
+    : `${t('meta.vehicleTitle', { name: lt(item.name) })}. ${tagline}`
+})
+
 useSeoMeta({
   title: () => t('meta.vehicleTitle', { name: lt(item.name) }),
-  description: () => lt(item.tagline) || t('meta.equipment.description'),
+  description: () => metaDescription.value,
   ogTitle: () => `${t('meta.vehicleTitle', { name: lt(item.name) })} · Creative Filmmaking`,
-  ogDescription: () => lt(item.tagline) || t('meta.equipment.description'),
+  ogDescription: () => metaDescription.value,
   ogImage: item.images[0] ? absImage(item.images[0]) : undefined,
   ogImageAlt: item.images[0] ? () => lt(item.name) : undefined,
 })

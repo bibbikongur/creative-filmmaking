@@ -18,8 +18,9 @@
       <!-- Summary -->
       <div class="lg:col-span-2">
         <p class="kicker">{{ t(`categories.${vehicle.category}`) }}</p>
+        <!-- "til leigu" in the visible H1 — matches the search query directly. -->
         <h1 class="mt-3 text-3xl sm:text-4xl font-semibold uppercase tracking-wide text-bone-100">
-          {{ lt(vehicle.name) }}
+          {{ t('meta.vehicleTitle', { name: lt(vehicle.name) }) }}
         </h1>
         <p class="mt-3 text-lg text-bone-400 leading-relaxed">
           {{ lt(vehicle.tagline) }}
