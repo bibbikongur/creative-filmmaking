@@ -44,10 +44,24 @@ useSchemaOrg([
     url: config.public.siteUrl,
     logo: `${config.public.siteUrl}/logo.svg`,
     image: `${config.public.siteUrl}/logo.svg`,
+    // Mirrors the Google Business Profile exactly (NAP consistency).
     address: {
+      streetAddress: 'Grensásvegur 1',
+      postalCode: '108',
       addressLocality: 'Reykjavík',
       addressCountry: 'IS',
     },
+    geo: {
+      latitude: 64.1353,
+      longitude: -21.8689,
+    },
+    openingHoursSpecification: [
+      {
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        opens: '00:00',
+        closes: '23:59',
+      },
+    ],
     telephone: config.public.contact.phone,
     email: config.public.contact.email,
     areaServed: 'Iceland',

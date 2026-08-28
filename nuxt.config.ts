@@ -143,10 +143,13 @@ export default defineNuxtConfig({
       // Absolute origin for links in server-sent emails (quote notifications,
       // offers). Same source as site.url; NUXT_PUBLIC_SITE_URL overrides.
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://creativefilmmaking.is',
+      // Google Analytics 4 measurement id (NUXT_PUBLIC_GA_ID, e.g. G-XXXXXXXXXX).
+      // Unset = no analytics script is loaded at all.
+      gaId: process.env.NUXT_PUBLIC_GA_ID || '',
       // Business contact details — single source of truth for the footer and
       // contact page. Override per-environment with the matching NUXT_PUBLIC_* var.
       contact: {
-        address: process.env.NUXT_PUBLIC_CONTACT_ADDRESS || 'Reykjavík, Iceland',
+        address: process.env.NUXT_PUBLIC_CONTACT_ADDRESS || 'Grensásvegur 1, 108 Reykjavík',
         phone: process.env.NUXT_PUBLIC_CONTACT_PHONE || '+354 772 4968',
         email: process.env.NUXT_PUBLIC_CONTACT_EMAIL || 'info@creativefilmmaking.is',
       },
