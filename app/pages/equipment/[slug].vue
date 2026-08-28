@@ -109,13 +109,11 @@ useSeoMeta({
   ogImageAlt: item.images[0] ? () => lt(item.name) : undefined,
 })
 
+// No Product node on purpose: Google requires offers/reviews on Product
+// markup for rich results, and prices here are offer-on-request — a Product
+// node without them just generates "invalid item" noise in Search Console.
+// Breadcrumb (a valid enhancement) carries the structure instead.
 useSchemaOrg([
-  {
-    '@type': 'Product',
-    name: lt(item.name),
-    description: lt(item.tagline) || undefined,
-    image: item.images.map(absImage),
-  },
   defineBreadcrumb({
     itemListElement: [
       { name: t('nav.home'), item: localePath('/') },

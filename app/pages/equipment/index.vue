@@ -75,18 +75,13 @@ useSeoMeta({
   ogDescription: t('meta.equipment.description'),
 })
 
-// Every rental item as a named Product linking to its detail page.
-const { lt } = useLocalized()
+// Plain URL list (like the fleet page) — Product typing without offers would
+// only trigger "invalid item" warnings in Search Console.
 const siteUrl = useRuntimeConfig().public.siteUrl
 useSchemaOrg([
   defineItemList({
     itemListElement: all().map(e => ({
-      '@type': 'Product',
-      name: lt(e.name),
       url: `${siteUrl}${localePath(`/equipment/${equipmentSlug(e)}`)}`,
-      ...(e.images[0]
-        ? { image: e.images[0].startsWith('http') ? e.images[0] : `${siteUrl}${e.images[0]}` }
-        : {}),
     })),
   }),
 ])
