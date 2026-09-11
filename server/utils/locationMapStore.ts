@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto'
+import { roadSignDef } from '~~/app/data/roadSigns'
 import type { LocationMapDoc, LocationMapPage, LocationMapSummary, LocationMarkerKind, VehicleMarkerKind } from '~~/app/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -15,6 +16,7 @@ const MAX_TEXTS = 100
 const MAX_ROADS = 100
 const MAX_VEHICLES = 100
 const MAX_SHAPES = 100
+const MAX_SIGNS = 200
 const MAX_ROAD_POINTS = 1000
 const MAX_TEXT_LEN = 500
 const MAX_LABEL_LEN = 120
@@ -81,11 +83,13 @@ export function validatePages(input: unknown): LocationMapPage[] {
     const texts = p.texts ?? []
     const vehicles = p.vehicles ?? [] // absent on docs saved before vehicles existed
     const shapes = p.shapes ?? [] // absent on docs saved before shapes existed
+    const signs = p.signs ?? [] // absent on docs saved before road signs existed
     if (!Array.isArray(markers) || markers.length > MAX_MARKERS) fail(`${where}: too many markers.`)
     if (!Array.isArray(roads) || roads.length > MAX_ROADS) fail(`${where}: too many roads.`)
     if (!Array.isArray(texts) || texts.length > MAX_TEXTS) fail(`${where}: too many text boxes.`)
     if (!Array.isArray(vehicles) || vehicles.length > MAX_VEHICLES) fail(`${where}: too many vehicles.`)
     if (!Array.isArray(shapes) || shapes.length > MAX_SHAPES) fail(`${where}: too many shapes.`)
+    if (!Array.isArray(signs) || signs.length > MAX_SIGNS) fail(`${where}: too many road signs.`)
 
     const center = (p.center ?? {}) as Record<string, unknown>
     return {
@@ -142,6 +146,20 @@ export function validatePages(input: unknown): LocationMapPage[] {
           size: Math.min(72, Math.max(8, Math.round(num(t.size, `${where} text size`)))),
           // Production-map gold unless a valid color was picked.
           color: /^#[0-9a-f]{3,8}$/i.test(color) ? color : '#ffd75e',
+        }
+      }),
+      signs: signs.map((g0) => {
+        const g = (g0 ?? {}) as Record<string, unknown>
+        // The sign id must exist in the generated catalogue — that is what
+        // makes the /signs/is/<id>.svg URL safe to build client-side.
+        const sign = str(g.sign, 60)
+        if (!roadSignDef(sign)) fail(`${where}: unknown road sign.`)
+        return {
+          id: localId('g', g.id),
+          sign,
+          lat: num(g.lat, `${where} sign`),
+          lng: num(g.lng, `${where} sign`),
+          size: Math.min(160, Math.max(16, Math.round(num(g.size, `${where} sign size`)))),
         }
       }),
       shapes: shapes.map((s0) => {

@@ -215,6 +215,46 @@
         </div>
       </div>
 
+      <!-- Road-sign picker -->
+      <div v-if="tool === 'sign' && page" class="mt-2 border border-ink-800 bg-ink-900/50 p-3">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button
+            v-for="g in ROAD_SIGN_GROUPS"
+            :key="g"
+            type="button"
+            class="px-2 py-1 text-xs border transition-colors"
+            :class="signGroup === g && !signSearch ? 'border-gold-500/60 text-gold-400 bg-ink-900' : 'border-ink-800 text-bone-500 hover:text-bone-300'"
+            @click="signGroup = g; signSearch = ''"
+          >
+            {{ g }}
+          </button>
+          <input
+            v-model="signSearch"
+            type="text"
+            class="input-dark !py-1 text-xs w-36 ml-auto"
+            :placeholder="$t('portal.tools.locationMap.searchSigns')"
+          >
+          <label class="flex items-center gap-2 text-xs text-bone-400">
+            {{ $t('portal.tools.locationMap.signSize') }}
+            <input v-model.number="signSize" type="range" min="20" max="96" class="w-24 accent-gold-500">
+          </label>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-1.5 max-h-44 overflow-y-auto">
+          <button
+            v-for="s in filteredSigns"
+            :key="s.id"
+            type="button"
+            class="flex h-12 w-12 shrink-0 items-center justify-center border bg-ink-950/70 p-1 transition-colors"
+            :class="activeSign === s.id ? 'border-gold-400' : 'border-ink-800 hover:border-ink-600'"
+            :title="s.id"
+            @click="activeSign = s.id"
+          >
+            <img :src="`/signs/is/${s.id}.svg`" class="max-h-full max-w-full" loading="lazy" draggable="false">
+          </button>
+          <p v-if="!filteredSigns.length" class="text-xs text-bone-500 p-2">{{ $t('portal.tools.locationMap.noSigns') }}</p>
+        </div>
+      </div>
+
       <!-- Hint line -->
       <p v-if="hint" class="mt-2 text-xs text-bone-500">{{ hint }}</p>
 
@@ -384,6 +424,26 @@
             </div>
           </template>
 
+          <template v-else-if="selected!.type === 'sign'">
+            <div class="flex justify-center bg-ink-950/70 p-3">
+              <img :src="`/signs/is/${(selectedItem as LocationMapSign).sign}.svg`" class="h-16" draggable="false">
+            </div>
+            <p class="text-center text-xs text-bone-500">{{ (selectedItem as LocationMapSign).sign }}</p>
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">
+                {{ $t('portal.tools.locationMap.signSize') }} · {{ (selectedItem as LocationMapSign).size }}px
+              </label>
+              <input
+                v-model.number="(selectedItem as LocationMapSign).size"
+                type="range"
+                min="16"
+                max="160"
+                class="w-full accent-gold-500"
+                @input="touch"
+              >
+            </div>
+          </template>
+
           <template v-else-if="selected!.type === 'shape'">
             <div>
               <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.tools.locationMap.roadColor') }}</label>
@@ -476,8 +536,9 @@
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css'
 import type * as Leaflet from 'leaflet'
-import type { LatLng, LocationMapDoc, LocationMapMarker, LocationMapPage, LocationMapRoad, LocationMapShape, LocationMapText, LocationMapVehicle, LocationMarkerKind, VehicleMarkerKind } from '~/types'
+import type { LatLng, LocationMapDoc, LocationMapMarker, LocationMapPage, LocationMapRoad, LocationMapShape, LocationMapSign, LocationMapText, LocationMapVehicle, LocationMarkerKind, VehicleMarkerKind } from '~/types'
 import { DEFAULT_TEXT_COLOR, MARKER_KINDS, markerKindDef, metersPerPixel, newLocalId, newMapPage, pinSvg, ROAD_COLORS, TEXT_COLORS, TILE_SOURCES, VEHICLE_COLORS, VEHICLE_KINDS, vehicleKindDef, vehicleSvg } from '~/utils/locationMap'
+import { ROAD_SIGN_GROUPS, ROAD_SIGNS, roadSignDef } from '~/data/roadSigns'
 
 definePageMeta({ layout: 'portal' })
 usePortalToolGuard('location-map')
@@ -494,6 +555,7 @@ const TOOL_MODES = [
   { id: 'text', labelKey: 'portal.tools.locationMap.toolText' },
   { id: 'road', labelKey: 'portal.tools.locationMap.toolRoad' },
   { id: 'shape', labelKey: 'portal.tools.locationMap.toolShape' },
+  { id: 'sign', labelKey: 'portal.tools.locationMap.toolSign' },
   { id: 'vehicle', labelKey: 'portal.tools.locationMap.toolVehicle' },
 ] as const
 type ToolMode = typeof TOOL_MODES[number]['id']
@@ -523,7 +585,20 @@ const shapeKind = ref<'rect' | 'circle'>('rect')
 const shapeStyle = reactive({ color: ROAD_COLORS[0]!, width: 3, fill: true, fillOpacity: 0.25 })
 /** First corner/center of an in-progress shape. */
 const shapeStart = ref<LatLng | null>(null)
-const selected = ref<{ type: 'marker' | 'text' | 'road' | 'vehicle' | 'shape', id: string } | null>(null)
+
+// Road-sign picker: group tabs, id search (across all groups) and the sign
+// that the next map click will place.
+const signGroup = ref<string>(ROAD_SIGN_GROUPS[0])
+const signSearch = ref('')
+const activeSign = ref<string>(ROAD_SIGNS[0]?.id ?? '')
+const signSize = ref(36)
+const filteredSigns = computed(() => {
+  const q = signSearch.value.trim().toLowerCase()
+  if (q) return ROAD_SIGNS.filter(s => s.id.toLowerCase().includes(q)).slice(0, 200)
+  return ROAD_SIGNS.filter(s => s.group === signGroup.value)
+})
+
+const selected = ref<{ type: 'marker' | 'text' | 'road' | 'vehicle' | 'shape' | 'sign', id: string } | null>(null)
 const saveState = ref<'idle' | 'dirty' | 'saving' | 'saved' | 'error'>('idle')
 const exporting = ref(false)
 const exportError = ref('')
@@ -539,11 +614,12 @@ const hint = computed(() => {
   if (tool.value === 'text') return t('portal.tools.locationMap.textHint')
   if (tool.value === 'road') return t('portal.tools.locationMap.roadHint')
   if (tool.value === 'shape') return t('portal.tools.locationMap.shapeHint')
+  if (tool.value === 'sign') return t('portal.tools.locationMap.signHint')
   if (tool.value === 'vehicle') return t('portal.tools.locationMap.vehicleHint')
   return ''
 })
 
-const selectedItem = computed<LocationMapMarker | LocationMapText | LocationMapRoad | LocationMapVehicle | LocationMapShape | null>(() => {
+const selectedItem = computed<LocationMapMarker | LocationMapText | LocationMapRoad | LocationMapVehicle | LocationMapShape | LocationMapSign | null>(() => {
   const p = page.value
   const sel = selected.value
   if (!p || !sel) return null
@@ -551,6 +627,7 @@ const selectedItem = computed<LocationMapMarker | LocationMapText | LocationMapR
   if (sel.type === 'text') return p.texts.find(x => x.id === sel.id) ?? null
   if (sel.type === 'vehicle') return p.vehicles.find(v => v.id === sel.id) ?? null
   if (sel.type === 'shape') return (p.shapes ?? []).find(x => x.id === sel.id) ?? null
+  if (sel.type === 'sign') return (p.signs ?? []).find(x => x.id === sel.id) ?? null
   return p.roads.find(r => r.id === sel.id) ?? null
 })
 
@@ -741,6 +818,31 @@ function renderOverlays() {
     }
   }
 
+  // Road signs: fixed screen-px size, dragged like pins.
+  for (const sg of p.signs ?? []) {
+    const def = roadSignDef(sg.sign)
+    const w = sg.size
+    const h = def ? Math.round(sg.size * (def.h / def.w)) : sg.size
+    const icon = L.divIcon({
+      className: 'lm-icon',
+      html: `<img class="lm-signimg" src="/signs/is/${sg.sign}.svg" style="width:${w}px;height:${h}px" draggable="false">`,
+      iconSize: [w, h],
+      iconAnchor: [w / 2, h / 2],
+    })
+    const m = L.marker([sg.lat, sg.lng], { icon, draggable: true }).addTo(map)
+    m.on('click', (e: Leaflet.LeafletMouseEvent) => {
+      L!.DomEvent.stopPropagation(e)
+      selected.value = { type: 'sign', id: sg.id }
+    })
+    m.on('dragend', () => {
+      const ll = m.getLatLng()
+      sg.lat = ll.lat
+      sg.lng = ll.lng
+      markDirty()
+    })
+    overlayLayers.push(m)
+  }
+
   for (const mk of p.markers) {
     const def = markerKindDef(mk.kind)
     // Set pins carry a location number: shown inside the pin, and as the
@@ -850,6 +952,19 @@ function onMapClick(ll: Leaflet.LatLng) {
       touch()
     }
   }
+  else if (tool.value === 'sign') {
+    if (!activeSign.value) return
+    const sg: LocationMapSign = {
+      id: newLocalId('g'),
+      sign: activeSign.value,
+      lat: ll.lat,
+      lng: ll.lng,
+      size: signSize.value,
+    }
+    ;(p.signs ??= []).push(sg)
+    selected.value = { type: 'sign', id: sg.id }
+    touch()
+  }
   else if (tool.value === 'vehicle') {
     if (p.base === 'image') return
     const def = vehicleKindDef(vehicleKind.value)
@@ -941,6 +1056,7 @@ function deleteSelected() {
   else if (sel.type === 'text') p.texts = p.texts.filter(x => x.id !== sel.id)
   else if (sel.type === 'vehicle') p.vehicles = p.vehicles.filter(v => v.id !== sel.id)
   else if (sel.type === 'shape') p.shapes = (p.shapes ?? []).filter(x => x.id !== sel.id)
+  else if (sel.type === 'sign') p.signs = (p.signs ?? []).filter(x => x.id !== sel.id)
   else p.roads = p.roads.filter(r => r.id !== sel.id)
   selected.value = null
   touch()
@@ -1138,10 +1254,11 @@ function onBeforeUnload(e: BeforeUnloadEvent) {
 onMounted(async () => {
   try {
     doc.value = await $fetch<LocationMapDoc>(`/api/portal/tools/location-maps/${mapId}`)
-    // Docs saved before vehicles/shapes existed lack those arrays.
+    // Docs saved before vehicles/shapes/signs existed lack those arrays.
     for (const p of doc.value.pages) {
       p.vehicles ??= []
       p.shapes ??= []
+      p.signs ??= []
     }
   }
   catch {
@@ -1247,6 +1364,10 @@ useHead({ title: 'Tökustaðakort · Hjálpartól · Portal' })
     0 0 3px #fff,
     0 0 3px #fff,
     0 0 3px #fff;
+}
+.lm-signimg {
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 .lm-veh {
   position: absolute;

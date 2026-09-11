@@ -118,6 +118,18 @@ describe('validatePages', () => {
     expect(without!.shapes).toEqual([])
   })
 
+  it('accepts road signs from the catalogue and rejects unknown ones', async () => {
+    const { validatePages } = await import('../server/utils/locationMapStore')
+    const { ROAD_SIGNS } = await import('../app/data/roadSigns')
+    const signId = ROAD_SIGNS[0]!.id
+    const [p] = validatePages([{ ...validPage, signs: [{ id: 'g-1', sign: signId, lat: 64.1, lng: -21.9, size: 500 }] }])
+    expect(p!.signs[0]).toMatchObject({ id: 'g-1', sign: signId, size: 160 })
+    expect(() => validatePages([{ ...validPage, signs: [{ sign: 'no-such-sign', lat: 1, lng: 2, size: 36 }] }])).toThrow()
+    expect(() => validatePages([{ ...validPage, signs: [{ sign: '../../secret', lat: 1, lng: 2, size: 36 }] }])).toThrow()
+    const [without] = validatePages([validPage])
+    expect(without!.signs).toEqual([])
+  })
+
   it('keeps valid location numbers and drops invalid ones', async () => {
     const { validatePages } = await import('../server/utils/locationMapStore')
     const [p] = validatePages([{

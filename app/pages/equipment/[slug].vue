@@ -12,7 +12,7 @@
     <div class="mt-8 grid gap-10 lg:grid-cols-5">
       <!-- Gallery -->
       <div class="lg:col-span-3">
-        <VehicleGallery :images="item.images" :alt="t('meta.vehicleTitle', { name: lt(item.name) })" />
+        <VehicleGallery :images="item.images" :alt="t('meta.vehicleTitle', { name: lt(item.name) })" fit="contain" />
       </div>
 
       <!-- Summary -->
@@ -112,8 +112,12 @@ useSeoMeta({
 // No Product node on purpose: Google requires offers/reviews on Product
 // markup for rich results, and prices here are offer-on-request — a Product
 // node without them just generates "invalid item" noise in Search Console.
-// Breadcrumb (a valid enhancement) carries the structure instead.
+// primaryImageOfPage tells Google which photo belongs to THIS page, so SERP
+// thumbnails don't borrow an image from elsewhere on the site.
 useSchemaOrg([
+  ...(item.images[0]
+    ? [defineWebPage({ primaryImageOfPage: absImage(item.images[0]) })]
+    : []),
   defineBreadcrumb({
     itemListElement: [
       { name: t('nav.home'), item: localePath('/') },

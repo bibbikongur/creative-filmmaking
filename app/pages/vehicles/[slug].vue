@@ -139,6 +139,10 @@ useSeoMeta({
 // No offers node on purpose — pricing is offer-on-request. Raw node because
 // schema-org ships no defineVehicle helper.
 useSchemaOrg([
+  // Pins the SERP thumbnail to this vehicle's own photo.
+  ...(vehicle.images[0]
+    ? [defineWebPage({ primaryImageOfPage: absImage(vehicle.images[0]) })]
+    : []),
   {
     '@type': 'Vehicle',
     name: lt(vehicle.name),

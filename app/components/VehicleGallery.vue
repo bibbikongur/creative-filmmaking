@@ -8,7 +8,8 @@
         :src="images[active]"
         :provider="imgProvider(images[active])"
         :alt="`${alt} (${active + 1}/${images.length})`"
-        class="w-full h-full object-cover"
+        class="w-full h-full"
+        :class="fit === 'contain' ? 'object-contain' : 'object-cover'"
         sizes="sm:100vw lg:60vw"
         :preload="active === 0"
       />
@@ -56,14 +57,24 @@
         :aria-label="`Image ${i + 1}`"
         @click="active = i"
       >
-        <NuxtImg :src="image" :provider="imgProvider(image)" :alt="`${alt} (${i + 1})`" class="w-full h-full object-cover" sizes="120px" loading="lazy" />
+        <NuxtImg
+          :src="image"
+          :provider="imgProvider(image)"
+          :alt="`${alt} (${i + 1})`"
+          class="w-full h-full"
+          :class="fit === 'contain' ? 'object-contain' : 'object-cover'"
+          sizes="120px"
+          loading="lazy"
+        />
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ images: string[]; alt: string }>()
+const props = withDefaults(defineProps<{ images: string[]; alt: string; fit?: 'cover' | 'contain' }>(), {
+  fit: 'cover',
+})
 
 const active = ref(0)
 

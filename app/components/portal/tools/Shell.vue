@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-2xl">
+  <div :class="wide ? 'max-w-none' : 'max-w-2xl'">
     <NuxtLink
       :to="backTo ?? defaultBack"
       class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-bone-500 hover:text-gold-400 transition-colors"
@@ -21,7 +21,7 @@ import type { RouteLocationRaw } from 'vue-router'
 // backTo/backLabel override the default back link. Tools live inside the jobs
 // now: by default we link back to the job the tool was opened from (?job=),
 // falling back to the job list when unscoped.
-defineProps<{ title: string, desc?: string, backTo?: RouteLocationRaw, backLabel?: string }>()
+defineProps<{ title: string, desc?: string, backTo?: RouteLocationRaw, backLabel?: string, wide?: boolean }>()
 const localePath = useLocalePath()
 const route = useRoute()
 const { t } = useI18n()

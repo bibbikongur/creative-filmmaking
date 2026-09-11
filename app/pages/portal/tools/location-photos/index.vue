@@ -108,8 +108,9 @@ const newName = ref('')
 const creating = ref(false)
 const error = ref('')
 
+// Cover cards are large (2x on retina); use the full image so it isn't blurry.
 const coverUrl = (a: LocationAlbumSummary) =>
-  `/api/portal/tools/location-albums/${a.id}/photos/${a.coverPhotoId}/file?size=thumb`
+  `/api/portal/tools/location-albums/${a.id}/photos/${a.coverPhotoId}/file?size=full`
 
 const countLabel = (a: LocationAlbumSummary) => {
   const parts: string[] = []

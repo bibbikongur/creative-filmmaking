@@ -9,6 +9,7 @@
 import { PDFDocument, PDFName, PDFString } from 'pdf-lib'
 import type { LatLng, LocationMapDoc, LocationMapPage, LocationMapVehicle, LocationMarkerKind } from '~/types'
 import { DEFAULT_TEXT_COLOR, isLightColor, markerKindDef, metersPerPixel, TILE_SOURCES, tileUrl } from '~/utils/locationMap'
+import { roadSignDef } from '~/data/roadSigns'
 
 // A4 landscape in PDF points; canvas renders at 2× for print sharpness.
 const PAGE_W = 841.89
@@ -178,6 +179,38 @@ async function drawImageBase(ctx: CanvasRenderingContext2D, page: LocationMapPag
   return ll => ({ x: ox + ll.lng * s, y: oy + (h - ll.lat) * s })
 }
 
+// Road-sign SVGs, rasterized once per export run. Same-origin fetch, so the
+// canvas is never tainted; explicit pixel dimensions are forced onto the SVG
+// root so it rasterizes crisply instead of at the 300×150 default.
+const signImageCache = new Map<string, Promise<HTMLImageElement>>()
+function loadSignImage(sign: string): Promise<HTMLImageElement> {
+  let p = signImageCache.get(sign)
+  if (!p) {
+    p = (async () => {
+      const res = await fetch(`/signs/is/${sign}.svg`)
+      if (!res.ok) throw new Error(`sign ${sign}: ${res.status}`)
+      let svg = await res.text()
+      const def = roadSignDef(sign)
+      if (def) {
+        const scale = Math.min(4, 1600 / Math.max(def.w, def.h))
+        svg = svg
+          .replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1')
+          .replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+          .replace(/<svg/, `<svg width="${Math.max(1, Math.round(def.w * scale))}" height="${Math.max(1, Math.round(def.h * scale))}"`)
+      }
+      const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
+      try {
+        return await loadImage(url)
+      }
+      finally {
+        URL.revokeObjectURL(url)
+      }
+    })()
+    signImageCache.set(sign, p)
+  }
+  return p
+}
+
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   ctx.beginPath()
   ctx.moveTo(x + r, y)
@@ -188,7 +221,7 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.closePath()
 }
 
-function drawOverlays(ctx: CanvasRenderingContext2D, page: LocationMapPage, toPx: (ll: LatLng) => { x: number, y: number }) {
+function drawOverlays(ctx: CanvasRenderingContext2D, page: LocationMapPage, toPx: (ll: LatLng) => { x: number, y: number }, signImages?: Map<string, HTMLImageElement>) {
   // Shapes first — zone outlines/fills sit under everything else.
   for (const sh of page.shapes ?? []) {
     const pa = toPx(sh.a)
@@ -261,6 +294,17 @@ function drawOverlays(ctx: CanvasRenderingContext2D, page: LocationMapPage, toPx
         ctx.textAlign = 'left'
       }
     }
+  }
+
+  // Road signs: pre-rasterized SVGs, centered on the point like the editor.
+  for (const sg of page.signs ?? []) {
+    const img = signImages?.get(sg.sign)
+    if (!img) continue
+    const def = roadSignDef(sg.sign)
+    const w = sg.size * SCALE
+    const h = def ? w * (def.h / def.w) : w
+    const p = toPx(sg)
+    ctx.drawImage(img, p.x - w / 2, p.y - h / 2, w, h)
   }
 
   // Text boxes: uppercase colored text on a dark chip (production-map style),
@@ -475,7 +519,18 @@ export async function exportLocationMapPdf(doc: LocationMapDoc, labels: ExportLa
     const toPx = page.base === 'image'
       ? await drawImageBase(ctx, page)
       : await drawTileBase(ctx, page)
-    drawOverlays(ctx, page, toPx)
+
+    // Rasterize this page's road signs up front (cached across pages); a sign
+    // that fails to load is skipped rather than failing the whole export.
+    const signImages = new Map<string, HTMLImageElement>()
+    await Promise.all([...new Set((page.signs ?? []).map(sg => sg.sign))].map(async (id) => {
+      try {
+        signImages.set(id, await loadSignImage(id))
+      }
+      catch { /* skip this sign */ }
+    }))
+
+    drawOverlays(ctx, page, toPx, signImages)
     const links = drawChrome(ctx, doc, page, labels)
 
     const jpeg = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.92))

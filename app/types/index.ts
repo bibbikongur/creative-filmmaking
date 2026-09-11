@@ -486,6 +486,17 @@ export interface LocationMapShape {
   fillOpacity: number
 }
 
+/**
+ * An Icelandic road sign placed on the map. `sign` is a catalogue id from
+ * app/data/roadSigns.ts (SVG at public/signs/is/<sign>.svg); rendered at
+ * `size` px wide on screen, height following the sign's aspect ratio.
+ */
+export interface LocationMapSign extends LatLng {
+  id: string
+  sign: string
+  size: number
+}
+
 export interface LocationMapPage {
   id: string
   title: string
@@ -503,6 +514,8 @@ export interface LocationMapPage {
   vehicles: LocationMapVehicle[]
   /** Absent on documents saved before shapes existed. */
   shapes?: LocationMapShape[]
+  /** Absent on documents saved before road signs existed. */
+  signs?: LocationMapSign[]
 }
 
 export interface LocationMapDoc {

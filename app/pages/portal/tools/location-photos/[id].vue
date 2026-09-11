@@ -211,26 +211,94 @@
           <p v-else class="mt-4 text-sm text-bone-600">{{ $t('portal.tools.locationPhotos.noSubfolders') }}</p>
         </section>
 
-        <!-- Location pin (options / standalone leaf folders only) -->
-        <section v-if="showPin">
-          <h2 class="text-xs font-semibold uppercase tracking-widest text-bone-500">
-            {{ $t('portal.tools.locationPhotos.location') }}
-          </h2>
-          <div class="mt-3">
-            <PortalToolsLocationPin v-model="coords" :color="album.displayColor" @update:model-value="saveCoords" />
-          </div>
-        </section>
       </div>
 
-      <!-- Photos (options / standalone leaf folders only) -->
+      <!-- Photo gallery (options / standalone leaf folders): above the map -->
       <section v-if="showPhotos" class="mt-10">
-        <h2 class="flex items-center justify-between text-xs font-semibold uppercase tracking-widest text-bone-500">
-          <span>{{ $t('portal.tools.locationPhotos.photos') }}</span>
-          <span v-if="album.photos.length" class="normal-case tracking-normal text-bone-500">
-            {{ $t('portal.tools.locationPhotos.photoCount', { n: album.photos.length }, album.photos.length) }}
-          </span>
-        </h2>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-xs font-semibold uppercase tracking-widest text-bone-500">
+            {{ $t('portal.tools.locationPhotos.photos') }}
+            <span v-if="album.photos.length" class="ml-1 lowercase tracking-normal text-bone-600">
+              · {{ $t('portal.tools.locationPhotos.photoCount', { n: album.photos.length }, album.photos.length) }}
+            </span>
+          </h2>
+          <!-- Selection toolbar: pick photos and export a tidy PDF -->
+          <div v-if="album.photos.length" class="flex flex-wrap items-center gap-2 text-xs">
+            <template v-if="selecting">
+              <span class="text-bone-400">{{ $t('portal.tools.locationPhotos.selectedCount', { n: selectedIds.size }) }}</span>
+              <button type="button" class="text-bone-400 hover:text-bone-100 transition-colors" @click="selectAllPhotos">
+                {{ $t('portal.tools.locationPhotos.selectAll') }}
+              </button>
+              <button type="button" class="text-bone-400 hover:text-bone-100 transition-colors" @click="clearSelection">
+                {{ $t('portal.tools.locationPhotos.clearSelection') }}
+              </button>
+              <button
+                type="button"
+                class="btn-gold px-3 py-1 text-xs disabled:opacity-50"
+                :disabled="!selectedIds.size || exporting"
+                @click="downloadSelectedPdf"
+              >
+                {{ exporting ? exportProgress || $t('portal.tools.working') : $t('portal.tools.locationPhotos.downloadPdf') }}
+              </button>
+              <button type="button" class="text-bone-500 hover:text-signal-500 transition-colors" @click="stopSelecting">
+                {{ $t('portal.tools.locationPhotos.cancelSelect') }}
+              </button>
+            </template>
+            <button
+              v-else
+              type="button"
+              class="inline-flex items-center gap-1.5 rounded border border-ink-700 px-2.5 py-1 text-bone-300 hover:border-gold-500 hover:text-gold-300 transition-colors"
+              @click="startSelecting"
+            >
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4M15 3h4a2 2 0 0 1 2 2v4M9 21H5a2 2 0 0 1-2-2v-4M15 21h4a2 2 0 0 0 2-2v-4M8 12l3 3 5-6" /></svg>
+              {{ $t('portal.tools.locationPhotos.selectPhotos') }}
+            </button>
+          </div>
+        </div>
 
+        <div v-if="album.photos.length" class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+          <button
+            v-for="(p, i) in album.photos"
+            :key="p.id"
+            type="button"
+            class="group relative aspect-square overflow-hidden border bg-ink-950 transition-colors"
+            :class="selecting && selectedIds.has(p.id) ? 'border-gold-500' : 'border-ink-800 hover:border-ink-500'"
+            @click="onPhotoClick(i)"
+          >
+            <img :src="thumbUrl(p)" :alt="p.caption || p.originalName" loading="lazy" class="h-full w-full object-cover transition-transform" :class="{ 'group-hover:scale-105': !selecting }">
+            <!-- Selection checkbox -->
+            <span
+              v-if="selecting"
+              class="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full border"
+              :class="selectedIds.has(p.id) ? 'border-gold-500 bg-gold-500 text-ink-950' : 'border-bone-400 bg-ink-950/70 text-transparent'"
+            >
+              <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7" /></svg>
+            </span>
+            <span
+              v-else-if="p.id === album.coverPhotoId"
+              class="absolute left-1.5 top-1.5 rounded bg-ink-950/80 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-gold-300"
+            >{{ $t('portal.tools.locationPhotos.cover') }}</span>
+            <span v-if="p.caption" class="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-ink-950/90 to-transparent px-2 py-1.5 text-left text-xs text-bone-200">{{ p.caption }}</span>
+          </button>
+        </div>
+        <p v-else-if="!busy" class="mt-4 text-sm text-bone-500">{{ $t('portal.tools.locationPhotos.emptyAlbum') }}</p>
+      </section>
+
+      <!-- Location pin (options / standalone leaf folders): below the gallery -->
+      <section v-if="showPin" class="mt-10">
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-bone-500">
+          {{ $t('portal.tools.locationPhotos.location') }}
+        </h2>
+        <div class="mt-3">
+          <PortalToolsLocationPin v-model="coords" :color="album.displayColor" @update:model-value="saveCoords" />
+        </div>
+      </section>
+
+      <!-- Upload zone (options / standalone leaf folders): below everything -->
+      <section v-if="showPhotos" class="mt-8">
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-bone-500">
+          {{ $t('portal.tools.locationPhotos.addPhotos') }}
+        </h2>
         <label
           class="mt-3 flex flex-col items-center justify-center gap-2 border-2 border-dashed px-6 py-8 text-center transition-colors"
           :class="[dragging ? 'border-gold-500 bg-gold-500/5' : 'border-ink-700 hover:border-ink-600 bg-ink-900/40', busy ? 'cursor-wait opacity-60' : 'cursor-pointer']"
@@ -245,26 +313,7 @@
           <span class="text-xs text-bone-500">{{ $t('portal.tools.locationPhotos.uploadFormats') }}</span>
           <input ref="fileInput" type="file" class="hidden" accept="image/jpeg,image/png,image/webp" multiple :disabled="busy" @change="onPick">
         </label>
-
         <p v-if="progress" class="mt-3 text-sm text-gold-300">{{ progress }}</p>
-
-        <div v-if="album.photos.length" class="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-          <button
-            v-for="(p, i) in album.photos"
-            :key="p.id"
-            type="button"
-            class="group relative aspect-square overflow-hidden border border-ink-800 bg-ink-950 transition-colors hover:border-ink-500"
-            @click="openViewer(i)"
-          >
-            <img :src="thumbUrl(p)" :alt="p.caption || p.originalName" loading="lazy" class="h-full w-full object-cover transition-transform group-hover:scale-105">
-            <span
-              v-if="p.id === album.coverPhotoId"
-              class="absolute left-1.5 top-1.5 rounded bg-ink-950/80 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-gold-300"
-            >{{ $t('portal.tools.locationPhotos.cover') }}</span>
-            <span v-if="p.caption" class="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-ink-950/90 to-transparent px-2 py-1.5 text-left text-xs text-bone-200">{{ p.caption }}</span>
-          </button>
-        </div>
-        <p v-else-if="!busy" class="mt-4 text-sm text-bone-500">{{ $t('portal.tools.locationPhotos.emptyAlbum') }}</p>
       </section>
     </div>
 
@@ -321,7 +370,8 @@
 
 <script setup lang="ts">
 import type { LocationAlbumDetail, LocationAlbumSummary, LocationPhoto } from '~/types'
-import { downscaleImage } from '~/utils/toolFiles'
+import { downloadBlob, downscaleImage } from '~/utils/toolFiles'
+import { exportAlbumPdf, pdfFileName } from '~/utils/albumPdf'
 import { PIN_COLORS } from '~/utils/locationMap'
 
 definePageMeta({ layout: 'portal' })
@@ -389,8 +439,10 @@ const current = computed(() =>
 const apiBase = computed(() => `/api/portal/tools/location-albums/${albumId.value}`)
 const thumbUrl = (p: LocationPhoto) => `${apiBase.value}/photos/${p.id}/file?size=thumb`
 const fullUrl = (p: LocationPhoto) => `${apiBase.value}/photos/${p.id}/file?size=full`
+// Cover cards are large (up to half-width, 2x on retina) so use the full image,
+// not the ~480px grid thumbnail, or the cover looks blurry.
 const coverUrl = (c: LocationAlbumSummary) =>
-  `/api/portal/tools/location-albums/${c.id}/photos/${c.coverPhotoId}/file?size=thumb`
+  `/api/portal/tools/location-albums/${c.id}/photos/${c.coverPhotoId}/file?size=full`
 
 const countLabel = (c: LocationAlbumSummary) => {
   const parts: string[] = []
@@ -591,6 +643,51 @@ const handleFiles = async (files: File[]) => {
 }
 
 // Lightbox
+// Photo selection → export a PDF of the picked photos.
+const selecting = ref(false)
+const selectedIds = ref<Set<string>>(new Set())
+const exporting = ref(false)
+const exportProgress = ref('')
+
+const startSelecting = () => { selecting.value = true; selectedIds.value = new Set() }
+const stopSelecting = () => { selecting.value = false; selectedIds.value = new Set() }
+const clearSelection = () => { selectedIds.value = new Set() }
+const selectAllPhotos = () => { selectedIds.value = new Set(album.value?.photos.map(p => p.id)) }
+const toggleSelect = (id: string) => {
+  const next = new Set(selectedIds.value)
+  next.has(id) ? next.delete(id) : next.add(id)
+  selectedIds.value = next
+}
+const onPhotoClick = (i: number) => {
+  const p = album.value?.photos[i]
+  if (!p) return
+  if (selecting.value) toggleSelect(p.id)
+  else openViewer(i)
+}
+
+const downloadSelectedPdf = async () => {
+  if (!album.value || !selectedIds.value.size || exporting.value) return
+  exporting.value = true
+  error.value = ''
+  try {
+    const chosen = album.value.photos.filter(p => selectedIds.value.has(p.id))
+    const bytes = await exportAlbumPdf(
+      album.value.name,
+      chosen.map(p => ({ url: fullUrl(p), caption: p.caption })),
+      (done, total) => { exportProgress.value = t('portal.tools.locationPhotos.pdfProgress', { done, total }) },
+    )
+    downloadBlob(bytes, pdfFileName(album.value.name), 'application/pdf')
+    stopSelecting()
+  }
+  catch {
+    error.value = t('portal.tools.locationPhotos.pdfFailed')
+  }
+  finally {
+    exporting.value = false
+    exportProgress.value = ''
+  }
+}
+
 const openViewer = (i: number) => {
   viewerIndex.value = i
   captionDraft.value = album.value?.photos[i]?.caption ?? ''
