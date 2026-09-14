@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="560" viewBox="0 0 600 560">
+  <rect width="600" height="560" fill="#F08022"/>
+  <!-- bicycle + adult holding child's hand -->
+  <g transform="translate(55,12)">
+    <g stroke="#2B2B29" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="112" cy="112" r="38"/>
+      <circle cx="238" cy="112" r="38"/>
+      <path d="M112 112 L152 52 L214 52 L238 112 M152 52 L176 112 L112 112 M176 112 L238 112"/>
+      <path d="M214 52 L206 38 M222 36 L190 40"/>
+      <path d="M152 52 L128 46"/>
+    </g>
+    <g fill="#2B2B29">
+      <circle cx="352" cy="38" r="17"/>
+      <path d="M338 60 L366 60 L372 122 L358 122 L364 176 L348 176 L351 130 L344 176 L328 176 L334 122 L332 122 Z"/>
+      <path d="M364 66 L394 100 L387 109 L357 78 Z"/>
+      <circle cx="404" cy="94" r="11"/>
+      <path d="M395 108 L413 108 L416 140 L407 140 L409 172 L400 172 L402 142 L396 172 L387 172 L391 140 Z"/>
+      <path d="M397 110 L389 104 L394 97 L402 104 Z"/>
+    </g>
+  </g>
+  <!-- Ferro-geometry detour arrow, mirrored (text stays readable) -->
+  <g transform="translate(0,200)">
+    <path d="M551.5 100 L214.5 138.5 L214.5 55 L48.5 178 L214.5 303 L214.5 223 L551.5 271.5 Z" fill="#2B2B29"/>
+    <text x="377" y="208" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="bold" text-anchor="middle" fill="#fff">Hjáleið</text>
+  </g>
+</svg>

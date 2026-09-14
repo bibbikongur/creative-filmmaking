@@ -450,7 +450,7 @@ export interface LocationMapText extends LatLng {
   color?: string
 }
 
-export type VehicleMarkerKind = 'truck' | 'semi' | 'van'
+export type VehicleMarkerKind = 'truck' | 'semi' | 'van' | 'car'
 
 /**
  * A true-scale vehicle placed on a map page (top view). Dimensions are real
@@ -470,20 +470,42 @@ export interface LocationMapVehicle extends LatLng {
 }
 
 /**
- * A drawn outline shape. Rect: a and b are opposite corners. Circle: a is the
- * center, b a point on the edge (the radius follows the map projection).
+ * A drawn outline shape.
+ * rect/reserved: a and b are opposite corners (rotatable around the center).
+ * circle: a is the center, b a point on the edge.
+ * poly: free outline through `points` (a/b unused).
+ * reserved: a rectangle stamped over parking spaces, dashed with a center label.
+ * arrow: a = tail, b = head; the arrowhead renders at a fixed screen size.
  */
 export interface LocationMapShape {
   id: string
-  shape: 'rect' | 'circle'
-  a: LatLng
-  b: LatLng
+  shape: 'rect' | 'circle' | 'poly' | 'reserved' | 'arrow'
+  a?: LatLng
+  b?: LatLng
+  /** Poly outline (3+ points). */
+  points?: LatLng[]
+  /** Degrees clockwise around the center — rect/reserved only. */
+  rotation?: number
+  /** Center label — reserved only (empty = localized "Frátekið"). */
+  label?: string
   color: string
   /** Stroke width in px. */
   width: number
   fill: boolean
   /** Fill opacity 0.05–1 (only used when fill is on). */
   fillOpacity: number
+}
+
+/** A measured distance: a polyline whose total length is shown on the map. */
+export interface LocationMapMeasure {
+  id: string
+  points: LatLng[]
+  /** Line color (absent on measures saved before styling existed → gold). */
+  color?: string
+  /** Line width in px (absent → 3). */
+  width?: number
+  /** Dashed line (absent → true). */
+  dashed?: boolean
 }
 
 /**
@@ -493,8 +515,15 @@ export interface LocationMapShape {
  */
 export interface LocationMapSign extends LatLng {
   id: string
+  /** Catalogue id — empty string for a custom uploaded sign. */
   sign: string
+  /** Custom sign image (small data URL) when not from the catalogue. */
+  custom?: string
+  customW?: number
+  customH?: number
   size: number
+  /** Degrees clockwise, 0-359. Absent on signs placed before rotation existed. */
+  rotation?: number
 }
 
 export interface LocationMapPage {
@@ -508,6 +537,12 @@ export interface LocationMapPage {
   image?: string
   imageW?: number
   imageH?: number
+  /**
+   * Editor viewport size in CSS px when the view was saved. The PDF exporter
+   * reproduces exactly this window (absent on old docs → assumes 842×595).
+   */
+  viewW?: number
+  viewH?: number
   markers: LocationMapMarker[]
   roads: LocationMapRoad[]
   texts: LocationMapText[]
@@ -516,6 +551,8 @@ export interface LocationMapPage {
   shapes?: LocationMapShape[]
   /** Absent on documents saved before road signs existed. */
   signs?: LocationMapSign[]
+  /** Absent on documents saved before the measure tool existed. */
+  measures?: LocationMapMeasure[]
 }
 
 export interface LocationMapDoc {

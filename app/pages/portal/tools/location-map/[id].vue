@@ -36,11 +36,22 @@
           v-for="(p, i) in doc.pages"
           :key="p.id"
           type="button"
-          class="px-3 py-1.5 text-xs uppercase tracking-widest border transition-colors"
-          :class="i === pageIdx
-            ? 'border-gold-500/60 text-gold-400 bg-ink-900'
-            : 'border-ink-800 text-bone-500 hover:text-bone-300'"
+          draggable="true"
+          class="px-3 py-1.5 text-xs uppercase tracking-widest border transition-colors cursor-grab active:cursor-grabbing"
+          :class="[
+            i === pageIdx
+              ? 'border-gold-500/60 text-gold-400 bg-ink-900'
+              : 'border-ink-800 text-bone-500 hover:text-bone-300',
+            dragPage === i ? 'opacity-40' : '',
+            dragOverPage === i && dragPage !== null && dragPage !== i ? '!border-gold-400' : '',
+          ]"
+          :title="$t('portal.tools.locationMap.dragPages')"
           @click="switchPage(i)"
+          @dragstart="onPageDragStart(i, $event)"
+          @dragend="dragPage = null; dragOverPage = null"
+          @dragover.prevent="dragOverPage = i"
+          @dragleave="dragOverPage === i && (dragOverPage = null)"
+          @drop.prevent="onPageDrop(i)"
         >
           {{ p.title || `${i + 1}` }}
         </button>
@@ -57,6 +68,49 @@
           @click="addPage('image')"
         >
           + {{ $t('portal.tools.locationMap.pageTypeImage') }}
+        </button>
+      </div>
+
+      <!-- Page settings: base layer, page title, delete page -->
+      <div v-if="page" class="mt-2 flex flex-wrap items-center gap-3">
+        <div v-if="page.base !== 'image'" class="flex gap-1.5">
+          <button
+            v-for="b in (['streets', 'satellite'] as const)"
+            :key="b"
+            type="button"
+            class="px-2.5 py-1 text-xs border transition-colors"
+            :class="page.base === b ? 'border-gold-500/60 text-gold-400' : 'border-ink-800 text-bone-500 hover:text-bone-300'"
+            @click="setBase(b)"
+          >
+            {{ $t(b === 'streets' ? 'portal.tools.locationMap.baseStreets' : 'portal.tools.locationMap.baseSatellite') }}
+          </button>
+        </div>
+        <button
+          v-else
+          type="button"
+          class="px-2.5 py-1 text-xs border border-ink-800 text-bone-500 hover:text-bone-300 transition-colors"
+          @click="pickImage(true)"
+        >
+          {{ $t('portal.tools.locationMap.replaceImage') }}
+        </button>
+
+        <input
+          v-model="page.title"
+          type="text"
+          maxlength="120"
+          class="input-dark !py-1 text-xs w-48"
+          :placeholder="$t('portal.tools.locationMap.pageTitle')"
+          @input="markDirty"
+        >
+        <button
+          type="button"
+          class="text-bone-600 hover:text-signal-500 transition-colors"
+          :title="$t('portal.tools.locationMap.confirmDeletePage')"
+          @click="deletePage"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+          </svg>
         </button>
       </div>
 
@@ -97,14 +151,14 @@
         <!-- Shape style -->
         <div v-if="tool === 'shape'" class="flex items-center gap-2">
           <button
-            v-for="k in (['rect', 'circle'] as const)"
+            v-for="k in (['rect', 'circle', 'poly', 'arrow', 'reserved'] as const)"
             :key="k"
             type="button"
             class="px-2.5 py-1 text-xs border transition-colors"
             :class="shapeKind === k ? 'border-gold-500/60 text-gold-400 bg-ink-900' : 'border-ink-800 text-bone-400 hover:text-bone-200'"
-            @click="shapeKind = k"
+            @click="setShapeKind(k)"
           >
-            {{ $t(k === 'rect' ? 'portal.tools.locationMap.shapeRect' : 'portal.tools.locationMap.shapeCircle') }}
+            {{ $t(`portal.tools.locationMap.shape_${k}`) }}
           </button>
           <button
             v-for="c in ROAD_COLORS"
@@ -115,12 +169,12 @@
             :style="{ background: c }"
             @click="shapeStyle.color = c"
           />
-          <label class="flex items-center gap-1.5 text-xs text-bone-400">
+          <label v-if="shapeKind !== 'arrow'" class="flex items-center gap-1.5 text-xs text-bone-400">
             <input v-model="shapeStyle.fill" type="checkbox" class="accent-gold-500">
             {{ $t('portal.tools.locationMap.fill') }}
           </label>
           <input
-            v-if="shapeStyle.fill"
+            v-if="shapeStyle.fill && shapeKind !== 'arrow'"
             v-model.number="shapeStyle.fillOpacity"
             type="range"
             min="0.05"
@@ -129,20 +183,40 @@
             class="w-20 accent-gold-500"
             :title="$t('portal.tools.locationMap.opacity')"
           >
+          <template v-if="shapeKind === 'poly' && polyPts.length">
+            <button type="button" class="text-xs text-bone-400 hover:text-bone-200 underline" @click="undoPolyPoint">
+              {{ $t('portal.tools.locationMap.undoPoint') }}
+            </button>
+            <button type="button" class="text-xs text-gold-400 hover:text-gold-300 underline" @click="finishPoly">
+              {{ $t('portal.tools.locationMap.finish') }}
+            </button>
+          </template>
         </div>
 
-        <!-- Vehicle preset picker -->
-        <div v-if="tool === 'vehicle'" class="flex items-center gap-1.5">
+        <!-- Measure: line style + undo/finish while drawing -->
+        <div v-if="tool === 'measure'" class="flex items-center gap-2">
           <button
-            v-for="v in VEHICLE_KINDS"
-            :key="v.kind"
+            v-for="c in MEASURE_COLORS"
+            :key="c"
             type="button"
-            class="px-2.5 py-1 text-xs border transition-colors"
-            :class="vehicleKind === v.kind ? 'border-gold-500/60 text-gold-400 bg-ink-900' : 'border-ink-800 text-bone-400 hover:text-bone-200'"
-            @click="vehicleKind = v.kind"
-          >
-            {{ $t(v.labelKey) }} · {{ v.lengthM }}×{{ v.widthM }} m
-          </button>
+            class="h-6 w-6 rounded-full border-2"
+            :class="measureStyle.color === c ? 'border-gold-400' : 'border-ink-700'"
+            :style="{ background: c }"
+            @click="measureStyle.color = c"
+          />
+          <input v-model.number="measureStyle.width" type="range" min="1" max="12" class="w-20 accent-gold-500" :title="$t('portal.tools.locationMap.roadWidth')">
+          <label class="flex items-center gap-1.5 text-xs text-bone-400">
+            <input v-model="measureStyle.dashed" type="checkbox" class="accent-gold-500">
+            {{ $t('portal.tools.locationMap.roadDashed') }}
+          </label>
+          <template v-if="measurePts.length">
+            <button type="button" class="text-xs text-bone-400 hover:text-bone-200 underline" @click="undoMeasurePoint">
+              {{ $t('portal.tools.locationMap.undoPoint') }}
+            </button>
+            <button type="button" class="text-xs text-gold-400 hover:text-gold-300 underline" @click="finishMeasure">
+              {{ $t('portal.tools.locationMap.finish') }}
+            </button>
+          </template>
         </div>
 
         <!-- Road style -->
@@ -171,47 +245,36 @@
           </template>
         </div>
 
-        <div class="ml-auto flex items-center gap-3">
-          <!-- Base layer toggle (map pages) / image replace (image pages) -->
-          <div v-if="page.base !== 'image'" class="flex gap-1.5">
-            <button
-              v-for="b in (['streets', 'satellite'] as const)"
-              :key="b"
-              type="button"
-              class="px-2.5 py-1 text-xs border transition-colors"
-              :class="page.base === b ? 'border-gold-500/60 text-gold-400' : 'border-ink-800 text-bone-500 hover:text-bone-300'"
-              @click="setBase(b)"
-            >
-              {{ $t(b === 'streets' ? 'portal.tools.locationMap.baseStreets' : 'portal.tools.locationMap.baseSatellite') }}
-            </button>
-          </div>
-          <button
-            v-else
-            type="button"
-            class="px-2.5 py-1 text-xs border border-ink-800 text-bone-500 hover:text-bone-300 transition-colors"
-            @click="pickImage(true)"
-          >
-            {{ $t('portal.tools.locationMap.replaceImage') }}
-          </button>
+      </div>
 
-          <input
-            v-model="page.title"
-            type="text"
-            maxlength="120"
-            class="input-dark !py-1 text-xs w-40"
-            :placeholder="$t('portal.tools.locationMap.pageTitle')"
-            @input="markDirty"
-          >
+      <!-- Vehicle picker: true-scale previews, body color to the right -->
+      <div v-if="tool === 'vehicle' && page" class="mt-2 border border-ink-800 bg-ink-900/50 p-3">
+        <div class="flex flex-wrap items-center gap-3">
           <button
+            v-for="v in VEHICLE_KINDS"
+            :key="v.kind"
             type="button"
-            class="text-bone-600 hover:text-signal-500 transition-colors"
-            :title="$t('portal.tools.locationMap.confirmDeletePage')"
-            @click="deletePage"
+            class="flex flex-col items-center justify-end gap-1.5 border px-3 py-2 transition-colors"
+            :class="vehicleKind === v.kind ? 'border-gold-500/60 bg-ink-900' : 'border-ink-800 hover:border-ink-600'"
+            @click="vehicleKind = v.kind"
           >
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-              <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
-            </svg>
+            <span :style="{ width: `${Math.round(v.lengthM * 9)}px`, height: `${Math.round(v.widthM * 9)}px` }" v-html="vehicleSvg(v.kind, v.lengthM, v.widthM, vehicleColor)" />
+            <span class="text-xs" :class="vehicleKind === v.kind ? 'text-gold-400' : 'text-bone-400'">
+              {{ $t(v.labelKey) }} · {{ v.lengthM }}×{{ v.widthM }} m
+            </span>
           </button>
+          <div class="ml-auto flex items-center gap-1.5">
+            <span class="mr-1 text-xs uppercase tracking-widest text-bone-400">{{ $t('portal.tools.locationMap.roadColor') }}</span>
+            <button
+              v-for="c in VEHICLE_COLORS"
+              :key="c"
+              type="button"
+              class="h-6 w-6 rounded-full border-2"
+              :class="vehicleColor === c ? 'border-gold-400' : 'border-ink-700'"
+              :style="{ background: c }"
+              @click="vehicleColor = c"
+            />
+          </div>
         </div>
       </div>
 
@@ -238,16 +301,33 @@
             {{ $t('portal.tools.locationMap.signSize') }}
             <input v-model.number="signSize" type="range" min="20" max="96" class="w-24 accent-gold-500">
           </label>
+          <button
+            type="button"
+            class="px-2.5 py-1 text-xs border border-dashed border-ink-700 text-bone-500 hover:text-gold-400 transition-colors"
+            @click="signFileInput?.click()"
+          >
+            + {{ $t('portal.tools.locationMap.customSign') }}
+          </button>
         </div>
         <div class="mt-2 flex flex-wrap gap-1.5 max-h-44 overflow-y-auto">
+          <button
+            v-if="customSign"
+            type="button"
+            class="flex h-12 w-12 shrink-0 items-center justify-center border bg-ink-950/70 p-1 transition-colors"
+            :class="useCustomSign ? 'border-gold-400' : 'border-ink-800 hover:border-ink-600'"
+            :title="$t('portal.tools.locationMap.customSign')"
+            @click="useCustomSign = true"
+          >
+            <img :src="customSign.url" class="max-h-full max-w-full" draggable="false">
+          </button>
           <button
             v-for="s in filteredSigns"
             :key="s.id"
             type="button"
             class="flex h-12 w-12 shrink-0 items-center justify-center border bg-ink-950/70 p-1 transition-colors"
-            :class="activeSign === s.id ? 'border-gold-400' : 'border-ink-800 hover:border-ink-600'"
+            :class="activeSign === s.id && !useCustomSign ? 'border-gold-400' : 'border-ink-800 hover:border-ink-600'"
             :title="s.id"
-            @click="activeSign = s.id"
+            @click="activeSign = s.id; useCustomSign = false"
           >
             <img :src="`/signs/is/${s.id}.svg`" class="max-h-full max-w-full" loading="lazy" draggable="false">
           </button>
@@ -263,8 +343,11 @@
         <!-- The reactive class lives on this wrapper, NOT on the Leaflet element:
              Vue rewrites the whole class attribute when a binding changes, which
              would wipe the classes Leaflet added to its own container. -->
+        <!-- Locked to the PDF page shape (A4 landscape, 842:595): what you see
+             here is exactly the window the export prints. Fills the full
+             toolbar width; the height follows from the aspect ratio. -->
         <div class="relative flex-1 min-w-0" :class="{ 'lm-crosshair': tool !== 'pan' }">
-          <div ref="mapEl" class="h-[65vh] w-full border border-ink-800 bg-ink-950" />
+          <div ref="mapEl" class="w-full aspect-[842/595] border border-ink-800 bg-ink-950" />
           <!-- Production-map style title card (also drawn on the PDF). -->
           <div v-if="doc.name" class="lm-map-title">
             <div class="lm-map-title-main">{{ doc.name }}</div>
@@ -422,13 +505,18 @@
                 @input="touch"
               >
             </div>
+            <button type="button" class="w-full border border-gold-500/40 py-1.5 text-xs uppercase tracking-widest text-gold-400 hover:bg-gold-500/10 transition-colors" @click="duplicateVehicle">
+              {{ $t('portal.tools.locationMap.duplicate') }}
+            </button>
           </template>
 
           <template v-else-if="selected!.type === 'sign'">
             <div class="flex justify-center bg-ink-950/70 p-3">
-              <img :src="`/signs/is/${(selectedItem as LocationMapSign).sign}.svg`" class="h-16" draggable="false">
+              <img :src="(selectedItem as LocationMapSign).custom ?? `/signs/is/${(selectedItem as LocationMapSign).sign}.svg`" class="h-16" draggable="false">
             </div>
-            <p class="text-center text-xs text-bone-500">{{ (selectedItem as LocationMapSign).sign }}</p>
+            <p class="text-center text-xs text-bone-500">
+              {{ (selectedItem as LocationMapSign).custom ? $t('portal.tools.locationMap.customSign') : (selectedItem as LocationMapSign).sign }}
+            </p>
             <div>
               <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">
                 {{ $t('portal.tools.locationMap.signSize') }} · {{ (selectedItem as LocationMapSign).size }}px
@@ -442,9 +530,45 @@
                 @input="touch"
               >
             </div>
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">
+                {{ $t('portal.tools.locationMap.rotation') }} · {{ (selectedItem as LocationMapSign).rotation ?? 0 }}°
+              </label>
+              <input
+                :value="(selectedItem as LocationMapSign).rotation ?? 0"
+                type="range"
+                min="0"
+                max="359"
+                class="w-full accent-gold-500"
+                @input="(selectedItem as LocationMapSign).rotation = Number(($event.target as HTMLInputElement).value); touch()"
+              >
+            </div>
           </template>
 
           <template v-else-if="selected!.type === 'shape'">
+            <div v-if="(selectedItem as LocationMapShape).shape === 'reserved'">
+              <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.tools.locationMap.label') }}</label>
+              <input
+                v-model="(selectedItem as LocationMapShape).label"
+                type="text"
+                maxlength="60"
+                class="input-dark w-full"
+                @input="touch"
+              >
+            </div>
+            <div v-if="['rect', 'reserved'].includes((selectedItem as LocationMapShape).shape)">
+              <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">
+                {{ $t('portal.tools.locationMap.rotation') }} · {{ (selectedItem as LocationMapShape).rotation ?? 0 }}°
+              </label>
+              <input
+                :value="(selectedItem as LocationMapShape).rotation ?? 0"
+                type="range"
+                min="0"
+                max="359"
+                class="w-full accent-gold-500"
+                @input="(selectedItem as LocationMapShape).rotation = Number(($event.target as HTMLInputElement).value); touch()"
+              >
+            </div>
             <div>
               <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.tools.locationMap.roadColor') }}</label>
               <div class="flex gap-1.5">
@@ -470,11 +594,11 @@
                 @input="touch"
               >
             </div>
-            <label class="flex items-center gap-2 text-sm text-bone-300">
+            <label v-if="(selectedItem as LocationMapShape).shape !== 'arrow'" class="flex items-center gap-2 text-sm text-bone-300">
               <input v-model="(selectedItem as LocationMapShape).fill" type="checkbox" class="accent-gold-500" @change="touch">
               {{ $t('portal.tools.locationMap.fill') }}
             </label>
-            <div v-if="(selectedItem as LocationMapShape).fill">
+            <div v-if="(selectedItem as LocationMapShape).fill && (selectedItem as LocationMapShape).shape !== 'arrow'">
               <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">
                 {{ $t('portal.tools.locationMap.opacity') }} · {{ Math.round((selectedItem as LocationMapShape).fillOpacity * 100) }}%
               </label>
@@ -488,6 +612,47 @@
                 @input="touch"
               >
             </div>
+          </template>
+
+          <template v-else-if="selected!.type === 'measure'">
+            <div class="text-center">
+              <p class="text-xs uppercase tracking-widest text-bone-400">{{ $t('portal.tools.locationMap.distance') }}</p>
+              <p class="mt-1 text-2xl font-semibold text-gold-400">{{ fmtDist(measureTotal((selectedItem as LocationMapMeasure).points)) }}</p>
+            </div>
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.tools.locationMap.roadColor') }}</label>
+              <div class="flex flex-wrap gap-1.5">
+                <button
+                  v-for="c in MEASURE_COLORS"
+                  :key="c"
+                  type="button"
+                  class="h-6 w-6 rounded-full border-2"
+                  :class="((selectedItem as LocationMapMeasure).color ?? '#ffd75e') === c ? 'border-gold-400' : 'border-ink-700'"
+                  :style="{ background: c }"
+                  @click="(selectedItem as LocationMapMeasure).color = c; touch()"
+                />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">{{ $t('portal.tools.locationMap.roadWidth') }}</label>
+              <input
+                :value="(selectedItem as LocationMapMeasure).width ?? 3"
+                type="range"
+                min="1"
+                max="12"
+                class="w-full accent-gold-500"
+                @input="(selectedItem as LocationMapMeasure).width = Number(($event.target as HTMLInputElement).value); touch()"
+              >
+            </div>
+            <label class="flex items-center gap-2 text-sm text-bone-300">
+              <input
+                :checked="(selectedItem as LocationMapMeasure).dashed ?? true"
+                type="checkbox"
+                class="accent-gold-500"
+                @change="(selectedItem as LocationMapMeasure).dashed = ($event.target as HTMLInputElement).checked; touch()"
+              >
+              {{ $t('portal.tools.locationMap.roadDashed') }}
+            </label>
           </template>
 
           <template v-else-if="selected!.type === 'road'">
@@ -530,13 +695,14 @@
     </template>
 
     <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onImagePicked">
+    <input ref="signFileInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onSignImagePicked">
   </div>
 </template>
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css'
 import type * as Leaflet from 'leaflet'
-import type { LatLng, LocationMapDoc, LocationMapMarker, LocationMapPage, LocationMapRoad, LocationMapShape, LocationMapSign, LocationMapText, LocationMapVehicle, LocationMarkerKind, VehicleMarkerKind } from '~/types'
+import type { LatLng, LocationMapDoc, LocationMapMarker, LocationMapMeasure, LocationMapPage, LocationMapRoad, LocationMapShape, LocationMapSign, LocationMapText, LocationMapVehicle, LocationMarkerKind, VehicleMarkerKind } from '~/types'
 import { DEFAULT_TEXT_COLOR, MARKER_KINDS, markerKindDef, metersPerPixel, newLocalId, newMapPage, pinSvg, ROAD_COLORS, TEXT_COLORS, TILE_SOURCES, VEHICLE_COLORS, VEHICLE_KINDS, vehicleKindDef, vehicleSvg } from '~/utils/locationMap'
 import { ROAD_SIGN_GROUPS, ROAD_SIGNS, roadSignDef } from '~/data/roadSigns'
 
@@ -554,6 +720,7 @@ const TOOL_MODES = [
   { id: 'marker', labelKey: 'portal.tools.locationMap.toolMarker' },
   { id: 'text', labelKey: 'portal.tools.locationMap.toolText' },
   { id: 'road', labelKey: 'portal.tools.locationMap.toolRoad' },
+  { id: 'measure', labelKey: 'portal.tools.locationMap.toolMeasure' },
   { id: 'shape', labelKey: 'portal.tools.locationMap.toolShape' },
   { id: 'sign', labelKey: 'portal.tools.locationMap.toolSign' },
   { id: 'vehicle', labelKey: 'portal.tools.locationMap.toolVehicle' },
@@ -575,30 +742,54 @@ const page = computed(() => doc.value?.pages[pageIdx.value])
 const tool = ref<ToolMode>('pan')
 const markerKind = ref<LocationMarkerKind>('set')
 const vehicleKind = ref<VehicleMarkerKind>('truck')
+const vehicleColor = ref(VEHICLE_COLORS[1]!)
 
-// True-scale vehicles need real-world coordinates — image pages have none.
+// True-scale vehicles and distance measuring need real-world coordinates —
+// image pages have none.
 const availableModes = computed(() =>
-  page.value?.base === 'image' ? TOOL_MODES.filter(m => m.id !== 'vehicle') : TOOL_MODES)
+  page.value?.base === 'image' ? TOOL_MODES.filter(m => m.id !== 'vehicle' && m.id !== 'measure') : TOOL_MODES)
 const roadStyle = reactive({ color: ROAD_COLORS[0]!, width: 4, dashed: false })
 const drawing = ref<LatLng[]>([])
-const shapeKind = ref<'rect' | 'circle'>('rect')
+const shapeKind = ref<'rect' | 'circle' | 'poly' | 'reserved' | 'arrow'>('rect')
 const shapeStyle = reactive({ color: ROAD_COLORS[0]!, width: 3, fill: true, fillOpacity: 0.25 })
-/** First corner/center of an in-progress shape. */
+/** First corner/center of an in-progress 2-click shape. */
 const shapeStart = ref<LatLng | null>(null)
+/** Points of an in-progress polygon outline. */
+const polyPts = ref<LatLng[]>([])
+/** Points of an in-progress measurement. */
+const measurePts = ref<LatLng[]>([])
+/** Live running total (m) while measuring, cursor included. */
+const measureLive = ref<number | null>(null)
+const MEASURE_COLORS = [DEFAULT_TEXT_COLOR, ...ROAD_COLORS]
+const measureStyle = reactive({ color: DEFAULT_TEXT_COLOR, width: 3, dashed: true })
+
+/** Chip text follows the line color, except near-black lines get cream. */
+function chipTextColor(color: string): string {
+  const m = /^#([0-9a-f]{6})/i.exec(color)
+  if (!m) return color
+  const n = Number.parseInt(m[1]!, 16)
+  const lum = 0.299 * ((n >> 16) & 0xFF) + 0.587 * ((n >> 8) & 0xFF) + 0.114 * (n & 0xFF)
+  return lum < 80 ? '#f5f2e9' : color
+}
 
 // Road-sign picker: group tabs, id search (across all groups) and the sign
 // that the next map click will place.
 const signGroup = ref<string>(ROAD_SIGN_GROUPS[0])
 const signSearch = ref('')
 const activeSign = ref<string>(ROAD_SIGNS[0]?.id ?? '')
-const signSize = ref(36)
+const SIGN_DEFAULT_SIZE = 36
+const signSize = ref(SIGN_DEFAULT_SIZE)
+/** Last uploaded custom sign; used for placement while useCustomSign is on. */
+const customSign = ref<{ url: string, w: number, h: number } | null>(null)
+const useCustomSign = ref(false)
+const signFileInput = ref<HTMLInputElement | null>(null)
 const filteredSigns = computed(() => {
   const q = signSearch.value.trim().toLowerCase()
   if (q) return ROAD_SIGNS.filter(s => s.id.toLowerCase().includes(q)).slice(0, 200)
   return ROAD_SIGNS.filter(s => s.group === signGroup.value)
 })
 
-const selected = ref<{ type: 'marker' | 'text' | 'road' | 'vehicle' | 'shape' | 'sign', id: string } | null>(null)
+const selected = ref<{ type: 'marker' | 'text' | 'road' | 'vehicle' | 'shape' | 'sign' | 'measure', id: string } | null>(null)
 const saveState = ref<'idle' | 'dirty' | 'saving' | 'saved' | 'error'>('idle')
 const exporting = ref(false)
 const exportError = ref('')
@@ -613,11 +804,82 @@ const hint = computed(() => {
   if (tool.value === 'marker') return t('portal.tools.locationMap.markerHint')
   if (tool.value === 'text') return t('portal.tools.locationMap.textHint')
   if (tool.value === 'road') return t('portal.tools.locationMap.roadHint')
-  if (tool.value === 'shape') return t('portal.tools.locationMap.shapeHint')
+  if (tool.value === 'measure') {
+    const base = t('portal.tools.locationMap.measureHint')
+    return measureLive.value != null ? `${base} · ${fmtDist(measureLive.value)}` : base
+  }
+  if (tool.value === 'shape') {
+    return t(shapeKind.value === 'poly' ? 'portal.tools.locationMap.polyHint' : 'portal.tools.locationMap.shapeHint')
+  }
   if (tool.value === 'sign') return t('portal.tools.locationMap.signHint')
   if (tool.value === 'vehicle') return t('portal.tools.locationMap.vehicleHint')
   return ''
 })
+
+/** "834 m" / "1,24 km". */
+const fmtDist = (m: number): string =>
+  m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(2).replace('.', ',')} km`
+
+const measureTotal = (points: LatLng[]): number => {
+  let total = 0
+  for (let i = 1; i < points.length; i++) {
+    total += map?.distance([points[i - 1]!.lat, points[i - 1]!.lng], [points[i]!.lat, points[i]!.lng]) ?? 0
+  }
+  return total
+}
+
+/**
+ * Point halfway ALONG the measured path plus the screen angle of that segment,
+ * so the distance chip can sit parallel to the line. The angle is flipped when
+ * needed so the text is never upside down.
+ */
+function midpointAlong(points: LatLng[]): { point: LatLng, angle: number } {
+  const segAngle = (a: LatLng, b: LatLng): number => {
+    const Z = 12 // Mercator is conformal: screen angle is zoom-independent
+    const pa = map!.project([a.lat, a.lng], Z)
+    const pb = map!.project([b.lat, b.lng], Z)
+    let deg = (Math.atan2(pb.y - pa.y, pb.x - pa.x) * 180) / Math.PI
+    if (deg > 90) deg -= 180
+    else if (deg < -90) deg += 180
+    return deg
+  }
+  const half = measureTotal(points) / 2
+  let acc = 0
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1]!
+    const b = points[i]!
+    const seg = map?.distance([a.lat, a.lng], [b.lat, b.lng]) ?? 0
+    if (seg > 0 && acc + seg >= half) {
+      const f = (half - acc) / seg
+      return {
+        point: { lat: a.lat + (b.lat - a.lat) * f, lng: a.lng + (b.lng - a.lng) * f },
+        angle: segAngle(a, b),
+      }
+    }
+    acc += seg
+  }
+  return { point: points[points.length - 1]!, angle: 0 }
+}
+
+/**
+ * Drop consecutive points that sit on (almost) the same screen pixel — the
+ * second click of a finishing double-click leaves such a duplicate behind.
+ */
+function dropDuplicatePoints(points: LatLng[]): LatLng[] {
+  if (!map) return points
+  const Z = map.getZoom()
+  const out: LatLng[] = []
+  for (const p of points) {
+    const last = out[out.length - 1]
+    if (last) {
+      const pa = map.project([last.lat, last.lng], Z)
+      const pb = map.project([p.lat, p.lng], Z)
+      if (Math.hypot(pb.x - pa.x, pb.y - pa.y) < 8) continue
+    }
+    out.push(p)
+  }
+  return out
+}
 
 const selectedItem = computed<LocationMapMarker | LocationMapText | LocationMapRoad | LocationMapVehicle | LocationMapShape | LocationMapSign | null>(() => {
   const p = page.value
@@ -628,6 +890,7 @@ const selectedItem = computed<LocationMapMarker | LocationMapText | LocationMapR
   if (sel.type === 'vehicle') return p.vehicles.find(v => v.id === sel.id) ?? null
   if (sel.type === 'shape') return (p.shapes ?? []).find(x => x.id === sel.id) ?? null
   if (sel.type === 'sign') return (p.signs ?? []).find(x => x.id === sel.id) ?? null
+  if (sel.type === 'measure') return (p.measures ?? []).find(x => x.id === sel.id) ?? null
   return p.roads.find(r => r.id === sel.id) ?? null
 })
 
@@ -638,11 +901,24 @@ let map: Leaflet.Map | null = null
 let overlayLayers: Leaflet.Layer[] = []
 let previewLine: Leaflet.Polyline | null = null
 let shapePreview: Leaflet.Layer | null = null
+let resizeObserver: ResizeObserver | null = null
 /** Suppress moveend persistence while programmatically setting the view. */
 let restoring = false
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c]!))
+
+/** Persist the editor viewport size on the page; true when it changed. */
+function storeViewSize(pg: LocationMapPage): boolean {
+  const el = mapEl.value
+  if (!el || !el.clientWidth || !el.clientHeight) return false
+  const w = Math.round(el.clientWidth)
+  const h = Math.round(el.clientHeight)
+  if (pg.viewW === w && pg.viewH === h) return false
+  pg.viewW = w
+  pg.viewH = h
+  return true
+}
 
 function buildMap() {
   const p = page.value
@@ -652,6 +928,7 @@ function buildMap() {
   overlayLayers = []
   previewLine = null
   shapePreview = null
+  measurePreview = null
 
   restoring = true
   if (p.base === 'image') {
@@ -675,6 +952,7 @@ function buildMap() {
     map.setView([p.center.lat, p.center.lng], p.zoom)
   }
   restoring = false
+  if (storeViewSize(p)) markDirty()
 
   // Zoom control on the right — the title card owns the top-left corner.
   L.control.zoom({ position: 'topright' }).addTo(map)
@@ -685,37 +963,115 @@ function buildMap() {
     const c = map.getCenter()
     pg.center = { lat: c.lat, lng: c.lng }
     pg.zoom = map.getZoom()
+    storeViewSize(pg)
     markDirty()
   })
-  map.on('click', (e: Leaflet.LeafletMouseEvent) => onMapClick(e.latlng))
-  // Live preview while a shape's second point is pending.
-  map.on('mousemove', (e: Leaflet.LeafletMouseEvent) => {
-    if (tool.value !== 'shape' || !shapeStart.value || !map) return
-    shapePreview?.remove()
-    shapePreview = shapeLayer({
-      shape: shapeKind.value,
-      a: shapeStart.value,
-      b: { lat: e.latlng.lat, lng: e.latlng.lng },
-      ...shapeStyle,
-    }, true).addTo(map)
+  // Viewport size drives the WYSIWYG PDF crop — persist it when it changes
+  // (window resize, side panel toggling).
+  map.on('resize', () => {
+    const pg = page.value
+    if (!restoring && pg && storeViewSize(pg)) markDirty()
   })
-  // Vehicle footprints are sized in pixels-per-meter — recompute after zooming.
+  map.on('click', (e: Leaflet.LeafletMouseEvent) => onMapClick(e.latlng))
+  // Live previews while a shape/polygon/measurement is being drawn.
+  map.on('mousemove', (e: Leaflet.LeafletMouseEvent) => {
+    const cursor = { lat: e.latlng.lat, lng: e.latlng.lng }
+    if (tool.value === 'shape' && (shapeStart.value || polyPts.value.length)) updateShapePreview(cursor)
+    else if (tool.value === 'measure' && measurePts.value.length) updateMeasurePreview(cursor)
+  })
+  // Vehicle footprints (px-per-meter) and arrowheads (fixed screen px) are
+  // zoom-dependent — recompute after zooming.
   map.on('zoomend', () => {
-    if (!restoring && page.value && page.value.base !== 'image' && page.value.vehicles.length) renderOverlays()
+    const pg = page.value
+    if (restoring || !pg) return
+    const zoomDependent = (pg.base !== 'image' && pg.vehicles.length > 0)
+      || (pg.shapes ?? []).some(s => s.shape === 'arrow')
+    if (zoomDependent) renderOverlays()
   })
   map.on('dblclick', () => {
+    // In every case the double-click also fired a plain click — pop it.
     if (tool.value === 'road' && drawing.value.length) {
-      drawing.value.pop() // the double-click also fired a plain click
+      drawing.value.pop()
       finishRoad()
+    }
+    else if (tool.value === 'shape' && shapeKind.value === 'poly' && polyPts.value.length) {
+      polyPts.value.pop()
+      finishPoly()
+    }
+    else if (tool.value === 'measure' && measurePts.value.length) {
+      // No pop here: finishMeasure de-duplicates the double-click's extra
+      // point itself, which is far more reliable across click-event timing.
+      finishMeasure()
     }
   })
 
   renderOverlays()
 }
 
+/**
+ * Corners of a rectangle rotated around its center. Rotation happens in
+ * projected space at a fixed zoom (Mercator is conformal, so screen angles
+ * match; works for CRS.Simple too), then back to lat/lng.
+ */
+function rotatedRectLatLngs(a: LatLng, b: LatLng, rotation: number): [number, number][] {
+  const Z = 12
+  const pa = map!.project([a.lat, a.lng], Z)
+  const pb = map!.project([b.lat, b.lng], Z)
+  const cx = (pa.x + pb.x) / 2
+  const cy = (pa.y + pb.y) / 2
+  const rad = (rotation * Math.PI) / 180
+  const cos = Math.cos(rad)
+  const sin = Math.sin(rad)
+  return ([[pa.x, pa.y], [pb.x, pa.y], [pb.x, pb.y], [pa.x, pb.y]] as const).map(([x, y]) => {
+    const dx = x - cx
+    const dy = y - cy
+    const ll = map!.unproject(L!.point(cx + dx * cos - dy * sin, cy + dx * sin + dy * cos), Z)
+    return [ll.lat, ll.lng] as [number, number]
+  })
+}
+
+/**
+ * Diagonal-hatch fill for reserved-parking stamps (SVG pattern injected into
+ * Leaflet's overlay-pane svg, one per color); returns a fill-url or the color.
+ */
+function hatchFill(color: string, rotation = 0): string {
+  const svg = mapEl.value?.querySelector('.leaflet-overlay-pane svg')
+  if (!svg) return color
+  // Stripes stay diagonal RELATIVE TO THE STAMP, so the pattern turns with it.
+  const angle = (45 + rotation) % 360
+  const id = `lm-hatch-${color.replace(/[^0-9a-z]/gi, '')}-${angle}`
+  if (!svg.querySelector(`#${id}`)) {
+    const ns = 'http://www.w3.org/2000/svg'
+    let defs = svg.querySelector('defs')
+    if (!defs) {
+      defs = document.createElementNS(ns, 'defs')
+      svg.insertBefore(defs, svg.firstChild)
+    }
+    const pattern = document.createElementNS(ns, 'pattern')
+    pattern.setAttribute('id', id)
+    pattern.setAttribute('patternUnits', 'userSpaceOnUse')
+    pattern.setAttribute('width', '10')
+    pattern.setAttribute('height', '10')
+    pattern.setAttribute('patternTransform', `rotate(${angle})`)
+    const bg = document.createElementNS(ns, 'rect')
+    bg.setAttribute('width', '10')
+    bg.setAttribute('height', '10')
+    bg.setAttribute('fill', color)
+    bg.setAttribute('fill-opacity', '0.12')
+    const stripe = document.createElementNS(ns, 'rect')
+    stripe.setAttribute('width', '3')
+    stripe.setAttribute('height', '10')
+    stripe.setAttribute('fill', color)
+    stripe.setAttribute('fill-opacity', '0.85')
+    pattern.append(bg, stripe)
+    defs.append(pattern)
+  }
+  return `url(#${id})`
+}
+
 /** Build a Leaflet layer for a shape (also used for the drawing preview). */
 function shapeLayer(sh: Omit<LocationMapShape, 'id'>, preview = false): Leaflet.Layer {
-  const opts: Leaflet.PathOptions = {
+  const opts: Leaflet.InteractiveLayerOptions & Leaflet.PathOptions & { draggable?: boolean } = {
     color: sh.color,
     weight: sh.width,
     fill: sh.fill,
@@ -723,16 +1079,119 @@ function shapeLayer(sh: Omit<LocationMapShape, 'id'>, preview = false): Leaflet.
     fillOpacity: sh.fill ? sh.fillOpacity : 0,
     dashArray: preview ? '6 6' : undefined,
     opacity: preview ? 0.8 : 1,
+    // Previews must never swallow the clicks that are drawing them.
+    interactive: !preview,
+    // leaflet-path-drag: shapes can be moved around by dragging.
+    draggable: !preview,
   }
-  if (sh.shape === 'rect') {
-    return L!.rectangle([[sh.a.lat, sh.a.lng], [sh.b.lat, sh.b.lng]], opts)
+  if (sh.shape === 'arrow') {
+    // Shaft polyline + filled head triangle, head sized in SCREEN px at the
+    // current zoom (re-rendered on zoomend so it never scales with the map).
+    const Z = map!.getZoom()
+    const pa = map!.project([sh.a!.lat, sh.a!.lng], Z)
+    const pb = map!.project([sh.b!.lat, sh.b!.lng], Z)
+    const len = Math.hypot(pb.x - pa.x, pb.y - pa.y) || 1
+    const ux = (pb.x - pa.x) / len
+    const uy = (pb.y - pa.y) / len
+    const headLen = Math.min(10 + sh.width * 3, len * 0.5)
+    const headW = headLen * 0.55
+    const base = { x: pb.x - ux * headLen, y: pb.y - uy * headLen }
+    const up = (pt: { x: number, y: number }) => map!.unproject(L!.point(pt.x, pt.y), Z)
+    const baseLL = up(base)
+    const leftLL = up({ x: base.x - uy * headW, y: base.y + ux * headW })
+    const rightLL = up({ x: base.x + uy * headW, y: base.y - ux * headW })
+    const partOpts: Leaflet.PathOptions & { draggable?: boolean } = {
+      color: sh.color,
+      opacity: preview ? 0.8 : 1,
+      interactive: !preview,
+      draggable: !preview,
+    }
+    const shaft = L!.polyline([[sh.a!.lat, sh.a!.lng], [baseLL.lat, baseLL.lng]], {
+      ...partOpts,
+      weight: sh.width,
+      lineCap: 'round',
+      dashArray: preview ? '6 6' : undefined,
+    })
+    const head = L!.polygon([[sh.b!.lat, sh.b!.lng], [leftLL.lat, leftLL.lng], [rightLL.lat, rightLL.lng]], {
+      ...partOpts,
+      weight: 1,
+      fillColor: sh.color,
+      fillOpacity: preview ? 0.8 : 1,
+    })
+    return L!.featureGroup([shaft, head])
+  }
+  if (sh.shape === 'poly') {
+    return L!.polygon((sh.points ?? []).map(pt => [pt.lat, pt.lng] as [number, number]), opts)
+  }
+  if (sh.shape === 'rect' || sh.shape === 'reserved') {
+    return sh.rotation
+      ? L!.polygon(rotatedRectLatLngs(sh.a!, sh.b!, sh.rotation), opts)
+      : L!.rectangle([[sh.a!.lat, sh.a!.lng], [sh.b!.lat, sh.b!.lng]], opts)
   }
   // Circle: center a, edge at b. map.distance works for both CRS (meters on
   // real maps, pixel units on CRS.Simple image pages) — matching L.circle.
-  return L!.circle([sh.a.lat, sh.a.lng], {
+  return L!.circle([sh.a!.lat, sh.a!.lng], {
     ...opts,
-    radius: map!.distance([sh.a.lat, sh.a.lng], [sh.b.lat, sh.b.lng]),
+    radius: map!.distance([sh.a!.lat, sh.a!.lng], [sh.b!.lat, sh.b!.lng]),
   })
+}
+
+/** Rebuild the in-progress shape preview (2-click shapes and polygons). */
+function updateShapePreview(cursor?: LatLng) {
+  shapePreview?.remove()
+  shapePreview = null
+  if (!L || !map) return
+  if (shapeKind.value === 'poly') {
+    const pts = cursor ? [...polyPts.value, cursor] : polyPts.value
+    if (pts.length >= 2) shapePreview = shapeLayer({ shape: 'poly', points: pts, ...shapeStyle }, true).addTo(map)
+  }
+  else if (shapeStart.value && cursor) {
+    shapePreview = shapeLayer({ shape: shapeKind.value, a: shapeStart.value, b: cursor, ...shapeStyle }, true).addTo(map)
+    if (shapeKind.value === 'reserved') {
+      ;(shapePreview as Leaflet.Path).setStyle({ fillColor: hatchFill(shapeStyle.color), fillOpacity: 1 })
+    }
+  }
+}
+
+let measurePreview: Leaflet.Polyline | null = null
+
+/** Rebuild the in-progress measurement preview + live total. */
+function updateMeasurePreview(cursor?: LatLng) {
+  measurePreview?.remove()
+  measurePreview = null
+  if (!L || !map || !measurePts.value.length) {
+    measureLive.value = null
+    return
+  }
+  const pts = cursor ? [...measurePts.value, cursor] : measurePts.value
+  measureLive.value = measureTotal(pts)
+  if (pts.length >= 2) {
+    measurePreview = L.polyline(pts.map(pt => [pt.lat, pt.lng] as [number, number]), {
+      color: measureStyle.color,
+      weight: measureStyle.width,
+      dashArray: measureStyle.dashed ? '4 8' : undefined,
+      opacity: 0.9,
+      // Previews must never swallow the clicks that are drawing them.
+      interactive: false,
+    }).addTo(map)
+  }
+}
+
+/**
+ * Reference latlng of a path/circle layer, used to measure drag deltas.
+ * Returns a plain COPY: leaflet-path-drag mutates the layer's LatLng objects
+ * in place, so holding a reference would watch the value change under us.
+ */
+function layerRefLatLng(target: Leaflet.Layer): LatLng | null {
+  let ll: Leaflet.LatLng | undefined
+  if (target instanceof L!.Circle) {
+    ll = target.getLatLng()
+  }
+  else if (target instanceof L!.Polyline) {
+    const flat = (target.getLatLngs() as (Leaflet.LatLng | Leaflet.LatLng[] | Leaflet.LatLng[][])[]).flat(2) as Leaflet.LatLng[]
+    ll = flat[0]
+  }
+  return ll ? { lat: ll.lat, lng: ll.lng } : null
 }
 
 function renderOverlays() {
@@ -748,7 +1207,106 @@ function renderOverlays() {
       L!.DomEvent.stopPropagation(e)
       if (tool.value === 'pan') selected.value = { type: 'shape', id: sh.id }
     })
+    // Drag-to-move: shift the stored coordinates by the drag delta. The drag
+    // plugin fires its events WITHOUT propagation, so for an arrow (feature
+    // group) the handlers must sit on each part, not on the group.
+    let dragFrom: LatLng | null = null
+    const dragParts = layer instanceof L.FeatureGroup ? layer.getLayers() : [layer]
+    for (const part of dragParts) {
+      part.on('dragstart', () => {
+        dragFrom = layerRefLatLng(part)
+      })
+      part.on('dragend', () => {
+        const from = dragFrom
+        dragFrom = null
+        if (!from) return
+        // Read the moved position on the NEXT tick: the drag plugin bakes the
+        // new latlngs into the layer after firing dragend, not before.
+        setTimeout(() => {
+          const to = layerRefLatLng(part)
+          if (!to) return
+          const dLat = to.lat - from.lat
+          const dLng = to.lng - from.lng
+          if (!dLat && !dLng) return
+          if (sh.a) sh.a = { lat: sh.a.lat + dLat, lng: sh.a.lng + dLng }
+          if (sh.b) sh.b = { lat: sh.b.lat + dLat, lng: sh.b.lng + dLng }
+          if (sh.points) sh.points = sh.points.map(pt => ({ lat: pt.lat + dLat, lng: pt.lng + dLng }))
+          selected.value = { type: 'shape', id: sh.id }
+          markDirty()
+          renderOverlays()
+        }, 0)
+      })
+    }
     overlayLayers.push(layer)
+    if (sh.shape === 'reserved') {
+      // Reference style: pale fill with diagonal hatching, solid outline.
+      ;(layer as Leaflet.Path).setStyle({ fillColor: hatchFill(sh.color, sh.rotation ?? 0), fillOpacity: 1 })
+      // Center label only when the user typed one.
+      if (sh.label && sh.a && sh.b) {
+        const icon = L.divIcon({
+          className: 'lm-icon',
+          html: `<div class="lm-reserved" style="color:${sh.color}">${esc(sh.label)}</div>`,
+          iconSize: [0, 0],
+          iconAnchor: [0, 0],
+        })
+        const lm = L.marker([(sh.a.lat + sh.b.lat) / 2, (sh.a.lng + sh.b.lng) / 2], { icon, interactive: false }).addTo(map)
+        overlayLayers.push(lm)
+      }
+    }
+  }
+
+  // Measurements (map pages only): dashed gold line + distance chip at the end.
+  if (p.base !== 'image') {
+    for (const ms of p.measures ?? []) {
+      const latlngs = ms.points.map(pt => [pt.lat, pt.lng] as [number, number])
+      const line = L.polyline(latlngs, {
+        color: ms.color ?? '#ffd75e',
+        weight: ms.width ?? 3,
+        dashArray: (ms.dashed ?? true) ? '4 8' : undefined,
+        // leaflet-path-drag: measurements can be moved around like shapes.
+        draggable: true,
+      } as Leaflet.PolylineOptions & { draggable?: boolean }).addTo(map)
+      line.on('click', (e: Leaflet.LeafletMouseEvent) => {
+        L!.DomEvent.stopPropagation(e)
+        if (tool.value === 'pan') selected.value = { type: 'measure', id: ms.id }
+      })
+      let dragFrom: LatLng | null = null
+      line.on('dragstart', () => {
+        dragFrom = layerRefLatLng(line)
+      })
+      line.on('dragend', () => {
+        const from = dragFrom
+        dragFrom = null
+        if (!from) return
+        setTimeout(() => {
+          const to = layerRefLatLng(line)
+          if (!to) return
+          const dLat = to.lat - from.lat
+          const dLng = to.lng - from.lng
+          if (!dLat && !dLng) return
+          ms.points = ms.points.map(pt => ({ lat: pt.lat + dLat, lng: pt.lng + dLng }))
+          selected.value = { type: 'measure', id: ms.id }
+          markDirty()
+          renderOverlays()
+        }, 0)
+      })
+      overlayLayers.push(line)
+      const { point: mid, angle } = midpointAlong(ms.points)
+      const icon = L.divIcon({
+        className: 'lm-icon',
+        // Parallel to the line, floated just off it (translateY in the
+        // rotated frame is perpendicular to the segment).
+        html: `<div class="lm-measure-chip" style="color:${chipTextColor(ms.color ?? '#ffd75e')};transform:translate(-50%,-50%) rotate(${angle}deg) translateY(-14px)">${esc(fmtDist(measureTotal(ms.points)))}</div>`,
+        iconSize: [0, 0],
+        iconAnchor: [0, 0],
+      })
+      const chip = L.marker([mid.lat, mid.lng], { icon }).addTo(map)
+      chip.on('click', (e: Leaflet.LeafletMouseEvent) => {
+        L!.DomEvent.stopPropagation(e)
+        selected.value = { type: 'measure', id: ms.id }
+      })
+      overlayLayers.push(chip)
+    }
   }
 
   for (const road of p.roads) {
@@ -756,10 +1314,34 @@ function renderOverlays() {
       color: road.color,
       weight: road.width,
       dashArray: road.dashed ? '8 6' : undefined,
-    }).addTo(map)
+      // leaflet-path-drag: roads can be moved around like shapes.
+      draggable: true,
+    } as Leaflet.PolylineOptions & { draggable?: boolean }).addTo(map)
     line.on('click', (e: Leaflet.LeafletMouseEvent) => {
       L!.DomEvent.stopPropagation(e)
       if (tool.value === 'pan') selected.value = { type: 'road', id: road.id }
+    })
+    let dragFrom: LatLng | null = null
+    line.on('dragstart', () => {
+      dragFrom = layerRefLatLng(line)
+    })
+    line.on('dragend', () => {
+      const from = dragFrom
+      dragFrom = null
+      if (!from) return
+      // Read the moved position on the NEXT tick: the drag plugin bakes the
+      // new latlngs into the layer after firing dragend, not before.
+      setTimeout(() => {
+        const to = layerRefLatLng(line)
+        if (!to) return
+        const dLat = to.lat - from.lat
+        const dLng = to.lng - from.lng
+        if (!dLat && !dLng) return
+        road.points = road.points.map(pt => ({ lat: pt.lat + dLat, lng: pt.lng + dLng }))
+        selected.value = { type: 'road', id: road.id }
+        markDirty()
+        renderOverlays()
+      }, 0)
     })
     overlayLayers.push(line)
   }
@@ -821,11 +1403,15 @@ function renderOverlays() {
   // Road signs: fixed screen-px size, dragged like pins.
   for (const sg of p.signs ?? []) {
     const def = roadSignDef(sg.sign)
+    const ratio = sg.custom
+      ? (sg.customH || 1) / (sg.customW || 1)
+      : (def ? def.h / def.w : 1)
     const w = sg.size
-    const h = def ? Math.round(sg.size * (def.h / def.w)) : sg.size
+    const h = Math.round(sg.size * ratio)
+    const src = sg.custom ?? `/signs/is/${sg.sign}.svg`
     const icon = L.divIcon({
       className: 'lm-icon',
-      html: `<img class="lm-signimg" src="/signs/is/${sg.sign}.svg" style="width:${w}px;height:${h}px" draggable="false">`,
+      html: `<img class="lm-signimg" src="${src}" style="width:${w}px;height:${h}px${sg.rotation ? `;transform:rotate(${sg.rotation}deg)` : ''}" draggable="false">`,
       iconSize: [w, h],
       iconAnchor: [w / 2, h / 2],
     })
@@ -883,6 +1469,8 @@ function updatePreview() {
       weight: roadStyle.width,
       dashArray: roadStyle.dashed ? '8 6' : '2 8',
       opacity: 0.8,
+      // Previews must never swallow the clicks that are drawing them.
+      interactive: false,
     }).addTo(map)
   }
 }
@@ -932,18 +1520,25 @@ function onMapClick(ll: Leaflet.LatLng) {
     updatePreview()
   }
   else if (tool.value === 'shape') {
-    if (!shapeStart.value) {
+    if (shapeKind.value === 'poly') {
+      polyPts.value.push({ lat: ll.lat, lng: ll.lng })
+      updateShapePreview()
+    }
+    else if (!shapeStart.value) {
       shapeStart.value = { lat: ll.lat, lng: ll.lng }
     }
     else {
+      const reserved = shapeKind.value === 'reserved'
       const sh: LocationMapShape = {
         id: newLocalId('s'),
         shape: shapeKind.value,
         a: shapeStart.value,
         b: { lat: ll.lat, lng: ll.lng },
+        ...(shapeKind.value === 'rect' || reserved ? { rotation: 0 } : {}),
         color: shapeStyle.color,
         width: shapeStyle.width,
-        fill: shapeStyle.fill,
+        // A reserved stamp without fill is invisible over asphalt — force it.
+        fill: reserved ? true : shapeStyle.fill,
         fillOpacity: shapeStyle.fillOpacity,
       }
       ;(p.shapes ??= []).push(sh)
@@ -952,14 +1547,24 @@ function onMapClick(ll: Leaflet.LatLng) {
       touch()
     }
   }
+  else if (tool.value === 'measure') {
+    if (p.base === 'image') return
+    measurePts.value.push({ lat: ll.lat, lng: ll.lng })
+    updateMeasurePreview()
+  }
   else if (tool.value === 'sign') {
-    if (!activeSign.value) return
+    const custom = useCustomSign.value ? customSign.value : null
+    if (!custom && !activeSign.value) return
+    // Text plates (hjáleið) place larger by default so they stay readable;
+    // an adjusted size slider always wins.
+    const preferred = custom ? undefined : roadSignDef(activeSign.value)?.placeSize
     const sg: LocationMapSign = {
       id: newLocalId('g'),
-      sign: activeSign.value,
+      sign: custom ? '' : activeSign.value,
+      ...(custom ? { custom: custom.url, customW: custom.w, customH: custom.h } : {}),
       lat: ll.lat,
       lng: ll.lng,
-      size: signSize.value,
+      size: signSize.value === SIGN_DEFAULT_SIZE ? (preferred ?? signSize.value) : signSize.value,
     }
     ;(p.signs ??= []).push(sg)
     selected.value = { type: 'sign', id: sg.id }
@@ -976,7 +1581,7 @@ function onMapClick(ll: Leaflet.LatLng) {
       lengthM: def.lengthM,
       widthM: def.widthM,
       rotation: 0,
-      color: VEHICLE_COLORS[1]!,
+      color: vehicleColor.value,
     }
     p.vehicles.push(v)
     selected.value = { type: 'vehicle', id: v.id }
@@ -999,6 +1604,24 @@ function onMarkerKindChange() {
   touch()
 }
 
+/** Duplicate the selected vehicle one stall over — same size, rotation,
+ *  color and label — so parking rows line up without re-rotating. */
+function duplicateVehicle() {
+  const p = page.value
+  const src = selectedItem.value as LocationMapVehicle | null
+  if (!p || !src || selected.value?.type !== 'vehicle') return
+  // Offset perpendicular to the vehicle's heading (rotation is CSS-clockwise,
+  // screen y points down = south on a Mercator map).
+  const a = ((src.rotation + 90) * Math.PI) / 180
+  const d = src.widthM + 0.5 // meters
+  const dLat = -(d * Math.sin(a)) / 111320
+  const dLng = (d * Math.cos(a)) / (111320 * Math.cos((src.lat * Math.PI) / 180))
+  const copy: LocationMapVehicle = { ...src, id: newLocalId('v'), lat: src.lat + dLat, lng: src.lng + dLng }
+  p.vehicles.push(copy)
+  selected.value = { type: 'vehicle', id: copy.id }
+  touch()
+}
+
 /** Changing the type in the panel resets the footprint to that type's preset. */
 function onVehicleKindChange() {
   const v = selectedItem.value as LocationMapVehicle
@@ -1011,27 +1634,100 @@ function onVehicleKindChange() {
 function setTool(mode: ToolMode) {
   if (tool.value === 'road' && mode !== 'road') cancelRoad()
   if (tool.value === 'shape' && mode !== 'shape') cancelShape()
+  if (tool.value === 'measure' && mode !== 'measure') cancelMeasure()
   tool.value = mode
   if (mode !== 'pan') selected.value = null
 }
 
+/** Switching shape kind mid-draw discards the half-drawn shape. */
+function setShapeKind(kind: typeof shapeKind.value) {
+  if (shapeKind.value !== kind) cancelShape()
+  shapeKind.value = kind
+  // Reserved stamps are red on real plans; nudge the default color once.
+  if (kind === 'reserved' && shapeStyle.color === ROAD_COLORS[0]) shapeStyle.color = '#dc2626'
+}
+
 function cancelShape() {
   shapeStart.value = null
+  polyPts.value = []
   shapePreview?.remove()
   shapePreview = null
+}
+
+function undoPolyPoint() {
+  polyPts.value.pop()
+  updateShapePreview()
+}
+
+function finishPoly() {
+  const p = page.value
+  if (!p) return
+  if (polyPts.value.length >= 3) {
+    const sh: LocationMapShape = {
+      id: newLocalId('s'),
+      shape: 'poly',
+      points: [...polyPts.value],
+      color: shapeStyle.color,
+      width: shapeStyle.width,
+      fill: shapeStyle.fill,
+      fillOpacity: shapeStyle.fillOpacity,
+    }
+    ;(p.shapes ??= []).push(sh)
+    selected.value = { type: 'shape', id: sh.id }
+    markDirty()
+  }
+  cancelShape()
+  renderOverlays()
+}
+
+function cancelMeasure() {
+  measurePts.value = []
+  measureLive.value = null
+  measurePreview?.remove()
+  measurePreview = null
+}
+
+function undoMeasurePoint() {
+  measurePts.value.pop()
+  updateMeasurePreview()
+}
+
+function finishMeasure() {
+  const p = page.value
+  if (!p) return
+  // A finishing double-click leaves a duplicate point on the same pixel.
+  const points = dropDuplicatePoints(measurePts.value)
+  if (points.length >= 2) {
+    const ms: LocationMapMeasure = {
+      id: newLocalId('d'),
+      points,
+      color: measureStyle.color,
+      width: measureStyle.width,
+      dashed: measureStyle.dashed,
+    }
+    ;(p.measures ??= []).push(ms)
+    selected.value = { type: 'measure', id: ms.id }
+    markDirty()
+  }
+  cancelMeasure()
+  renderOverlays()
 }
 
 function finishRoad() {
   const p = page.value
   if (!p) return
   if (drawing.value.length >= 2) {
-    p.roads.push({
+    const road: LocationMapRoad = {
       id: newLocalId('r'),
       points: [...drawing.value],
       color: roadStyle.color,
       width: roadStyle.width,
       dashed: roadStyle.dashed,
-    })
+    }
+    p.roads.push(road)
+    // Select the finished road right away (same as shapes and measures), so
+    // the side panel opens and edits apply to it immediately.
+    selected.value = { type: 'road', id: road.id }
     markDirty()
   }
   drawing.value = []
@@ -1057,6 +1753,7 @@ function deleteSelected() {
   else if (sel.type === 'vehicle') p.vehicles = p.vehicles.filter(v => v.id !== sel.id)
   else if (sel.type === 'shape') p.shapes = (p.shapes ?? []).filter(x => x.id !== sel.id)
   else if (sel.type === 'sign') p.signs = (p.signs ?? []).filter(x => x.id !== sel.id)
+  else if (sel.type === 'measure') p.measures = (p.measures ?? []).filter(x => x.id !== sel.id)
   else p.roads = p.roads.filter(r => r.id !== sel.id)
   selected.value = null
   touch()
@@ -1064,11 +1761,38 @@ function deleteSelected() {
 
 // ── Pages ────────────────────────────────────────────────────────────────────
 
+// ── Drag & drop reordering of the page tabs (drives the PDF page order) ─────
+
+const dragPage = ref<number | null>(null)
+const dragOverPage = ref<number | null>(null)
+
+function onPageDragStart(i: number, e: DragEvent) {
+  dragPage.value = i
+  // Firefox needs data set for the drag to start; hide the ghost offset jitter.
+  e.dataTransfer?.setData('text/plain', String(i))
+  if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move'
+}
+
+function onPageDrop(target: number) {
+  const from = dragPage.value
+  dragPage.value = null
+  dragOverPage.value = null
+  if (from === null || !doc.value || from === target) return
+  const pages = doc.value.pages
+  const activeId = page.value?.id
+  const [moved] = pages.splice(from, 1)
+  pages.splice(target, 0, moved!)
+  // Keep the same page active at its new position — no map rebuild needed.
+  pageIdx.value = Math.max(0, pages.findIndex(p => p.id === activeId))
+  markDirty()
+}
+
 function switchPage(i: number) {
   if (!doc.value || i === pageIdx.value) return
   selected.value = null
   cancelRoad()
   cancelShape()
+  cancelMeasure()
   pageIdx.value = i
   // The vehicle tool doesn't exist on image pages.
   if (tool.value === 'vehicle' && page.value?.base === 'image') tool.value = 'pan'
@@ -1099,6 +1823,7 @@ async function deletePage() {
   selected.value = null
   cancelRoad()
   cancelShape()
+  cancelMeasure()
   pageIdx.value = Math.min(pageIdx.value, doc.value.pages.length - 1)
   markDirty()
   nextTick(buildMap)
@@ -1146,6 +1871,32 @@ async function onImagePicked(e: Event) {
     }
     markDirty()
     nextTick(buildMap)
+  }
+  catch {
+    exportError.value = t('portal.tools.locationMap.imageTooLarge')
+  }
+}
+
+/** Custom sign upload: downscale to ≤256px PNG (keeps transparency). */
+async function onSignImagePicked(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  try {
+    const bmp = await createImageBitmap(file)
+    try {
+      const s = Math.min(1, 256 / Math.max(bmp.width, bmp.height))
+      const w = Math.max(1, Math.round(bmp.width * s))
+      const h = Math.max(1, Math.round(bmp.height * s))
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      canvas.getContext('2d')!.drawImage(bmp, 0, 0, w, h)
+      customSign.value = { url: canvas.toDataURL('image/png'), w, h }
+      useCustomSign.value = true
+    }
+    finally {
+      bmp.close()
+    }
   }
   catch {
     exportError.value = t('portal.tools.locationMap.imageTooLarge')
@@ -1236,9 +1987,18 @@ function onKeydown(e: KeyboardEvent) {
     e.preventDefault()
     finishRoad()
   }
+  else if (e.key === 'Enter' && tool.value === 'shape' && polyPts.value.length) {
+    e.preventDefault()
+    finishPoly()
+  }
+  else if (e.key === 'Enter' && tool.value === 'measure' && measurePts.value.length) {
+    e.preventDefault()
+    finishMeasure()
+  }
   else if (e.key === 'Escape') {
     if (drawing.value.length) cancelRoad()
-    else if (shapeStart.value) cancelShape()
+    else if (shapeStart.value || polyPts.value.length) cancelShape()
+    else if (measurePts.value.length) cancelMeasure()
     else selected.value = null
   }
   else if ((e.key === 'Delete' || e.key === 'Backspace') && selected.value) {
@@ -1254,11 +2014,12 @@ function onBeforeUnload(e: BeforeUnloadEvent) {
 onMounted(async () => {
   try {
     doc.value = await $fetch<LocationMapDoc>(`/api/portal/tools/location-maps/${mapId}`)
-    // Docs saved before vehicles/shapes/signs existed lack those arrays.
+    // Docs saved before vehicles/shapes/signs/measures existed lack those arrays.
     for (const p of doc.value.pages) {
       p.vehicles ??= []
       p.shapes ??= []
       p.signs ??= []
+      p.measures ??= []
     }
   }
   catch {
@@ -1269,11 +2030,21 @@ onMounted(async () => {
     // Vite serves leaflet's UMD build as an ESM default export.
     const mod = await import('leaflet') as typeof Leaflet & { default?: typeof Leaflet }
     L = mod.default ?? mod
+    // Patches L.Path with a drag handler (option draggable: true) so shapes
+    // can be moved around in select mode.
+    await import('leaflet-path-drag')
   }
   catch {
     // Typically a stale dev-server module cache or being offline.
     exportError.value = t('portal.tools.locationMap.loadFailed')
     return
+  }
+  // Leaflet only watches WINDOW resizes; container reflows (scrollbars, the
+  // aspect-ratio height following a width change) need an explicit nudge or
+  // the map renders a stale, too-small tile area.
+  if (mapEl.value && 'ResizeObserver' in window) {
+    resizeObserver = new ResizeObserver(() => map?.invalidateSize())
+    resizeObserver.observe(mapEl.value)
   }
   window.addEventListener('keydown', onKeydown)
   window.addEventListener('beforeunload', onBeforeUnload)
@@ -1285,6 +2056,8 @@ onBeforeUnmount(() => {
   window.removeEventListener('beforeunload', onBeforeUnload)
   if (saveState.value === 'dirty') save()
   clearTimeout(saveTimer)
+  resizeObserver?.disconnect()
+  resizeObserver = null
   map?.remove()
   map = null
 })
@@ -1379,6 +2152,9 @@ useHead({ title: 'Tökustaðakort · Hjálpartól · Portal' })
 }
 .lm-textbox {
   display: inline-block;
+  /* Grow to the content but wrap long lines INSIDE the chip instead of
+     overflowing past its background. */
+  width: max-content;
   max-width: 380px;
   padding: 5px 10px;
   background: rgba(22, 22, 22, 0.78);
@@ -1387,7 +2163,36 @@ useHead({ title: 'Tökustaðakort · Hjálpartól · Portal' })
   letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+/* Reserved-parking stamp label, centered on the shape. */
+.lm-reserved {
+  position: absolute;
+  transform: translate(-50%, -50%);
   white-space: nowrap;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 3px #fff,
+    0 0 4px #fff;
+  pointer-events: none;
+}
+.lm-measure-chip {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  background: rgba(22, 22, 22, 0.85);
+  color: #ffd75e;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 </style>

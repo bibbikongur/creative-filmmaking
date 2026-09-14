@@ -65,11 +65,12 @@ export interface VehicleKindDef {
   labelKey: string
 }
 
-/** Typical sizes: 3-axle box truck, semi with trailer, long Sprinter van. */
+/** Typical sizes: 3-axle box truck, semi with trailer, long Sprinter van, sedan. */
 export const VEHICLE_KINDS: VehicleKindDef[] = [
   { kind: 'truck', lengthM: 10, widthM: 2.55, labelKey: 'portal.tools.locationMap.vehicle.truck' },
   { kind: 'semi', lengthM: 16.5, widthM: 2.55, labelKey: 'portal.tools.locationMap.vehicle.semi' },
   { kind: 'van', lengthM: 7, widthM: 2.05, labelKey: 'portal.tools.locationMap.vehicle.van' },
+  { kind: 'car', lengthM: 4.8, widthM: 1.85, labelKey: 'portal.tools.locationMap.vehicle.car' },
 ]
 
 export const vehicleKindDef = (kind: VehicleMarkerKind): VehicleKindDef =>
@@ -105,6 +106,12 @@ export function vehicleSvg(kind: VehicleMarkerKind, lengthM: number, widthM: num
     parts = `<rect x="1" y="1" width="${r(l - 22)}" height="${r(w - 2)}" rx="2.5" ${body} />`
       + `<rect x="${r(l - 20)}" y="${r(w * 0.05)}" width="19" height="${r(w * 0.9)}" rx="4" ${body} />`
       + `<rect x="${r(l - 15)}" y="${r(w * 0.14)}" width="5" height="${r(w * 0.72)}" rx="1.5" ${glass} />`
+  }
+  else if (kind === 'car') {
+    // Sedan: rounded body, windshield + rear window around the cabin.
+    parts = `<rect x="1" y="1" width="${r(l - 2)}" height="${r(w - 2)}" rx="5" ${body} />`
+      + `<rect x="${r(l - 19)}" y="${r(w * 0.12)}" width="4.5" height="${r(w * 0.76)}" rx="2" ${glass} />`
+      + `<rect x="${r(l * 0.2)}" y="${r(w * 0.15)}" width="4" height="${r(w * 0.7)}" rx="2" ${glass} />`
   }
   else {
     // Van: one rounded body, windshield near the front.

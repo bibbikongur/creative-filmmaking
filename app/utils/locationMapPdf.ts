@@ -119,20 +119,28 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
-/** The zoom the tiles (and true-scale vehicles) are rendered at: zoom+1 so
- * 1 canvas px = 1 world px at 2× the saved zoom — same geographic extent as
- * the saved viewport, double the detail. */
-export const exportZoom = (page: LocationMapPage): number =>
-  Math.min(page.zoom + 1, TILE_SOURCES[page.base === 'satellite' ? 'satellite' : 'streets'].maxZoom)
+/**
+ * Fractional zoom at which 1 canvas px = 1 world px, chosen so the canvas
+ * covers EXACTLY the editor viewport that was saved with the page (WYSIWYG).
+ * Old docs without a saved viewport assume the A4 window (842 px wide),
+ * which reproduces the previous zoom+1 behavior.
+ */
+export const exportCanvasZoom = (page: LocationMapPage): number =>
+  page.zoom + Math.log2(CANVAS_W / (page.viewW || VIEW_W))
 
 /** Draw the tile background; returns the latlng -> canvas px projector. */
 async function drawTileBase(ctx: CanvasRenderingContext2D, page: LocationMapPage): Promise<(ll: LatLng) => { x: number, y: number }> {
   const src = TILE_SOURCES[page.base === 'satellite' ? 'satellite' : 'streets']
-  const z = exportZoom(page)
-  const worldTiles = 2 ** z
-  const center = project(page.center, z)
-  const left = center.x - CANVAS_W / 2
-  const top = center.y - CANVAS_H / 2
+  const zc = exportCanvasZoom(page)
+  // Fetch tiles at the next integer zoom above (crisper) and scale them down.
+  const zt = Math.max(0, Math.min(Math.ceil(zc), src.maxZoom))
+  const k = 2 ** (zc - zt) // canvas px per world px at tile zoom
+  const worldTiles = 2 ** zt
+  const center = project(page.center, zt)
+  const left = center.x - CANVAS_W / (2 * k)
+  const top = center.y - CANVAS_H / (2 * k)
+  const right = left + CANVAS_W / k
+  const bottom = top + CANVAS_H / k
 
   ctx.fillStyle = '#dcdcd4'
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
@@ -140,14 +148,15 @@ async function drawTileBase(ctx: CanvasRenderingContext2D, page: LocationMapPage
   const jobs: Promise<void>[] = []
   let failed = 0
   let total = 0
-  for (let tx = Math.floor(left / 256); tx * 256 < left + CANVAS_W; tx++) {
-    for (let ty = Math.floor(top / 256); ty * 256 < top + CANVAS_H; ty++) {
+  for (let tx = Math.floor(left / 256); tx * 256 < right; tx++) {
+    for (let ty = Math.floor(top / 256); ty * 256 < bottom; ty++) {
       if (ty < 0 || ty >= worldTiles) continue
       const wrappedX = ((tx % worldTiles) + worldTiles) % worldTiles
       total++
       jobs.push(
-        loadImage(tileUrl(src, z, wrappedX, ty))
-          .then((img) => { ctx.drawImage(img, tx * 256 - left, ty * 256 - top, 256, 256) })
+        loadImage(tileUrl(src, zt, wrappedX, ty))
+          // +1px bleed hides hairline seams from fractional scaling.
+          .then((img) => { ctx.drawImage(img, (tx * 256 - left) * k, (ty * 256 - top) * k, 256 * k + 1, 256 * k + 1) })
           .catch(() => { failed++ }),
       )
     }
@@ -156,8 +165,8 @@ async function drawTileBase(ctx: CanvasRenderingContext2D, page: LocationMapPage
   if (total > 0 && failed === total) throw new Error('all tiles failed to load')
 
   return ll => {
-    const p = project(ll, z)
-    return { x: p.x - left, y: p.y - top }
+    const p = project(ll, zt)
+    return { x: (p.x - left) * k, y: (p.y - top) * k }
   }
 }
 
@@ -221,28 +230,173 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.closePath()
 }
 
-function drawOverlays(ctx: CanvasRenderingContext2D, page: LocationMapPage, toPx: (ll: LatLng) => { x: number, y: number }, signImages?: Map<string, HTMLImageElement>) {
-  // Shapes first — zone outlines/fills sit under everything else.
-  for (const sh of page.shapes ?? []) {
-    const pa = toPx(sh.a)
-    const pb = toPx(sh.b)
-    ctx.beginPath()
-    if (sh.shape === 'rect') {
-      ctx.rect(Math.min(pa.x, pb.x), Math.min(pa.y, pb.y), Math.abs(pb.x - pa.x), Math.abs(pb.y - pa.y))
+/** Great-circle distance in meters (matches Leaflet's map.distance closely). */
+function haversineM(a: LatLng, b: LatLng): number {
+  const R = 6371000
+  const toRad = (d: number) => (d * Math.PI) / 180
+  const dLat = toRad(b.lat - a.lat)
+  const dLng = toRad(b.lng - a.lng)
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(s))
+}
+
+const fmtDist = (m: number): string =>
+  m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(2).replace('.', ',')} km`
+
+/** Measure-chip text follows the line color, except near-black gets cream. */
+function measureChipColor(color: string): string {
+  const m = /^#([0-9a-f]{6})/i.exec(color)
+  if (!m) return color
+  const n = Number.parseInt(m[1]!, 16)
+  const lum = 0.299 * ((n >> 16) & 0xFF) + 0.587 * ((n >> 8) & 0xFF) + 0.114 * (n & 0xFF)
+  return lum < 80 ? CREAM : color
+}
+
+/** Word-wrap one chip line to maxW using the current ctx font. */
+function wrapLine(ctx: CanvasRenderingContext2D, line: string, maxW: number): string[] {
+  const out: string[] = []
+  let cur = ''
+  for (const word of line.split(/\s+/)) {
+    const next = cur ? `${cur} ${word}` : word
+    if (cur && ctx.measureText(next).width > maxW) {
+      out.push(cur)
+      cur = word
     }
     else {
-      ctx.arc(pa.x, pa.y, Math.hypot(pb.x - pa.x, pb.y - pa.y), 0, Math.PI * 2)
+      cur = next
     }
-    if (sh.fill) {
-      ctx.globalAlpha = sh.fillOpacity
+  }
+  out.push(cur)
+  return out
+}
+
+function drawOverlays(ctx: CanvasRenderingContext2D, page: LocationMapPage, toPx: (ll: LatLng) => { x: number, y: number }, signImages: Map<string, HTMLImageElement> | undefined) {
+  // Shapes first — zone outlines/fills sit under everything else.
+  for (const sh of page.shapes ?? []) {
+    if (sh.shape === 'arrow') {
+      // Shaft + filled head triangle, mirroring the editor's screen-px head.
+      const pa = toPx(sh.a!)
+      const pb = toPx(sh.b!)
+      const len = Math.hypot(pb.x - pa.x, pb.y - pa.y) || 1
+      const ux = (pb.x - pa.x) / len
+      const uy = (pb.y - pa.y) / len
+      const headLen = Math.min((10 + sh.width * 3) * SCALE, len * 0.5)
+      const headW = headLen * 0.55
+      const base = { x: pb.x - ux * headLen, y: pb.y - uy * headLen }
+      ctx.beginPath()
+      ctx.moveTo(pa.x, pa.y)
+      ctx.lineTo(base.x, base.y)
+      ctx.strokeStyle = sh.color
+      ctx.lineWidth = sh.width * SCALE
+      ctx.lineCap = 'round'
+      ctx.setLineDash([])
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(pb.x, pb.y)
+      ctx.lineTo(base.x - uy * headW, base.y + ux * headW)
+      ctx.lineTo(base.x + uy * headW, base.y - ux * headW)
+      ctx.closePath()
       ctx.fillStyle = sh.color
       ctx.fill()
-      ctx.globalAlpha = 1
+      continue
     }
-    ctx.strokeStyle = sh.color
-    ctx.lineWidth = sh.width * SCALE
-    ctx.setLineDash([])
-    ctx.stroke()
+    ctx.beginPath()
+    let center: { x: number, y: number } | null = null
+    let corners: { x: number, y: number }[] | null = null
+    if (sh.shape === 'poly') {
+      const pts = (sh.points ?? []).map(toPx)
+      if (pts.length < 3) continue
+      ctx.moveTo(pts[0]!.x, pts[0]!.y)
+      for (const p of pts.slice(1)) ctx.lineTo(p.x, p.y)
+      ctx.closePath()
+    }
+    else if (sh.shape === 'circle') {
+      const pa = toPx(sh.a!)
+      const pb = toPx(sh.b!)
+      ctx.arc(pa.x, pa.y, Math.hypot(pb.x - pa.x, pb.y - pa.y), 0, Math.PI * 2)
+    }
+    else {
+      // rect / reserved: axis-aligned corners rotated around the center.
+      const pa = toPx(sh.a!)
+      const pb = toPx(sh.b!)
+      center = { x: (pa.x + pb.x) / 2, y: (pa.y + pb.y) / 2 }
+      const rad = ((sh.rotation ?? 0) * Math.PI) / 180
+      const cos = Math.cos(rad)
+      const sin = Math.sin(rad)
+      corners = ([[pa.x, pa.y], [pb.x, pa.y], [pb.x, pb.y], [pa.x, pb.y]] as const).map(([x, y]) => {
+        const dx = x - center!.x
+        const dy = y - center!.y
+        return { x: center!.x + dx * cos - dy * sin, y: center!.y + dx * sin + dy * cos }
+      })
+      ctx.moveTo(corners[0]!.x, corners[0]!.y)
+      for (const c of corners.slice(1)) ctx.lineTo(c.x, c.y)
+      ctx.closePath()
+    }
+    if (sh.shape === 'reserved' && corners) {
+      // Reference style: pale fill + diagonal hatching, clipped to the stamp.
+      const xs = corners.map(c => c.x)
+      const ys = corners.map(c => c.y)
+      const bx = Math.min(...xs)
+      const by = Math.min(...ys)
+      const bw = Math.max(...xs) - bx
+      const bh = Math.max(...ys) - by
+      ctx.save()
+      ctx.clip()
+      ctx.globalAlpha = 0.12
+      ctx.fillStyle = sh.color
+      ctx.fillRect(bx, by, bw, bh)
+      // Stripes stay diagonal RELATIVE TO THE STAMP: rotate the stripe frame
+      // with the shape (matches the editor's rotated SVG pattern).
+      ctx.globalAlpha = 0.85
+      ctx.strokeStyle = sh.color
+      ctx.lineWidth = 2.5 * SCALE
+      ctx.translate(bx + bw / 2, by + bh / 2)
+      ctx.rotate((((sh.rotation ?? 0) + 45) * Math.PI) / 180)
+      const R = Math.hypot(bw, bh) / 2 + 4 * SCALE
+      ctx.beginPath()
+      for (let d = -R; d <= R; d += 12 * SCALE) {
+        ctx.moveTo(d, -R)
+        ctx.lineTo(d, R)
+      }
+      ctx.stroke()
+      ctx.restore()
+      ctx.globalAlpha = 1
+      // Solid outline (the hatch pass replaced the path — retrace it).
+      ctx.beginPath()
+      ctx.moveTo(corners[0]!.x, corners[0]!.y)
+      for (const c of corners.slice(1)) ctx.lineTo(c.x, c.y)
+      ctx.closePath()
+      ctx.strokeStyle = sh.color
+      ctx.lineWidth = sh.width * SCALE
+      ctx.setLineDash([])
+      ctx.stroke()
+    }
+    else {
+      if (sh.fill) {
+        ctx.globalAlpha = sh.fillOpacity
+        ctx.fillStyle = sh.color
+        ctx.fill()
+        ctx.globalAlpha = 1
+      }
+      ctx.strokeStyle = sh.color
+      ctx.lineWidth = sh.width * SCALE
+      ctx.setLineDash([])
+      ctx.stroke()
+    }
+    // Reserved stamp label — only when the user typed one.
+    if (sh.shape === 'reserved' && center && sh.label) {
+      const label = sh.label.toUpperCase()
+      ctx.font = `800 ${13 * SCALE}px ${FONT}`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.lineWidth = 3.5 * SCALE
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)'
+      ctx.strokeText(label, center.x, center.y)
+      ctx.fillStyle = sh.color
+      ctx.fillText(label, center.x, center.y)
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'alphabetic'
+    }
   }
 
   // Roads next (under the pins). A soft white casing keeps them readable on
@@ -266,10 +420,62 @@ function drawOverlays(ctx: CanvasRenderingContext2D, page: LocationMapPage, toPx
     ctx.setLineDash([])
   }
 
+  // Measurements (map pages only): dashed gold line + distance chip at the end.
+  if (page.base !== 'image') {
+    for (const ms of page.measures ?? []) {
+      const pts = ms.points.map(toPx)
+      if (pts.length < 2) continue
+      ctx.lineJoin = 'round'
+      ctx.lineCap = 'round'
+      ctx.beginPath()
+      ctx.moveTo(pts[0]!.x, pts[0]!.y)
+      for (const p of pts.slice(1)) ctx.lineTo(p.x, p.y)
+      const msColor = ms.color ?? '#ffd75e'
+      const msWidth = ms.width ?? 3
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)'
+      ctx.lineWidth = msWidth * SCALE + 3
+      ctx.setLineDash([])
+      ctx.stroke()
+      ctx.strokeStyle = msColor
+      ctx.lineWidth = msWidth * SCALE
+      if (ms.dashed ?? true) ctx.setLineDash([4 * SCALE, 8 * SCALE])
+      ctx.stroke()
+      ctx.setLineDash([])
+      let total = 0
+      for (let i = 1; i < ms.points.length; i++) total += haversineM(ms.points[i - 1]!, ms.points[i]!)
+      // Chip halfway ALONG the drawn path, rotated parallel to that segment
+      // and floated just off the line (mirrors the editor).
+      const segLens = pts.slice(1).map((p, i) => Math.hypot(p.x - pts[i]!.x, p.y - pts[i]!.y))
+      const half = segLens.reduce((a, b) => a + b, 0) / 2
+      let mid = pts[pts.length - 1]!
+      let angle = 0
+      let acc = 0
+      for (let i = 0; i < segLens.length; i++) {
+        if (segLens[i]! > 0 && acc + segLens[i]! >= half) {
+          const f = (half - acc) / segLens[i]!
+          mid = {
+            x: pts[i]!.x + (pts[i + 1]!.x - pts[i]!.x) * f,
+            y: pts[i]!.y + (pts[i + 1]!.y - pts[i]!.y) * f,
+          }
+          angle = Math.atan2(pts[i + 1]!.y - pts[i]!.y, pts[i + 1]!.x - pts[i]!.x)
+          if (angle > Math.PI / 2) angle -= Math.PI
+          else if (angle < -Math.PI / 2) angle += Math.PI
+          break
+        }
+        acc += segLens[i]!
+      }
+      ctx.save()
+      ctx.translate(mid.x, mid.y)
+      ctx.rotate(angle)
+      drawChip(ctx, 0, -14 * SCALE - (11.5 * 1.7 * SCALE) / 2, fmtDist(total), measureChipColor(msColor), 11.5 * SCALE)
+      ctx.restore()
+    }
+  }
+
   // True-scale vehicles (map pages only): meters -> canvas px at the export
   // zoom, rotated around their center. Under the pins and text boxes.
   if (page.base !== 'image') {
-    const z = exportZoom(page)
+    const z = exportCanvasZoom(page)
     for (const v of page.vehicles ?? []) {
       const mpp = metersPerPixel(v.lat, z)
       const lPx = v.lengthM / mpp
@@ -296,15 +502,27 @@ function drawOverlays(ctx: CanvasRenderingContext2D, page: LocationMapPage, toPx
     }
   }
 
-  // Road signs: pre-rasterized SVGs, centered on the point like the editor.
+  // Road signs: pre-rasterized SVGs (or custom uploads), centered like the editor.
   for (const sg of page.signs ?? []) {
-    const img = signImages?.get(sg.sign)
+    const img = signImages?.get(sg.custom ? sg.id : sg.sign)
     if (!img) continue
     const def = roadSignDef(sg.sign)
+    const ratio = sg.custom
+      ? (sg.customH || 1) / (sg.customW || 1)
+      : (def ? def.h / def.w : 1)
     const w = sg.size * SCALE
-    const h = def ? w * (def.h / def.w) : w
+    const h = w * ratio
     const p = toPx(sg)
-    ctx.drawImage(img, p.x - w / 2, p.y - h / 2, w, h)
+    if (sg.rotation) {
+      ctx.save()
+      ctx.translate(p.x, p.y)
+      ctx.rotate((sg.rotation * Math.PI) / 180)
+      ctx.drawImage(img, -w / 2, -h / 2, w, h)
+      ctx.restore()
+    }
+    else {
+      ctx.drawImage(img, p.x - w / 2, p.y - h / 2, w, h)
+    }
   }
 
   // Text boxes: uppercase colored text on a dark chip (production-map style),
@@ -313,7 +531,8 @@ function drawOverlays(ctx: CanvasRenderingContext2D, page: LocationMapPage, toPx
     const p = toPx(t)
     const size = t.size * SCALE
     ctx.font = `700 ${size}px ${FONT}`
-    const lines = t.text.toUpperCase().split('\n')
+    // Wrap long lines inside the chip (matches the editor's 380px max-width).
+    const lines = t.text.toUpperCase().split('\n').flatMap(l => wrapLine(ctx, l, 380 * SCALE))
     const wMax = Math.max(...lines.map(l => ctx.measureText(l).width))
     const pad = size * 0.6
     const lineH = size * 1.4
@@ -402,6 +621,12 @@ function drawVehicleShape(ctx: CanvasRenderingContext2D, v: LocationMapVehicle, 
     roundRect(ctx, lPx / 2 - 2 * pxm, -wPx * 0.45, 1.9 * pxm, wPx * 0.9, 0.4 * pxm)
     stroke()
     glass(lPx / 2 - 1.5 * pxm, 0.5 * pxm, wPx * 0.72)
+  }
+  else if (v.kind === 'car') {
+    roundRect(ctx, x0, -wPx / 2, lPx, wPx, 0.5 * pxm)
+    stroke()
+    glass(lPx / 2 - 1.9 * pxm, 0.45 * pxm, wPx * 0.76)
+    glass(x0 + 0.2 * lPx, 0.4 * pxm, wPx * 0.7)
   }
   else {
     roundRect(ctx, x0, -wPx / 2, lPx, wPx, 0.6 * pxm)
@@ -522,10 +747,13 @@ export async function exportLocationMapPdf(doc: LocationMapDoc, labels: ExportLa
 
     // Rasterize this page's road signs up front (cached across pages); a sign
     // that fails to load is skipped rather than failing the whole export.
+    // Custom uploaded signs load straight from their data URL, keyed by id.
     const signImages = new Map<string, HTMLImageElement>()
-    await Promise.all([...new Set((page.signs ?? []).map(sg => sg.sign))].map(async (id) => {
+    await Promise.all((page.signs ?? []).map(async (sg) => {
+      const key = sg.custom ? sg.id : sg.sign
+      if (signImages.has(key)) return
       try {
-        signImages.set(id, await loadSignImage(id))
+        signImages.set(key, sg.custom ? await loadImage(sg.custom) : await loadSignImage(sg.sign))
       }
       catch { /* skip this sign */ }
     }))

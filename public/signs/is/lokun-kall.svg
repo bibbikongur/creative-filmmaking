@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <rect x="6" y="6" width="388" height="388" rx="14" fill="#fff" stroke="#1a1a1a" stroke-width="12"/>
+  <!-- man holding a stop paddle: manned closure -->
+  <g fill="#1a1a1a">
+    <circle cx="252" cy="86" r="34"/>
+    <path d="M222 126 L284 126 L292 248 L268 246 L280 368 L246 368 L252 262 L244 368 L210 368 L220 246 L214 248 Z"/>
+    <path d="M224 134 L152 200 L136 184 L206 126 Z"/>
+  </g>
+  <line x1="152" y1="118" x2="152" y2="308" stroke="#1a1a1a" stroke-width="12"/>
+  <circle cx="152" cy="82" r="38" fill="#c8102e" stroke="#1a1a1a" stroke-width="6"/>
+</svg>

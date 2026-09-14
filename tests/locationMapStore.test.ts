@@ -92,6 +92,16 @@ describe('validatePages', () => {
     expect(p!.texts[0]!.size).toBe(72)
   })
 
+  it('keeps a sane saved viewport size and drops a broken one', async () => {
+    const { validatePages } = await import('../server/utils/locationMapStore')
+    const [p] = validatePages([{ ...validPage, viewW: 1088.6, viewH: 769.2 }])
+    expect(p).toMatchObject({ viewW: 1089, viewH: 769 })
+    const [clamped] = validatePages([{ ...validPage, viewW: 99999, viewH: 10 }])
+    expect(clamped).toMatchObject({ viewW: 4000, viewH: 200 })
+    const [absent] = validatePages([validPage])
+    expect(absent!.viewW).toBeUndefined()
+  })
+
   it('requires an uploaded picture with dimensions on image pages', async () => {
     const { validatePages } = await import('../server/utils/locationMapStore')
     const imagePage = { ...validPage, base: 'image', image: tinyJpeg, imageW: 1200, imageH: 800 }
@@ -118,9 +128,60 @@ describe('validatePages', () => {
     expect(without!.shapes).toEqual([])
   })
 
+  it('accepts polygons, rotation and reserved stamps', async () => {
+    const { validatePages } = await import('../server/utils/locationMapStore')
+    const base = { color: '#facc15', width: 3, fill: true, fillOpacity: 0.25 }
+    const rect = { ...base, shape: 'rect', a: { lat: 64.1, lng: -21.9 }, b: { lat: 64.2, lng: -21.8 }, rotation: 450 }
+    const poly = { ...base, shape: 'poly', points: [{ lat: 1, lng: 1 }, { lat: 1, lng: 2 }, { lat: 2, lng: 2 }] }
+    const reserved = { ...base, shape: 'reserved', a: rect.a, b: rect.b, rotation: -45, label: '  Frátekið fyrir tökulið  ' }
+    const [p] = validatePages([{ ...validPage, shapes: [rect, poly, reserved] }])
+    expect(p!.shapes![0]).toMatchObject({ shape: 'rect', rotation: 90 })
+    expect(p!.shapes![1]).toMatchObject({ shape: 'poly' })
+    expect(p!.shapes![1]!.points).toHaveLength(3)
+    expect(p!.shapes![1]!.rotation).toBeUndefined()
+    expect(p!.shapes![2]).toMatchObject({ shape: 'reserved', rotation: 315, label: 'Frátekið fyrir tökulið' })
+    expect(() => validatePages([{ ...validPage, shapes: [{ ...poly, points: poly.points.slice(0, 2) }] }])).toThrow()
+    const [withArrow] = validatePages([{ ...validPage, shapes: [{ ...base, shape: 'arrow', a: rect.a, b: rect.b }] }])
+    expect(withArrow!.shapes![0]).toMatchObject({ shape: 'arrow' })
+    expect(withArrow!.shapes![0]!.rotation).toBeUndefined()
+  })
+
+  it('accepts measurements and rejects degenerate ones', async () => {
+    const { validatePages } = await import('../server/utils/locationMapStore')
+    const [p] = validatePages([{
+      ...validPage,
+      measures: [{ id: 'd-1', points: [{ lat: 64.1, lng: -21.9 }, { lat: 64.2, lng: -21.8 }] }],
+    }])
+    expect(p!.measures![0]).toMatchObject({ id: 'd-1', color: '#ffd75e', width: 3, dashed: true })
+    expect(p!.measures![0]!.points).toHaveLength(2)
+    const [styled] = validatePages([{
+      ...validPage,
+      measures: [{ points: p!.measures![0]!.points, color: '#dc2626', width: 99, dashed: false }],
+    }])
+    expect(styled!.measures![0]).toMatchObject({ color: '#dc2626', width: 12, dashed: false })
+    expect(() => validatePages([{ ...validPage, measures: [{ points: [{ lat: 1, lng: 2 }] }] }])).toThrow()
+    const [without] = validatePages([validPage])
+    expect(without!.measures).toEqual([])
+  })
+
+  it('accepts custom uploaded signs and rejects bad payloads', async () => {
+    const { validatePages } = await import('../server/utils/locationMapStore')
+    const png = `data:image/png;base64,${'a'.repeat(80)}`
+    const [p] = validatePages([{
+      ...validPage,
+      signs: [{ id: 'g-1', sign: '', custom: png, customW: 200, customH: 120, lat: 64.1, lng: -21.9, size: 40 }],
+    }])
+    expect(p!.signs![0]).toMatchObject({ sign: '', custom: png, customW: 200, customH: 120, size: 40 })
+    expect(() => validatePages([{ ...validPage, signs: [{ sign: '', custom: 'data:text/html;base64,xx', customW: 10, customH: 10, lat: 1, lng: 2, size: 36 }] }])).toThrow()
+    expect(() => validatePages([{ ...validPage, signs: [{ sign: '', custom: png, customW: 0, customH: 10, lat: 1, lng: 2, size: 36 }] }])).toThrow()
+  })
+
   it('accepts road signs from the catalogue and rejects unknown ones', async () => {
     const { validatePages } = await import('../server/utils/locationMapStore')
     const { ROAD_SIGNS } = await import('../app/data/roadSigns')
+    // Unknown ids are always rejected, catalogue or not.
+    expect(() => validatePages([{ ...validPage, signs: [{ sign: 'no-such-sign', lat: 1, lng: 2, size: 36 }] }])).toThrow()
+    if (!ROAD_SIGNS.length) return // catalogue not generated in this checkout
     const signId = ROAD_SIGNS[0]!.id
     const [p] = validatePages([{ ...validPage, signs: [{ id: 'g-1', sign: signId, lat: 64.1, lng: -21.9, size: 500 }] }])
     expect(p!.signs[0]).toMatchObject({ id: 'g-1', sign: signId, size: 160 })

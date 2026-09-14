@@ -102,7 +102,7 @@ export default defineNuxtConfig({
   // import never hits a stale Vite optimize-deps cache (504 Outdated Optimize Dep).
   vite: {
     optimizeDeps: {
-      include: ['leaflet'],
+      include: ['leaflet', 'leaflet-path-drag'],
     },
   },
 

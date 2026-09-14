@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="800"
+   height="400"
+   id="svg2998">
+  <defs
+     id="defs3000" />
+  <metadata
+     id="metadata3003">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(19.999996,-243.79074)"
+     id="layer1">
+    <rect
+       width="800"
+       height="400"
+       rx="50"
+       ry="50"
+       x="-19.999996"
+       y="243.79074"
+       id="rect3006"
+       style="color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:9.9989996;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <rect
+       width="750"
+       height="350"
+       rx="25"
+       ry="25"
+       x="5.0000038"
+       y="268.79074"
+       id="rect3008"
+       style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:9.9989996;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <g
+       id="text3779"
+       style="font-size:335.07852173px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Roadgeek 2005 Series C;-inkscape-font-specification:Roadgeek 2005 Series C">
+      <path
+         d="m 385.89007,318.79072 36.64921,0 0,249.99999 -43.19371,0 0,-176.70156 -41.88482,0 0,-34.03141 4.58116,0 2.6178,-0.65445 7.19895,0 3.27225,-0.65445 5.89005,0 c 4.36296,-0.87235 7.63521,-1.30865 9.81676,-1.3089 2.07237,-1.74495 4.03572,-2.8357 5.89005,-3.27225 6.32629,-9.27112 9.48946,-18.81518 9.48953,-28.6322 -7e-5,-0.87232 -0.0546,-1.63585 -0.16362,-2.29058 -6e-5,-0.76324 -0.0546,-1.5813 -0.16361,-2.45419"
+         id="path3784"
+         style="font-weight:bold;fill:#000000;font-family:Transport;-inkscape-font-specification:Transport Bold" />
+    </g>
+  </g>
+</svg>

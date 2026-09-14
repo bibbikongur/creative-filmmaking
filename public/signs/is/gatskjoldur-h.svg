@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="720" viewBox="0 0 240 720">
+  <defs>
+    <pattern id="gsh" width="240" height="240" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="240" height="240" fill="#fff"/>
+      <rect width="120" height="240" fill="#c8102e"/>
+    </pattern>
+  </defs>
+  <rect x="4" y="4" width="232" height="712" fill="url(#gsh)" stroke="#1a1a1a" stroke-width="8"/>
+</svg>

@@ -16,6 +16,7 @@
   "dependencies": {
     "better-sqlite3": "^12.11.1",
     "leaflet": "^1.9.4",
+    "leaflet-path-drag": "^1.9.5",
     "nodemailer": "^6.9.16",
     "nuxt": "^4.4.2",
     "pdf-lib": "^1.17.1",

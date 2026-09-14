@@ -26,7 +26,7 @@ const MAX_PAYLOAD_BYTES = 25 * 1024 * 1024
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024
 
 const MARKER_KINDS: LocationMarkerKind[] = ['basecamp', 'set', 'parking', 'trucks', 'catering', 'wc', 'custom']
-const VEHICLE_KINDS: VehicleMarkerKind[] = ['truck', 'semi', 'van']
+const VEHICLE_KINDS: VehicleMarkerKind[] = ['truck', 'semi', 'van', 'car']
 const BASES = ['streets', 'satellite', 'image']
 
 const fail = (message: string): never => {
@@ -84,12 +84,14 @@ export function validatePages(input: unknown): LocationMapPage[] {
     const vehicles = p.vehicles ?? [] // absent on docs saved before vehicles existed
     const shapes = p.shapes ?? [] // absent on docs saved before shapes existed
     const signs = p.signs ?? [] // absent on docs saved before road signs existed
+    const measures = p.measures ?? [] // absent on docs saved before the measure tool existed
     if (!Array.isArray(markers) || markers.length > MAX_MARKERS) fail(`${where}: too many markers.`)
     if (!Array.isArray(roads) || roads.length > MAX_ROADS) fail(`${where}: too many roads.`)
     if (!Array.isArray(texts) || texts.length > MAX_TEXTS) fail(`${where}: too many text boxes.`)
     if (!Array.isArray(vehicles) || vehicles.length > MAX_VEHICLES) fail(`${where}: too many vehicles.`)
     if (!Array.isArray(shapes) || shapes.length > MAX_SHAPES) fail(`${where}: too many shapes.`)
     if (!Array.isArray(signs) || signs.length > MAX_SIGNS) fail(`${where}: too many road signs.`)
+    if (!Array.isArray(measures) || measures.length > 100) fail(`${where}: too many measurements.`)
 
     const center = (p.center ?? {}) as Record<string, unknown>
     return {
@@ -99,6 +101,13 @@ export function validatePages(input: unknown): LocationMapPage[] {
       center: { lat: num(center.lat, `${where} center`), lng: num(center.lng, `${where} center`) },
       zoom: Math.min(22, Math.max(0, Math.round(num(p.zoom, `${where} zoom`)))),
       ...(image ? { image, imageW, imageH } : {}),
+      // Editor viewport size (drives the WYSIWYG PDF crop); optional.
+      ...(Number.isFinite(Number(p.viewW)) && Number.isFinite(Number(p.viewH))
+        ? {
+            viewW: Math.min(4000, Math.max(200, Math.round(Number(p.viewW)))),
+            viewH: Math.min(4000, Math.max(200, Math.round(Number(p.viewH)))),
+          }
+        : {}),
       markers: markers.map((m0) => {
         const m = (m0 ?? {}) as Record<string, unknown>
         if (!MARKER_KINDS.includes(m.kind as LocationMarkerKind)) fail(`${where}: unknown marker kind.`)
@@ -150,35 +159,90 @@ export function validatePages(input: unknown): LocationMapPage[] {
       }),
       signs: signs.map((g0) => {
         const g = (g0 ?? {}) as Record<string, unknown>
-        // The sign id must exist in the generated catalogue — that is what
-        // makes the /signs/is/<id>.svg URL safe to build client-side.
-        const sign = str(g.sign, 60)
-        if (!roadSignDef(sign)) fail(`${where}: unknown road sign.`)
-        return {
+        const common = {
           id: localId('g', g.id),
-          sign,
           lat: num(g.lat, `${where} sign`),
           lng: num(g.lng, `${where} sign`),
           size: Math.min(160, Math.max(16, Math.round(num(g.size, `${where} sign size`)))),
+          // Absent on signs saved before rotation existed → 0.
+          rotation: Number.isFinite(Number(g.rotation)) ? ((Math.round(Number(g.rotation)) % 360) + 360) % 360 : 0,
         }
+        // Custom uploaded sign: a small raster data URL (resized client-side).
+        const custom = str(g.custom, 400000)
+        if (custom) {
+          if (!/^data:image\/(png|jpeg|webp);base64,/.test(custom)) fail(`${where}: bad custom sign image.`)
+          const cw = Math.round(num(g.customW, `${where} custom sign width`, 2000))
+          const ch = Math.round(num(g.customH, `${where} custom sign height`, 2000))
+          if (cw <= 0 || ch <= 0) fail(`${where}: bad custom sign dimensions.`)
+          return { ...common, sign: '', custom, customW: cw, customH: ch }
+        }
+        // The sign id must exist in the catalogue — that is what makes the
+        // /signs/is/<id>.svg URL safe to build client-side.
+        const sign = str(g.sign, 60)
+        if (!roadSignDef(sign)) fail(`${where}: unknown road sign.`)
+        return { ...common, sign }
       }),
       shapes: shapes.map((s0) => {
         const sh = (s0 ?? {}) as Record<string, unknown>
-        if (sh.shape !== 'rect' && sh.shape !== 'circle') fail(`${where}: unknown shape.`)
+        const kind = sh.shape as 'rect' | 'circle' | 'poly' | 'reserved' | 'arrow'
+        if (kind !== 'rect' && kind !== 'circle' && kind !== 'poly' && kind !== 'reserved' && kind !== 'arrow') fail(`${where}: unknown shape.`)
         const color = str(sh.color, 20)
         if (!/^#[0-9a-f]{3,8}$/i.test(color)) fail(`${where}: bad shape color.`)
-        const a = (sh.a ?? {}) as Record<string, unknown>
-        const b = (sh.b ?? {}) as Record<string, unknown>
         const fillOpacity = Number(sh.fillOpacity)
-        return {
+        const common = {
           id: localId('s', sh.id),
-          shape: sh.shape as 'rect' | 'circle',
-          a: { lat: num(a.lat, `${where} shape`), lng: num(a.lng, `${where} shape`) },
-          b: { lat: num(b.lat, `${where} shape`), lng: num(b.lng, `${where} shape`) },
+          shape: kind,
           color,
           width: Math.min(20, Math.max(1, Math.round(num(sh.width, `${where} shape width`)))),
           fill: !!sh.fill,
           fillOpacity: Number.isFinite(fillOpacity) ? Math.min(1, Math.max(0.05, Math.round(fillOpacity * 100) / 100)) : 0.25,
+        }
+        if (kind === 'poly') {
+          const points = sh.points
+          if (!Array.isArray(points) || points.length < 3 || points.length > MAX_ROAD_POINTS) {
+            fail(`${where}: a polygon needs 3–${MAX_ROAD_POINTS} points.`)
+          }
+          return {
+            ...common,
+            points: (points as unknown[]).map((pt0) => {
+              const pt = (pt0 ?? {}) as Record<string, unknown>
+              return { lat: num(pt.lat, `${where} shape point`), lng: num(pt.lng, `${where} shape point`) }
+            }),
+          }
+        }
+        const a = (sh.a ?? {}) as Record<string, unknown>
+        const b = (sh.b ?? {}) as Record<string, unknown>
+        const label = str(sh.label, 60).trim()
+        return {
+          ...common,
+          a: { lat: num(a.lat, `${where} shape`), lng: num(a.lng, `${where} shape`) },
+          b: { lat: num(b.lat, `${where} shape`), lng: num(b.lng, `${where} shape`) },
+          // Rotation applies to rectangles (incl. reserved-parking stamps);
+          // absent on shapes saved before rotation existed → 0.
+          ...(kind === 'rect' || kind === 'reserved'
+            ? { rotation: Number.isFinite(Number(sh.rotation)) ? ((Math.round(Number(sh.rotation)) % 360) + 360) % 360 : 0 }
+            : {}),
+          ...(kind === 'reserved' && label ? { label } : {}),
+        }
+      }),
+      measures: measures.map((ms0) => {
+        const ms = (ms0 ?? {}) as Record<string, unknown>
+        const points = ms.points
+        if (!Array.isArray(points) || points.length < 2 || points.length > 100) {
+          fail(`${where}: a measurement needs 2–100 points.`)
+        }
+        const color = str(ms.color, 20)
+        const width = Number(ms.width)
+        return {
+          id: localId('d', ms.id),
+          points: (points as unknown[]).map((pt0) => {
+            const pt = (pt0 ?? {}) as Record<string, unknown>
+            return { lat: num(pt.lat, `${where} measure point`), lng: num(pt.lng, `${where} measure point`) }
+          }),
+          // Styling defaults: gold, 3px, dashed (matches pre-styling measures).
+          color: /^#[0-9a-f]{3,8}$/i.test(color) ? color : '#ffd75e',
+          width: Number.isFinite(width) ? Math.min(12, Math.max(1, Math.round(width))) : 3,
+          dashed: ms.dashed !== false,
         }
       }),
       vehicles: vehicles.map((v0) => {

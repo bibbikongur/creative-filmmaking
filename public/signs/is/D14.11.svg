@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="797.18134"
+   height="600.45599"
+   id="svg9648"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="D01.11.svg">
+  <defs
+     id="defs9650">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective9656" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective9656-6" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 226.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="510 : 226.5 : 1"
+       inkscape:persp3d-origin="255 : 151 : 1"
+       id="perspective18" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9680" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9688" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9719" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9754" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9782" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9837" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9872" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9901" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9901-6" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9901-1" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9959" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective9990" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10018" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10052" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10086" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10135" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10175" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10209" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10237" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10265" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10293" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10324" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10355" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10383" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10438" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10481" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10530" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10573" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10604" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective10656" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective11502" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective11569" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective11594" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective11625" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       id="perspective11662" />
+    <inkscape:perspective
+       id="perspective9750"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11118"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11143"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11168"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11196"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11276"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11304"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11335"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11369"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11403"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11431"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11465"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11502-2"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11533"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11561"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective11395"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7048968"
+     inkscape:cx="519.46208"
+     inkscape:cy="253.39391"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1600"
+     inkscape:window-height="838"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata9653">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-489.21176,-160.19595)">
+    <path
+       d="m 513.91707,759.65197 c -13.16961,0 -23.70531,-11.38306 -23.70531,-24.59125 l 0,-549.5088 c 0,-13.20819 11.06247,-24.27907 24.25604,-24.27907 l 747.5312,-0.0769 c 13.1697,0 23.3941,10.71064 23.3941,23.91883 l 0,549.58085 c 0,13.2322 -11.0386,24.95147 -24.2082,24.95147 l -747.26783,0 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.86400008;stroke-opacity:1;stroke-dasharray:none"
+       id="path5282" />
+    <g
+       inkscape:label="Livello 1"
+       inkscape:groupmode="layer"
+       transform="translate(374.23016,134.61559)"
+       id="layer1-1" />
+    <path
+       d="m 499.21528,737.1261 0,-553.68739 c 0,-6.6041 5.00444,-12.31964 11.58925,-12.31964 l 750.50037,0 c 6.5848,0 13.9119,5.35533 13.9119,11.98343 l 0,554.38383 c 0,6.6041 -5.3397,11.95942 -11.9245,11.95942 l -752.48777,0 c -6.58481,0 -11.58925,-5.71555 -11.58925,-12.31965"
+       style="fill:#2163ad;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path5280" />
+    <path
+       d="m 667.06799,412.3727 c -3.11282,-1.39287 -4.98051,-1.96923 -8.30882,-2.61763 -5.77069,-1.12965 -5.77069,-1.51198 -15.08521,0.1729 -2.89731,0.52833 -4.38188,1.94521 -6.29746,4.20262 -1.81981,2.16133 -2.27476,3.86639 -3.04099,6.55606 -0.86201,2.97784 -1.05356,4.80298 -0.885,7.9009 0.83711,4.9951 1.84279,7.82886 4.38189,12.24759 1.55737,2.73771 2.63393,4.22663 4.78896,6.55607 l 0,3.0739 -14.84576,6.55608 -9.60183,10.95079 -8.28489,14.00068 -12.66678,26.2723 -2.17897,15.29749 -1.72402,22.50194 1.46159,0.17292 -1.03059,7.2765 -2.44236,4.37072 0,2.01725 c 0,0 5.14812,1.00863 8.28489,0.1729 2.60998,-0.67242 6.10591,-3.24201 6.10591,-3.24201 l 0.26435,-9.70202 1.316,-8.23711 2.60998,-22.30983 5.2439,-6.1238 5.67491,-9.1977 -0.885,40.24896 -5.2439,12.27161 -3.04099,17.93913 -17.62333,46.46882 -26.88996,41.49774 1.29302,1.75404 -2.96915,2.11332 -2.70576,4.01048 6.20169,8.50128 2.10714,-1.48893 8.71589,12.67987 15.10914,1.75404 0.36013,-4.46677 -8.57222,-3.04988 -2.34659,-9.79809 0.69343,-4.13056 1.74894,1.75405 28.87737,-37.29513 3.4241,-5.1632 3.13676,-7.78082 20.3291,-38.42384 30.64927,40.51312 15.87538,29.25015 15.10914,28.5297 1.84278,-0.96061 5.14812,8.83749 11.94844,-5.1632 -0.86201,-1.48893 10.72724,-2.54557 12.90623,-6.02775 -1.55738,-4.0345 -14.41473,2.18536 -8.71589,-1.29681 1.31792,-0.88951 -23.7532,-54.1776 -5.50729,-9.46186 -20.49671,-37.46324 -8.30882,-19.69221 -0.43101,-6.55607 0,-38.51989 11.80476,23.19839 22.67568,14.62507 0.88499,-0.88759 3.92694,3.0739 1.46159,2.18536 1.58035,4.10654 1.58036,1.15272 c 0,0 2.80153,-1.84819 4.09455,-3.50617 2.20292,-2.83377 2.80154,-8.76544 2.80154,-8.76544 l -1.48458,-3.21799 -7.42287,-3.77034 -18.77268,-15.48962 -5.65097,-16.21004 -3.75932,-14.69712 -2.80154,-10.68663 -7.85388,-14.43295 -6.1059,-4.37071 c -1.24513,-0.9606 -1.74894,-2.28142 -1.74894,-3.96245 0,-1.46395 0.59767,-2.61763 1.74894,-3.48216 l 4.09454,-0.26321 c 0.71834,0.0384 1.22214,-0.11525 1.74893,-0.62439 0.59766,-0.5533 0.69345,-2.01725 0.69345,-2.01725 l 0,-6.2919 2.60996,-1.12966 -1.74892,-6.31592 -0.69344,-3.04989 c 1.58035,-3.26603 1.91559,-5.61948 1.31601,-9.1977 -0.35822,-2.16134 -0.81412,-3.38611 -1.91559,-5.25927"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path5284" />
+    <path
+       d="m 870.2392,582.9745 18.94029,-5.88365 17.62334,-24.37512 8.38067,-8.2371 c 0,0 -0.36013,-1.27184 -1.05358,-1.94521 -0.88499,-0.83956 -2.58603,-1.00863 -3.49592,-2.28141 -1.77191,-2.47354 -1.89068,-3.89042 -2.63392,-6.86827 -0.52679,-3.36208 -1.72403,-7.42059 -1.05358,-9.48588 0.59767,-1.84818 0.36013,-2.28141 2.10714,-4.05851 3.01704,-3.0499 5.86647,-4.29868 10.15258,-4.27465 4.76501,0.0192 8.35671,1.27182 11.08642,5.21123 1.31792,1.92118 1.8198,3.26602 2.08319,5.59547 0.5038,3.33807 0.28733,5.42737 -0.885,8.62134 -1.05356,2.9058 -2.10714,4.5148 -4.38188,6.67615 l 1.41369,2.28141 14.67813,7.2525 23.65741,21.85355 5.69886,25.71995 5.0284,3.53019 0.8371,5.21123 -3.68749,2.18536 -6.3693,-2.85778 -4.04667,-5.88365 -5.36361,-19.16387 -9.55396,-8.23712 -6.2017,-3.36209 0.67046,6.21986 0.5038,9.91815 4.52555,20.00442 9.38634,19.66819 c 1.00569,3.6983 2.84943,5.21123 5.86647,7.22848 3.68749,2.52156 16.28243,7.06038 16.28243,7.06038 l 11.06247,2.35346 -1.12444,15.05734 c -0.21646,2.66565 0.43101,4.75494 -1.36581,6.72417 -3.28042,3.62624 -5.93829,-11.09488 -5.93829,-11.09488 L 956.969,646.71003 c 0,0 -3.73538,-1.27183 -5.8904,-2.54558 -5.38757,-3.16997 -10.55963,-12.10351 -10.55963,-12.10351 l -4.86079,-7.87689 -5.55518,-5.23524 -4.19034,7.56469 -7.87782,14.96128 -2.17897,30.25877 -0.67046,9.75004 -17.09655,7.7328 c -1.43669,0.67242 -4.26216,-0.19212 -3.71143,-1.68105 1.70103,-4.27465 9.21872,-11.1429 9.21872,-11.1429 l -1.8198,-31.72368 4.28612,-24.20702 2.29869,-10.37442 1.55737,-10.92678 0,-12.94403 c 0,-4.39472 0.74133,-13.49637 -2.7776,-10.97481 -0.83711,0.50527 -11.23009,11.43109 -11.23009,11.43109 l -21.47844,2.35347 -6.3693,5.88364 c -1.67613,0.64937 -3.18465,0.36119 -4.52556,-0.83956 -1.96347,-1.72907 0,-6.72417 0,-6.72417 l 6.70454,-4.3707"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path5286" />
+    <path
+       d="m 794.11884,247.43841 -53.51651,2.88178 c -2.68182,0.38424 -4.28611,1.20074 -6.2017,3.09793 -1.8198,1.82512 -2.60998,3.31404 -3.11282,5.83561 l -5.41151,28.76984 c -1.10146,3.72231 -1.86769,5.7876 -3.47199,9.3418 -2.0353,4.44276 -4.38189,6.33993 -6.20169,10.87875 -2.41842,6.02773 -2.9931,9.8461 -3.25648,16.33012 -0.26436,6.70015 0.9099,10.49451 2.08319,17.0986 0.98269,5.35533 1.65314,8.35719 3.11282,13.61646 l 0,14.38492 0.76623,20.60477 c 0.0766,2.04126 0.23944,4.10655 1.93952,4.89904 3.47199,1.70602 9.67368,2.47353 15.49225,0 1.62825,-0.62439 2.27475,-2.54558 2.32265,-4.5148 l 0.38311,-20.60478 26.72234,0.38424 28.42242,1.17769 28.35059,-1.17769 26.72234,-0.38424 0.38311,20.60478 c 0.0384,1.96922 0.71834,3.89041 2.32265,4.5148 5.84251,2.47353 12.02026,1.70602 15.5162,0 1.70103,-0.79345 1.84278,-2.85778 1.91557,-4.89904 l 0.78922,-20.60477 0,-14.38492 c 1.46159,-5.25927 2.13108,-8.26113 3.08887,-13.61646 1.19724,-6.60409 2.37054,-10.39845 2.10714,-17.0986 -0.26434,-6.48402 -0.86201,-10.30239 -3.25648,-16.33012 -1.8198,-4.53882 -4.16639,-6.43599 -6.20169,-10.87875 -1.62825,-3.5542 -2.39448,-5.61949 -3.49594,-9.3418 l -5.41151,-28.76984 c -0.47889,-2.52157 -1.27003,-4.01049 -3.11282,-5.83561 -1.91557,-1.89815 -3.51988,-2.71369 -6.17775,-3.09793 l -53.61229,-2.88178 z m 0.0383,13.59243 47.74584,0.5533 c 0,0 3.18464,0.4803 4.64528,1.56193 0.86201,0.62439 1.93953,2.32944 1.93953,2.32944 l 5.81857,25.26367 c 0,0 0.40801,1.63301 0,2.49755 -0.36013,0.72044 -1.55738,1.39286 -1.55738,1.39286 l -10.46384,-0.38424 c 0,0 -13.6964,-1.17769 -18.58113,-1.17769 -4.88474,0 -8.73984,-0.15369 -14.3429,0 l -15.20492,0.24015 -14.98941,-0.24015 c -5.57913,-0.15369 -9.45818,0 -14.34291,0 -4.86079,0 -18.58113,1.17769 -18.58113,1.17769 l -10.46386,0.38424 c 0,0 -1.17233,-0.67242 -1.55736,-1.39286 -0.40802,-0.86454 0,-2.49755 0,-2.49755 l 5.81853,-25.26367 c 0,0 1.07656,-1.70602 1.93953,-2.32944 1.48457,-1.08163 4.64528,-1.56193 4.64528,-1.56193 l 47.53033,-0.5533 z m -63.4057,69.95538 c 0,-5.4754 4.42978,-9.91815 9.88918,-9.91815 5.43547,0 9.86524,4.44275 9.86524,9.91815 0,5.47539 -4.42977,9.91815 -9.86524,9.91815 -5.4594,0 -9.88918,-4.44276 -9.88918,-9.91815 z m 107.29643,0 c 0,-5.4754 4.40584,-9.91815 9.86524,-9.91815 5.4594,0 9.88918,4.44275 9.88918,9.91815 0,5.47539 -4.42978,9.91815 -9.88918,9.91815 -5.4594,0 -9.86524,-4.44276 -9.86524,-9.91815 z m -114.67141,17.29072 140.98669,0 0,5.45138 -140.98669,0 0,-5.45138 z m 33.71421,-20.60478 0,13.23221 74.34845,0 0,-13.23221 c -14.43868,-2.1133 -22.72357,-2.73769 -37.32987,-2.71368 -14.46262,0 -22.69962,0.59941 -37.01858,2.71368"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path5288" />
+    <path
+       d="m 1099.8933,373.10834 0,81.45852 66.7101,0 0,-138.78207 13.2654,0 -106.5063,-108.21111 -107.75136,108.21111 13.00201,0 0,138.78207 67.66785,0 0,-81.45852 53.6123,0 z m -53.6123,-74.68632 53.6123,0 0,44.85983 -53.6123,0 0,-44.85983 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path5290" />
+    <path
+       d="m 804.65453,665.94596 c 0,-10.51852 8.50039,-19.0198 18.9403,-19.0198 10.46385,0 18.9403,8.50128 18.9403,19.0198 0,10.47049 -8.47645,18.97177 -18.9403,18.97177 -10.43991,0 -18.9403,-8.50128 -18.9403,-18.97177"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path5292" />
+    <path
+       d="m 1195.5286,674.25511 -62.2564,3.53019 C 1088.8308,652.64171 1041.0611,611.55223 998.4394,558.7915 937.88312,483.76897 902.51672,403.43916 899.16446,344.29047 l 10.08074,-0.5533 c 4.64528,59.77307 48.17684,141.75992 119.0294,215.36556 54.5461,56.67515 115.4137,96.49185 167.254,115.15142"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path5294" />
+  </g>
+</svg>
