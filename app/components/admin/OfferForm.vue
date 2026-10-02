@@ -1,5 +1,29 @@
 <template>
   <div class="border border-ink-800 bg-ink-900/50 p-5">
+    <!-- Apply pricing to every item at once -->
+    <div class="mb-2 flex flex-wrap items-center justify-end gap-2 border-b border-ink-800 pb-4">
+      <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">Apply to all items</span>
+      <select v-model="bulkMode" class="input-dark !w-28">
+        <option value="flat">Flat price</option>
+        <option value="day">Per day</option>
+        <option value="week">Per week</option>
+      </select>
+      <input
+        v-if="bulkMode === 'day' || bulkMode === 'week'"
+        v-model.number="bulkPeriod"
+        type="number"
+        :min="bulkMode === 'week' ? 0.5 : 1"
+        max="999"
+        :step="bulkMode === 'week' ? 0.5 : 1"
+        class="input-dark !w-20 text-right"
+        :placeholder="bulkMode === 'week' ? 'Weeks' : 'Days'"
+        :title="bulkMode === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
+      >
+      <button type="button" class="btn-ghost !px-4 !py-2 !text-xs" @click="applyToAll">
+        Apply
+      </button>
+    </div>
+
     <!-- Item pricing -->
     <div class="divide-y divide-ink-800">
       <div v-for="item in quote.items" :key="item.id" class="flex items-center gap-4 py-3">
@@ -35,12 +59,12 @@
             v-if="modes[item.id] === 'day' || modes[item.id] === 'week'"
             v-model.number="periods[item.id]"
             type="number"
-            min="1"
+            :min="modes[item.id] === 'week' ? 0.5 : 1"
             max="999"
-            step="1"
+            :step="modes[item.id] === 'week' ? 0.5 : 1"
             class="input-dark !w-20 text-right"
             :placeholder="modes[item.id] === 'week' ? 'Weeks' : 'Days'"
-            :title="modes[item.id] === 'week' ? 'Number of weeks' : 'Number of days'"
+            :title="modes[item.id] === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
           >
           <span class="text-xs text-bone-400 w-24 text-right">
             {{ lineTotal(item) != null ? `= ${fmt(lineTotal(item)!)}` : currencySuffix }}
@@ -129,13 +153,28 @@ const emit = defineEmits<{ saved: [] }>()
 const latest = props.quote.offers[props.quote.offers.length - 1]
 const prices = reactive<Record<number, number | null>>({})
 const modes = reactive<Record<number, PricingMode>>({})
-// Count of days or weeks, depending on the item's mode.
+// Count of days or weeks, depending on the item's mode. Weeks may be fractional.
 const periods = reactive<Record<number, number | null>>({})
-for (const item of props.quote.items) {
+const seedItem = (item: QuoteItem) => {
   const prev = latest?.items.find(i => i.quoteItemId === item.id)
   prices[item.id] = prev ? prev.unitPrice : null
   modes[item.id] = prev?.pricing === 'day' || prev?.pricing === 'week' ? prev.pricing : 'flat'
   periods[item.id] = prev?.pricing === 'day' ? prev.days ?? 1 : prev?.pricing === 'week' ? prev.weeks ?? 1 : null
+}
+props.quote.items.forEach(seedItem)
+// The form stays mounted while the quote is edited, so in-progress prices
+// survive qty changes; only items added by the edit need seeding.
+watch(() => props.quote.items, (items) => {
+  for (const item of items) if (!(item.id in modes)) seedItem(item)
+})
+
+const bulkMode = ref<PricingMode>('week')
+const bulkPeriod = ref<number | null>(1)
+const applyToAll = () => {
+  for (const item of props.quote.items) {
+    modes[item.id] = bulkMode.value
+    periods[item.id] = bulkMode.value === 'flat' ? null : bulkPeriod.value
+  }
 }
 const currency = ref<'ISK' | 'EUR'>(latest?.currency ?? 'ISK')
 const discountType = ref<'' | 'percent' | 'fixed'>(latest?.discountType ?? '')
@@ -149,11 +188,16 @@ const notice = ref('')
 
 const needsPeriod = (id: number) => modes[id] === 'day' || modes[id] === 'week'
 const isPriced = (id: number) => typeof prices[id] === 'number' && Number.isFinite(prices[id]!) && prices[id]! >= 0
+const round2 = (n: number) => Math.round(n * 100) / 100
+// Mirrors the server: whole days, weeks to two decimals (1.5 weeks etc.).
+const periodCount = (id: number) =>
+  modes[id] === 'day' ? Math.round(periods[id]!) : modes[id] === 'week' ? round2(periods[id]!) : 1
 const hasPeriod = (id: number) => !needsPeriod(id)
-  || (typeof periods[id] === 'number' && Number.isFinite(periods[id]!) && periods[id]! >= 1)
+  || (typeof periods[id] === 'number' && Number.isFinite(periods[id]!)
+    && (modes[id] === 'week' ? periods[id]! > 0 : periods[id]! >= 1))
 const lineTotal = (item: QuoteItem): number | null => {
   if (!isPriced(item.id) || !hasPeriod(item.id)) return null
-  return prices[item.id]! * item.qty * (needsPeriod(item.id) ? Math.round(periods[item.id]!) : 1)
+  return prices[item.id]! * item.qty * periodCount(item.id)
 }
 const complete = computed(() => props.quote.items.every(i => isPriced(i.id) && hasPeriod(i.id)))
 const pricePlaceholder = (id: number) =>
@@ -188,8 +232,8 @@ const payload = (send: boolean) => ({
     quoteItemId: i.id,
     unitPrice: prices[i.id]!,
     pricing: modes[i.id],
-    days: modes[i.id] === 'day' ? Math.round(periods[i.id]!) : undefined,
-    weeks: modes[i.id] === 'week' ? Math.round(periods[i.id]!) : undefined,
+    days: modes[i.id] === 'day' ? periodCount(i.id) : undefined,
+    weeks: modes[i.id] === 'week' ? periodCount(i.id) : undefined,
   })),
 })
 

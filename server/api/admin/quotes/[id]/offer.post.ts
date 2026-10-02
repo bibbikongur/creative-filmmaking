@@ -41,8 +41,8 @@ export default defineEventHandler(async (event) => {
   if (items.some(i => i.pricing === 'day' && (!Number.isFinite(i.days!) || i.days! < 1 || i.days! > 999))) {
     errors.push('Per-day items need a number of days (1 or more).')
   }
-  if (items.some(i => i.pricing === 'week' && (!Number.isFinite(i.weeks!) || i.weeks! < 1 || i.weeks! > 999))) {
-    errors.push('Per-week items need a number of weeks (1 or more).')
+  if (items.some(i => i.pricing === 'week' && (!Number.isFinite(i.weeks!) || i.weeks! <= 0 || i.weeks! > 999))) {
+    errors.push('Per-week items need a number of weeks greater than 0 (e.g. 1.5).')
   }
 
   if (errors.length) {

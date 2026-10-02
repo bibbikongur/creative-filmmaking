@@ -127,11 +127,12 @@
       </template>
     </div>
 
-    <!-- Offer builder -->
-    <template v-if="!editing">
+    <!-- Offer builder — hidden (not unmounted) while editing so unsaved
+         prices, modes and periods survive item/qty changes. -->
+    <div v-show="!editing">
       <h2 class="mt-12 text-xl font-semibold uppercase tracking-wide text-bone-100">Make an offer</h2>
-      <AdminOfferForm :key="offerFormKey" :quote="quote" class="mt-5" @saved="reload" />
-    </template>
+      <AdminOfferForm :quote="quote" class="mt-5" @saved="reload" />
+    </div>
 
     <!-- Offer history -->
     <template v-if="quote.offers.length">
@@ -255,11 +256,6 @@ const saveEdit = async () => {
     saving.value = false
   }
 }
-
-// Re-init the offer form whenever the item list changes (its price fields are
-// seeded once per mount from the quote items).
-const offerFormKey = computed(() =>
-  quote.value ? quote.value.items.map(i => `${i.id}:${i.qty}`).join('|') : '')
 
 const formatDateTime = (iso: string) =>
   new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
