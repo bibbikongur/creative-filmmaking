@@ -50,8 +50,10 @@
 
 @layer components {
   /* ---------- Layout ---------- */
+  /* Page stage. 1440px rather than 1280 so photo grids fill a modern desktop
+     screen; running text stays on its own max-w-2xl/3xl columns. */
   .wrap {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10;
   }
 
   .section {
