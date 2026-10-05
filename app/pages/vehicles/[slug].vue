@@ -71,6 +71,19 @@
       </div>
     </div>
 
+    <!-- Equipment that travels with this vehicle -->
+    <section v-if="pairsWith.length" class="mt-20">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeading :kicker="t('vehicle.pairsWithKicker')" :title="t('vehicle.pairsWith')" :intro="t('vehicle.pairsWithIntro')" />
+        <NuxtLink :to="localePath('/equipment')" class="btn-outline btn-sm">
+          {{ t('home.featuredEquipmentAll') }}
+        </NuxtLink>
+      </div>
+      <div class="mt-8 card-grid">
+        <EquipmentCard v-for="e in pairsWith" :key="e.id" :item="e" />
+      </div>
+    </section>
+
     <!-- More in this category -->
     <section v-if="related.length" class="mt-20">
       <SectionHeading :kicker="t(`categories.${vehicle.category}`)" :title="t('vehicle.moreInCategory')" />
@@ -91,6 +104,14 @@ const { lt } = useLocalized()
 const localePath = useLocalePath()
 const route = useRoute()
 const { bySlug, byCategory } = await useVehicles()
+const { featured: featuredEquipment, all: allEquipment } = await useEquipment()
+
+// Cross-sell: the equipment people most often add to a vehicle (featured
+// items first, otherwise the first three in the catalogue).
+const pairsWith = computed(() => {
+  const picked = featuredEquipment()
+  return (picked.length ? picked : allEquipment()).slice(0, 3)
+})
 
 const found = bySlug(route.params.slug as string)
 if (!found) {

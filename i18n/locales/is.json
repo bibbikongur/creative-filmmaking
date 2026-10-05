@@ -50,7 +50,28 @@
     "why2Title": "4x4 og vetrarfært",
     "why2Text": "Öll okkar tæki og búnaður kemur útbúinn fyrir veturinn á þeim tíma árs.",
     "why3Title": "Afhent á tökustað",
-    "why3Text": "Þarftu okkur til að koma hlutunum til þín? Við getum boðið upp á að koma tækjum og eða búnaði hvert á land sem er."
+    "why3Text": "Þarftu okkur til að koma hlutunum til þín? Við getum boðið upp á að koma tækjum og eða búnaði hvert á land sem er.",
+    "statsLabel": "Í stuttu máli",
+    "stats": {
+      "fleet": "Bílar í flotanum",
+      "deliveryValue": "Allt landið",
+      "delivery": "Afhending á tökustað",
+      "responseValue": "1 virkur dagur",
+      "response": "Svartími tilboða",
+      "support": "Aðstoð á tökudögum"
+    },
+    "categoriesKicker": "Flotinn",
+    "categoriesTitle": "Veldu tegund",
+    "categoriesIntro": "Kassabílar, sendibílar, hjólhýsi, kerrur og sexhjól. Hver tegund á sína síðu með öllu sem er í boði.",
+    "howKicker": "Svona virkar þetta",
+    "howTitle": "Frá fyrirspurn á tökustað",
+    "howIntro": "Engin verð birt, enda er hvert verkefni einstakt. Þrjú skref og þú ert með bílana og búnaðinn á settinu.",
+    "how1Title": "Segðu okkur frá tökunum",
+    "how1Text": "Dagsetningar, staðsetning og hvað vantar. Einföld fyrirspurn eða listi úr tilboðskörfunni.",
+    "how2Title": "Við setjum saman tilboð",
+    "how2Text": "Eitt sérsniðið tilboð fyrir allan pakkann, að jafnaði innan eins virks dags.",
+    "how3Title": "Afhent á tökustað",
+    "how3Text": "Við skilum bílum og búnaði þangað sem tökurnar fara fram, hvar sem er á landinu."
   },
   "categories": {
     "campers": "Húsbílar",
@@ -65,7 +86,13 @@
     "all": "Allir bílar",
     "empty": "Engir bílar í þessum flokki eins og er. Hafðu samband og við finnum lausn.",
     "emptyCta": "Hafa samband",
-    "categoriesTitle": "Flokkar"
+    "categoriesTitle": "Flokkar",
+    "count": "{n} bíll | {n} bílar",
+    "seeAll": "Sjá alla",
+    "otherGroup": "Aðrir bílar",
+    "viewLabel": "Útlit lista",
+    "viewGrid": "Rist",
+    "viewList": "Listi"
   },
   "equipmentCategories": {
     "heating": "Hiti",
@@ -82,6 +109,7 @@
     "all": "Allur búnaður",
     "empty": "Enginn búnaður í þessum flokki eins og er. Hafðu samband og við finnum lausn.",
     "emptyCta": "Hafa samband",
+    "count": "{n} vara | {n} vörur",
     "seoTitle": "Hvað er til leigu?",
     "seoText": "Við leigjum út framleiðslubúnað fyrir kvikmynda- og sjónvarpsverkefni: rafstöðvar, olíuhitablásara og dísilmiðstöðvar, LED kastara, batterí banka, snúrur og rafmagnstöflur, umferðarkeilur og skilti, öryggisvesti, skjóltjöld, yfirbreiðslur, borð og stóla. Margt af þessu nýtist líka einstaklingum og fyrirtækjum.",
     "seoText2": "Búnaðurinn leigist stakur eða með bílunum okkar og fæst afhentur hvert á land sem er. Segðu okkur hvað vantar og við setjum saman tilboð samdægurs.",
@@ -103,6 +131,9 @@
     "requestIntro": "Engin verð birt, enda er hvert verkefni einstakt. Segðu okkur frá tökunum og við svörum með sérsniðnu tilboði.",
     "moreInCategory": "Fleiri í þessum flokki",
     "backToFleet": "Til baka í flotann",
+    "pairsWithKicker": "Búnaður",
+    "pairsWith": "Passar vel með",
+    "pairsWithIntro": "Rafstöð, hiti og öryggisbúnaður sem fylgir bílunum oftast á sett. Bættu við á sama tilboð.",
     "specs": {
       "units": "Fjöldi í flota",
       "unitsShort": "í flota",

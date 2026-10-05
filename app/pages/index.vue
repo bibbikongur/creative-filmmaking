@@ -2,17 +2,40 @@
   <div>
     <HeroSection :image="heroImage" />
 
-    <!-- Featured vehicles -->
-    <section class="bg-ink-900 border-y border-ink-800">
-      <div class="wrap section">
-        <div class="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeading :kicker="t('home.featuredKicker')" :title="t('home.featuredTitle')" />
-          <NuxtLink :to="localePath('/vehicles')" class="btn-outline btn-sm">
-            {{ t('home.featuredAll') }}
-          </NuxtLink>
+    <!-- Proof strip: four facts, one row, straight under the hero -->
+    <section class="bg-ink-900 border-b border-ink-800" :aria-label="t('home.statsLabel')">
+      <dl class="wrap grid grid-cols-2 lg:grid-cols-4">
+        <div
+          v-for="(s, i) in stats"
+          :key="i"
+          class="py-6 lg:py-7 border-ink-800"
+          :class="[i % 2 === 1 ? 'border-l pl-6 lg:pl-8' : '', i >= 2 ? 'border-t lg:border-t-0 lg:border-l lg:pl-8' : '']"
+        >
+          <dd class="font-heading font-semibold text-3xl sm:text-4xl text-gold-500 tabular-nums leading-none">{{ s.value }}</dd>
+          <dt class="mt-2 meta">{{ s.label }}</dt>
         </div>
-        <div class="mt-10 card-grid xl:grid-cols-4">
-          <VehicleCard v-for="v in featured()" :key="v.id" :vehicle="v" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
+      </dl>
+    </section>
+
+    <!-- Featured vehicles -->
+    <section class="wrap section">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeading :kicker="t('home.featuredKicker')" :title="t('home.featuredTitle')" />
+        <NuxtLink :to="localePath('/vehicles')" class="btn-outline btn-sm">
+          {{ t('home.featuredAll') }}
+        </NuxtLink>
+      </div>
+      <div class="mt-10 card-grid xl:grid-cols-4">
+        <VehicleCard v-for="v in featured()" :key="v.id" :vehicle="v" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
+      </div>
+    </section>
+
+    <!-- Fleet by type: photographic tiles into the category pages -->
+    <section v-if="categoryTiles.length" class="bg-ink-900 border-y border-ink-800">
+      <div class="wrap section">
+        <SectionHeading :kicker="t('home.categoriesKicker')" :title="t('home.categoriesTitle')" :intro="t('home.categoriesIntro')" />
+        <div class="mt-10">
+          <CategoryTiles :tiles="categoryTiles" />
         </div>
       </div>
     </section>
@@ -30,18 +53,37 @@
       </div>
     </section>
 
+    <!-- How it works: a real three-step sequence, so the numbers carry meaning -->
+    <section class="bg-ink-900 border-y border-ink-800">
+      <div class="wrap section">
+        <div class="grid gap-10 lg:grid-cols-5 lg:items-start">
+          <div class="lg:col-span-2">
+            <SectionHeading :kicker="t('home.howKicker')" :title="t('home.howTitle')" :intro="t('home.howIntro')" />
+            <NuxtLink :to="localePath('/contact')" class="btn-gold mt-8">
+              {{ t('nav.cta') }}
+            </NuxtLink>
+          </div>
+          <ol class="lg:col-span-3 grid gap-px bg-ink-700 border border-ink-700 sm:grid-cols-3">
+            <li v-for="(step, i) in steps" :key="i" class="bg-ink-900 p-6 sm:p-7 flex flex-col">
+              <span class="font-heading font-semibold text-4xl text-gold-500 tabular-nums leading-none" aria-hidden="true">0{{ i + 1 }}</span>
+              <h3 class="h4 mt-6">{{ t(step.title) }}</h3>
+              <p class="mt-3 text-sm text-bone-400 leading-relaxed">{{ t(step.text) }}</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
     <!-- Why us -->
     <section class="wrap section">
-      <SectionHeading :kicker="t('home.whyKicker')" :title="t('home.whyTitle')" center />
-      <div class="mt-12 grid gap-10 md:grid-cols-3">
-        <div v-for="(item, i) in whyItems" :key="i" class="text-center">
-          <div class="mx-auto w-14 h-14 flex items-center justify-center border border-gold-500/40 text-gold-500">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" v-html="item.icon" />
-          </div>
-          <h3 class="h3 mt-5">
+      <SectionHeading :kicker="t('home.whyKicker')" :title="t('home.whyTitle')" />
+      <div class="mt-10 grid gap-8 md:grid-cols-3">
+        <div v-for="(item, i) in whyItems" :key="i" class="border-l-2 border-gold-500 pl-5">
+          <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" v-html="item.icon" />
+          <h3 class="h3 mt-4">
             {{ t(item.title) }}
           </h3>
-          <p class="mt-2.5 text-sm text-bone-400 leading-relaxed max-w-xs mx-auto">
+          <p class="mt-2.5 text-sm text-bone-400 leading-relaxed">
             {{ t(item.text) }}
           </p>
         </div>
@@ -61,6 +103,9 @@
 </template>
 
 <script setup lang="ts">
+import { vehicleLandings } from '~/data/vehicleLandings'
+import type { CategoryTile } from '~/components/CategoryTiles.vue'
+
 const { t } = useI18n()
 const localePath = useLocalePath()
 const { featured, all } = await useVehicles()
@@ -73,12 +118,40 @@ const { all: allEquipment, featured: featuredEquipmentItems } = await useEquipme
 const HERO_IMAGE: string | undefined = '/images/hero.jpg'
 const heroImage = computed(() => HERO_IMAGE ?? featured()[0]?.images[0] ?? all().find(v => v.images[0])?.images[0])
 
+// Counted from the live catalogue so the number never goes stale.
+const fleetCount = computed(() => all().reduce((n, v) => n + (v.specs.units ?? 1), 0))
+const stats = computed(() => [
+  { value: `${fleetCount.value}+`, label: t('home.stats.fleet') },
+  { value: t('home.stats.deliveryValue'), label: t('home.stats.delivery') },
+  { value: t('home.stats.responseValue'), label: t('home.stats.response') },
+  { value: '24/7', label: t('home.stats.support') },
+])
+
+// One tile per vehicle type that has vehicles, in landing order; the first
+// vehicle photo of the type is the tile image.
+const categoryTiles = computed<CategoryTile[]>(() => vehicleLandings.flatMap((l) => {
+  const items = all().filter(v => v.kind === l.kind)
+  if (!items.length) return []
+  return [{
+    title: t(`${l.key}.title`),
+    count: t('catalogue.count', items.reduce((n, v) => n + (v.specs.units ?? 1), 0)),
+    to: localePath({ name: l.routeName }),
+    image: items.find(v => v.images[0])?.images[0],
+  }]
+}))
+
 // Items ticked "featured" in the admin fill the home section; until any are
 // ticked, fall back to the first four so the section isn't empty.
 const featuredEquipment = computed(() => {
   const picked = featuredEquipmentItems()
   return picked.length ? picked : allEquipment().slice(0, 4)
 })
+
+const steps = [
+  { title: 'home.how1Title', text: 'home.how1Text' },
+  { title: 'home.how2Title', text: 'home.how2Text' },
+  { title: 'home.how3Title', text: 'home.how3Text' },
+]
 
 const whyItems = [
   {

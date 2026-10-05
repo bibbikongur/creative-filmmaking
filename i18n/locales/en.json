@@ -50,7 +50,28 @@
     "why2Title": "4x4 & winter capable",
     "why2Text": "All our vehicles and equipment come winter-ready at that time of year.",
     "why3Title": "Delivered to location",
-    "why3Text": "Need us to bring things to you? We can deliver vehicles and equipment anywhere in Iceland."
+    "why3Text": "Need us to bring things to you? We can deliver vehicles and equipment anywhere in Iceland.",
+    "statsLabel": "At a glance",
+    "stats": {
+      "fleet": "Vehicles in the fleet",
+      "deliveryValue": "All of Iceland",
+      "delivery": "Delivery to location",
+      "responseValue": "1 business day",
+      "response": "Offer turnaround",
+      "support": "Support on shoot days"
+    },
+    "categoriesKicker": "The fleet",
+    "categoriesTitle": "Pick a type",
+    "categoriesIntro": "Box trucks, cargo vans, caravans, trailers and six-wheelers. Every type has its own page with everything available.",
+    "howKicker": "How it works",
+    "howTitle": "From enquiry to location",
+    "howIntro": "No listed prices, because every production is different. Three steps and the vehicles and gear are on set.",
+    "how1Title": "Tell us about the shoot",
+    "how1Text": "Dates, location and what you need. A quick enquiry or a list from the quote basket.",
+    "how2Title": "We put together an offer",
+    "how2Text": "One tailored offer for the whole package, usually within one business day.",
+    "how3Title": "Delivered to location",
+    "how3Text": "We bring the vehicles and equipment to wherever you are shooting, anywhere in Iceland."
   },
   "categories": {
     "campers": "Campers",
@@ -65,7 +86,13 @@
     "all": "All vehicles",
     "empty": "No vehicles in this category yet. Contact us and we'll find a solution.",
     "emptyCta": "Contact us",
-    "categoriesTitle": "Categories"
+    "categoriesTitle": "Categories",
+    "count": "{n} vehicle | {n} vehicles",
+    "seeAll": "See all",
+    "otherGroup": "Other vehicles",
+    "viewLabel": "Layout",
+    "viewGrid": "Grid",
+    "viewList": "List"
   },
   "equipmentCategories": {
     "heating": "Heating",
@@ -85,6 +112,7 @@
     "all": "All equipment",
     "empty": "No equipment in this category yet. Contact us and we'll find a solution.",
     "emptyCta": "Contact us",
+    "count": "{n} item | {n} items",
     "factsTitle": "Key facts",
     "facts": {
       "category": "Category",
@@ -103,6 +131,9 @@
     "requestIntro": "No listed prices, because every production is different. Tell us about your shoot and we'll reply with a tailored offer.",
     "moreInCategory": "More in this category",
     "backToFleet": "Back to the fleet",
+    "pairsWithKicker": "Equipment",
+    "pairsWith": "Pairs well with",
+    "pairsWithIntro": "The generator, heating and safety kit that most often travels with the vehicles. Add it to the same offer.",
     "specs": {
       "units": "Units in fleet",
       "unitsShort": "in fleet",

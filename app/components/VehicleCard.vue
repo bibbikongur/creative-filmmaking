@@ -1,17 +1,24 @@
 <template>
   <!-- The title link is stretched over the whole card (after:inset-0), so the card stays
        clickable without wrapping buttons inside an <a>. Interactive children sit above it
-       with relative z-10. -->
-  <article class="group relative flex flex-col bg-ink-800 border-t-2 border-transparent hover:border-gold-500 focus-within:border-gold-500 transition-colors duration-300">
+       with relative z-10. `layout="row"` lays the image beside the text (catalogue list view). -->
+  <article
+    class="group relative flex bg-ink-800 border-t-2 border-transparent hover:border-gold-500 focus-within:border-gold-500 transition-colors duration-300"
+    :class="row ? 'flex-col md:flex-row md:items-stretch' : 'flex-col'"
+  >
     <!-- Image -->
-    <div class="relative overflow-hidden aspect-card bg-ink-900">
+    <div
+      class="relative overflow-hidden bg-ink-900 aspect-card"
+      :class="row ? 'md:w-[38%] md:shrink-0 md:aspect-auto md:min-h-[14rem]' : ''"
+    >
       <NuxtImg
         v-if="vehicle.images[0]"
         :src="vehicle.images[0]"
         :provider="imgProvider(vehicle.images[0])"
         :alt="lt(vehicle.name)"
         class="w-full h-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-105"
-        :sizes="sizes"
+        :class="row ? 'md:absolute md:inset-0' : ''"
+        :sizes="row ? 'xs:100vw md:40vw' : sizes"
         format="webp"
         loading="lazy"
       />
@@ -22,7 +29,7 @@
     </div>
 
     <!-- Body -->
-    <div class="flex-1 flex flex-col p-5">
+    <div class="flex-1 flex flex-col p-5" :class="row ? 'md:p-6 md:justify-center' : ''">
       <h3 class="h3">
         <NuxtLink
           :to="localePath(`/vehicles/${vehicle.slug}`)"
@@ -31,7 +38,7 @@
           {{ lt(vehicle.name) }}
         </NuxtLink>
       </h3>
-      <p class="mt-2 text-sm text-bone-400 leading-relaxed line-clamp-2 min-h-[2.5rem]">
+      <p class="mt-2 text-sm text-bone-400 leading-relaxed" :class="row ? 'md:text-base' : 'line-clamp-2 min-h-[2.5rem]'">
         {{ lt(vehicle.tagline) }}
       </p>
 
@@ -69,10 +76,25 @@
           </svg>
           {{ t('vehicle.specs.generator') }}
         </span>
+        <!-- Row layout has room for two more facts -->
+        <template v-if="row">
+          <span v-if="vehicle.specs.towingCapacityKg" class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17h16M7 17a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM3 13h18l-2-5H5l-2 5z" />
+            </svg>
+            {{ vehicle.specs.towingCapacityKg.toLocaleString(locale === 'is' ? 'is-IS' : 'en-GB') }} kg {{ t('vehicle.specs.towingCapacityKg').toLowerCase() }}
+          </span>
+          <span v-if="vehicle.specs.heating" class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c1 3 4 5 4 9a4 4 0 11-8 0c0-2 1-3 1-3s0 2 2 2c0-3-1-5 1-8z" />
+            </svg>
+            {{ t('vehicle.specs.heating') }}
+          </span>
+        </template>
       </div>
 
       <!-- Footer: pushed to the bottom so cards in a row line up -->
-      <div class="mt-auto pt-4 border-t border-ink-700 flex items-center justify-between gap-3">
+      <div class="mt-auto pt-4 border-t border-ink-700 flex items-center justify-between gap-3" :class="row ? 'md:mt-6' : ''">
         <span class="text-sm font-heading font-semibold uppercase tracking-wider text-gold-500 group-hover:text-gold-400 transition-colors flex items-center gap-2">
           {{ t('common.viewDetails') }}
           <svg class="w-4 h-4 transition-transform motion-safe:group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -88,15 +110,20 @@
 <script setup lang="ts">
 import type { Vehicle } from '~/types'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   vehicle: Vehicle
   /** @nuxt/image sizes string matching the grid the card sits in */
   sizes?: string
+  /** "row" puts the photo beside the text (catalogue list view) */
+  layout?: 'grid' | 'row'
 }>(), {
   sizes: 'xs:100vw sm:50vw md:33vw',
+  layout: 'grid',
 })
 
-const { t } = useI18n()
+const row = computed(() => props.layout === 'row')
+
+const { t, locale } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
 </script>

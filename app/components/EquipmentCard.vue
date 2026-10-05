@@ -1,10 +1,17 @@
 <template>
-  <!-- Same shell as VehicleCard: stretched title link, interactive children at z-10. -->
-  <article class="group relative flex flex-col bg-ink-800 border-t-2 border-transparent hover:border-gold-500 focus-within:border-gold-500 transition-colors duration-300">
+  <!-- Same shell as VehicleCard: stretched title link, interactive children at z-10.
+       `layout="row"` lays the image beside the text (catalogue list view). -->
+  <article
+    class="group relative flex bg-ink-800 border-t-2 border-transparent hover:border-gold-500 focus-within:border-gold-500 transition-colors duration-300"
+    :class="row ? 'flex-col md:flex-row md:items-stretch' : 'flex-col'"
+  >
     <!-- Image. Equipment photos are opaque white manufacturer cutouts, so they live in a
          deliberate white "product well" (shared with the detail gallery) rather than fighting
          the dark stage. -->
-    <div class="relative overflow-hidden aspect-card" :class="item.images.length ? 'bg-product-well' : 'bg-ink-900'">
+    <div
+      class="relative overflow-hidden aspect-card"
+      :class="[item.images.length ? 'bg-product-well' : 'bg-ink-900', row ? 'md:w-[34%] md:shrink-0 md:aspect-auto md:min-h-[13rem]' : '']"
+    >
       <NuxtImg
         v-if="item.images.length"
         :key="active"
@@ -12,7 +19,8 @@
         :provider="imgProvider(item.images[active]!)"
         :alt="lt(item.name)"
         class="w-full h-full object-contain p-4 transition-transform duration-500 motion-safe:group-hover:scale-105"
-        :sizes="sizes"
+        :class="row ? 'md:absolute md:inset-0' : ''"
+        :sizes="row ? 'xs:100vw md:35vw' : sizes"
         format="webp"
         loading="lazy"
       />
@@ -64,7 +72,7 @@
     </div>
 
     <!-- Body -->
-    <div class="flex-1 flex flex-col p-5">
+    <div class="flex-1 flex flex-col p-5" :class="row ? 'md:p-6 md:justify-center' : ''">
       <h3 class="h3">
         <NuxtLink
           :to="localePath(`/equipment/${equipmentSlug(item)}`)"
@@ -73,11 +81,15 @@
           {{ lt(item.name) }}
         </NuxtLink>
       </h3>
-      <p class="mt-2 text-sm text-bone-400 leading-relaxed line-clamp-2 min-h-[2.5rem]">
+      <p class="mt-2 text-sm text-bone-400 leading-relaxed" :class="row ? 'md:text-base' : 'line-clamp-2 min-h-[2.5rem]'">
         {{ lt(item.tagline) }}
       </p>
+      <!-- Row layout has room for the first description paragraph -->
+      <p v-if="row && firstParagraph" class="hidden md:block mt-3 text-sm text-bone-400 leading-relaxed line-clamp-2">
+        {{ firstParagraph }}
+      </p>
 
-      <div class="mt-auto pt-4 border-t border-ink-700 flex items-center justify-between gap-3">
+      <div class="mt-auto pt-4 border-t border-ink-700 flex items-center justify-between gap-3" :class="row ? 'md:mt-6' : ''">
         <span class="text-sm font-heading font-semibold uppercase tracking-wider text-gold-500 group-hover:text-gold-400 transition-colors flex items-center gap-2">
           {{ t('common.viewDetails') }}
           <svg class="w-4 h-4 transition-transform motion-safe:group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -97,15 +109,21 @@ const props = withDefaults(defineProps<{
   item: EquipmentItem
   /** @nuxt/image sizes string matching the grid the card sits in */
   sizes?: string
+  /** "row" puts the photo beside the text (catalogue list view) */
+  layout?: 'grid' | 'row'
 }>(), {
   sizes: 'xs:100vw sm:50vw md:33vw',
+  layout: 'grid',
 })
+
+const row = computed(() => props.layout === 'row')
 
 const { t } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
 
 const active = ref(0)
+const firstParagraph = computed(() => (props.item.description ? lt(props.item.description).split('\n\n')[0]?.trim() : ''))
 
 const step = (dir: number) => {
   active.value = (active.value + dir + props.item.images.length) % props.item.images.length
