@@ -70,7 +70,7 @@ export default defineNuxtConfig({
         { rel: 'manifest', href: '/site.webmanifest' },
       ],
       meta: [
-        { name: 'theme-color', content: '#09090B' },
+        { name: 'theme-color', content: '#0E1318' },
         // Google Search Console ownership proof — set NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION
         // on Railway to the content= token GSC hands out, redeploy, done.
         ...(process.env.NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION

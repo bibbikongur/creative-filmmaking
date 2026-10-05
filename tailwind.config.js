@@ -15,25 +15,26 @@ export default {
         heading: ['Oswald', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Near-black stage — page and section backgrounds
+        // "Blue hour" palette (2026-10-05): the colours of the hero still. A deep
+        // slate-blue dusk stage instead of near-black — page and section backgrounds.
         ink: {
-          400: '#8A8A94', // meta text on dark surfaces (AA on ink-800/900/950)
-          500: '#55555E',
-          700: '#26262D',
-          800: '#1A1A1F',
-          900: '#101013',
-          950: '#09090B',
+          400: '#8694A1', // meta text on dark surfaces (AA on ink-800/900/950)
+          500: '#55697A', // outline-button borders
+          700: '#2E3B47', // hairlines, dividers
+          800: '#1B242D', // card surface
+          900: '#141B22', // alternating sections, footer
+          950: '#0E1318', // page
         },
-        // Warm off-whites — text on the dark stage (never pure white)
+        // Fog whites — text on the dark stage (never pure white)
         bone: {
-          100: '#F2F0EA',
-          400: '#A6A39B',
+          100: '#EEF1F4',
+          400: '#A8B2BD',
         },
-        // Gold — the single accent: CTAs, kickers, active states
+        // Headlight amber — the single accent: CTAs, kickers, active states
         gold: {
-          400: '#E3B453',
-          500: '#C9962E',
-          600: '#A87A1F',
+          400: '#F7BE63',
+          500: '#F0A83B',
+          600: '#C9862A',
         },
         // "REC" red — recording-dot motif and form errors only
         signal: {
@@ -47,7 +48,7 @@ export default {
       backgroundImage: {
         // Warm gold glow in the top-right corner; keeps the hero and CTA banner from ever reading flat black
         'hero-vignette':
-          'radial-gradient(120% 90% at 85% 15%, rgba(201,150,46,0.16) 0%, rgba(201,150,46,0.04) 40%, transparent 70%)',
+          'radial-gradient(120% 90% at 85% 15%, rgba(240,168,59,0.18) 0%, rgba(240,168,59,0.05) 40%, transparent 70%)',
         // Equipment photos are opaque white manufacturer cutouts, so they sit in a deliberate white "product well"
         'product-well': 'radial-gradient(circle at 50% 40%, #ffffff 0%, #f4f4f4 100%)',
       },
