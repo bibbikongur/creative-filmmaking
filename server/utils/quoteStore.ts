@@ -182,7 +182,8 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
     }
     const pricing: PricingMode = priced.pricing === 'day' || priced.pricing === 'week' ? priced.pricing : 'flat'
     const days = pricing === 'day' ? Math.max(1, Math.round(priced.days ?? 1)) : undefined
-    const weeks = pricing === 'week' ? Math.max(1, Math.round(priced.weeks ?? 1)) : undefined
+    // Weeks may be fractional (e.g. 1.5 weeks); kept to two decimals.
+    const weeks = pricing === 'week' ? Math.max(0.01, round2(priced.weeks ?? 1)) : undefined
     return {
       quoteItemId: qi.id,
       name: qi.name,
