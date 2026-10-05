@@ -30,31 +30,23 @@
       </div>
     </section>
 
-    <!-- Fleet by type: photographic tiles into the category pages -->
-    <section v-if="categoryTiles.length" class="bg-ink-900 border-y border-ink-800">
-      <div class="wrap section">
-        <SectionHeading :kicker="t('home.categoriesKicker')" :title="t('home.categoriesTitle')" :intro="t('home.categoriesIntro')" />
-        <div class="mt-10">
-          <CategoryTiles :tiles="categoryTiles" />
-        </div>
-      </div>
-    </section>
-
     <!-- Featured equipment -->
-    <section v-if="featuredEquipment.length" class="wrap section">
+    <section v-if="featuredEquipment.length" class="bg-ink-900 border-y border-ink-800">
+      <div class="wrap section">
       <div class="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading :kicker="t('home.featuredEquipmentKicker')" :title="t('home.featuredEquipmentTitle')" :intro="t('home.featuredEquipmentIntro')" />
         <NuxtLink :to="localePath('/equipment')" class="btn-outline btn-sm">
           {{ t('home.featuredEquipmentAll') }}
         </NuxtLink>
       </div>
-      <div class="mt-10 card-grid xl:grid-cols-4">
-        <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
+        <div class="mt-10 card-grid xl:grid-cols-4">
+          <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
+        </div>
       </div>
     </section>
 
     <!-- How it works: a real three-step sequence, so the numbers carry meaning -->
-    <section class="bg-ink-900 border-y border-ink-800">
+    <section>
       <div class="wrap section">
         <div class="grid gap-10 lg:grid-cols-5 lg:items-start">
           <div class="lg:col-span-2">
@@ -64,7 +56,7 @@
             </NuxtLink>
           </div>
           <ol class="lg:col-span-3 grid gap-px bg-ink-700 border border-ink-700 sm:grid-cols-3">
-            <li v-for="(step, i) in steps" :key="i" class="bg-ink-900 p-6 sm:p-7 flex flex-col">
+            <li v-for="(step, i) in steps" :key="i" class="bg-ink-950 p-6 sm:p-7 flex flex-col">
               <span class="font-heading font-semibold text-4xl text-gold-500 tabular-nums leading-none" aria-hidden="true">0{{ i + 1 }}</span>
               <h3 class="h4 mt-6">{{ t(step.title) }}</h3>
               <p class="mt-3 text-sm text-bone-400 leading-relaxed">{{ t(step.text) }}</p>
@@ -75,27 +67,27 @@
     </section>
 
     <!-- Why us -->
-    <section class="wrap section">
-      <SectionHeading :kicker="t('home.whyKicker')" :title="t('home.whyTitle')" />
-      <div class="mt-10 grid gap-8 md:grid-cols-3">
-        <div v-for="(item, i) in whyItems" :key="i" class="border-l-2 border-gold-500 pl-5">
-          <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" v-html="item.icon" />
-          <h3 class="h3 mt-4">
-            {{ t(item.title) }}
-          </h3>
-          <p class="mt-2.5 text-sm text-bone-400 leading-relaxed">
-            {{ t(item.text) }}
-          </p>
+    <section class="bg-ink-900 border-y border-ink-800">
+      <div class="wrap section">
+        <SectionHeading :kicker="t('home.whyKicker')" :title="t('home.whyTitle')" />
+        <div class="mt-10 grid gap-8 md:grid-cols-3">
+          <div v-for="(item, i) in whyItems" :key="i" class="border-l-2 border-gold-500 pl-5">
+            <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" v-html="item.icon" />
+            <h3 class="h3 mt-4">
+              {{ t(item.title) }}
+            </h3>
+            <p class="mt-2.5 text-sm text-bone-400 leading-relaxed">
+              {{ t(item.text) }}
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- FAQ: the pre-sales questions every enquiry starts with, answered in
          crawlable HTML (and as schema.org Question nodes). -->
-    <section v-if="faqItems.length" class="bg-ink-900 border-y border-ink-800">
-      <div class="wrap section">
-        <FaqSection :kicker="t('faq.kicker')" :title="t('faq.title')" :items="faqItems" open-first />
-      </div>
+    <section v-if="faqItems.length" class="wrap section">
+      <FaqSection :kicker="t('faq.kicker')" :title="t('faq.title')" :items="faqItems" open-first />
     </section>
 
     <CtaBanner />
@@ -103,9 +95,6 @@
 </template>
 
 <script setup lang="ts">
-import { vehicleLandings } from '~/data/vehicleLandings'
-import type { CategoryTile } from '~/components/CategoryTiles.vue'
-
 const { t } = useI18n()
 const localePath = useLocalePath()
 const { featured, all } = await useVehicles()
@@ -126,19 +115,6 @@ const stats = computed(() => [
   { value: t('home.stats.responseValue'), label: t('home.stats.response') },
   { value: '24/7', label: t('home.stats.support') },
 ])
-
-// One tile per vehicle type that has vehicles, in landing order; the first
-// vehicle photo of the type is the tile image.
-const categoryTiles = computed<CategoryTile[]>(() => vehicleLandings.flatMap((l) => {
-  const items = all().filter(v => v.kind === l.kind)
-  if (!items.length) return []
-  return [{
-    title: t(`${l.key}.title`),
-    count: t('catalogue.count', items.reduce((n, v) => n + (v.specs.units ?? 1), 0)),
-    to: localePath({ name: l.routeName }),
-    image: items.find(v => v.images[0])?.images[0],
-  }]
-}))
 
 // Items ticked "featured" in the admin fill the home section; until any are
 // ticked, fall back to the first four so the section isn't empty.
