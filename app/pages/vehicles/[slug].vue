@@ -1,13 +1,6 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-    <!-- Breadcrumb -->
-    <nav class="text-xs uppercase tracking-widest text-bone-400">
-      <NuxtLink :to="localePath('/vehicles')" class="hover:text-gold-400 transition-colors">
-        {{ t('nav.fleet') }}
-      </NuxtLink>
-      <span class="mx-2 text-ink-500">/</span>
-      <span class="text-gold-500">{{ t(`categories.${vehicle.category}`) }}</span>
-    </nav>
+  <div class="wrap section-sm">
+    <Breadcrumbs :items="crumbs" />
 
     <div class="mt-8 grid gap-10 lg:grid-cols-5">
       <!-- Gallery -->
@@ -19,10 +12,10 @@
       <div class="lg:col-span-2">
         <p class="kicker">{{ t(`categories.${vehicle.category}`) }}</p>
         <!-- "til leigu" in the visible H1 — matches the search query directly. -->
-        <h1 class="mt-3 text-3xl sm:text-4xl font-semibold uppercase tracking-wide text-bone-100">
+        <h1 class="h1 lg:text-4xl mt-3">
           {{ t('meta.vehicleTitle', { name: lt(vehicle.name) }) }}
         </h1>
-        <p class="mt-3 text-lg text-bone-400 leading-relaxed">
+        <p class="mt-4 text-lg text-bone-400 leading-relaxed">
           {{ lt(vehicle.tagline) }}
         </p>
 
@@ -31,12 +24,12 @@
         </div>
 
         <!-- Highlights -->
-        <h2 class="mt-8 text-sm font-heading font-semibold uppercase tracking-widest text-bone-100">
+        <h2 class="h4 mt-8">
           {{ t('vehicle.highlightsTitle') }}
         </h2>
         <ul class="mt-4 space-y-2.5">
           <li v-for="(h, i) in vehicle.highlights" :key="i" class="flex items-start gap-3 text-sm text-bone-400">
-            <svg class="w-4 h-4 mt-0.5 shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 mt-0.5 shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
             {{ lt(h) }}
@@ -44,10 +37,10 @@
         </ul>
 
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <a href="#request-offer" class="btn-gold flex-1 text-center">
+          <a href="#request-offer" class="btn-gold flex-1">
             {{ t('common.requestOffer') }}
           </a>
-          <AddToCartButton type="vehicle" :id="vehicle.id" class="justify-center flex-1" />
+          <AddToCartButton type="vehicle" :id="vehicle.id" class="flex-1" />
         </div>
       </div>
     </div>
@@ -55,7 +48,7 @@
     <!-- Specs + offer form -->
     <div class="mt-16 grid gap-12 lg:grid-cols-5">
       <div class="lg:col-span-2">
-        <h2 class="text-2xl font-semibold uppercase tracking-wide text-bone-100">
+        <h2 class="h3">
           {{ t('vehicle.specsTitle') }}
         </h2>
         <div class="mt-6">
@@ -64,15 +57,15 @@
       </div>
 
       <div id="request-offer" class="lg:col-span-3 scroll-mt-28">
-        <div class="bg-ink-800 border border-ink-700 p-6 sm:p-8">
-          <h2 class="text-2xl font-semibold uppercase tracking-wide text-bone-100">
+        <div class="panel">
+          <h2 class="h3">
             {{ t('vehicle.requestTitle') }}
           </h2>
           <p class="mt-2 text-sm text-bone-400 leading-relaxed">
             {{ t('vehicle.requestIntro') }}
           </p>
           <div class="mt-7">
-            <RequestOfferForm :vehicle="vehicle.slug" />
+            <QuoteForm :interest="lt(vehicle.name)" message-required />
           </div>
         </div>
       </div>
@@ -81,22 +74,18 @@
     <!-- More in this category -->
     <section v-if="related.length" class="mt-20">
       <SectionHeading :kicker="t(`categories.${vehicle.category}`)" :title="t('vehicle.moreInCategory')" />
-      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-8 card-grid">
         <VehicleCard v-for="v in related" :key="v.id" :vehicle="v" />
       </div>
     </section>
 
-    <!-- Sticky mobile CTA -->
-    <div class="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-ink-950/90 backdrop-blur border-t border-ink-800 p-3">
-      <a href="#request-offer" class="btn-gold w-full !py-3">
-        {{ t('common.requestOffer') }}
-      </a>
-    </div>
-    <div class="h-16 lg:hidden" aria-hidden="true" />
+    <StickyCta href="#request-offer" :label="t('common.requestOffer')" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { landingForKind } from '~/data/vehicleLandings'
+
 const { t } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
@@ -115,8 +104,19 @@ const related = computed(() =>
   byCategory(vehicle.category).filter(v => v.slug !== vehicle.slug).slice(0, 3),
 )
 
+// Breadcrumbs renders the trail and emits the matching BreadcrumbList JSON-LD.
+// The category level links to the vehicle's keyword landing page when it has one.
+const landing = landingForKind(vehicle.kind)
+const crumbs = computed(() => [
+  { label: t('nav.home'), to: localePath('/') },
+  { label: t('nav.fleet'), to: localePath('/vehicles') },
+  ...(landing ? [{ label: t(`${landing.key}.title`), to: localePath({ name: landing.routeName }) }] : []),
+  { label: lt(vehicle.name), to: localePath(`/vehicles/${vehicle.slug}`) },
+])
+
 const siteUrl = useRuntimeConfig().public.siteUrl
 const absImage = (src: string) => (src.startsWith('http') ? src : `${siteUrl}${src}`)
+const { ogImageUrl } = useOgImage()
 
 // Tagline alone is too thin for a snippet; pad it with the opening of the
 // description and trim to Google's ~160-character display window.
@@ -132,7 +132,8 @@ useSeoMeta({
   description: () => metaDescription.value,
   ogTitle: () => `${t('meta.vehicleTitle', { name: lt(vehicle.name) })} · Creative Filmmaking`,
   ogDescription: () => lt(vehicle.tagline),
-  ogImage: vehicle.images[0] ? absImage(vehicle.images[0]) : undefined,
+  // A real 1200×630 crop, so the site-wide og:image:width/height are true here too.
+  ogImage: ogImageUrl(vehicle.images[0], 'cover'),
   ogImageAlt: vehicle.images[0] ? () => lt(vehicle.name) : undefined,
 })
 
@@ -152,12 +153,5 @@ useSchemaOrg([
     ...(vehicle.specs.fuel ? { fuelType: vehicle.specs.fuel } : {}),
     ...(vehicle.specs.transmission ? { vehicleTransmission: vehicle.specs.transmission } : {}),
   },
-  defineBreadcrumb({
-    itemListElement: [
-      { name: t('nav.home'), item: localePath('/') },
-      { name: t('nav.fleet'), item: localePath('/vehicles') },
-      { name: lt(vehicle.name), item: localePath(`/vehicles/${vehicle.slug}`) },
-    ],
-  }),
 ])
 </script>

@@ -13,6 +13,12 @@ export default defineProvider({
     const params = new URLSearchParams()
     if (modifiers.width) {
       params.set('w', String(Math.round(modifiers.width)))
+      // Height + fit are only honoured by the route for the 1200×630 share
+      // crop (see useOgImage); other sizes stay width-only.
+      if (modifiers.height) {
+        params.set('h', String(Math.round(modifiers.height)))
+        if (modifiers.fit === 'contain') params.set('fit', 'contain')
+      }
       // Default to webp; the route only transcodes to webp or jpeg.
       params.set('f', modifiers.format === 'jpeg' || modifiers.format === 'jpg' ? 'jpeg' : 'webp')
       if (modifiers.quality) params.set('q', String(modifiers.quality))

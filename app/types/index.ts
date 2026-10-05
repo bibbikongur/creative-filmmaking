@@ -5,6 +5,15 @@ export type LocalizedText = Record<LocaleCode, string>
 
 export type VehicleCategory = 'campers' | 'equipment-cars' | 'support-vehicles' | 'trailers'
 
+/**
+ * What people actually search for ("kassabíll til leigu", "kerra til leigu").
+ * Finer than VehicleCategory; drives the keyword landing pages under
+ * /vehicles/<kind> (see app/data/vehicleLandings.ts). Optional so rows saved
+ * before the field existed stay valid; such vehicles simply appear on no
+ * landing page until an admin picks one.
+ */
+export type VehicleKind = 'box-truck' | 'cargo-van' | 'caravan' | 'trailer' | 'atv' | 'pickup'
+
 export interface VehicleSpecs {
   /** Identical units in the fleet — shown when more than one can be booked at once */
   units?: number
@@ -46,6 +55,7 @@ export interface Vehicle {
   /** URL segment — never localized */
   slug: string
   category: VehicleCategory
+  kind?: VehicleKind
   name: LocalizedText
   /** One-liner shown on cards and as the detail-page subhead */
   tagline: LocalizedText
@@ -65,10 +75,20 @@ export type EquipmentCategory = 'heating' | 'shelter' | 'safety' | 'furniture' |
 export interface EquipmentItem {
   /** Stable internal key, e.g. 'e-001' */
   id: string
+  /**
+   * URL segment. Optional: rows without one get a slug derived from the
+   * Icelandic name (see app/utils/equipmentSlug.ts), which is how it always
+   * worked. Set explicitly so a rename in admin can't move the page's URL.
+   */
+  slug?: string
   category: EquipmentCategory
   name: LocalizedText
   /** One-liner shown under the name on the card */
   tagline: LocalizedText
+  /** Longer copy for the detail page: paragraphs separated by \n\n */
+  description?: LocalizedText
+  /** 3–5 bullets shown on the detail page */
+  highlights?: LocalizedText[]
   /** First image is the card image */
   images: string[]
   /** Featured items appear on the home page (absent on rows saved before the flag existed) */

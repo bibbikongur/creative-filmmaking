@@ -3,12 +3,15 @@ import type { Vehicle } from '~/types'
 // The live catalogue, mirrored. Production's SQLite database is the source of
 // truth (admin panel edits win); this file seeds fresh installs and carries
 // SEO copy pushed to production via SEED_UPDATES in server/utils/db.ts.
-// Synced from https://creativefilmmaking.is/api/vehicles on 2026-08-27.
+// Synced from https://creativefilmmaking.is/api/vehicles on 2026-10-03, then
+// given a `kind` (drives the /vehicles/<kind> landing pages) and, for the
+// tipping trailer, the specs that were only in its prose.
 export const vehicles: Vehicle[] = [
   {
     id: 'v-mr6s6va62bc8',
     slug: '4x4-silverado-location-pickup',
     category: 'support-vehicles',
+    kind: 'pickup',
     featured: false,
     name: {
       en: '4x4 Silverado Location Pickup',
@@ -61,6 +64,7 @@ export const vehicles: Vehicle[] = [
     id: 'v-mre1v2ud010c',
     slug: 'ford-transit-kassabill-minnaprofs',
     category: 'equipment-cars',
+    kind: 'box-truck',
     featured: true,
     name: {
       en: 'Ford Transit Box Truck (No Special Licence)',
@@ -114,6 +118,7 @@ export const vehicles: Vehicle[] = [
     id: 'v-mre45ytvabcb',
     slug: 'vw-transporter-kassabill-minnaprofs',
     category: 'equipment-cars',
+    kind: 'box-truck',
     featured: true,
     name: {
       en: 'VW Transporter Box Truck (No Special Licence)',
@@ -171,6 +176,7 @@ export const vehicles: Vehicle[] = [
     id: 'v-011',
     slug: 'can-am-outlander-max-6x6-850',
     category: 'support-vehicles',
+    kind: 'atv',
     featured: true,
     name: {
       en: 'Can-Am Outlander MAX 6x6 850',
@@ -233,6 +239,7 @@ export const vehicles: Vehicle[] = [
     id: 'v-010',
     slug: 'hobby-560-wfu-prestige-caravan',
     category: 'trailers',
+    kind: 'caravan',
     featured: true,
     name: {
       en: 'Hobby Prestige 560 WFU Caravan',
@@ -307,6 +314,7 @@ export const vehicles: Vehicle[] = [
     id: 'v-013',
     slug: 'ford-transit-cargo-van',
     category: 'equipment-cars',
+    kind: 'cargo-van',
     featured: false,
     name: {
       en: 'Ford Transit Cargo Van',
@@ -363,6 +371,7 @@ export const vehicles: Vehicle[] = [
     id: 'v-mszu795f21be',
     slug: 'kerra-med-sturtu',
     category: 'trailers',
+    kind: 'trailer',
     featured: false,
     name: {
       en: 'Tipping Trailer',
@@ -394,7 +403,13 @@ export const vehicles: Vehicle[] = [
         is: '750 kg heildarþyngd, aðeins 220 kg eiginþyngd',
       },
     ],
-    specs: {},
+    specs: {
+      weightKg: 220,
+      payloadKg: 530,
+      boxLengthM: 3,
+      boxWidthM: 1.5,
+      boxHeightM: 0.35,
+    },
     images: [
       '/uploads/mszu6h3t-f9b316fa.png',
       '/uploads/mszu6hen-787aa4df.png',

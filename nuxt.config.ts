@@ -45,7 +45,6 @@ export default defineNuxtConfig({
       { code: 'is', language: 'is-IS', name: 'Íslenska', file: 'is.json' },
       { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
     ],
-    lazy: true,
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://creativefilmmaking.is',
     // No browser-language redirect: everyone lands on the Icelandic root page.
     // English is opt-in via the language switcher (/en/*).
@@ -61,13 +60,23 @@ export default defineNuxtConfig({
   },
 
   app: {
+    // Short cross-fade between routes (classes in assets/css/tailwind.css).
+    pageTransition: { name: 'page', mode: 'out-in' },
     head: {
-      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
-      // Google Search Console ownership proof — set NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-      // on Railway to the content= token GSC hands out, redeploy, done.
-      meta: process.env.NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-        ? [{ name: 'google-site-verification', content: process.env.NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION }]
-        : [],
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
+      meta: [
+        { name: 'theme-color', content: '#09090B' },
+        // Google Search Console ownership proof — set NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+        // on Railway to the content= token GSC hands out, redeploy, done.
+        ...(process.env.NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+          ? [{ name: 'google-site-verification', content: process.env.NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION }]
+          : []),
+      ],
     },
   },
 
@@ -77,7 +86,17 @@ export default defineNuxtConfig({
     exclude: [
       '/admin', '/admin/**', '/en/admin', '/en/admin/**',
       '/portal', '/portal/**', '/en/portal', '/en/portal/**',
+      // The quote basket is noindexed in-page; keep it out of the sitemap too.
+      '/cart', '/en/cart',
     ],
+  },
+
+  seo: {
+    // The seo-utils default whitelist keeps ?category= (and others) in the
+    // canonical URL, which made the old filtered listings index as duplicates.
+    // Category views are real pages now (/vehicles/kassabilar …), so only
+    // pagination may ever vary a canonical.
+    canonicalQueryWhitelist: ['page'],
   },
 
   // The admin panel and timesheet portal are client-side apps behind a login —
@@ -88,6 +107,8 @@ export default defineNuxtConfig({
     '/vehicles/trailer': { redirect: { to: '/vehicles/kerra-med-sturtu', statusCode: 301 } },
     '/en/vehicles/trailer': { redirect: { to: '/en/vehicles/kerra-med-sturtu', statusCode: 301 } },
     ...removedVehicleRedirects,
+    '/cart': { robots: false },
+    '/en/cart': { robots: false },
     '/admin': { ssr: false, robots: false },
     '/admin/**': { ssr: false, robots: false },
     '/en/admin': { ssr: false, robots: false },
@@ -114,6 +135,11 @@ export default defineNuxtConfig({
 
 
   image: {
+    quality: 80,
+    // Seeded /images/* photos go through IPX; its default is a 60-second
+    // cache. The files never change under a given name, so cache them like
+    // /uploads/* variants: a year, immutable.
+    ipx: { maxAge: 31536000 },
     // Custom provider for admin-uploaded /uploads/* photos — imgProvider()
     // routes them here (they live outside public/, so IPX can't see them).
     // The provider builds resize URLs handled by server/routes/uploads/.
@@ -173,6 +199,18 @@ export default defineNuxtConfig({
         address: process.env.NUXT_PUBLIC_CONTACT_ADDRESS || 'Grensásvegur 1, 108 Reykjavík',
         phone: process.env.NUXT_PUBLIC_CONTACT_PHONE || '+354 772 4968',
         email: process.env.NUXT_PUBLIC_CONTACT_EMAIL || 'info@creativefilmmaking.is',
+        // Pin for the schema.org geo block and the contact-page map (Grensásvegur 1).
+        lat: 64.1353,
+        lng: -21.8689,
+      },
+      // Social profile URLs (NUXT_PUBLIC_SOCIAL_*). Each one that is set is
+      // emitted as a schema.org sameAs link, which is how Google ties the site
+      // to the Business Profile and social accounts. Empty = omitted.
+      social: {
+        facebook: process.env.NUXT_PUBLIC_SOCIAL_FACEBOOK || '',
+        instagram: process.env.NUXT_PUBLIC_SOCIAL_INSTAGRAM || '',
+        linkedin: process.env.NUXT_PUBLIC_SOCIAL_LINKEDIN || '',
+        youtube: process.env.NUXT_PUBLIC_SOCIAL_YOUTUBE || '',
       },
     },
   },

@@ -1,4 +1,5 @@
-import type { LocalizedText, Vehicle, VehicleCategory, VehicleSpecs } from '~~/app/types'
+import type { LocalizedText, Vehicle, VehicleCategory, VehicleKind, VehicleSpecs } from '~~/app/types'
+import { RESERVED_VEHICLE_SLUGS, vehicleKinds } from '~~/app/data/vehicleLandings'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Runtime fleet store — rows in the SQLite database (see db.ts), stored as
@@ -64,9 +65,12 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
 
   const slug = asText(b.slug).toLowerCase()
   if (!SLUG_RE.test(slug)) errors.push('Slug must be lowercase letters and numbers separated by dashes (e.g. arctic-base-4x4-camper).')
+  else if (RESERVED_VEHICLE_SLUGS.includes(slug)) errors.push(`"${slug}" is the address of a category page and can't be used as a vehicle slug.`)
 
   const category = oneOf(CATEGORIES, b.category)
   if (!category) errors.push('Category is required.')
+
+  const kind: VehicleKind | undefined = oneOf(vehicleKinds, b.kind)
 
   const name = asLocalized(b.name)
   if (!name.en) errors.push('English name is required.')
@@ -119,6 +123,7 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
   return {
     slug,
     category: category!,
+    ...(kind ? { kind } : {}),
     featured: b.featured === true,
     name,
     tagline,

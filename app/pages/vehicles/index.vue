@@ -1,53 +1,58 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-    <SectionHeading as="h1" :kicker="t('catalogue.kicker')" :title="t('catalogue.title')" />
-    <p class="mt-5 max-w-2xl text-bone-400 leading-relaxed">
-      {{ t('catalogue.intro') }}
-    </p>
+  <div>
+    <div class="wrap section">
+      <SectionHeading as="h1" :kicker="t('catalogue.kicker')" :title="t('catalogue.title')" :intro="t('catalogue.intro')" />
 
-    <div class="mt-10">
-      <CategoryFilter v-model="activeCategory" :available="presentCategories" />
+      <!-- Category pills are real links to the keyword landing pages
+           (/vehicles/kassabilar …), so every category view has its own URL. -->
+      <div class="mt-10">
+        <CategoryLinks :items="chips" :group-label="t('catalogue.kicker')" />
+      </div>
+
+      <div v-if="all().length" class="mt-10 card-grid">
+        <VehicleCard v-for="v in all()" :key="v.id" :vehicle="v" />
+      </div>
+      <div v-else class="mt-16 text-center">
+        <p class="text-bone-400">{{ t('catalogue.empty') }}</p>
+        <NuxtLink :to="localePath('/contact')" class="btn-gold mt-6">
+          {{ t('catalogue.emptyCta') }}
+        </NuxtLink>
+      </div>
     </div>
 
-    <div v-if="filtered.length" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <VehicleCard v-for="v in filtered" :key="v.id" :vehicle="v" />
-    </div>
-    <div v-else class="mt-16 text-center">
-      <p class="text-bone-400">{{ t('catalogue.empty') }}</p>
-      <NuxtLink :to="localePath('/contact')" class="btn-gold mt-6">
-        {{ t('common.requestOffer') }}
-      </NuxtLink>
-    </div>
+    <CtaBanner />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { VehicleCategory } from '~/types'
 import { categories } from '~/data/categories'
+import { landingForCategoryQuery, vehicleLandings } from '~/data/vehicleLandings'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
-const router = useRouter()
 const { all } = await useVehicles()
 
+// The old ?category= filter URLs were linked from the footer and got indexed
+// as near-duplicates of this page. Each category is a real page now, so the
+// query form 301s there (and unknown values simply show the full fleet).
 const isCategory = (v: unknown): v is VehicleCategory =>
   typeof v === 'string' && categories.some(c => c.id === v)
+if (isCategory(route.query.category)) {
+  await navigateTo(localePath({ name: landingForCategoryQuery[route.query.category].routeName }), { redirectCode: 301 })
+}
 
-// The ?category= query param is the single source of truth — URLs are
-// shareable and the browser back button walks the filter history.
-const activeCategory = computed<VehicleCategory | null>({
-  get: () => (isCategory(route.query.category) ? route.query.category : null),
-  set: (value) => {
-    router.push({ query: value ? { category: value } : {} })
-  },
+// Only landings that have vehicles are offered; an empty one is noindexed anyway.
+const chips = computed(() => {
+  const present = new Set(all().map(v => v.kind))
+  return [
+    { label: t('catalogue.all'), to: localePath('/vehicles'), active: true },
+    ...vehicleLandings
+      .filter(l => present.has(l.kind))
+      .map(l => ({ label: t(`${l.key}.title`), to: localePath({ name: l.routeName }) })),
+  ]
 })
-
-const filtered = computed(() =>
-  activeCategory.value ? all().filter(v => v.category === activeCategory.value) : all(),
-)
-
-const presentCategories = computed(() => [...new Set(all().map(v => v.category))])
 
 useSeoMeta({
   title: t('meta.vehicles.title'),
@@ -58,6 +63,7 @@ useSeoMeta({
 
 const siteUrl = useRuntimeConfig().public.siteUrl
 useSchemaOrg([
+  defineWebPage({ '@type': 'CollectionPage' }),
   defineItemList({
     itemListElement: all().map(v => ({
       url: `${siteUrl}${localePath(`/vehicles/${v.slug}`)}`,

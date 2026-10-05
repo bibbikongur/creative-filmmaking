@@ -1,11 +1,11 @@
 <template>
   <footer class="bg-ink-900 border-t border-ink-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      <div class="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
+    <div class="wrap py-14">
+      <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <!-- Brand -->
         <div>
           <NuxtLink :to="localePath('/')" class="flex items-center gap-3">
-            <img src="/logo.svg" alt="" class="w-8 h-8" >
+            <img src="/logo.svg" alt="" class="w-8 h-8" width="32" height="32">
             <span class="font-heading font-semibold uppercase tracking-widest text-bone-100">
               Creative<span class="text-gold-500">&nbsp;Filmmaking</span>
             </span>
@@ -34,9 +34,9 @@
         <div>
           <h3 class="kicker mb-4">{{ t('footer.rentalsTitle') }}</h3>
           <ul class="space-y-2.5">
-            <li v-for="link in rentalLinks" :key="link.to">
+            <li v-for="link in rentalLinks" :key="link.label">
               <NuxtLink
-                :to="localePath(link.to)"
+                :to="localePath({ name: link.routeName })"
                 class="text-sm text-bone-400 hover:text-gold-400 transition-colors"
               >
                 {{ t(link.label) }}
@@ -64,10 +64,10 @@
         </div>
       </div>
 
-      <div class="mt-12 pt-6 border-t border-ink-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-500">
+      <div class="mt-12 pt-6 border-t border-ink-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-400">
         <p>© {{ year }} Creative Filmmaking. {{ t('footer.rights') }}</p>
         <p class="flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-signal-500 animate-pulse" aria-hidden="true" />
+          <span class="w-1.5 h-1.5 rounded-full bg-signal-500 motion-safe:animate-pulse" aria-hidden="true" />
           {{ t('hero.availability') }}
         </p>
       </div>
@@ -88,13 +88,16 @@ const navItems = [
   { to: '/contact', label: 'nav.contact' },
 ]
 
-// Descriptive "X til leigu" anchors to the money pages, from every page.
+// Descriptive "X til leigu" anchors to the keyword landing pages, from every
+// page. The landings link on to the individual vehicles and items.
 const rentalLinks = [
-  { to: '/vehicles?category=equipment-cars', label: 'footer.rentals.boxTrucks' },
-  { to: '/vehicles/ford-transit-cargo-van', label: 'footer.rentals.van' },
-  { to: '/vehicles/hobby-560-wfu-prestige-caravan', label: 'footer.rentals.caravans' },
-  { to: '/vehicles/kerra-med-sturtu', label: 'footer.rentals.trailer' },
-  { to: '/vehicles/can-am-outlander-max-6x6-850', label: 'footer.rentals.sixWheeler' },
+  { routeName: 'vehicles-kassabilar', label: 'footer.rentals.boxTrucks' },
+  { routeName: 'vehicles-sendibilar', label: 'footer.rentals.van' },
+  { routeName: 'vehicles-hjolhysi', label: 'footer.rentals.caravans' },
+  { routeName: 'vehicles-kerrur', label: 'footer.rentals.trailer' },
+  { routeName: 'vehicles-sexhjol', label: 'footer.rentals.sixWheeler' },
+  { routeName: 'equipment-rafstodvar-og-rafmagn', label: 'footer.rentals.generators' },
+  { routeName: 'equipment-hitablasarar', label: 'footer.rentals.heaters' },
 ]
 
 const year = new Date().getFullYear()

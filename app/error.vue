@@ -1,10 +1,9 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-ink-950">
-    <SiteHeader />
-    <main class="flex-1 flex items-center justify-center px-4 py-24">
+  <NuxtLayout>
+    <div class="wrap section flex items-center justify-center min-h-[60vh]">
       <div class="text-center max-w-lg">
         <p class="kicker">{{ is404 ? t('error.kicker') : '' }}</p>
-        <h1 class="mt-4 text-5xl sm:text-6xl font-semibold uppercase tracking-wide text-bone-100">
+        <h1 class="h1 mt-4">
           {{ is404 ? t('error.title') : t('error.genericTitle') }}
         </h1>
         <p class="mt-5 text-bone-400 leading-relaxed">
@@ -14,9 +13,8 @@
           {{ t('error.button') }}
         </button>
       </div>
-    </main>
-    <SiteFooter />
-  </div>
+    </div>
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
@@ -31,5 +29,8 @@ const is404 = computed(() => props.error.statusCode === 404)
 
 const handleError = () => clearError({ redirect: localePath('/vehicles') })
 
-useSeoMeta({ title: () => (is404.value ? t('error.title') : t('error.genericTitle')) })
+useSeoMeta({
+  title: () => (is404.value ? t('error.title') : t('error.genericTitle')),
+  robots: 'noindex',
+})
 </script>

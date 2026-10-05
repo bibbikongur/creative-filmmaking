@@ -26,6 +26,16 @@
             <option v-for="c in CATEGORIES" :key="c" :value="c">{{ c }}</option>
           </select>
         </div>
+        <div>
+          <label class="admin-label">Type (landing page)</label>
+          <select v-model="form.kind" class="input-dark">
+            <option value="">– none –</option>
+            <option v-for="k in vehicleKinds" :key="k" :value="k">{{ k }}</option>
+          </select>
+          <p class="mt-1 text-xs text-bone-400">
+            Puts the vehicle on its keyword page (kassabílar, sendibílar, hjólhýsi, kerrur, sexhjól). Pickups have no page yet.
+          </p>
+        </div>
       </div>
       <label class="mt-4 flex items-center gap-2.5 text-sm text-bone-100 cursor-pointer">
         <input v-model="form.featured" type="checkbox" class="accent-gold-500 w-4 h-4">
@@ -222,6 +232,7 @@
 
 <script setup lang="ts">
 import type { Vehicle, VehicleCategory } from '~/types'
+import { vehicleKinds } from '~/data/vehicleLandings'
 
 const props = defineProps<{
   /** Existing vehicle when editing; omit when creating */
@@ -248,6 +259,7 @@ const v = props.vehicle
 const form = reactive({
   slug: v?.slug ?? '',
   category: v?.category ?? 'campers',
+  kind: v?.kind ?? '',
   featured: v?.featured ?? false,
   name: { en: v?.name.en ?? '', is: v?.name.is ?? '' },
   tagline: { en: v?.tagline.en ?? '', is: v?.tagline.is ?? '' },
@@ -343,6 +355,7 @@ const submit = () => {
   emit('save', {
     slug: form.slug,
     category: form.category,
+    kind: form.kind || undefined,
     featured: form.featured,
     name: form.name,
     tagline: form.tagline,

@@ -37,14 +37,20 @@ useSeoMeta({
 // Global business identity for search engines. Vehicle nodes on detail pages
 // deliberately carry no offers/prices — the business model is offer-on-request.
 // AutoRental is the schema.org LocalBusiness subtype for vehicle rental.
+//
+// No openingHoursSpecification: phone availability is not opening hours, and a
+// 24/7 claim Google can't verify is worse than none. sameAs comes from the
+// NUXT_PUBLIC_SOCIAL_* env vars (empty = omitted).
+const sameAs = Object.values(config.public.social).filter(Boolean)
 useSchemaOrg([
   defineLocalBusiness({
     '@type': 'AutoRental',
     name: 'Creative Filmmaking',
     description: t('meta.businessDescription'),
     url: config.public.siteUrl,
-    logo: `${config.public.siteUrl}/logo.svg`,
-    image: `${config.public.siteUrl}/logo.svg`,
+    // Google wants a raster logo of at least 112×112 for the knowledge panel.
+    logo: `${config.public.siteUrl}/logo-512.png`,
+    image: [`${config.public.siteUrl}/og-default.jpg`, `${config.public.siteUrl}/logo-512.png`],
     // Mirrors the Google Business Profile exactly (NAP consistency).
     address: {
       streetAddress: 'Grensásvegur 1',
@@ -53,19 +59,14 @@ useSchemaOrg([
       addressCountry: 'IS',
     },
     geo: {
-      latitude: 64.1353,
-      longitude: -21.8689,
+      latitude: config.public.contact.lat,
+      longitude: config.public.contact.lng,
     },
-    openingHoursSpecification: [
-      {
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        opens: '00:00',
-        closes: '23:59',
-      },
-    ],
     telephone: config.public.contact.phone,
     email: config.public.contact.email,
+    priceRange: '$$',
     areaServed: 'Iceland',
+    ...(sameAs.length ? { sameAs } : {}),
   }),
 ])
 </script>

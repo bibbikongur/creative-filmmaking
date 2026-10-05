@@ -5,6 +5,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Native controls (select popups, scrollbars) render in dark chrome */
+    color-scheme: dark;
   }
 
   body {
@@ -14,29 +16,144 @@
   ::selection {
     @apply bg-gold-500 text-ink-950;
   }
+
+  /* One focus treatment for every interactive element. Outline (not ring) so it never
+     collides with the gallery's ring-based selection state. */
+  :focus-visible {
+    outline: 2px solid theme('colors.gold.400');
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Route change fade (app.pageTransition in nuxt.config) */
+  .page-enter-active,
+  .page-leave-active {
+    transition: opacity 0.15s ease;
+  }
+  .page-enter-from,
+  .page-leave-to {
+    opacity: 0;
+  }
 }
 
 @layer components {
+  /* ---------- Layout ---------- */
+  .wrap {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section {
+    @apply py-16 lg:py-24;
+  }
+
+  .section-sm {
+    @apply py-10 lg:py-14;
+  }
+
+  .panel {
+    @apply bg-ink-800 border border-ink-700 p-6 sm:p-8;
+  }
+
+  .panel-muted {
+    @apply bg-ink-900 border border-ink-800 p-6 sm:p-8;
+  }
+
+  .card-grid {
+    @apply grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:gap-6;
+  }
+
+  /* ---------- Type scale ---------- */
+  .display {
+    @apply font-heading font-semibold uppercase tracking-wide text-bone-100
+      text-4xl/[1.1] sm:text-5xl/[1.08] lg:text-6xl/[1.05];
+  }
+
+  .h1 {
+    @apply font-heading font-semibold uppercase tracking-wide text-bone-100
+      text-3xl sm:text-4xl lg:text-5xl;
+  }
+
+  .h2 {
+    @apply font-heading font-semibold uppercase tracking-wide text-bone-100
+      text-2xl sm:text-3xl;
+  }
+
+  .h3 {
+    @apply font-heading font-semibold uppercase tracking-wide text-bone-100
+      text-lg sm:text-xl;
+  }
+
+  .h4 {
+    @apply font-heading font-semibold uppercase tracking-widest text-bone-100 text-sm;
+  }
+
   /* Letter-spaced uppercase gold label above headings — the site's signature */
   .kicker {
     @apply text-gold-500 uppercase tracking-[0.25em] text-xs font-semibold;
   }
 
+  /* Quiet uppercase meta text: breadcrumbs, footer legal line, counters */
+  .meta {
+    @apply text-xs uppercase tracking-widest text-ink-400;
+  }
+
+  /* Form field label */
+  .label {
+    @apply block text-xs uppercase tracking-widest text-bone-400 mb-1.5;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-heading font-semibold uppercase
+      tracking-wider text-sm px-6 py-3 min-h-[2.75rem] transition-colors duration-200
+      disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 bg-gold-500 text-ink-950
-      font-heading font-semibold uppercase tracking-wider text-sm px-7 py-3.5
-      transition-colors duration-200 hover:bg-gold-400;
+    @apply btn bg-gold-500 text-ink-950 hover:bg-gold-400;
   }
 
+  .btn-outline {
+    @apply btn border border-ink-500 text-bone-100 hover:border-gold-500 hover:text-gold-400;
+  }
+
+  /* Alias kept for AppDialog and portal pages */
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 border border-ink-700
-      text-bone-100 font-heading font-semibold uppercase tracking-wider text-sm
-      px-7 py-3.5 transition-colors duration-200 hover:border-gold-500 hover:text-gold-400;
+    @apply btn-outline;
   }
 
+  /* "Already on your list" state: gold outline, turns red on hover because a click removes */
+  .btn-selected {
+    @apply btn border border-gold-500/60 text-gold-400 hover:border-signal-500/60 hover:text-signal-400;
+  }
+
+  /* Declared after the variants so it wins on padding without !important */
+  .btn-sm {
+    @apply px-4 py-2 text-xs min-h-[2.25rem];
+  }
+
+  /* ---------- Inputs ---------- */
   .input-dark {
-    @apply w-full bg-ink-900 border border-ink-700 text-bone-100 placeholder-ink-500
-      px-4 py-3 text-sm focus:outline-none focus:border-gold-500 transition-colors;
+    @apply w-full bg-ink-900 border border-ink-700 text-bone-100 placeholder-ink-400
+      px-4 py-3 text-sm focus:border-gold-500 transition-colors;
+  }
+
+  /* ---------- Motifs ---------- */
+  /* The one gold accent rail (dialog, highlighted panels) */
+  .rail-top {
+    @apply border-t-2 border-gold-500;
   }
 }
 

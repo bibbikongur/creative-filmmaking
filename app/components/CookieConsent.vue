@@ -5,24 +5,20 @@
   <Transition name="consent">
     <div
       v-if="visible"
-      class="fixed bottom-0 inset-x-0 z-50 bg-ink-900/95 backdrop-blur border-t border-ink-700"
-      role="dialog"
+      class="fixed bottom-0 inset-x-0 z-[60] bg-ink-900/95 backdrop-blur border-t border-ink-700"
+      role="region"
       aria-live="polite"
-      :aria-label="t('consent.text')"
+      :aria-label="t('consent.accept')"
     >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
+      <div class="wrap py-4 flex flex-col sm:flex-row sm:items-center gap-4">
         <p class="flex-1 text-sm text-bone-400 leading-relaxed">
           {{ t('consent.text') }}
         </p>
         <div class="flex items-center gap-3 shrink-0">
-          <button type="button" class="btn-gold !px-5 !py-2 text-sm" @click="choose(true)">
+          <button type="button" class="btn-gold btn-sm" @click="choose(true)">
             {{ t('consent.accept') }}
           </button>
-          <button
-            type="button"
-            class="px-5 py-2 text-sm font-heading font-semibold uppercase tracking-wider border border-bone-400/40 text-bone-400 hover:border-bone-400 hover:text-bone-100 transition-colors"
-            @click="choose(false)"
-          >
+          <button type="button" class="btn-outline btn-sm" @click="choose(false)">
             {{ t('consent.decline') }}
           </button>
         </div>

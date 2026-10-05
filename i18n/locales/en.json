@@ -6,6 +6,13 @@
     "requestOffer": "Request an offer",
     "viewFleet": "View the fleet",
     "viewEquipment": "View equipment",
+    "viewDetails": "View details",
+    "skipToContent": "Skip to content",
+    "prevImage": "Previous image",
+    "nextImage": "Next image",
+    "imageN": "Image {n}",
+    "openLightbox": "Open full-size image",
+    "close": "Close",
     "yes": "Yes"
   },
   "nav": {
@@ -14,12 +21,18 @@
     "equipment": "Equipment",
     "about": "About",
     "contact": "Contact",
-    "services": "Services"
+    "services": "Services",
+    "crewLogin": "Crew login",
+    "cta": "Get an offer",
+    "menu": "Menu"
+  },
+  "breadcrumbs": {
+    "label": "Breadcrumb"
   },
   "hero": {
     "kicker": "Production vehicle rental in Iceland",
-    "title": "Production vehicles and equipment for rent for filming in Iceland",
-    "subtitle": "Box trucks, actor caravans, six-wheelers, generators and set-ready production gear, winter-proven and delivered to your location. Vans, trailers and caravans also available to private and business renters.",
+    "title": "Production vehicles and gear for rent",
+    "subtitle": "Box trucks, caravans, six-wheelers, generators and set gear for productions in Iceland. Delivered to any location in the country.",
     "availability": "Available for production"
   },
   "home": {
@@ -28,7 +41,7 @@
     "featuredAll": "See the full fleet",
     "featuredEquipmentKicker": "Equipment",
     "featuredEquipmentTitle": "Popular equipment",
-    "featuredEquipmentIntro": "We rent out all the essential gear a film shoot needs: generators, oil heaters and diesel heating units, LED lights, battery power stations, extension cords and distribution boards, traffic cones and signs, shelter tents, tarpaulins and location equipment. Much of it serves private and business renters just as well.",
+    "featuredEquipmentIntro": "Generators, heaters, LED lights, distribution boards, traffic signs, shelter tents and the other gear that keeps a shoot running. Just as useful to private and business renters.",
     "featuredEquipmentAll": "See all equipment",
     "whyKicker": "Why us",
     "whyTitle": "Made for film work",
@@ -50,7 +63,9 @@
     "title": "Production vehicles",
     "intro": "Every vehicle is maintained for production work and can be delivered anywhere in Iceland. Box trucks and cargo vans are also available to private and business renters, for moving days and everyday hauls. No listed prices. Tell us about your shoot and we'll put together an offer.",
     "all": "All vehicles",
-    "empty": "No vehicles in this category yet. Contact us and we'll find a solution."
+    "empty": "No vehicles in this category yet. Contact us and we'll find a solution.",
+    "emptyCta": "Contact us",
+    "categoriesTitle": "Categories"
   },
   "equipmentCategories": {
     "heating": "Heating",
@@ -65,10 +80,21 @@
     "title": "Production equipment",
     "intro": "Gear that keeps a shoot running, rented alongside the fleet: heating units, tents, safety kit and basecamp furniture. No listed prices. Tell us what you need and we'll put together an offer.",
     "seoTitle": "What's for rent?",
-    "seoText": "We rent out production equipment for film & TV projects, and much of it serves private and business renters just as well. For rent are, among other things: generators, oil-fired heaters and diesel heating units, LED lights, battery power stations, extension cords and distribution boards for single- and three-phase power, traffic cones, detour and filming signs, safety vests and helmets, insulated shelter tents and tarpaulins, folding tables and chairs, shovels and brooms.",
+    "seoText": "We rent out production equipment for film & TV projects: generators, oil-fired heaters and diesel heating units, LED lights, battery power stations, cords and distribution boards, traffic cones and signs, safety vests, shelter tents, tarpaulins, tables and chairs. Much of it serves private and business renters just as well.",
     "seoText2": "Equipment rents on its own or together with our vehicles, delivered anywhere in Iceland. Tell us what you need and we'll put together an offer the same day.",
     "all": "All equipment",
-    "empty": "No equipment in this category yet. Contact us and we'll find a solution."
+    "empty": "No equipment in this category yet. Contact us and we'll find a solution.",
+    "emptyCta": "Contact us",
+    "factsTitle": "Key facts",
+    "facts": {
+      "category": "Category",
+      "quantityLabel": "Quantity",
+      "quantity": "Multiple units available",
+      "deliveryLabel": "Delivery",
+      "delivery": "Anywhere in Iceland",
+      "rentalLabel": "Rental",
+      "rental": "On its own or with the fleet"
+    }
   },
   "vehicle": {
     "highlightsTitle": "Highlights",
@@ -146,7 +172,8 @@
     "title": "The team behind the scenes",
     "p1": "Creative Filmmaking rents vehicles, machinery and all kinds of equipment to film and TV productions in Iceland. We started on set ourselves, so the fleet is built around what productions actually need.",
     "p2": "We've worked on projects big and small — features, series, music videos and commercials all across the country. That's given us plenty of experience in what each production needs, and we're always happy to help with planning of any kind. Drop us a line and we'll see how we can help.",
-    "rentals": "For rent with us are box trucks with tail lifts, cargo vans, 4x4 pickups, actor caravans, trailers and six-wheelers, along with generators, heaters, lights and other production gear. We're based in Reykjavík and deliver anywhere in Iceland, whether the shoot is in the highlands, out in the countryside or in town. And while the fleet is built for filmmaking, we also rent to private and business customers: box trucks for moving days, caravans for summer holidays, trailers for weekend projects.",
+    "rentals": "For rent with us are box trucks with tail lifts, cargo vans, 4x4 pickups, actor caravans, trailers and six-wheelers, along with generators, heaters, lights and other production gear. We're based in Reykjavík and deliver anywhere in Iceland, whether the shoot is in the highlands, out in the countryside or in town.",
+    "private": "While the fleet is built for filmmaking, we also rent to private and business customers: box trucks for moving days, caravans for summer holidays, trailers for weekend projects.",
     "p3": "Every vehicle is serviced, cleaned and delivered set-ready.",
     "statVehicles": "Vehicles in the fleet",
     "statSupport": "Support on shoot days",
@@ -155,8 +182,10 @@
   "contact": {
     "kicker": "Contact",
     "title": "Let's talk about your production",
-    "intro": "Drop us a line about your project and we'll get right back to you — we can tailor an offer for your production. If there's something you can't find with us, let us know: we have an extensive network and can help sort things out. And you can always just give us a call.",
+    "intro": "Tell us about your project and we'll reply with a tailored offer. If you can't find what you need, let us know: we have an extensive network. And you can always just call.",
     "directTitle": "Reach us directly",
+    "mapTitle": "Map of our location",
+    "openMap": "Open in Maps",
     "emailLabel": "Email",
     "phoneLabel": "Phone",
     "addressLabel": "Location",
@@ -173,7 +202,7 @@
     "decline": "Decline"
   },
   "footer": {
-    "tagline": "Production vehicle rental for film & TV crews shooting in Iceland.",
+    "tagline": "Production vehicle rental for film & TV crews shooting in Iceland. We also rent all kinds of production equipment.",
     "navTitle": "Site",
     "contactTitle": "Contact",
     "rentalsTitle": "For rent",
@@ -182,7 +211,9 @@
       "van": "Cargo van for rent",
       "caravans": "Caravans for rent",
       "trailer": "Trailer for rent",
-      "sixWheeler": "Six-wheeler for rent"
+      "sixWheeler": "Six-wheeler for rent",
+      "generators": "Generators for rent",
+      "heaters": "Heaters for rent"
     },
     "rights": "All rights reserved."
   },
@@ -216,6 +247,259 @@
     "contact": {
       "title": "Contact",
       "description": "Tell us about your production in Iceland and we'll reply with availability and a tailored vehicle offer within one business day."
+    }
+  },
+  "faq": {
+    "kicker": "Questions",
+    "title": "Frequently asked questions",
+    "home": [
+      {
+        "q": "Do I need a special licence to drive your box trucks?",
+        "a": "No. The Ford Transit and VW Transporter box trucks drive on a standard B car licence, and so do the cargo van and the pickup."
+      },
+      {
+        "q": "Do you only rent to film productions?",
+        "a": "No. The fleet is built for filmmaking, but box trucks, cargo vans, trailers and caravans are also available to private and business renters: moving days, summer holidays, weekend projects."
+      },
+      {
+        "q": "What does it cost?",
+        "a": "We don't publish a price list because every job is different. Tell us what you need, when and where, and we reply with a tailored offer, usually within one business day."
+      },
+      {
+        "q": "Where do I pick up, and do you deliver?",
+        "a": "We are at Grensásvegur 1 in Reykjavík. We can also deliver vehicles and equipment anywhere in Iceland, whether the shoot is in the highlands, out in the countryside or in town. Delivery is priced in the offer."
+      },
+      {
+        "q": "How much notice do you need?",
+        "a": "The earlier the better, especially in summer and during production season. Get in touch and we will tell you straight away what is available on your dates."
+      },
+      {
+        "q": "What about insurance and terms?",
+        "a": "We go through insurance, excess and rental terms with you in the offer, so everything is clear before you set off."
+      }
+    ],
+    "contact": [
+      {
+        "q": "What should a quote request include?",
+        "a": "Dates, the location or locations, which vehicles and equipment you need and whether you want delivery. The more we know, the more precise the offer."
+      },
+      {
+        "q": "How fast do you reply?",
+        "a": "Within one business day, often the same day, and faster during production season. You can always call."
+      },
+      {
+        "q": "Where are you based?",
+        "a": "Grensásvegur 1, 108 Reykjavík. From there we deliver anywhere in Iceland."
+      },
+      {
+        "q": "Can't find what you need on the site?",
+        "a": "Let us know. We have an extensive network in the industry and often source things that are not on the list."
+      }
+    ]
+  },
+  "landings": {
+    "vehicles": {
+      "boxTrucks": {
+        "kicker": "The fleet",
+        "title": "Box trucks for rent",
+        "intro1": "Box trucks for rent in Reykjavík for film and TV productions, businesses and private renters. Our Ford Transit and VW Transporter box trucks need no special licence: anyone on the crew with a standard B licence can collect the gear.",
+        "intro2": "An electric tail lift and a closed, dry box make them ideal for camera, art and location departments, and just as good for moving days, furniture hauls and warehouse runs. Both come serviced, on summer tyres in summer and studded tyres in winter.",
+        "intro3": "We deliver anywhere in Iceland and put together an offer for a day, a week or a whole production. Trailers, caravans and equipment rent alongside.",
+        "metaTitle": "Box Truck Rental in Reykjavík",
+        "metaDescription": "Box trucks for rent with electric tail lift, no special licence needed. For film shoots, businesses and moving days. Delivery anywhere in Iceland. Request an offer.",
+        "faq": [
+          {
+            "q": "Do I need a truck licence for the box trucks?",
+            "a": "No. Both box trucks drive on a standard B car licence."
+          },
+          {
+            "q": "Do they have a tail lift?",
+            "a": "Yes, an electric tail lift at the back, and the Ford Transit also has a side door into the box, so heavy items go in without lifting."
+          },
+          {
+            "q": "Can I rent a box truck for a move?",
+            "a": "Yes. The box trucks are available to private and business renters as well as productions."
+          },
+          {
+            "q": "What does a box truck cost per day?",
+            "a": "We don't publish a price list. Send us your dates and we reply with an offer within one business day."
+          }
+        ]
+      },
+      "cargoVans": {
+        "kicker": "The fleet",
+        "title": "Cargo vans for rent",
+        "intro1": "Cargo van for rent in Reykjavík: a Ford Transit van with a tow hitch that drives on a standard B licence. Easy around town and roomy enough for cases, cameras and gear that needs to stay dry and locked.",
+        "intro2": "It suits a camera department heading to location as well as a business that needs a van for a week, or someone moving flat. With the tow hitch it pulls our trailers and caravans.",
+        "intro3": "We deliver anywhere in Iceland and put together an offer for your dates, whether a day, a weekend or a longer rental.",
+        "metaTitle": "Cargo Van Rental in Reykjavík",
+        "metaDescription": "Cargo van rental for film shoots, businesses and private renters. Ford Transit van with tow hitch, B licence is enough. Delivery anywhere in Iceland. Request an offer.",
+        "faq": [
+          {
+            "q": "Do I need a special licence for the van?",
+            "a": "No, a standard B car licence is enough."
+          },
+          {
+            "q": "Can I tow a trailer with the van?",
+            "a": "Yes, it has a tow hitch and pulls our trailers. A B licence covers a trailer of up to 750 kg."
+          },
+          {
+            "q": "Do you rent the van to private customers?",
+            "a": "Yes, for moves, weekend projects and anything else. Get in touch and we will sort it out."
+          }
+        ]
+      },
+      "caravans": {
+        "kicker": "The fleet",
+        "title": "Caravans for rent",
+        "intro1": "Caravans for rent for film shoots and summer holidays. Our Hobby Prestige 560 WFU caravans are 2026 models with heating, beds for four and power from shore hook-up or a solar panel and battery, so they stand on their own on location.",
+        "intro2": "On set they are talent accommodation between takes, a makeup and costume room, or a warm place for the crew in Icelandic weather. Outside production season they rent to private renters and families for the trip around the country.",
+        "intro3": "We have several units, deliver anywhere in Iceland and can position the caravan on location for you. Request an offer with your dates and location.",
+        "metaTitle": "Caravan Rental in Reykjavík",
+        "metaDescription": "Caravan rental: 2026 Hobby Prestige 560 WFU caravans for film shoots and holidays. Heating, sleeps 4, shore or solar power. Delivery anywhere in Iceland. Request an offer.",
+        "faq": [
+          {
+            "q": "Do I need a special licence to tow the caravan?",
+            "a": "The caravans weigh up to 2,000 kg, so a trailer licence (BE) is usually required to tow them. We go through this with you, and we can also deliver the caravan to location for you."
+          },
+          {
+            "q": "Does the caravan have heating and power?",
+            "a": "Yes. Heating, plus power from a shore hook-up (CEE) or a solar panel and battery, so it works where there is no mains power."
+          },
+          {
+            "q": "How many does the caravan sleep?",
+            "a": "Four. It is about 7.5 metres long and 2.50 metres wide."
+          },
+          {
+            "q": "Can I rent a caravan for a holiday?",
+            "a": "Yes, the caravans rent to private renters and families when they are not on a shoot."
+          }
+        ]
+      },
+      "trailers": {
+        "kicker": "The fleet",
+        "title": "Trailers for rent",
+        "intro1": "Trailer for rent in Reykjavík: a Bilxtra Tractus Multi tipping trailer with gates that drop at the front and rear and a cover included. Gross weight is 750 kg, so it tows on a standard B licence.",
+        "intro2": "The tipping function makes unloading gravel, soil and garden waste easy, recessed tie-down points keep loads secured and the gates open at both ends. It suits location work, building materials, garden jobs, furniture moves and the trip to the recycling centre.",
+        "intro3": "The trailer rents on its own or with our vehicles, all of which have a tow hitch. We deliver anywhere in Iceland. Request an offer.",
+        "metaTitle": "Trailer Rental in Reykjavík",
+        "metaDescription": "Trailer rental: Bilxtra Tractus Multi tipping trailer with cover for rent. 750 kg, B licence is enough. For film shoots, businesses and private renters. Request an offer.",
+        "faq": [
+          {
+            "q": "Can I tow the trailer on a B licence?",
+            "a": "Yes. The trailer's gross weight is 750 kg, which is within what a standard B licence allows."
+          },
+          {
+            "q": "How much does the trailer carry?",
+            "a": "Kerb weight is 220 kg and gross weight 750 kg, so the payload is about 530 kg. Inside dimensions are 300 x 150 x 35 cm."
+          },
+          {
+            "q": "Is a cover included?",
+            "a": "Yes, a cover comes with it, and the gates open at both the front and the rear."
+          }
+        ]
+      },
+      "atv": {
+        "kicker": "The fleet",
+        "title": "Six-wheelers for rent",
+        "intro1": "Six-wheeler for rent for film shoots: a 2026 Can-Am Outlander MAX 6x6 850 with two seats, 454 kg payload, 830 kg towing capacity and 275 litres of built-in storage. It is the machine that gets camera, lights and people where a car cannot go.",
+        "intro2": "Six driven wheels and a full skid plate take it across sand, snow, rock and bog, and the rear tow ball takes a trailer. It comes winter-equipped in season and ready for location.",
+        "intro3": "We deliver anywhere in Iceland, with a trailer if needed. Note that off-road driving is prohibited in Iceland; the six-wheeler is for tracks, permitted locations and work inside marked areas.",
+        "metaTitle": "Six-Wheeler ATV Rental for Film Shoots",
+        "metaDescription": "Can-Am Outlander MAX 6x6 850 six-wheeler for rent for film shoots in Iceland. 2 seats, 454 kg payload, 830 kg towing. Delivery anywhere in Iceland. Request an offer.",
+        "faq": [
+          {
+            "q": "What does the six-wheeler carry?",
+            "a": "454 kg of payload, 830 kg of towing capacity and 275 litres of built-in storage, plus two seats."
+          },
+          {
+            "q": "Can I drive the six-wheeler anywhere?",
+            "a": "No. Off-road driving is prohibited in Iceland. The six-wheeler is for marked tracks, locations with the required permits and marked work areas. We go through the rules and licence requirements with you when you book."
+          },
+          {
+            "q": "Can you bring the six-wheeler to location?",
+            "a": "Yes, we deliver anywhere in Iceland, on a trailer or a flatbed."
+          }
+        ]
+      }
+    },
+    "equipment": {
+      "heating": {
+        "kicker": "Equipment",
+        "title": "Heaters for rent",
+        "intro1": "Heaters for rent for film shoots, tents, work sites and events. Our Master diesel heaters are indirect-fired: the exhaust leaves through a chimney and only clean, dry, odourless warm air enters the space.",
+        "intro2": "The BV 77 E (21 kW) heats a crew tent or holding area and runs about 19 hours per tank. The BV 290 E (81 kW) heats large tents, halls and big sets fast. For smaller spaces there are foldable gas heaters.",
+        "intro3": "Heaters rent on their own or with shelters, generators and distribution boards, delivered anywhere in Iceland. Request an offer.",
+        "metaTitle": "Heater Rental for Film Shoots",
+        "metaDescription": "Indirect diesel heaters (21 and 81 kW) and gas heaters for rent for film shoots, tents and work sites. Clean, dry air, ducts and chimneys included. Delivery anywhere in Iceland.",
+        "faq": [
+          {
+            "q": "What is the difference between a direct and an indirect heater?",
+            "a": "An indirect heater sends its exhaust out through a chimney and blows only clean, dry air inside. That is why our Master BV heaters can be used for tents and spaces where people stay."
+          },
+          {
+            "q": "How long does the heater run on a tank?",
+            "a": "The BV 77 E runs about 19 hours on a full tank."
+          },
+          {
+            "q": "Does the diesel heater need electricity?",
+            "a": "Yes, for the fan and burner. We rent generators and distribution boards alongside."
+          }
+        ]
+      },
+      "power": {
+        "kicker": "Equipment",
+        "title": "Generators and power for rent",
+        "intro1": "Generators for rent along with everything needed to get the power where it has to go: 2.2 and 3.3 kVA inverter generators, an EcoFlow power station with 4,000 W of output, three-phase distribution boards, 16 and 32 amp extension cables, cable reels, stingers and outdoor multiplugs.",
+        "intro2": "The category also holds the lights: the LED Nova 6K floodlight on a tripod and Scangrip work lights, battery powered so they go up without a cable. Inverter output is safe for cameras, computers and sound gear, and the quiet units can run near set.",
+        "intro3": "Everything rents on its own or as a complete power package with heaters and shelters, delivered anywhere in Iceland. Request an offer.",
+        "metaTitle": "Generator Rental for Film Shoots",
+        "metaDescription": "Generators, a power station, distribution boards, extension cables and LED lights for rent for film shoots and work sites. Quiet inverter units. Delivery anywhere in Iceland.",
+        "faq": [
+          {
+            "q": "Which generator is right for cameras and computers?",
+            "a": "Our inverter generators deliver clean power that is safe for electronics. For completely silent use next to set, the EcoFlow power station gives 4,000 W of output."
+          },
+          {
+            "q": "Do you have three-phase power?",
+            "a": "Yes, 16 and 32 amp three-phase distribution boards and extension cables, for the bigger heaters and lights."
+          }
+        ]
+      },
+      "shelter": {
+        "kicker": "Equipment",
+        "title": "Shelters and tents for rent",
+        "intro1": "Shelter tents and tarps for rent for locations and basecamp. The Eskimo Outbreak 450XDP is an insulated pop-up shelter for four to five people that goes up in minutes and takes a heater, a warm refuge for talent and crew between takes.",
+        "intro2": "Waterproof tarps protect gear and vehicles, sandbags keep everything in place in the wind, and clamps and signs for basecamp, techbase and crew parking mark out the site.",
+        "intro3": "Shelters rent on their own or with heaters and generators, delivered anywhere in Iceland. Request an offer.",
+        "metaTitle": "Shelter Tent Rental for Locations",
+        "metaDescription": "Insulated pop-up shelters, tarps, sandbags and basecamp signs for rent for film shoots and locations. Delivery anywhere in Iceland. Request an offer."
+      },
+      "safety": {
+        "kicker": "Equipment",
+        "title": "Safety and traffic equipment for rent",
+        "intro1": "Traffic cones, signs and safety kit for rent for film shoots, road closures and work sites. Cones in 50 and 100 cm, no-parking cones, LED cone lights, detour signs and signs telling passers-by that filming is in progress.",
+        "intro2": "For the crew there are safety vests, helmets, ratchet straps, tow ropes and fence posts for closing off an area. Everything rents in quantity, so a whole street or basecamp can be marked from one delivery.",
+        "intro3": "We deliver anywhere in Iceland and put together a traffic package for your shoot. Request an offer.",
+        "metaTitle": "Traffic Cone and Sign Rental",
+        "metaDescription": "Traffic cones 50 and 100 cm, detour signs, filming signs, cone lights, safety vests and helmets for rent for film shoots and road closures. Delivery anywhere in Iceland."
+      },
+      "furniture": {
+        "kicker": "Equipment",
+        "title": "Basecamp furniture for rent",
+        "intro1": "Folding tables and chairs for rent for basecamp, catering tents, makeup and holding areas on location. Light, quick to set up and they fit in any of our vehicles.",
+        "intro2": "Furniture rents on its own or with shelters and heaters, so basecamp arrives ready in one delivery, anywhere in Iceland.",
+        "metaTitle": "Table and Chair Rental for Locations",
+        "metaDescription": "Folding tables and chairs for rent for basecamp and locations. Rent with shelters and heaters. Delivery anywhere in Iceland. Request an offer."
+      },
+      "cleaning": {
+        "kicker": "Equipment",
+        "title": "Cleaning and wrap",
+        "intro1": "Shovels, brooms and bins for rent so the location is left the way it was found. Fiskars digging shovels and shovels, wide brooms and bins for basecamp.",
+        "intro2": "Rents with the rest of the equipment and our vehicles, delivered anywhere in Iceland.",
+        "metaTitle": "Shovel and Broom Rental",
+        "metaDescription": "Shovels, brooms and bins for rent for locations and basecamp. Rents with the rest of the equipment. Delivery anywhere in Iceland."
+      }
     }
   },
   "portal": {

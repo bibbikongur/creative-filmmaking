@@ -1,22 +1,21 @@
 <template>
   <div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-      <SectionHeading as="h1" :kicker="t('equipmentCatalogue.kicker')" :title="t('equipmentCatalogue.title')" />
-      <p class="mt-5 max-w-2xl text-bone-400 leading-relaxed">
-        {{ t('equipmentCatalogue.intro') }}
-      </p>
+    <div class="wrap section">
+      <SectionHeading as="h1" :kicker="t('equipmentCatalogue.kicker')" :title="t('equipmentCatalogue.title')" :intro="t('equipmentCatalogue.intro')" />
 
+      <!-- Category pills are real links to the keyword landing pages
+           (/equipment/hitablasarar …), so every category view has its own URL. -->
       <div class="mt-10">
-        <EquipmentCategoryFilter v-model="activeCategory" :available="presentCategories" />
+        <CategoryLinks :items="chips" :group-label="t('equipmentCatalogue.kicker')" />
       </div>
 
-      <div v-if="filtered.length" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <EquipmentCard v-for="e in filtered" :key="e.id" :item="e" />
+      <div v-if="all().length" class="mt-10 card-grid">
+        <EquipmentCard v-for="e in all()" :key="e.id" :item="e" />
       </div>
       <div v-else class="mt-16 text-center">
         <p class="text-bone-400">{{ t('equipmentCatalogue.empty') }}</p>
         <NuxtLink :to="localePath('/contact')" class="btn-gold mt-6">
-          {{ t('common.requestOffer') }}
+          {{ t('equipmentCatalogue.emptyCta') }}
         </NuxtLink>
       </div>
 
@@ -24,13 +23,13 @@
            engines (and skimming humans) get the full picture the card grid
            alone doesn't convey. -->
       <section class="mt-20 max-w-3xl">
-        <h2 class="text-2xl font-semibold uppercase tracking-wide text-bone-100">
+        <h2 class="h2">
           {{ t('equipmentCatalogue.seoTitle') }}
         </h2>
-        <p class="mt-4 text-sm text-bone-400 leading-relaxed">
+        <p class="mt-4 text-bone-400 leading-relaxed">
           {{ t('equipmentCatalogue.seoText') }}
         </p>
-        <p class="mt-3 text-sm text-bone-400 leading-relaxed">
+        <p class="mt-3 text-bone-400 leading-relaxed">
           {{ t('equipmentCatalogue.seoText2') }}
         </p>
       </section>
@@ -43,30 +42,29 @@
 <script setup lang="ts">
 import type { EquipmentCategory } from '~/types'
 import { equipmentCategories } from '~/data/equipmentCategories'
+import { equipmentLandingFor, equipmentLandings } from '~/data/equipmentLandings'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
-const router = useRouter()
 const { all } = await useEquipment()
 
+// Old ?category= filter URLs 301 to the category's own page (see vehicles/index.vue).
 const isCategory = (v: unknown): v is EquipmentCategory =>
   typeof v === 'string' && equipmentCategories.includes(v as EquipmentCategory)
+if (isCategory(route.query.category)) {
+  await navigateTo(localePath({ name: equipmentLandingFor(route.query.category).routeName }), { redirectCode: 301 })
+}
 
-// The ?category= query param is the single source of truth — URLs are
-// shareable and the browser back button walks the filter history.
-const activeCategory = computed<EquipmentCategory | null>({
-  get: () => (isCategory(route.query.category) ? route.query.category : null),
-  set: (value) => {
-    router.push({ query: value ? { category: value } : {} })
-  },
+const chips = computed(() => {
+  const present = new Set(all().map(e => e.category))
+  return [
+    { label: t('equipmentCatalogue.all'), to: localePath('/equipment'), active: true },
+    ...equipmentLandings
+      .filter(l => present.has(l.category))
+      .map(l => ({ label: t(`${l.key}.title`), to: localePath({ name: l.routeName }) })),
+  ]
 })
-
-const filtered = computed(() =>
-  activeCategory.value ? all().filter(e => e.category === activeCategory.value) : all(),
-)
-
-const presentCategories = computed(() => [...new Set(all().map(e => e.category))])
 
 useSeoMeta({
   title: t('meta.equipment.title'),
@@ -79,6 +77,7 @@ useSeoMeta({
 // only trigger "invalid item" warnings in Search Console.
 const siteUrl = useRuntimeConfig().public.siteUrl
 useSchemaOrg([
+  defineWebPage({ '@type': 'CollectionPage' }),
   defineItemList({
     itemListElement: all().map(e => ({
       url: `${siteUrl}${localePath(`/equipment/${equipmentSlug(e)}`)}`,

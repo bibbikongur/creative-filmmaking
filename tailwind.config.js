@@ -17,6 +17,7 @@ export default {
       colors: {
         // Near-black stage — page and section backgrounds
         ink: {
+          400: '#8A8A94', // meta text on dark surfaces (AA on ink-800/900/950)
           500: '#55555E',
           700: '#26262D',
           800: '#1A1A1F',
@@ -36,12 +37,19 @@ export default {
         },
         // "REC" red — recording-dot motif and form errors only
         signal: {
+          400: '#E8655E', // error text on dark surfaces
           500: '#D6453D',
         },
       },
       aspectRatio: {
-        'cinema': '2.39 / 1',
         'card': '16 / 10',
+      },
+      backgroundImage: {
+        // Warm gold glow in the top-right corner; keeps the hero and CTA banner from ever reading flat black
+        'hero-vignette':
+          'radial-gradient(120% 90% at 85% 15%, rgba(201,150,46,0.16) 0%, rgba(201,150,46,0.04) 40%, transparent 70%)',
+        // Equipment photos are opaque white manufacturer cutouts, so they sit in a deliberate white "product well"
+        'product-well': 'radial-gradient(circle at 50% 40%, #ffffff 0%, #f4f4f4 100%)',
       },
     },
   },

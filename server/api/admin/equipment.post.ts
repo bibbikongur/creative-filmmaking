@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
     id: `e-${Date.now().toString(36)}${randomBytes(2).toString('hex')}`,
     ...payload,
   }
+  assertUniqueEquipmentSlug(item, items)
   await saveEquipment([...items, item])
   return item
 })

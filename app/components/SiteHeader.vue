@@ -1,17 +1,17 @@
 <template>
   <header class="fixed top-0 inset-x-0 z-50 bg-ink-950/85 backdrop-blur border-b border-ink-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 lg:h-20">
+    <div class="wrap">
+      <div class="flex items-center justify-between h-16 xl:h-20">
         <!-- Wordmark -->
-        <NuxtLink :to="localePath('/')" class="flex shrink-0 items-center gap-3 group" @click="mobileOpen = false">
-          <img src="/logo.svg" alt="" class="w-8 h-8" >
+        <NuxtLink :to="localePath('/')" class="flex shrink-0 items-center gap-3" @click="mobileOpen = false">
+          <img src="/logo.svg" alt="" class="w-8 h-8" width="32" height="32">
           <span class="font-heading font-semibold uppercase tracking-widest text-bone-100 text-lg leading-none">
             Creative<span class="text-gold-500">&nbsp;Filmmaking</span>
           </span>
         </NuxtLink>
 
         <!-- Desktop nav -->
-        <nav class="hidden xl:flex items-center gap-5">
+        <nav class="hidden xl:flex items-center gap-5" :aria-label="t('footer.navTitle')">
           <NuxtLink
             v-for="item in navItems"
             :key="item.to"
@@ -21,54 +21,34 @@
           >
             {{ t(item.label) }}
           </NuxtLink>
-          <NuxtLink :to="localePath('/contact')" class="btn-gold whitespace-nowrap !px-5 !py-2.5">
-            {{ t('common.requestOffer') }}
+          <NuxtLink :to="localePath('/contact')" class="btn-gold btn-sm whitespace-nowrap">
+            {{ t('nav.cta') }}
           </NuxtLink>
-          <NuxtLink :to="localePath('/cart')" class="relative p-2 text-bone-400 hover:text-bone-100 transition-colors" :aria-label="t('cart.title')">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-            </svg>
-            <span
-              v-if="cart.count.value"
-              class="absolute -top-0.5 -right-0.5 min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center bg-gold-500 text-ink-950 text-[10px] font-bold rounded-full"
-            >
-              {{ cart.count.value }}
-            </span>
-          </NuxtLink>
+          <CartLink />
           <LanguageSwitcher />
-          <NuxtLink
-            :to="localePath('/portal')"
-            class="whitespace-nowrap border border-gold-500 text-gold-400 hover:bg-gold-500 hover:text-ink-950 transition-colors text-xs uppercase tracking-wider font-semibold px-3 py-2"
-          >
-            {{ t('nav.services') }}
+          <!-- Crew portal login: a private, noindexed app. Labelled as such and
+               nofollowed so neither visitors nor crawlers read it as "Services". -->
+          <NuxtLink :to="localePath('/portal')" rel="nofollow" class="btn-outline btn-sm whitespace-nowrap">
+            {{ t('nav.crewLogin') }}
           </NuxtLink>
         </nav>
 
         <!-- Mobile controls -->
-        <div class="flex xl:hidden items-center gap-2">
-          <NuxtLink :to="localePath('/cart')" class="relative p-2 text-bone-100" :aria-label="t('cart.title')" @click="mobileOpen = false">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-            </svg>
-            <span
-              v-if="cart.count.value"
-              class="absolute -top-0.5 -right-0.5 min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center bg-gold-500 text-ink-950 text-[10px] font-bold rounded-full"
-            >
-              {{ cart.count.value }}
-            </span>
-          </NuxtLink>
+        <div class="flex xl:hidden items-center gap-1">
+          <CartLink @click="mobileOpen = false" />
           <LanguageSwitcher />
           <button
             type="button"
             class="p-2 text-bone-100"
             :aria-expanded="mobileOpen"
-            aria-label="Menu"
+            aria-controls="mobile-nav"
+            :aria-label="t('nav.menu')"
             @click="mobileOpen = !mobileOpen"
           >
-            <svg v-if="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-if="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-            <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -85,7 +65,7 @@
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <nav v-if="mobileOpen" class="xl:hidden border-t border-ink-800 bg-ink-950 px-4 py-4 space-y-1">
+      <nav v-if="mobileOpen" id="mobile-nav" class="xl:hidden border-t border-ink-800 bg-ink-950 px-4 py-4 space-y-1">
         <NuxtLink
           v-for="item in navItems"
           :key="item.to"
@@ -97,27 +77,22 @@
           {{ t(item.label) }}
         </NuxtLink>
         <NuxtLink :to="localePath('/contact')" class="btn-gold w-full mt-2" @click="mobileOpen = false">
-          {{ t('common.requestOffer') }}
+          {{ t('nav.cta') }}
         </NuxtLink>
-        <NuxtLink
-          :to="localePath('/portal')"
-          class="flex items-center justify-center border border-gold-500 text-gold-400 text-sm uppercase tracking-wider font-medium w-full mt-2 px-3 py-3"
-          @click="mobileOpen = false"
-        >
-          {{ t('nav.services') }}
+        <NuxtLink :to="localePath('/portal')" rel="nofollow" class="btn-outline w-full mt-2" @click="mobileOpen = false">
+          {{ t('nav.crewLogin') }}
         </NuxtLink>
       </nav>
     </Transition>
   </header>
 
   <!-- Spacer so content clears the fixed header -->
-  <div class="h-16 lg:h-20" aria-hidden="true" />
+  <div class="h-16 xl:h-20" aria-hidden="true" />
 </template>
 
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
-const cart = useCart()
 
 const navItems = [
   { to: '/', label: 'nav.home' },
@@ -128,4 +103,11 @@ const navItems = [
 ]
 
 const mobileOpen = ref(false)
+
+// Escape closes the mobile menu
+const onKey = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && mobileOpen.value) mobileOpen.value = false
+}
+onMounted(() => document.addEventListener('keydown', onKey))
+onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
 </script>

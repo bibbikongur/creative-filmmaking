@@ -2,5 +2,5 @@
 // route, so IPX can't optimize them — render those with the custom provider
 // that resizes through that route (app/providers/uploads.ts). Public /images
 // files keep the default provider.
-export const imgProvider = (src?: string): string | undefined =>
+export const imgProvider = (src?: string): 'uploads' | undefined =>
   src?.startsWith('/uploads/') ? 'uploads' : undefined

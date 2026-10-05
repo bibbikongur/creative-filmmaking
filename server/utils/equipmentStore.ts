@@ -1,4 +1,5 @@
 import type { EquipmentCategory, EquipmentItem, LocalizedText } from '~~/app/types'
+import { SLUG_RE, equipmentSlug, isReservedEquipmentSlug } from '~~/app/utils/equipmentSlug'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Runtime equipment store — rows in the SQLite database (see db.ts), stored
@@ -57,7 +58,17 @@ export function parseEquipmentPayload(body: unknown): Omit<EquipmentItem, 'id'> 
   const name = asLocalized(b.name)
   if (!name.en) errors.push('English name is required.')
 
+  // Optional: empty means "derive from the Icelandic name" (legacy behaviour).
+  const slug = asText(b.slug).toLowerCase()
+  if (slug && !SLUG_RE.test(slug)) errors.push('Slug must be lowercase letters and numbers separated by dashes (e.g. rafstod-2-2-kva).')
+  if (slug && isReservedEquipmentSlug(slug)) errors.push(`"${slug}" is the address of a category page and can't be used as an item slug.`)
+
   const tagline = asLocalized(b.tagline)
+  const description = asLocalized(b.description)
+
+  const highlights = (Array.isArray(b.highlights) ? b.highlights : [])
+    .map(asLocalized)
+    .filter(h => h.en || h.is)
 
   const images = (Array.isArray(b.images) ? b.images : [])
     .map(asText)
@@ -69,10 +80,29 @@ export function parseEquipmentPayload(body: unknown): Omit<EquipmentItem, 'id'> 
   }
 
   return {
+    ...(slug ? { slug } : {}),
     category: category!,
     name,
     tagline,
+    ...(description.en || description.is ? { description } : {}),
+    ...(highlights.length ? { highlights } : {}),
     images,
     featured: b.featured === true,
+  }
+}
+
+/**
+ * Two items may never resolve to the same URL. Compares the slug the candidate
+ * would get against every other item's, derived or explicit.
+ */
+export function assertUniqueEquipmentSlug(candidate: Pick<EquipmentItem, 'id' | 'name' | 'slug'>, others: EquipmentItem[]) {
+  const slug = equipmentSlug(candidate)
+  const clash = others.find(o => o.id !== candidate.id && equipmentSlug(o) === slug)
+  if (clash) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Validation failed',
+      data: { errors: [`The address /equipment/${slug} is already used by "${clash.name.en}". Pick a different slug.`] },
+    })
   }
 }

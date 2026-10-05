@@ -1,55 +1,58 @@
 <template>
   <div>
-    <!-- Hero backdrop photo removed for now — pass an image prop when a real one is ready. -->
-    <HeroSection />
+    <HeroSection :image="heroImage" />
 
     <!-- Featured vehicles -->
     <section class="bg-ink-900 border-y border-ink-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="wrap section">
         <div class="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading :kicker="t('home.featuredKicker')" :title="t('home.featuredTitle')" />
-          <NuxtLink :to="localePath('/vehicles')" class="btn-ghost !px-5 !py-2.5">
+          <NuxtLink :to="localePath('/vehicles')" class="btn-outline btn-sm">
             {{ t('home.featuredAll') }}
           </NuxtLink>
         </div>
-        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <VehicleCard v-for="v in featured()" :key="v.id" :vehicle="v" />
+        <div class="mt-10 card-grid xl:grid-cols-4">
+          <VehicleCard v-for="v in featured()" :key="v.id" :vehicle="v" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
         </div>
       </div>
     </section>
 
     <!-- Featured equipment -->
-    <section v-if="featuredEquipment.length" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+    <section v-if="featuredEquipment.length" class="wrap section">
       <div class="flex flex-wrap items-end justify-between gap-6">
-        <SectionHeading :kicker="t('home.featuredEquipmentKicker')" :title="t('home.featuredEquipmentTitle')" />
-        <NuxtLink :to="localePath('/equipment')" class="btn-ghost !px-5 !py-2.5">
+        <SectionHeading :kicker="t('home.featuredEquipmentKicker')" :title="t('home.featuredEquipmentTitle')" :intro="t('home.featuredEquipmentIntro')" />
+        <NuxtLink :to="localePath('/equipment')" class="btn-outline btn-sm">
           {{ t('home.featuredEquipmentAll') }}
         </NuxtLink>
       </div>
-      <!-- SEO prose: names the rental categories in plain words on the home page. -->
-      <p class="mt-5 max-w-3xl text-sm text-bone-400 leading-relaxed">
-        {{ t('home.featuredEquipmentIntro') }}
-      </p>
-      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" />
+      <div class="mt-10 card-grid xl:grid-cols-4">
+        <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
       </div>
     </section>
 
     <!-- Why us -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+    <section class="wrap section">
       <SectionHeading :kicker="t('home.whyKicker')" :title="t('home.whyTitle')" center />
       <div class="mt-12 grid gap-10 md:grid-cols-3">
         <div v-for="(item, i) in whyItems" :key="i" class="text-center">
           <div class="mx-auto w-14 h-14 flex items-center justify-center border border-gold-500/40 text-gold-500">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" v-html="item.icon" />
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" v-html="item.icon" />
           </div>
-          <h3 class="mt-5 text-lg font-semibold uppercase tracking-wide text-bone-100">
+          <h3 class="h3 mt-5">
             {{ t(item.title) }}
           </h3>
           <p class="mt-2.5 text-sm text-bone-400 leading-relaxed max-w-xs mx-auto">
             {{ t(item.text) }}
           </p>
         </div>
+      </div>
+    </section>
+
+    <!-- FAQ: the pre-sales questions every enquiry starts with, answered in
+         crawlable HTML (and as schema.org Question nodes). -->
+    <section v-if="faqItems.length" class="bg-ink-900 border-y border-ink-800">
+      <div class="wrap section">
+        <FaqSection :kicker="t('faq.kicker')" :title="t('faq.title')" :items="faqItems" open-first />
       </div>
     </section>
 
@@ -60,8 +63,15 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
-const { featured } = await useVehicles()
+const { featured, all } = await useVehicles()
+const { faq } = useFaq()
+const faqItems = faq('faq.home')
 const { all: allEquipment, featured: featuredEquipmentItems } = await useEquipment()
+
+// Cinematic still of a shoot on an Icelandic road (public/images/hero.jpg). If it is
+// ever removed, the first featured vehicle photo stands in (HeroSection darkens it).
+const HERO_IMAGE: string | undefined = '/images/hero.jpg'
+const heroImage = computed(() => HERO_IMAGE ?? featured()[0]?.images[0] ?? all().find(v => v.images[0])?.images[0])
 
 // Items ticked "featured" in the admin fill the home section; until any are
 // ticked, fall back to the first four so the section isn't empty.
@@ -94,4 +104,9 @@ useSeoMeta({
   ogTitle: `${t('meta.home.title')} · Creative Filmmaking`,
   ogDescription: t('meta.home.description'),
 })
+
+// FAQPage on the page node; FaqSection emits the Question nodes it holds.
+useSchemaOrg([
+  defineWebPage({ '@type': faqItems.length ? ['WebPage', 'FAQPage'] : 'WebPage' }),
+])
 </script>
