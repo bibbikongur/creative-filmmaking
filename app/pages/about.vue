@@ -3,20 +3,6 @@
     <div class="wrap section">
       <SectionHeading as="h1" :kicker="t('about.kicker')" :title="t('about.title')" />
 
-      <!-- Fleet photos until dedicated team/location stills exist -->
-      <div v-if="photos.length" class="mt-10 grid grid-cols-2 gap-3 sm:gap-4">
-        <div v-for="p in photos" :key="p.src" class="relative overflow-hidden aspect-card bg-ink-800">
-          <NuxtImg
-            :src="p.src"
-            :provider="imgProvider(p.src)"
-            :alt="p.alt"
-            class="w-full h-full object-cover"
-            sizes="xs:50vw lg:640px"
-            loading="lazy"
-          />
-        </div>
-      </div>
-
       <div class="mt-10 max-w-3xl space-y-5 text-bone-400 leading-relaxed">
         <p>{{ t('about.p1') }}</p>
         <p>{{ t('about.p2') }}</p>
@@ -48,23 +34,7 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
-const { lt } = useLocalized()
-const { all, featured } = await useVehicles()
-
-// Two fleet stills: featured vehicles first, then anything with a photo.
-const photos = computed(() => {
-  const pool = [...featured(), ...all()]
-  const seen = new Set<string>()
-  const out: { src: string, alt: string }[] = []
-  for (const v of pool) {
-    const src = v.images[0]
-    if (!src || seen.has(src)) continue
-    seen.add(src)
-    out.push({ src, alt: lt(v.name) })
-    if (out.length === 2) break
-  }
-  return out
-})
+const { all } = await useVehicles()
 
 // Counted from the live catalogue so the number never goes stale.
 const fleetCount = computed(() => all().reduce((n, v) => n + (v.specs.units ?? 1), 0))
