@@ -39,7 +39,8 @@
           {{ t('home.featuredEquipmentAll') }}
         </NuxtLink>
       </div>
-        <div class="mt-10 card-grid xl:grid-cols-4">
+        <!-- Exactly one row at every width: 2 cards up to md, 3 at md, 4 at xl -->
+        <div class="mt-10 card-grid xl:grid-cols-4 [&>*:nth-child(n+3)]:hidden md:[&>*:nth-child(n+3)]:flex md:[&>*:nth-child(n+4)]:hidden xl:[&>*:nth-child(n+4)]:flex">
           <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
         </div>
       </div>
@@ -116,11 +117,11 @@ const stats = computed(() => [
   { value: '24/7', label: t('home.stats.support') },
 ])
 
-// Items ticked "featured" in the admin fill the home section; until any are
-// ticked, fall back to the first four so the section isn't empty.
+// Items ticked "featured" in the admin fill the home section (first four);
+// until any are ticked, fall back to the first four so the section isn't empty.
 const featuredEquipment = computed(() => {
   const picked = featuredEquipmentItems()
-  return picked.length ? picked : allEquipment().slice(0, 4)
+  return (picked.length ? picked : allEquipment()).slice(0, 4)
 })
 
 const steps = [
