@@ -1,7 +1,7 @@
 import PDFDocument from 'pdfkit'
 import { promises as fs } from 'node:fs'
 import { basename, join, normalize, resolve } from 'node:path'
-import type { LocaleCode, Offer, Quote } from '~~/app/types'
+import type { LocaleCode, Offer, OfferItemExtra, Quote } from '~~/app/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Offer PDF — generated from the stored offer snapshot, so it can be
@@ -39,6 +39,11 @@ const STRINGS = {
     perWeek: (weeks: number, rate: string) => `${rate}/week × ${weeks.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${weeks === 1 ? 'week' : 'weeks'}`,
     offBadge: (v: string) => `${v} DISCOUNT`,
     afterDiscount: 'After discount',
+    tiers: { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' },
+    insurance: (tier: string) => `${tier} insurance`,
+    driver: (n: number) => n === 1 ? 'Additional driver' : 'Additional drivers',
+    km: 'Kilometres',
+    perKm: (rate: string) => `${rate}/km`,
   },
   is: {
     title: 'TILBOÐ',
@@ -64,6 +69,11 @@ const STRINGS = {
     perWeek: (weeks: number, rate: string) => `${rate}/viku × ${weeks.toLocaleString('is-IS', { maximumFractionDigits: 2 })} ${weeks === 1 ? 'vika' : 'vikur'}`,
     offBadge: (v: string) => `${v} AFSLÁTTUR`,
     afterDiscount: 'Eftir afslátt',
+    tiers: { bronze: 'Brons', silver: 'Silfur', gold: 'Gull' },
+    insurance: (tier: string) => `Trygging (${tier})`,
+    driver: (n: number) => n === 1 ? 'Aukaökumaður' : 'Aukaökumenn',
+    km: 'Kílómetrar',
+    perKm: (rate: string) => `${rate}/km`,
   },
 } as const
 
@@ -129,13 +139,16 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   // Thumbnails are fetched up front so the PDF assembly itself is synchronous.
   const thumbs = await Promise.all(offer.items.map(i => loadPdfImage(i.image)))
 
-  // Per-line totals after discount. The offer-level discount (percent or fixed)
-  // is spread across lines proportionally to lineTotal, in minor units with
-  // largest-remainder rounding, so the lines sum exactly to subtotal − discount.
+  // Every printed row in order: each item's own line, then its vehicle extras.
+  const rowTotals = offer.items.flatMap(i => [i.lineTotal, ...(i.extras ?? []).map(e => e.total)])
+
+  // Per-row totals after discount. The offer-level discount (percent or fixed)
+  // is spread across rows proportionally to their totals, in minor units with
+  // largest-remainder rounding, so the rows sum exactly to subtotal − discount.
   const discounted: number[] | null = offer.discountAmount > 0
     ? (() => {
         const minor = offer.currency === 'ISK' ? 1 : 100
-        const totals = offer.items.map(i => Math.round(i.lineTotal * minor))
+        const totals = rowTotals.map(t => Math.round(t * minor))
         const sub = totals.reduce((a, b) => a + b, 0)
         if (sub <= 0) return null
         const disc = Math.min(Math.round(offer.discountAmount * minor), sub)
@@ -245,13 +258,33 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   }
   tableHeader()
 
-  offer.items.forEach((item, idx) => {
-    const rowH = thumbH + 12
+  const ensureRoom = (rowH: number) => {
     if (y + rowH > doc.page.height - 140) {
       doc.addPage()
       y = doc.page.margins.top
       tableHeader()
     }
+  }
+  // Right-hand total cell, struck-through original + gold discounted when a discount applies.
+  const totalCell = (original: number, rowIdx: number, textY: number, size: number) => {
+    if (discounted) {
+      doc.font('Helvetica').fontSize(8).fillColor(GRAY)
+        .text(money(original), col.total, textY - 1, { width: 70, align: 'right', strike: true })
+      doc.font('Helvetica-Bold').fontSize(size).fillColor(GOLD)
+        .text(money(discounted[rowIdx]!), col.total, textY + 10, { width: 70, align: 'right' })
+    }
+    else {
+      doc.text(money(original), col.total, textY, { width: 70, align: 'right' })
+    }
+  }
+  const extraLabel = (e: OfferItemExtra) => e.kind === 'insurance'
+    ? s.insurance(s.tiers[e.tier ?? 'bronze'])
+    : e.kind === 'driver' ? s.driver(e.qty) : s.km
+  let rowIdx = 0
+
+  offer.items.forEach((item, idx) => {
+    const rowH = thumbH + 12
+    ensureRoom(rowH)
     const thumb = thumbs[idx]
     if (thumb) {
       try {
@@ -277,18 +310,40 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     doc.font('Helvetica').fontSize(10).fillColor(INK)
     doc.text(String(item.qty), col.qty, textY, { width: 30, align: 'right' })
     doc.text(money(item.unitPrice), col.unit, textY, { width: 70, align: 'right' })
-    if (discounted) {
-      // Original price struck through in gray, discounted price bold in gold —
-      // the receiver sees per line what they actually pay.
-      doc.font('Helvetica').fontSize(8).fillColor(GRAY)
-        .text(money(item.lineTotal), col.total, textY - 1, { width: 70, align: 'right', strike: true })
-      doc.font('Helvetica-Bold').fontSize(10).fillColor(GOLD)
-        .text(money(discounted[idx]!), col.total, textY + 10, { width: 70, align: 'right' })
-    }
-    else {
-      doc.text(money(item.lineTotal), col.total, textY, { width: 70, align: 'right' })
-    }
+    // Original price struck through in gray, discounted price bold in gold —
+    // the receiver sees per line what they actually pay.
+    totalCell(item.lineTotal, rowIdx++, textY, 10)
     y += rowH
+
+    // Vehicle extras as indented sub-rows, priced over the same period.
+    for (const extra of item.extras ?? []) {
+      const extraH = discounted ? 26 : 18
+      ensureRoom(extraH)
+      const label = `+ ${extraLabel(extra)}`
+      const detail = extra.kind === 'km'
+        ? s.perKm(money(extra.unitPrice))
+        : item.pricing === 'day' && item.days
+          ? s.perDay(item.days, money(extra.unitPrice))
+          : item.pricing === 'week' && item.weeks
+            ? s.perWeek(item.weeks, money(extra.unitPrice))
+            : null
+      const textY = y - 2
+      const nameW = col.qty - col.name - 10
+      doc.font('Helvetica').fontSize(9).fillColor(INK)
+        .text(label, col.name + 8, textY, { width: nameW - 8, ellipsis: true, height: 11 })
+      const detailW = nameW - 14 - doc.widthOfString(label)
+      if (detail && detailW > 30) {
+        doc.fontSize(8).fillColor(GRAY)
+          .text(detail, col.name + 8 + (nameW - 14 - detailW) + 6, textY + 1,
+            { width: detailW, ellipsis: true, height: 10 })
+      }
+      doc.font('Helvetica').fontSize(9).fillColor(INK)
+      doc.text(extra.qty.toLocaleString(locale === 'is' ? 'is-IS' : 'en-US', { maximumFractionDigits: 2 }),
+        col.qty, textY, { width: 30, align: 'right' })
+      doc.text(money(extra.unitPrice), col.unit, textY, { width: 70, align: 'right' })
+      totalCell(extra.total, rowIdx++, textY, 9)
+      y += extraH
+    }
     doc.moveTo(left, y - 6).lineTo(right, y - 6).lineWidth(0.5).strokeColor(LINE).stroke()
   })
 
