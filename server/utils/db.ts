@@ -125,6 +125,16 @@ const SEED_UPDATES: { id: string, rev: number }[] = [
   { id: 'v-mre1v2ud010c', rev: 1 },
   { id: 'v-mre45ytvabcb', rev: 1 },
   { id: 'v-mszu795f21be', rev: 1 },
+  // 2026-10-03: `kind` on every vehicle (puts it on its /vehicles/<kind>
+  // landing page) + spec table for the tipping trailer. Seed re-synced from
+  // the live catalogue the same day, so nothing else changes.
+  { id: 'v-010', rev: 5 },
+  { id: 'v-011', rev: 2 },
+  { id: 'v-013', rev: 2 },
+  { id: 'v-mr6s6va62bc8', rev: 2 },
+  { id: 'v-mre1v2ud010c', rev: 2 },
+  { id: 'v-mre45ytvabcb', rev: 2 },
+  { id: 'v-mszu795f21be', rev: 2 },
 ]
 
 // Equipment copy fixes pushed 2026-08-27 (SEO pass): typo/casing/translation
@@ -155,6 +165,20 @@ const SEED_EQUIPMENT_UPDATES: { id: string, rev: number }[] = [
   { id: 'e-mseixxnp32fb', rev: 1 },
   { id: 'e-msejvh5a659c', rev: 1 },
   { id: 'e-msoi1sx7148c', rev: 1 },
+  // 2026-10-03: stored `slug` on every item (pins URLs so renames can't move
+  // pages) and description + highlights on the main items. Seed re-synced from
+  // the live catalogue the same day; every live row gets its next rev.
+  ...[
+    'e-mr754bhada10', 'e-mr754bmhf449', 'e-mr754brqcd2c', 'e-mr754bxk8aeb', 'e-mr754c3jf5e5',
+    'e-mr754c8n9357', 'e-mr754cdu38ba', 'e-mr754cj10dbb', 'e-mr754coccab2', 'e-mre0iyjs764f',
+    'e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024',
+    'e-mrl0eqb86480', 'e-mrl0gz0p4b08', 'e-mrl0vha3a57a', 'e-mrpjovke1eda', 'e-mrpk2yn45a70',
+    'e-mrpkv0o93613', 'e-mrpkwla84949', 'e-mrpkxz90eec4', 'e-mrpl7l4td85e', 'e-mrpl9cphbc39',
+    'e-mrw8w5pqb2c8', 'e-mrwb9v1v7ef1', 'e-mrzktoe5d0c9', 'e-mrzl0c5k7565', 'e-mrzl66ydd657',
+    'e-mseixxnp32fb', 'e-msejvh5a659c', 'e-msoi1sx7148c', 'e-mu77oa2z8637', 'e-muk5i5vm92bc',
+    'e-mur4li283b3a', 'e-mur5wgvi73e2', 'e-mur645nn404b', 'e-mur67h7t57f2', 'e-murcnlula6b1',
+    'e-murd25ab187f', 'e-murd47u51b0d',
+  ].map(id => ({ id, rev: 2 })),
 ]
 
 function seedCatalogueAdditions(db: Database.Database) {

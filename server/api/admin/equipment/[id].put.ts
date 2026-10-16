@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const payload = parseEquipmentPayload(await readBody(event))
   const item: EquipmentItem = { id: items[index]!.id, ...payload }
+  assertUniqueEquipmentSlug(item, items)
   const next = [...items]
   next[index] = item
   await saveEquipment(next)

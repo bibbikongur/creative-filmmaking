@@ -20,6 +20,8 @@ const CSP = [
   `base-uri 'self'`,
   `object-src 'none'`,
   `frame-ancestors 'self'`,
+  // The contact page embeds an OpenStreetMap iframe (no script, no cookies).
+  `frame-src 'self' https://www.openstreetmap.org`,
   `form-action 'self'`,
   // The two extra hosts serve the location-map tool's map tiles (OSM streets,
   // Esri satellite) — both on screen and when the PDF exporter redraws them.

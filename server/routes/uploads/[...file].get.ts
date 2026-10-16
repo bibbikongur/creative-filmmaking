@@ -25,12 +25,19 @@ const OUTPUT = {
   jpeg: { ext: '.jpg', type: 'image/jpeg' },
 } as const
 
+// The only fixed-size crop served: Open Graph / social share cards. Any other
+// w+h pair is treated as a plain width request so the variant cache stays small.
+const OG_SIZE = { width: 1200, height: 630 } as const
+
 /**
  * Serves admin-uploaded photos from the data dir, resizing on demand.
  *
  * /uploads/<name>                    → original file, byte for byte
  * /uploads/<name>?w=640              → 640px-wide webp (default format)
  * /uploads/<name>?w=640&f=jpeg&q=80  → jpeg variant
+ * /uploads/<name>?w=1200&h=630&f=jpeg&fit=cover|contain
+ *                                    → exact 1200×630 share image (contain
+ *                                      pads with white for product shots)
  *
  * Variants are cached on disk under <uploads>/.cache and served from there
  * on repeat requests. The app/providers/uploads.ts Nuxt Image provider
@@ -64,7 +71,10 @@ export default defineEventHandler(async (event) => {
     return sendStream(event, createReadStream(path))
   }
 
-  const width = WIDTHS.find(w => w >= rawW) ?? WIDTHS[WIDTHS.length - 1]!
+  const rawH = Number.parseInt(String(query.h ?? ''), 10)
+  const ogCrop = rawW === OG_SIZE.width && rawH === OG_SIZE.height
+  const fit = query.fit === 'contain' ? 'contain' as const : 'cover' as const
+  const width = ogCrop ? OG_SIZE.width : WIDTHS.find(w => w >= rawW) ?? WIDTHS[WIDTHS.length - 1]!
   // webp requests are silently upgraded to avif when the browser advertises
   // support — smaller files, better Core Web Vitals; old browsers keep webp.
   // Vary: Accept keeps caches from serving avif to a webp-only client.
@@ -80,7 +90,9 @@ export default defineEventHandler(async (event) => {
   setHeader(event, 'content-type', out.type)
 
   const cacheDir = join(uploadsDir(), '.cache')
-  const cachePath = join(cacheDir, `${name}.w${width}.q${quality}${out.ext}`)
+  const cachePath = join(cacheDir, ogCrop
+    ? `${name}.w${width}h${OG_SIZE.height}.${fit}.q${quality}${out.ext}`
+    : `${name}.w${width}.q${quality}${out.ext}`)
 
   const cached = await fs.stat(cachePath).catch(() => null)
   if (cached?.isFile()) {
@@ -89,7 +101,11 @@ export default defineEventHandler(async (event) => {
   }
 
   // .rotate() bakes in EXIF orientation, which webp/avif output would otherwise lose.
-  const image = sharp(path).rotate().resize({ width, withoutEnlargement: true })
+  // The share crop is always exactly 1200×630 (scrapers trust the declared
+  // og:image dimensions); everything else only ever shrinks.
+  const image = sharp(path).rotate().resize(ogCrop
+    ? { width: OG_SIZE.width, height: OG_SIZE.height, fit, background: '#ffffff' }
+    : { width, withoutEnlargement: true })
   const buf = fmt === 'jpeg'
     ? await image.jpeg({ quality, mozjpeg: true }).toBuffer()
     : fmt === 'avif'

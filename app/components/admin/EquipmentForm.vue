@@ -6,11 +6,19 @@
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
         <div>
           <label class="admin-label">Name (English) *</label>
-          <input v-model.trim="form.name.en" type="text" class="input-dark">
+          <input v-model.trim="form.name.en" type="text" class="input-dark" @input="autoSlug">
         </div>
         <div>
           <label class="admin-label">Name (Icelandic)</label>
-          <input v-model.trim="form.name.is" type="text" class="input-dark">
+          <input v-model.trim="form.name.is" type="text" class="input-dark" @input="autoSlug">
+        </div>
+        <div>
+          <label class="admin-label">URL slug</label>
+          <input v-model.trim="form.slug" type="text" class="input-dark font-mono" placeholder="rafstod-2-2-kva" @input="slugTouched = true">
+          <p class="mt-1 text-xs text-bone-400">
+            Page address: /equipment/{{ form.slug || '…' }}
+            <span v-if="isEdit" class="text-signal-500/80"> (changing it breaks links already shared).</span>
+          </p>
         </div>
         <div>
           <label class="admin-label">Category *</label>
@@ -28,7 +36,7 @@
     <!-- Text -->
     <section>
       <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Text</h2>
-      <p class="mt-1 text-xs text-bone-400">A short line shown under the name on the card. Icelandic is optional; the site falls back to English when empty.</p>
+      <p class="mt-1 text-xs text-bone-400">The tagline is the short line on the card. The description is the detail page's body copy: what it is, what it is for, what comes with it. Icelandic is optional; the site falls back to English when empty.</p>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
         <div>
           <label class="admin-label">Tagline (English)</label>
@@ -38,7 +46,33 @@
           <label class="admin-label">Tagline (Icelandic)</label>
           <textarea v-model.trim="form.tagline.is" rows="3" class="input-dark resize-y" />
         </div>
+        <div>
+          <label class="admin-label">Description (English)</label>
+          <textarea v-model.trim="form.description.en" rows="7" class="input-dark resize-y" placeholder="Separate paragraphs with a blank line." />
+        </div>
+        <div>
+          <label class="admin-label">Description (Icelandic)</label>
+          <textarea v-model.trim="form.description.is" rows="7" class="input-dark resize-y" />
+        </div>
       </div>
+    </section>
+
+    <!-- Highlights -->
+    <section>
+      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Highlights</h2>
+      <p class="mt-1 text-xs text-bone-400">3–5 short bullets shown on the detail page (what's included, output, runtime, licence).</p>
+      <div class="mt-4 space-y-3">
+        <div v-for="(h, i) in form.highlights" :key="i" class="flex gap-3 items-start">
+          <div class="grid gap-3 sm:grid-cols-2 flex-1">
+            <input v-model.trim="h.en" type="text" class="input-dark" placeholder="English">
+            <input v-model.trim="h.is" type="text" class="input-dark" placeholder="Icelandic">
+          </div>
+          <button type="button" class="admin-icon-btn mt-2" title="Remove" @click="form.highlights.splice(i, 1)">✕</button>
+        </div>
+      </div>
+      <button type="button" class="btn-ghost !px-4 !py-2 !text-xs mt-3" @click="form.highlights.push({ en: '', is: '' })">
+        + Add highlight
+      </button>
     </section>
 
     <!-- Photos -->
@@ -105,12 +139,24 @@ const isEdit = computed(() => Boolean(props.item))
 
 const e = props.item
 const form = reactive({
+  // Existing rows without a stored slug show the derived one, so saving the
+  // form pins the current URL instead of leaving it name-dependent.
+  slug: e ? equipmentSlug(e) : '',
   category: e?.category ?? 'heating',
   featured: e?.featured ?? false,
   name: { en: e?.name.en ?? '', is: e?.name.is ?? '' },
   tagline: { en: e?.tagline.en ?? '', is: e?.tagline.is ?? '' },
+  description: { en: e?.description?.en ?? '', is: e?.description?.is ?? '' },
+  highlights: (e?.highlights ?? []).map(h => ({ en: h.en ?? '', is: h.is ?? '' })),
   images: [...(e?.images ?? [])],
 })
+if (!form.highlights.length) form.highlights.push({ en: '', is: '' })
+
+// ── Slug auto-fill (new items only, until the user edits it by hand) ────────
+const slugTouched = ref(isEdit.value)
+const autoSlug = () => {
+  if (!slugTouched.value) form.slug = slugify(form.name.is || form.name.en)
+}
 
 // ── Photos ───────────────────────────────────────────────────────────────────
 const uploading = ref(false)
@@ -158,10 +204,13 @@ const errorList = computed(() =>
 
 const submit = () => {
   emit('save', {
+    slug: form.slug,
     category: form.category,
     featured: form.featured,
     name: form.name,
     tagline: form.tagline,
+    description: form.description,
+    highlights: form.highlights.filter(h => h.en || h.is),
     images: form.images,
   })
 }

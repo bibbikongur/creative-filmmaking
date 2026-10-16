@@ -1,45 +1,43 @@
 <template>
-  <div class="flex flex-wrap gap-2" role="group" :aria-label="t('catalogue.kicker')">
+  <div class="flex flex-wrap gap-2" role="group" :aria-label="groupLabel">
     <button
       type="button"
-      class="px-4 py-2 text-xs uppercase tracking-widest font-semibold border transition-colors"
+      class="btn btn-sm border"
       :class="!modelValue
         ? 'bg-gold-500 text-ink-950 border-gold-500'
         : 'border-ink-700 text-bone-400 hover:border-gold-500 hover:text-bone-100'"
-      @click="$emit('update:modelValue', null)"
+      :aria-pressed="!modelValue"
+      @click="emit('update:modelValue', null)"
     >
-      {{ t('catalogue.all') }}
+      {{ allLabel }}
     </button>
     <button
-      v-for="c in shown"
-      :key="c.id"
+      v-for="c in options"
+      :key="c"
       type="button"
-      class="px-4 py-2 text-xs uppercase tracking-widest font-semibold border transition-colors"
-      :class="modelValue === c.id
+      class="btn btn-sm border"
+      :class="modelValue === c
         ? 'bg-gold-500 text-ink-950 border-gold-500'
         : 'border-ink-700 text-bone-400 hover:border-gold-500 hover:text-bone-100'"
-      @click="$emit('update:modelValue', c.id)"
+      :aria-pressed="modelValue === c"
+      @click="emit('update:modelValue', c)"
     >
-      {{ t(`categories.${c.id}`) }}
+      {{ label(c) }}
     </button>
   </div>
 </template>
 
-<script setup lang="ts">
-import { categories } from '~/data/categories'
-import type { VehicleCategory } from '~/types'
-
-const props = defineProps<{
-  modelValue: VehicleCategory | null
-  /** Categories that actually have vehicles — empty ones are hidden so a
-   *  filter click never lands on a bare "nothing here" page. */
-  available?: VehicleCategory[]
+<script setup lang="ts" generic="T extends string">
+// One pill row for both catalogues. The caller passes the categories that
+// actually have items (in canonical order) so a click never lands on an
+// empty page.
+defineProps<{
+  modelValue: T | null
+  options: readonly T[]
+  label: (id: T) => string
+  allLabel: string
+  groupLabel: string
 }>()
-defineEmits<{ 'update:modelValue': [value: VehicleCategory | null] }>()
 
-const shown = computed(() =>
-  props.available ? categories.filter(c => props.available!.includes(c.id)) : categories,
-)
-
-const { t } = useI18n()
+const emit = defineEmits<{ 'update:modelValue': [value: T | null] }>()
 </script>
