@@ -70,7 +70,40 @@ export interface Vehicle {
   featured: boolean
 }
 
-export type EquipmentCategory = 'heating' | 'shelter' | 'safety' | 'furniture' | 'power' | 'cleaning'
+/**
+ * Equipment category id. Categories live in the database (editable in
+ * /admin/equipment/categories), so this is a plain string: the six original
+ * ids ('heating', 'power', …) plus whatever the admin adds ('c-…').
+ */
+export type EquipmentCategory = string
+
+export type EquipmentCategoryStatus = 'active' | 'archived'
+
+/**
+ * An equipment category: the short name used on chips and badges, its own
+ * URL segment per language, and the copy for its /equipment/<slug> landing
+ * page. The slug is deliberately separate from the name so a rename never
+ * moves the page; former slugs 301 to the current one.
+ */
+export interface EquipmentCategoryDef {
+  id: string
+  sort: number
+  status: EquipmentCategoryStatus
+  /** URL segment per locale: /equipment/<is> and /en/equipment/<en> */
+  slug: LocalizedText
+  /** Short label (chips, card badge, admin) */
+  name: LocalizedText
+  /** Landing page H1, e.g. "Hitablásarar til leigu"; falls back to name */
+  title: LocalizedText
+  metaTitle: LocalizedText
+  metaDescription: LocalizedText
+  /** Landing intro paragraphs */
+  intro: LocalizedText[]
+  faq: { q: LocalizedText, a: LocalizedText }[]
+  /** Slugs (either locale) this category used to have; they redirect here */
+  previousSlugs: string[]
+  updatedAt?: string
+}
 
 export interface EquipmentItem {
   /** Stable internal key, e.g. 'e-001' */

@@ -41,7 +41,7 @@
       </div>
         <!-- Exactly one row at every width: 2 cards up to md, 3 at md, 4 at xl -->
         <div class="mt-10 card-grid xl:grid-cols-4 [&>*:nth-child(n+3)]:hidden md:[&>*:nth-child(n+3)]:flex md:[&>*:nth-child(n+4)]:hidden xl:[&>*:nth-child(n+4)]:flex">
-          <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
+          <EquipmentCard v-for="e in featuredEquipment" :key="e.id" :item="e" :category-label="categoryLabel(e.category)" sizes="xs:100vw sm:50vw md:33vw xl:25vw" />
         </div>
       </div>
     </section>
@@ -102,6 +102,7 @@ const { featured, all } = await useVehicles()
 const { faq } = useFaq()
 const faqItems = faq('faq.home')
 const { all: allEquipment, featured: featuredEquipmentItems } = await useEquipment()
+const { label: categoryLabel } = await useEquipmentCategories()
 
 // Cinematic still of a shoot on an Icelandic road (public/images/hero.jpg). If it is
 // ever removed, the first featured vehicle photo stands in (HeroSection darkens it).

@@ -5,7 +5,10 @@
         <p class="kicker">Equipment</p>
         <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">Manage equipment</h1>
       </div>
-      <NuxtLink to="/admin/equipment/new" class="btn-gold !px-5 !py-2.5">+ Add equipment</NuxtLink>
+      <div class="flex items-center gap-3">
+        <NuxtLink to="/admin/equipment/categories" class="btn-ghost !px-5 !py-2.5">Categories</NuxtLink>
+        <NuxtLink to="/admin/equipment/new" class="btn-gold !px-5 !py-2.5">+ Add equipment</NuxtLink>
+      </div>
     </div>
 
     <p v-if="loadError" class="mt-8 text-sm text-signal-500">{{ loadError }}</p>
@@ -48,7 +51,7 @@
             {{ e.name.en }}
             <span v-if="e.featured" class="ml-2 text-[10px] uppercase tracking-widest text-gold-500 border border-gold-500/40 px-1.5 py-0.5">Featured</span>
           </p>
-          <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">{{ e.category }}</p>
+          <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">{{ categoryName(e.category) }}</p>
         </div>
         <NuxtLink :to="`/admin/equipment/${e.id}`" class="btn-ghost !px-4 !py-2 !text-xs">Edit</NuxtLink>
         <button
@@ -69,23 +72,30 @@
 </template>
 
 <script setup lang="ts">
-import type { EquipmentItem } from '~/types'
+import type { EquipmentCategoryDef, EquipmentItem } from '~/types'
 
 definePageMeta({ layout: 'admin' })
 const { confirmDialog, alertDialog } = useAppDialog()
 
 const items = ref<EquipmentItem[]>([])
+const categories = ref<EquipmentCategoryDef[]>([])
 const loaded = ref(false)
 const loadError = ref('')
 const deleting = ref('')
 const reordering = ref(false)
 
+const categoryName = (id: string) => {
+  const c = categories.value.find(x => x.id === id)
+  return c ? (c.name.is || c.name.en) + (c.status === 'archived' ? ' (archived)' : '') : id
+}
+
 const load = async () => {
   loadError.value = ''
   try {
-    items.value = await $fetch<EquipmentItem[]>('/api/equipment', {
-      query: { t: Date.now() }, // bypass any intermediary cache
-    })
+    ;[items.value, categories.value] = await Promise.all([
+      $fetch<EquipmentItem[]>('/api/equipment', { query: { t: Date.now() } }), // bypass any intermediary cache
+      $fetch<EquipmentCategoryDef[]>('/api/admin/equipment-categories', { query: { t: Date.now() } }),
+    ])
     loaded.value = true
   }
   catch {

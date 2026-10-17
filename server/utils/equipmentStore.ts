@@ -1,5 +1,6 @@
-import type { EquipmentCategory, EquipmentItem, LocalizedText } from '~~/app/types'
-import { SLUG_RE, equipmentSlug, isReservedEquipmentSlug } from '~~/app/utils/equipmentSlug'
+import type { EquipmentCategoryDef, EquipmentItem, LocalizedText } from '~~/app/types'
+import { SLUG_RE, equipmentSlug } from '~~/app/utils/equipmentSlug'
+import { assertItemSlugFree } from './equipmentCategoryStore'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Runtime equipment store — rows in the SQLite database (see db.ts), stored
@@ -35,8 +36,6 @@ export async function saveEquipment(items: EquipmentItem[]) {
 
 // ── Payload validation ───────────────────────────────────────────────────────
 
-const CATEGORIES: EquipmentCategory[] = ['heating', 'shelter', 'safety', 'furniture', 'power', 'cleaning']
-
 const asText = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
 
 const asLocalized = (v: unknown): LocalizedText => {
@@ -44,16 +43,17 @@ const asLocalized = (v: unknown): LocalizedText => {
   return { en: asText(o.en), is: asText(o.is) }
 }
 
-const oneOf = <T extends string>(options: readonly T[], v: unknown): T | undefined =>
-  options.includes(v as T) ? (v as T) : undefined
-
-/** Validate + normalize an admin-submitted equipment item. Throws 400 with a list of errors. */
-export function parseEquipmentPayload(body: unknown): Omit<EquipmentItem, 'id'> {
+/**
+ * Validate + normalize an admin-submitted equipment item. `categoryIds` are
+ * the ids of the active categories the item may belong to. Throws 400 with a
+ * list of errors.
+ */
+export function parseEquipmentPayload(body: unknown, categoryIds: readonly string[]): Omit<EquipmentItem, 'id'> {
   const b = (body ?? {}) as Record<string, unknown>
   const errors: string[] = []
 
-  const category = oneOf(CATEGORIES, b.category)
-  if (!category) errors.push('Category is required.')
+  const category = asText(b.category)
+  if (!category || !categoryIds.includes(category)) errors.push('Category is required.')
 
   const name = asLocalized(b.name)
   if (!name.en) errors.push('English name is required.')
@@ -61,7 +61,6 @@ export function parseEquipmentPayload(body: unknown): Omit<EquipmentItem, 'id'> 
   // Optional: empty means "derive from the Icelandic name" (legacy behaviour).
   const slug = asText(b.slug).toLowerCase()
   if (slug && !SLUG_RE.test(slug)) errors.push('Slug must be lowercase letters and numbers separated by dashes (e.g. rafstod-2-2-kva).')
-  if (slug && isReservedEquipmentSlug(slug)) errors.push(`"${slug}" is the address of a category page and can't be used as an item slug.`)
 
   const tagline = asLocalized(b.tagline)
   const description = asLocalized(b.description)
@@ -81,7 +80,7 @@ export function parseEquipmentPayload(body: unknown): Omit<EquipmentItem, 'id'> 
 
   return {
     ...(slug ? { slug } : {}),
-    category: category!,
+    category,
     name,
     tagline,
     ...(description.en || description.is ? { description } : {}),
@@ -92,10 +91,15 @@ export function parseEquipmentPayload(body: unknown): Omit<EquipmentItem, 'id'> 
 }
 
 /**
- * Two items may never resolve to the same URL. Compares the slug the candidate
- * would get against every other item's, derived or explicit.
+ * Two items may never resolve to the same URL, and no item may take a
+ * category page's address (current or former slug). Compares the slug the
+ * candidate would get against every other item's, derived or explicit.
  */
-export function assertUniqueEquipmentSlug(candidate: Pick<EquipmentItem, 'id' | 'name' | 'slug'>, others: EquipmentItem[]) {
+export function assertUniqueEquipmentSlug(
+  candidate: Pick<EquipmentItem, 'id' | 'name' | 'slug'>,
+  others: EquipmentItem[],
+  categories: EquipmentCategoryDef[] = [],
+) {
   const slug = equipmentSlug(candidate)
   const clash = others.find(o => o.id !== candidate.id && equipmentSlug(o) === slug)
   if (clash) {
@@ -105,4 +109,5 @@ export function assertUniqueEquipmentSlug(candidate: Pick<EquipmentItem, 'id' | 
       data: { errors: [`The address /equipment/${slug} is already used by "${clash.name.en}". Pick a different slug.`] },
     })
   }
+  assertItemSlugFree(slug, categories)
 }

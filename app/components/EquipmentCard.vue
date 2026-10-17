@@ -25,8 +25,8 @@
         loading="lazy"
       />
       <ImagePlaceholder v-else />
-      <span class="absolute top-3 left-3 px-2.5 py-1 bg-ink-950/70 backdrop-blur text-gold-400 text-[11px] uppercase tracking-widest font-semibold">
-        {{ t(`equipmentCategories.${item.category}`) }}
+      <span v-if="categoryLabel" class="absolute top-3 left-3 px-2.5 py-1 bg-ink-950/70 backdrop-blur text-gold-400 text-[11px] uppercase tracking-widest font-semibold">
+        {{ categoryLabel }}
       </span>
 
       <!-- Prev / next + dots when there is more than one photo. Arrows are always visible
@@ -107,11 +107,14 @@ import type { EquipmentItem } from '~/types'
 
 const props = withDefaults(defineProps<{
   item: EquipmentItem
+  /** Category name for the badge (from useEquipmentCategories().label) */
+  categoryLabel?: string
   /** @nuxt/image sizes string matching the grid the card sits in */
   sizes?: string
   /** "row" puts the photo beside the text (catalogue list view) */
   layout?: 'grid' | 'row'
 }>(), {
+  categoryLabel: '',
   sizes: 'xs:100vw sm:50vw md:33vw',
   layout: 'grid',
 })

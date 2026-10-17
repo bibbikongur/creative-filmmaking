@@ -1,5 +1,9 @@
 <template>
-  <div class="wrap section-sm">
+  <!-- One route for two kinds of page under /equipment/<slug>: a category
+       landing page when the slug belongs to a category, otherwise an item. -->
+  <EquipmentLandingPage v-if="category" :category="category" />
+
+  <div v-else-if="item" class="wrap section-sm">
     <Breadcrumbs :items="crumbs" />
 
     <div class="mt-8 grid gap-10 lg:grid-cols-5">
@@ -10,7 +14,7 @@
 
       <!-- Summary -->
       <div class="lg:col-span-2">
-        <p class="kicker">{{ t(`equipmentCategories.${item.category}`) }}</p>
+        <p v-if="categoryName" class="kicker">{{ categoryName }}</p>
         <!-- "til leigu" in the visible H1 — the headline matches what people
              actually search for, without polluting the item names themselves. -->
         <h1 class="h1 lg:text-4xl mt-3">
@@ -87,9 +91,9 @@
 
     <!-- More in this category -->
     <section v-if="related.length" class="mt-20">
-      <SectionHeading :kicker="t(`equipmentCategories.${item.category}`)" :title="t('vehicle.moreInCategory')" />
+      <SectionHeading :kicker="categoryName" :title="t('vehicle.moreInCategory')" />
       <div class="mt-8 card-grid">
-        <EquipmentCard v-for="e in related" :key="e.id" :item="e" />
+        <EquipmentCard v-for="e in related" :key="e.id" :item="e" :category-label="categoryName" />
       </div>
     </section>
 
@@ -98,88 +102,113 @@
 </template>
 
 <script setup lang="ts">
-import { equipmentLandingFor } from '~/data/equipmentLandings'
+import type { EquipmentCategoryDef, EquipmentItem } from '~/types'
 
 const { t } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
 const route = useRoute()
 const { all, byCategory } = await useEquipment()
+const { all: categories, byId, path, text } = await useEquipmentCategories()
 
 const param = route.params.slug as string
-const found = all().find(e => equipmentSlug(e) === param)
-  ?? all().find(e => e.id === param)
-if (!found) {
+
+// ── 1. Category landing page? ────────────────────────────────────────────────
+// Current slug in this locale → render. Current slug of the other locale or a
+// former slug → 301 to the right address. (Archived categories are not in the
+// public list; their old URLs fall through to the item lookup and 404, which
+// the admin avoids by moving items out before archiving.)
+const categoryHit = categories().find(c => c.slug.is === param || c.slug.en === param || c.previousSlugs.includes(param))
+if (categoryHit && path(categoryHit) !== localePath(`/equipment/${param}`)) {
+  await navigateTo(path(categoryHit), { redirectCode: 301 })
+}
+const category = ref<EquipmentCategoryDef | undefined>(categoryHit)
+
+if (category.value) {
+  // Different slug per language: tell @nuxtjs/i18n so the hreflang links and
+  // the language switcher point at the translated address.
+  useSetI18nParams()({ is: { slug: category.value.slug.is }, en: { slug: category.value.slug.en } })
+}
+
+// ── 2. Otherwise an item ─────────────────────────────────────────────────────
+const found: EquipmentItem | undefined = category.value
+  ? undefined
+  : (all().find(e => equipmentSlug(e) === param) ?? all().find(e => e.id === param))
+if (!category.value && !found) {
   throw createError({ statusCode: 404, statusMessage: 'Equipment not found', fatal: true })
 }
-const item = found
+const item = found!
 
 // Reached via raw id (or a stale slug that matches an id) — 301 to the
 // canonical slug URL so shared links and search engines converge on one URL.
-if (param !== equipmentSlug(item)) {
+if (item && param !== equipmentSlug(item)) {
   await navigateTo(localePath(`/equipment/${equipmentSlug(item)}`), { redirectCode: 301 })
 }
 
+const itemCategory = computed(() => (item ? byId(item.category) : undefined))
+const categoryName = computed(() => text(itemCategory.value?.name))
+
 const related = computed(() =>
-  byCategory(item.category).filter(e => e.id !== item.id).slice(0, 3),
+  item ? byCategory(item.category).filter(e => e.id !== item.id).slice(0, 3) : [],
 )
 
 const paragraphs = computed(() => {
-  const text = item.description ? lt(item.description) : ''
-  return text ? text.split('\n\n').map(p => p.trim()).filter(Boolean) : []
+  const textValue = item?.description ? lt(item.description) : ''
+  return textValue ? textValue.split('\n\n').map(p => p.trim()).filter(Boolean) : []
 })
-const highlights = computed(() => (item.highlights ?? []).map(h => lt(h)).filter(Boolean))
+const highlights = computed(() => (item?.highlights ?? []).map(h => lt(h)).filter(Boolean))
 
 const facts = computed(() => [
-  { label: t('equipmentCatalogue.facts.category'), value: t(`equipmentCategories.${item.category}`) },
+  ...(categoryName.value ? [{ label: t('equipmentCatalogue.facts.category'), value: categoryName.value }] : []),
   { label: t('equipmentCatalogue.facts.quantityLabel'), value: t('equipmentCatalogue.facts.quantity') },
   { label: t('equipmentCatalogue.facts.deliveryLabel'), value: t('equipmentCatalogue.facts.delivery') },
   { label: t('equipmentCatalogue.facts.rentalLabel'), value: t('equipmentCatalogue.facts.rental') },
 ])
 
 // Breadcrumbs renders the trail and emits the matching BreadcrumbList JSON-LD.
-// The category level links to the category's keyword landing page.
-const landing = equipmentLandingFor(item.category)
+// The category level links to the category's landing page.
 const crumbs = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
   { label: t('nav.equipment'), to: localePath('/equipment') },
-  { label: t(`${landing.key}.title`), to: localePath({ name: landing.routeName }) },
-  { label: lt(item.name), to: localePath(`/equipment/${equipmentSlug(item)}`) },
+  ...(itemCategory.value ? [{ label: categoryName.value, to: path(itemCategory.value) }] : []),
+  ...(item ? [{ label: lt(item.name), to: localePath(`/equipment/${equipmentSlug(item)}`) }] : []),
 ])
 
-const siteUrl = useRuntimeConfig().public.siteUrl
-const absImage = (src: string) => (src.startsWith('http') ? src : `${siteUrl}${src}`)
-const { ogImageUrl } = useOgImage()
+if (item) {
+  const siteUrl = useRuntimeConfig().public.siteUrl
+  const absImage = (src: string) => (src.startsWith('http') ? src : `${siteUrl}${src}`)
+  const { ogImageUrl } = useOgImage()
 
-// Make sure the rental phrase appears in the SERP snippet: "{name} til leigu."
-// followed by the first description paragraph when there is one (richer than
-// the card tagline), else the tagline. Google bolds the query terms in
-// descriptions, which lifts click-through. Trimmed to the ~160-char window.
-const metaDescription = computed(() => {
-  const title = t('meta.vehicleTitle', { name: lt(item.name) })
-  const body = paragraphs.value[0] || lt(item.tagline) || t('meta.equipment.description')
-  const full = /til leigu|for rent/i.test(body) ? body : `${title}. ${body}`
-  return full.length > 160 ? `${full.slice(0, 157).trimEnd()}…` : full
-})
+  // Make sure the rental phrase appears in the SERP snippet: "{name} til leigu."
+  // followed by the first description paragraph when there is one (richer than
+  // the card tagline), else the tagline. Google bolds the query terms in
+  // descriptions, which lifts click-through. Trimmed to the ~160-char window.
+  const metaDescription = computed(() => {
+    const title = t('meta.vehicleTitle', { name: lt(item.name) })
+    const body = paragraphs.value[0] || lt(item.tagline) || t('meta.equipment.description')
+    const full = /til leigu|for rent/i.test(body) ? body : `${title}. ${body}`
+    return full.length > 160 ? `${full.slice(0, 157).trimEnd()}…` : full
+  })
 
-useSeoMeta({
-  title: () => t('meta.vehicleTitle', { name: lt(item.name) }),
-  description: () => metaDescription.value,
-  ogTitle: () => `${t('meta.vehicleTitle', { name: lt(item.name) })} · Creative Filmmaking`,
-  ogDescription: () => metaDescription.value,
-  // Product shots are cut-outs on white: pad to 1200×630 instead of cropping.
-  ogImage: ogImageUrl(item.images[0], 'contain'),
-  ogImageAlt: item.images[0] ? () => lt(item.name) : undefined,
-})
+  useSeoMeta({
+    title: () => t('meta.vehicleTitle', { name: lt(item.name) }),
+    description: () => metaDescription.value,
+    ogTitle: () => `${t('meta.vehicleTitle', { name: lt(item.name) })} · Creative Filmmaking`,
+    ogDescription: () => metaDescription.value,
+    // Product shots are cut-outs on white: pad to 1200×630 instead of cropping.
+    ogImage: ogImageUrl(item.images[0], 'contain'),
+    ogImageAlt: item.images[0] ? () => lt(item.name) : undefined,
+  })
 
-// No Product node on purpose: Google requires offers/reviews on Product
-// markup for rich results, and prices here are offer-on-request — a Product
-// node without them just generates "invalid item" noise in Search Console.
-// primaryImageOfPage tells Google which photo belongs to THIS page, so SERP
-// thumbnails don't borrow an image from elsewhere on the site.
-useSchemaOrg([
-  ...(item.images[0]
-    ? [defineWebPage({ primaryImageOfPage: absImage(item.images[0]) })]
-    : []),
-])
+  // No Product node on purpose: Google requires offers/reviews on Product
+  // markup for rich results, and prices here are offer-on-request — a Product
+  // node without them just generates "invalid item" noise in Search Console.
+  // primaryImageOfPage tells Google which photo belongs to THIS page, so SERP
+  // thumbnails don't borrow an image from elsewhere on the site.
+  useSchemaOrg([
+    ...(item.images[0]
+      ? [defineWebPage({ primaryImageOfPage: absImage(item.images[0]) })]
+      : []),
+  ])
+}
 </script>

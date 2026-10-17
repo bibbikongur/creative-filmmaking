@@ -4,9 +4,9 @@
       <Breadcrumbs :items="crumbs" />
 
       <div class="mt-8">
-        <SectionHeading as="h1" :kicker="t(`${k}.kicker`)" :title="t(`${k}.title`)" />
+        <SectionHeading as="h1" :kicker="t('equipmentCatalogue.kicker')" :title="text(category.title) || text(category.name)" />
       </div>
-      <div class="mt-6 max-w-3xl space-y-4 text-bone-400 leading-relaxed">
+      <div v-if="intro.length" class="mt-6 max-w-3xl space-y-4 text-bone-400 leading-relaxed">
         <p v-for="(paragraph, i) in intro" :key="i">{{ paragraph }}</p>
       </div>
 
@@ -15,7 +15,7 @@
       </div>
 
       <div v-if="items.length" class="mt-10 card-grid">
-        <EquipmentCard v-for="e in items" :key="e.id" :item="e" />
+        <EquipmentCard v-for="e in items" :key="e.id" :item="e" :category-label="text(category.name)" />
       </div>
       <div v-else class="mt-16 text-center">
         <p class="text-bone-400">{{ t('equipmentCatalogue.empty') }}</p>
@@ -24,7 +24,7 @@
         </NuxtLink>
       </div>
 
-      <FaqSection class="mt-20" :kicker="t('faq.kicker')" :title="t('faq.title')" :items="faqItems" />
+      <FaqSection v-if="faqItems.length" class="mt-20" :kicker="t('faq.kicker')" :title="t('faq.title')" :items="faqItems" />
     </div>
 
     <CtaBanner />
@@ -32,52 +32,51 @@
 </template>
 
 <script setup lang="ts">
-import type { EquipmentLanding } from '~/data/equipmentLandings'
-import { equipmentLandings } from '~/data/equipmentLandings'
+import type { EquipmentCategoryDef } from '~/types'
 
-// Shared body of every /equipment/<category> keyword page; see
-// VehicleLandingPage for the pattern.
-const props = defineProps<{ landing: EquipmentLanding }>()
+// Shared body of every /equipment/<category> keyword page. Rendered by
+// app/pages/equipment/[slug].vue when the slug belongs to a category; the
+// copy comes from the category row (editable in /admin/equipment/categories).
+const props = defineProps<{ category: EquipmentCategoryDef }>()
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 const localePath = useLocalePath()
 const { all, byCategory } = await useEquipment()
-const { faq } = useFaq()
+const { all: categories, path, text } = await useEquipmentCategories()
 
-const k = props.landing.key
-const items = computed(() => byCategory(props.landing.category))
+const items = computed(() => byCategory(props.category.id))
 
-const intro = computed(() =>
-  [1, 2, 3].map(i => `${k}.intro${i}`).filter(key => te(key)).map(key => t(key)),
-)
+const intro = computed(() => props.category.intro.map(p => text(p)).filter(Boolean))
 
-const faqItems = computed(() => faq(`${k}.faq`))
+const faqItems = computed(() => props.category.faq
+  .map(f => ({ q: text(f.q), a: text(f.a) }))
+  .filter(f => f.q && f.a))
 
 const chips = computed(() => {
   const present = new Set(all().map(e => e.category))
   return [
     { label: t('equipmentCatalogue.all'), to: localePath('/equipment'), active: false },
-    ...equipmentLandings
-      .filter(l => l.category === props.landing.category || present.has(l.category))
-      .map(l => ({
-        label: t(`${l.key}.title`),
-        to: localePath({ name: l.routeName }),
-        active: l.category === props.landing.category,
-      })),
+    ...categories()
+      .filter(c => c.id === props.category.id || present.has(c.id))
+      .map(c => ({ label: text(c.name), to: path(c), active: c.id === props.category.id })),
   ]
 })
 
 const crumbs = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
   { label: t('nav.equipment'), to: localePath('/equipment') },
-  { label: t(`${k}.title`), to: localePath({ name: props.landing.routeName }) },
+  { label: text(props.category.title) || text(props.category.name), to: path(props.category) },
 ])
 
+const metaTitle = computed(() => text(props.category.metaTitle) || text(props.category.title) || text(props.category.name))
+const metaDescription = computed(() => text(props.category.metaDescription) || intro.value[0] || t('meta.equipment.description'))
+
 useSeoMeta({
-  title: () => t(`${k}.metaTitle`),
-  description: () => t(`${k}.metaDescription`),
-  ogTitle: () => `${t(`${k}.metaTitle`)} · Creative Filmmaking`,
-  ogDescription: () => t(`${k}.metaDescription`),
+  title: () => metaTitle.value,
+  description: () => metaDescription.value,
+  ogTitle: () => `${metaTitle.value} · Creative Filmmaking`,
+  ogDescription: () => metaDescription.value,
+  // A category with nothing in it is a thin page: keep it out of the index until it has items.
   robots: () => (items.value.length ? undefined : 'noindex, follow'),
 })
 

@@ -80,7 +80,7 @@
         </NuxtLink>
       </div>
       <div class="mt-8 card-grid">
-        <EquipmentCard v-for="e in pairsWith" :key="e.id" :item="e" />
+        <EquipmentCard v-for="e in pairsWith" :key="e.id" :item="e" :category-label="categoryLabel(e.category)" />
       </div>
     </section>
 
@@ -105,6 +105,7 @@ const localePath = useLocalePath()
 const route = useRoute()
 const { bySlug, byCategory } = await useVehicles()
 const { featured: featuredEquipment, all: allEquipment } = await useEquipment()
+const { label: categoryLabel } = await useEquipmentCategories()
 
 // Cross-sell: the equipment people most often add to a vehicle (featured
 // items first, otherwise the first three in the catalogue).

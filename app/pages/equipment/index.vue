@@ -3,7 +3,7 @@
     <div class="wrap section">
       <SectionHeading as="h1" :kicker="t('equipmentCatalogue.kicker')" :title="t('equipmentCatalogue.title')" :intro="t('equipmentCatalogue.intro')" />
 
-      <!-- Category pills are real links to the keyword landing pages
+      <!-- Category pills are real links to the category landing pages
            (/equipment/hitablasarar …), so every category view has its own URL. -->
       <div class="mt-10 flex flex-wrap items-center justify-between gap-4">
         <CategoryLinks :items="chips" :group-label="t('equipmentCatalogue.kicker')" />
@@ -26,7 +26,7 @@
             </NuxtLink>
           </div>
           <div class="mt-6" :class="view === 'list' ? 'grid gap-4' : 'card-grid'">
-            <EquipmentCard v-for="e in group.items" :key="e.id" :item="e" :layout="view === 'list' ? 'row' : 'grid'" />
+            <EquipmentCard v-for="e in group.items" :key="e.id" :item="e" :category-label="group.label" :layout="view === 'list' ? 'row' : 'grid'" />
           </div>
         </section>
       </template>
@@ -58,40 +58,43 @@
 </template>
 
 <script setup lang="ts">
-import type { EquipmentCategory } from '~/types'
-import { equipmentCategories } from '~/data/equipmentCategories'
-import { equipmentLandingFor, equipmentLandings } from '~/data/equipmentLandings'
-
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const { all } = await useEquipment()
+const { all: categories, byId, path, text } = await useEquipmentCategories()
 const { view, set: setView } = useCatalogueView('equipment', 'grid')
 
-// Old ?category= filter URLs 301 to the category's own page (see vehicles/index.vue).
-const isCategory = (v: unknown): v is EquipmentCategory =>
-  typeof v === 'string' && equipmentCategories.includes(v as EquipmentCategory)
-if (isCategory(route.query.category)) {
-  await navigateTo(localePath({ name: equipmentLandingFor(route.query.category).routeName }), { redirectCode: 301 })
+// Old ?category=<id> filter URLs 301 to the category's own page.
+const legacy = typeof route.query.category === 'string' ? byId(route.query.category) : undefined
+if (legacy) {
+  await navigateTo(path(legacy), { redirectCode: 301 })
 }
 
-const chips = computed(() => {
-  const present = new Set(all().map(e => e.category))
-  return [
-    { label: t('equipmentCatalogue.all'), to: localePath('/equipment'), active: true },
-    ...equipmentLandings
-      .filter(l => present.has(l.category))
-      .map(l => ({ label: t(`${l.key}.title`), to: localePath({ name: l.routeName }) })),
-  ]
-})
+const present = computed(() => new Set(all().map(e => e.category)))
 
-// Rows per category in landing order (every equipment category has a landing)
-const groups = computed(() => equipmentLandings.flatMap((l) => {
-  const items = all().filter(e => e.category === l.category)
-  return items.length
-    ? [{ key: l.category, title: t(`${l.key}.title`), to: localePath({ name: l.routeName }), items }]
-    : []
-}))
+const chips = computed(() => [
+  { label: t('equipmentCatalogue.all'), to: localePath('/equipment'), active: true },
+  ...categories()
+    .filter(c => present.value.has(c.id))
+    .map(c => ({ label: text(c.name), to: path(c) })),
+])
+
+// Rows per category in admin order; items whose category was archived or
+// removed gather in a final unnamed row so nothing disappears from the site.
+const groups = computed(() => {
+  const list = all()
+  const rows = categories().flatMap((c) => {
+    const items = list.filter(e => e.category === c.id)
+    return items.length
+      ? [{ key: c.id, title: text(c.title) || text(c.name), label: text(c.name), to: path(c), items }]
+      : []
+  })
+  const known = new Set(categories().map(c => c.id))
+  const rest = list.filter(e => !known.has(e.category))
+  if (rest.length) rows.push({ key: 'other', title: t('equipmentCatalogue.otherGroup'), label: '', to: localePath('/equipment'), items: rest })
+  return rows
+})
 
 useSeoMeta({
   title: t('meta.equipment.title'),

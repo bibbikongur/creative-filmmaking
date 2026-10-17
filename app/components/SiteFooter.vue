@@ -36,7 +36,7 @@
           <ul class="space-y-2.5">
             <li v-for="link in rentalLinks" :key="link.label">
               <NuxtLink
-                :to="localePath({ name: link.routeName })"
+                :to="link.to"
                 class="text-sm text-bone-400 hover:text-gold-400 transition-colors"
               >
                 {{ t(link.label) }}
@@ -89,16 +89,21 @@ const navItems = [
 ]
 
 // Descriptive "X til leigu" anchors to the keyword landing pages, from every
-// page. The landings link on to the individual vehicles and items.
-const rentalLinks = [
-  { routeName: 'vehicles-kassabilar', label: 'footer.rentals.boxTrucks' },
-  { routeName: 'vehicles-sendibilar', label: 'footer.rentals.van' },
-  { routeName: 'vehicles-hjolhysi', label: 'footer.rentals.caravans' },
-  { routeName: 'vehicles-kerrur', label: 'footer.rentals.trailer' },
-  { routeName: 'vehicles-sexhjol', label: 'footer.rentals.sixWheeler' },
-  { routeName: 'equipment-rafstodvar-og-rafmagn', label: 'footer.rentals.generators' },
-  { routeName: 'equipment-hitablasarar', label: 'footer.rentals.heaters' },
-]
+// page. The landings link on to the individual vehicles and items. Equipment
+// categories live in the database, so their links resolve by category id and
+// simply drop out if the category is archived.
+const { byId: equipmentCategory, path: categoryPath } = await useEquipmentCategories()
+const rentalLinks = computed(() => [
+  { to: localePath({ name: 'vehicles-kassabilar' }), label: 'footer.rentals.boxTrucks' },
+  { to: localePath({ name: 'vehicles-sendibilar' }), label: 'footer.rentals.van' },
+  { to: localePath({ name: 'vehicles-hjolhysi' }), label: 'footer.rentals.caravans' },
+  { to: localePath({ name: 'vehicles-kerrur' }), label: 'footer.rentals.trailer' },
+  { to: localePath({ name: 'vehicles-sexhjol' }), label: 'footer.rentals.sixWheeler' },
+  ...(['power', 'heating'] as const).flatMap((id) => {
+    const c = equipmentCategory(id)
+    return c ? [{ to: categoryPath(c), label: id === 'power' ? 'footer.rentals.generators' : 'footer.rentals.heaters' }] : []
+  }),
+])
 
 const year = new Date().getFullYear()
 </script>

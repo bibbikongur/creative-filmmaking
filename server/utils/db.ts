@@ -4,6 +4,10 @@ import { mkdirSync, renameSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { vehicles as seedVehicles } from '~~/app/data/vehicles'
 import { equipment as seedEquipment } from '~~/app/data/equipment'
+import { equipmentLandings, seedSlugOf } from '~~/app/data/equipmentLandings'
+import isMessages from '~~/i18n/locales/is.json'
+import enMessages from '~~/i18n/locales/en.json'
+import type { EquipmentCategoryDef, LocalizedText } from '~~/app/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SQLite on the data dir (a persistent volume in production, e.g. /data on
@@ -48,9 +52,55 @@ export function getDb(): Database.Database {
   migrate(db)
   importLegacyCatalogue(db)
   seedCatalogueAdditions(db)
+  seedEquipmentCategories(db)
   stripStockPhotos(db)
   backfillCatalogueTimestamps(db)
   return db
+}
+
+// One-time seed of the equipment_categories table from the six original
+// categories: ids and URLs from app/data/equipmentLandings.ts, names from the
+// locale files (`equipmentCategories.<id>`) and landing copy from
+// `landings.equipment.<id>`. After this the database is the source of truth
+// (edited in /admin/equipment/categories) and the locale copy is dormant.
+function seedEquipmentCategories(db: Database.Database) {
+  const flag = 'seeded:equipment-categories:1'
+  if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) return
+
+  const get = (obj: unknown, path: string): unknown =>
+    path.split('.').reduce<unknown>((o, k) => (o == null ? o : (o as Record<string, unknown>)[k]), obj)
+  const text = (code: 'is' | 'en', path: string) => {
+    const v = get(code === 'is' ? isMessages : enMessages, path)
+    return typeof v === 'string' ? v : ''
+  }
+  const pair = (path: string): LocalizedText => ({ is: text('is', path), en: text('en', path) })
+
+  const insert = db.prepare('INSERT OR IGNORE INTO equipment_categories (id, sort, status, data, updated_at) VALUES (?, ?, ?, ?, ?)')
+  const now = new Date().toISOString()
+  db.transaction(() => {
+    equipmentLandings.forEach((l, i) => {
+      const intro = [1, 2, 3].map(n => pair(`${l.key}.intro${n}`)).filter(p => p.is || p.en)
+      const faqIs = (get(isMessages, `${l.key}.faq`) as { q: string, a: string }[] | undefined) ?? []
+      const faqEn = (get(enMessages, `${l.key}.faq`) as { q: string, a: string }[] | undefined) ?? []
+      const faq = Array.from({ length: Math.max(faqIs.length, faqEn.length) }, (_, n) => ({
+        q: { is: faqIs[n]?.q ?? '', en: faqEn[n]?.q ?? '' },
+        a: { is: faqIs[n]?.a ?? '', en: faqEn[n]?.a ?? '' },
+      }))
+      const data: Omit<EquipmentCategoryDef, 'id' | 'sort' | 'status' | 'updatedAt'> = {
+        slug: { is: seedSlugOf(l, 'is'), en: seedSlugOf(l, 'en') },
+        name: pair(`equipmentCategories.${l.id}`),
+        title: pair(`${l.key}.title`),
+        metaTitle: pair(`${l.key}.metaTitle`),
+        metaDescription: pair(`${l.key}.metaDescription`),
+        intro,
+        faq,
+        previousSlugs: [],
+      }
+      insert.run(l.id, i, 'active', JSON.stringify(data), now)
+    })
+    db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  })()
+  console.log(`[db] equipment_categories: seeded ${equipmentLandings.length} categories`)
 }
 
 // One-time cleanup: rows that existed before updated_at stamping went live
@@ -287,6 +337,17 @@ function initSchema(db: Database.Database) {
       id   TEXT PRIMARY KEY,
       sort INTEGER NOT NULL,
       data TEXT NOT NULL
+    );
+
+    -- Equipment categories (name, per-locale URL slug, landing-page copy as a
+    -- JSON document). Archived categories keep their row so their old URLs
+    -- can still redirect; see equipmentCategoryStore.ts.
+    CREATE TABLE IF NOT EXISTS equipment_categories (
+      id         TEXT PRIMARY KEY,
+      sort       INTEGER NOT NULL,
+      status     TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'archived')),
+      data       TEXT NOT NULL,
+      updated_at TEXT
     );
 
     CREATE TABLE IF NOT EXISTS quotes (

@@ -50,10 +50,12 @@
 
 @layer components {
   /* ---------- Layout ---------- */
-  /* Page stage. 1440px rather than 1280 so photo grids fill a modern desktop
-     screen; running text stays on its own max-w-2xl/3xl columns. */
+  /* Page stage. Up to laptop size it is the classic 1280px box; from xl it takes
+     88% of the viewport (capped at 1536px), so a 1440px laptop keeps real side
+     margins while a 1920px monitor gets a stage that fills it. Running text
+     stays on its own max-w-2xl/3xl columns regardless. */
   .wrap {
-    @apply max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10;
+    @apply w-full max-w-7xl xl:max-w-[min(96rem,88vw)] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10;
   }
 
   .section {

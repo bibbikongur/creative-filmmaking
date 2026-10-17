@@ -23,8 +23,13 @@
         <div>
           <label class="admin-label">Category *</label>
           <select v-model="form.category" class="input-dark">
-            <option v-for="c in equipmentCategories" :key="c" :value="c">{{ c }}</option>
+            <option v-for="c in categoryOptions" :key="c.id" :value="c.id">
+              {{ c.name.is || c.name.en }}{{ c.status === 'archived' ? ' (archived)' : '' }}
+            </option>
           </select>
+          <p class="mt-1 text-xs text-bone-400">
+            <NuxtLink to="/admin/equipment/categories" class="text-gold-400 hover:text-gold-500">Manage categories</NuxtLink>
+          </p>
         </div>
       </div>
       <label class="mt-4 flex items-center gap-2.5 text-sm text-bone-100 cursor-pointer">
@@ -123,8 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import { equipmentCategories } from '~/data/equipmentCategories'
-import type { EquipmentItem } from '~/types'
+import type { EquipmentCategoryDef, EquipmentItem } from '~/types'
 
 const props = defineProps<{
   /** Existing item when editing; omit when creating */
@@ -137,12 +141,27 @@ const emit = defineEmits<{ save: [payload: Record<string, unknown>] }>()
 
 const isEdit = computed(() => Boolean(props.item))
 
+// Categories come from the database. Active ones are offered; an archived one
+// is only listed when this item is still in it, so the form can show it.
+const categories = ref<EquipmentCategoryDef[]>([])
+const categoryOptions = computed(() =>
+  categories.value.filter(c => c.status === 'active' || c.id === props.item?.category))
+onMounted(async () => {
+  try {
+    categories.value = await $fetch<EquipmentCategoryDef[]>('/api/admin/equipment-categories', { query: { t: Date.now() } })
+    if (!form.category && categories.value[0]) form.category = categories.value[0].id
+  }
+  catch {
+    // the select stays empty; saving will report the missing category
+  }
+})
+
 const e = props.item
 const form = reactive({
   // Existing rows without a stored slug show the derived one, so saving the
   // form pins the current URL instead of leaving it name-dependent.
   slug: e ? equipmentSlug(e) : '',
-  category: e?.category ?? 'heating',
+  category: e?.category ?? '',
   featured: e?.featured ?? false,
   name: { en: e?.name.en ?? '', is: e?.name.is ?? '' },
   tagline: { en: e?.tagline.en ?? '', is: e?.tagline.is ?? '' },

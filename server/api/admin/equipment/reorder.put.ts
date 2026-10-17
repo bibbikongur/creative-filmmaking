@@ -9,12 +9,12 @@ export default defineEventHandler(async (event) => {
   const byId = new Map(items.map(e => [e.id, e]))
   const valid = ids.length === items.length
     && new Set(ids).size === ids.length
-    && ids.every(id => byId.has(id))
+    && ids.every((id: string) => byId.has(id))
   if (!valid) {
     throw createError({ statusCode: 400, statusMessage: 'ids must include every equipment id exactly once' })
   }
 
-  const next = ids.map(id => byId.get(id)!)
+  const next = ids.map((id: string) => byId.get(id)!)
   await saveEquipment(next)
   return next
 })

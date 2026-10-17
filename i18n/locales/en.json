@@ -110,6 +110,7 @@
     "empty": "No equipment in this category yet. Contact us and we'll find a solution.",
     "emptyCta": "Contact us",
     "count": "{n} item | {n} items",
+    "otherGroup": "Other equipment",
     "factsTitle": "Key facts",
     "facts": {
       "category": "Category",
