@@ -193,6 +193,24 @@ export type DiscountType = 'percent' | 'fixed'
 /** 'flat' = one price per unit; 'day'/'week' = price per unit per rental day/week. */
 export type PricingMode = 'flat' | 'day' | 'week'
 
+export type InsuranceTier = 'bronze' | 'silver' | 'gold'
+export type OfferExtraKind = 'insurance' | 'driver' | 'km'
+
+/**
+ * Vehicle add-on priced under its offer line. Insurance and additional drivers
+ * follow the parent line's pricing period (per day/week × days/weeks); km is
+ * a plain km × rate.
+ */
+export interface OfferItemExtra {
+  kind: OfferExtraKind
+  /** Only for insurance. */
+  tier?: InsuranceTier
+  /** Insurance: vehicle qty · driver: number of drivers · km: kilometres. */
+  qty: number
+  unitPrice: number
+  total: number
+}
+
 /** A priced line inside an offer — frozen at send time so PDFs are regenerable. */
 export interface OfferItem {
   quoteItemId: number
@@ -206,7 +224,10 @@ export interface OfferItem {
   days?: number
   /** Number of weeks — only when pricing is 'week'. */
   weeks?: number
+  /** unitPrice × qty × period — excludes extras. */
   lineTotal: number
+  /** Vehicle add-ons (insurance, additional drivers, km). Included in the offer subtotal. */
+  extras?: OfferItemExtra[]
 }
 
 export interface Offer {

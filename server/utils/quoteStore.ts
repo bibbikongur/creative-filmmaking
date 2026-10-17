@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import type {
-  CartItemType, DiscountType, LocaleCode, Offer, OfferCurrency, OfferItem,
-  PricingMode, Quote, QuoteDetail, QuoteItem, QuoteSource, QuoteStatus, QuoteSummary,
+  CartItemType, DiscountType, InsuranceTier, LocaleCode, Offer, OfferCurrency, OfferExtraKind, OfferItem,
+  OfferItemExtra, PricingMode, Quote, QuoteDetail, QuoteItem, QuoteSource, QuoteStatus, QuoteSummary,
 } from '~~/app/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -43,7 +43,15 @@ export interface NewOfferInput {
   discountValue?: number
   note?: string
   validUntil?: string
-  items: { quoteItemId: number, unitPrice: number, pricing?: PricingMode, days?: number, weeks?: number }[]
+  items: {
+    quoteItemId: number
+    unitPrice: number
+    pricing?: PricingMode
+    days?: number
+    weeks?: number
+    /** Vehicle items only; insurance qty is taken from the quote item. */
+    extras?: { kind: OfferExtraKind, tier?: InsuranceTier, qty?: number, unitPrice: number }[]
+  }[]
 }
 
 export function createQuote(input: NewQuoteInput): Quote {
@@ -184,6 +192,20 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
     const days = pricing === 'day' ? Math.max(1, Math.round(priced.days ?? 1)) : undefined
     // Weeks may be fractional (e.g. 1.5 weeks); kept to two decimals.
     const weeks = pricing === 'week' ? Math.max(0.01, round2(priced.weeks ?? 1)) : undefined
+    const period = days ?? weeks ?? 1
+    // Insurance and drivers are charged over the vehicle's period; km is not.
+    const extras: OfferItemExtra[] = qi.itemType !== 'vehicle'
+      ? []
+      : (priced.extras ?? []).map((e) => {
+          const qty = e.kind === 'insurance' ? qi.qty : e.kind === 'driver' ? Math.round(e.qty ?? 1) : round2(e.qty ?? 0)
+          return {
+            kind: e.kind,
+            tier: e.kind === 'insurance' ? e.tier : undefined,
+            qty,
+            unitPrice: e.unitPrice,
+            total: round2(e.unitPrice * qty * (e.kind === 'km' ? 1 : period)),
+          }
+        })
     return {
       quoteItemId: qi.id,
       name: qi.name,
@@ -193,11 +215,13 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
       pricing,
       days,
       weeks,
-      lineTotal: round2(priced.unitPrice * qi.qty * (days ?? weeks ?? 1)),
+      lineTotal: round2(priced.unitPrice * qi.qty * period),
+      extras: extras.length ? extras : undefined,
     }
   })
 
-  const subtotal = round2(items.reduce((sum, i) => sum + i.lineTotal, 0))
+  const subtotal = round2(items.reduce((sum, i) =>
+    sum + i.lineTotal + (i.extras ?? []).reduce((s, e) => s + e.total, 0), 0))
   let discountAmount = 0
   if (input.discountType === 'percent' && input.discountValue) {
     discountAmount = round2(subtotal * Math.min(input.discountValue, 100) / 100)

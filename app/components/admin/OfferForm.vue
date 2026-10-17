@@ -26,49 +26,118 @@
 
     <!-- Item pricing -->
     <div class="divide-y divide-ink-800">
-      <div v-for="item in quote.items" :key="item.id" class="flex items-center gap-4 py-3">
-        <img
-          v-if="item.image"
-          :src="item.image"
-          :alt="item.name.en"
-          class="w-20 h-14 object-cover bg-ink-800 shrink-0"
-          loading="lazy"
-        >
-        <div v-else class="w-20 h-14 bg-ink-800 shrink-0" />
-        <div class="min-w-0 flex-1">
-          <p class="font-semibold text-bone-100 truncate">{{ item.name.en }}</p>
-          <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">
-            {{ item.itemType }}<span v-if="item.qty > 1"> · qty {{ item.qty }}</span>
-          </p>
+      <div v-for="item in quote.items" :key="item.id" class="py-3">
+        <div class="flex items-center gap-4">
+          <img
+            v-if="item.image"
+            :src="item.image"
+            :alt="item.name.en"
+            class="w-20 h-14 object-cover bg-ink-800 shrink-0"
+            loading="lazy"
+          >
+          <div v-else class="w-20 h-14 bg-ink-800 shrink-0" />
+          <div class="min-w-0 flex-1">
+            <p class="font-semibold text-bone-100 truncate">{{ item.name.en }}</p>
+            <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">
+              {{ item.itemType }}<span v-if="item.qty > 1"> · qty {{ item.qty }}</span>
+            </p>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap justify-end">
+            <select v-model="modes[item.id]" class="input-dark !w-28">
+              <option value="flat">Flat price</option>
+              <option value="day">Per day</option>
+              <option value="week">Per week</option>
+            </select>
+            <input
+              v-model.number="prices[item.id]"
+              type="number"
+              min="0"
+              step="any"
+              class="input-dark !w-32 text-right"
+              :placeholder="pricePlaceholder(item.id)"
+            >
+            <input
+              v-if="modes[item.id] === 'day' || modes[item.id] === 'week'"
+              v-model.number="periods[item.id]"
+              type="number"
+              :min="modes[item.id] === 'week' ? 0.5 : 1"
+              max="999"
+              :step="modes[item.id] === 'week' ? 0.5 : 1"
+              class="input-dark !w-20 text-right"
+              :placeholder="modes[item.id] === 'week' ? 'Weeks' : 'Days'"
+              :title="modes[item.id] === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
+            >
+            <span class="text-xs text-bone-400 w-24 text-right">
+              {{ lineTotal(item) != null ? `= ${fmt(lineTotal(item)!)}` : currencySuffix }}
+            </span>
+          </div>
         </div>
-        <div class="flex items-center gap-2 flex-wrap justify-end">
-          <select v-model="modes[item.id]" class="input-dark !w-28">
-            <option value="flat">Flat price</option>
-            <option value="day">Per day</option>
-            <option value="week">Per week</option>
-          </select>
-          <input
-            v-model.number="prices[item.id]"
-            type="number"
-            min="0"
-            step="any"
-            class="input-dark !w-32 text-right"
-            :placeholder="pricePlaceholder(item.id)"
-          >
-          <input
-            v-if="modes[item.id] === 'day' || modes[item.id] === 'week'"
-            v-model.number="periods[item.id]"
-            type="number"
-            :min="modes[item.id] === 'week' ? 0.5 : 1"
-            max="999"
-            :step="modes[item.id] === 'week' ? 0.5 : 1"
-            class="input-dark !w-20 text-right"
-            :placeholder="modes[item.id] === 'week' ? 'Weeks' : 'Days'"
-            :title="modes[item.id] === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
-          >
-          <span class="text-xs text-bone-400 w-24 text-right">
-            {{ lineTotal(item) != null ? `= ${fmt(lineTotal(item)!)}` : currencySuffix }}
-          </span>
+
+        <!-- Vehicle extras: insurance & drivers follow the vehicle's period, km is km × rate -->
+        <div v-if="item.itemType === 'vehicle' && extras[item.id]" class="mt-3 sm:ml-24 grid gap-2 border-l border-ink-800 pl-4">
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">Insurance</span>
+            <select v-model="extras[item.id]!.insTier" class="input-dark !w-32">
+              <option value="">None</option>
+              <option v-for="t in INSURANCE_TIERS" :key="t" :value="t">{{ TIER_LABEL[t] }}</option>
+            </select>
+            <input
+              v-if="extras[item.id]!.insTier"
+              v-model.number="extras[item.id]!.insPrice"
+              type="number"
+              min="0"
+              step="any"
+              class="input-dark !w-32 text-right"
+              :placeholder="extraPlaceholder(item.id)"
+              :title="item.qty > 1 ? `Per vehicle — multiplied by qty ${item.qty}` : undefined"
+            >
+            <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(insuranceTotal(item)) }}</span>
+          </div>
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">Additional drivers</span>
+            <input
+              v-model.number="extras[item.id]!.drivers"
+              type="number"
+              min="0"
+              max="99"
+              step="1"
+              class="input-dark !w-20 text-right"
+              placeholder="0"
+              title="Number of additional drivers"
+            >
+            <input
+              v-if="(extras[item.id]!.drivers ?? 0) > 0"
+              v-model.number="extras[item.id]!.driverPrice"
+              type="number"
+              min="0"
+              step="any"
+              class="input-dark !w-32 text-right"
+              :placeholder="`${extraPlaceholder(item.id)} / driver`"
+            >
+            <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(driverTotal(item)) }}</span>
+          </div>
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">KM</span>
+            <input
+              v-model.number="extras[item.id]!.km"
+              type="number"
+              min="0"
+              step="any"
+              class="input-dark !w-24 text-right"
+              placeholder="km"
+              title="Number of kilometres"
+            >
+            <input
+              v-if="(extras[item.id]!.km ?? 0) > 0"
+              v-model.number="extras[item.id]!.kmPrice"
+              type="number"
+              min="0"
+              step="any"
+              class="input-dark !w-32 text-right"
+              placeholder="Price / km"
+            >
+            <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(kmTotal(item)) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -142,7 +211,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Offer, PricingMode, QuoteDetail, QuoteItem } from '~/types'
+import type { InsuranceTier, Offer, PricingMode, QuoteDetail, QuoteItem } from '~/types'
 const { confirmDialog } = useAppDialog()
 
 const props = defineProps<{ quote: QuoteDetail }>()
@@ -155,11 +224,36 @@ const prices = reactive<Record<number, number | null>>({})
 const modes = reactive<Record<number, PricingMode>>({})
 // Count of days or weeks, depending on the item's mode. Weeks may be fractional.
 const periods = reactive<Record<number, number | null>>({})
+// Vehicle add-ons, keyed by quote item id (vehicles only).
+interface ExtrasState {
+  insTier: InsuranceTier | ''
+  insPrice: number | null
+  drivers: number | null
+  driverPrice: number | null
+  km: number | null
+  kmPrice: number | null
+}
+const extras = reactive<Record<number, ExtrasState>>({})
+const INSURANCE_TIERS: InsuranceTier[] = ['bronze', 'silver', 'gold']
+const TIER_LABEL: Record<InsuranceTier, string> = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' }
 const seedItem = (item: QuoteItem) => {
   const prev = latest?.items.find(i => i.quoteItemId === item.id)
   prices[item.id] = prev ? prev.unitPrice : null
   modes[item.id] = prev?.pricing === 'day' || prev?.pricing === 'week' ? prev.pricing : 'flat'
   periods[item.id] = prev?.pricing === 'day' ? prev.days ?? 1 : prev?.pricing === 'week' ? prev.weeks ?? 1 : null
+  if (item.itemType === 'vehicle') {
+    const ins = prev?.extras?.find(e => e.kind === 'insurance')
+    const drv = prev?.extras?.find(e => e.kind === 'driver')
+    const km = prev?.extras?.find(e => e.kind === 'km')
+    extras[item.id] = {
+      insTier: ins?.tier ?? '',
+      insPrice: ins?.unitPrice ?? null,
+      drivers: drv?.qty ?? null,
+      driverPrice: drv?.unitPrice ?? null,
+      km: km?.qty ?? null,
+      kmPrice: km?.unitPrice ?? null,
+    }
+  }
 }
 props.quote.items.forEach(seedItem)
 // The form stays mounted while the quote is edited, so in-progress prices
@@ -199,12 +293,43 @@ const lineTotal = (item: QuoteItem): number | null => {
   if (!isPriced(item.id) || !hasPeriod(item.id)) return null
   return prices[item.id]! * item.qty * periodCount(item.id)
 }
-const complete = computed(() => props.quote.items.every(i => isPriced(i.id) && hasPeriod(i.id)))
 const pricePlaceholder = (id: number) =>
   modes[id] === 'day' ? 'Price / day' : modes[id] === 'week' ? 'Price / week' : 'Price / unit'
 
+// Extras mirror the server: insurance per vehicle (× qty) and drivers are
+// charged over the vehicle's period; km is km × rate.
+const isNum = (n: number | null | undefined): n is number => typeof n === 'number' && Number.isFinite(n) && n >= 0
+const hasDrivers = (id: number) => (extras[id]?.drivers ?? 0) > 0
+const hasKm = (id: number) => (extras[id]?.km ?? 0) > 0
+const extraPeriod = (id: number) => hasPeriod(id) ? periodCount(id) : 0
+const insuranceTotal = (item: QuoteItem): number | null => {
+  const e = extras[item.id]
+  if (!e?.insTier) return 0
+  return isNum(e.insPrice) ? e.insPrice * item.qty * extraPeriod(item.id) : null
+}
+const driverTotal = (item: QuoteItem): number | null => {
+  const e = extras[item.id]
+  if (!e || !hasDrivers(item.id)) return 0
+  return isNum(e.driverPrice) ? e.driverPrice * Math.round(e.drivers!) * extraPeriod(item.id) : null
+}
+const kmTotal = (item: QuoteItem): number | null => {
+  const e = extras[item.id]
+  if (!e || !hasKm(item.id)) return 0
+  return isNum(e.kmPrice) ? e.kmPrice * round2(e.km!) : null
+}
+const extrasTotal = (item: QuoteItem) =>
+  item.itemType === 'vehicle' ? (insuranceTotal(item) ?? 0) + (driverTotal(item) ?? 0) + (kmTotal(item) ?? 0) : 0
+const extrasComplete = (item: QuoteItem) => item.itemType !== 'vehicle'
+  || (insuranceTotal(item) != null && driverTotal(item) != null && kmTotal(item) != null
+    && (!hasDrivers(item.id) || Number.isInteger(extras[item.id]!.drivers)))
+const extraPlaceholder = (id: number) =>
+  modes[id] === 'day' ? 'Price / day' : modes[id] === 'week' ? 'Price / week' : 'Price'
+const extraLabel = (n: number | null) => n == null ? currencySuffix.value : n > 0 ? `+ ${fmt(n)}` : ''
+
+const complete = computed(() => props.quote.items.every(i => isPriced(i.id) && hasPeriod(i.id) && extrasComplete(i)))
+
 const subtotal = computed(() =>
-  props.quote.items.reduce((sum, i) => sum + (lineTotal(i) ?? 0), 0))
+  props.quote.items.reduce((sum, i) => sum + (lineTotal(i) ?? 0) + extrasTotal(i), 0))
 const discountAmount = computed(() => {
   const v = discountValue.value
   if (!discountType.value || !v || v <= 0) return 0
@@ -221,6 +346,16 @@ const fmt = (n: number) => currency.value === 'EUR'
   ? `€${n.toLocaleString('en-US', { maximumFractionDigits: 2 })}`
   : `${Math.round(n).toLocaleString('is-IS')} kr.`
 
+const extrasPayload = (id: number) => {
+  const e = extras[id]
+  if (!e) return undefined
+  return [
+    ...(e.insTier ? [{ kind: 'insurance' as const, tier: e.insTier, unitPrice: e.insPrice! }] : []),
+    ...(hasDrivers(id) ? [{ kind: 'driver' as const, qty: e.drivers!, unitPrice: e.driverPrice! }] : []),
+    ...(hasKm(id) ? [{ kind: 'km' as const, qty: e.km!, unitPrice: e.kmPrice! }] : []),
+  ]
+}
+
 const payload = (send: boolean) => ({
   send,
   currency: currency.value,
@@ -234,6 +369,7 @@ const payload = (send: boolean) => ({
     pricing: modes[i.id],
     days: modes[i.id] === 'day' ? periodCount(i.id) : undefined,
     weeks: modes[i.id] === 'week' ? periodCount(i.id) : undefined,
+    extras: i.itemType === 'vehicle' ? extrasPayload(i.id) : undefined,
   })),
 })
 

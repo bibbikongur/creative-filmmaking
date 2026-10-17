@@ -1,7 +1,17 @@
-import type { DiscountType, OfferCurrency, PricingMode } from '~~/app/types'
+import type { DiscountType, InsuranceTier, OfferCurrency, OfferExtraKind, PricingMode } from '~~/app/types'
+
+const EXTRA_KINDS: OfferExtraKind[] = ['insurance', 'driver', 'km']
+const INSURANCE_TIERS: InsuranceTier[] = ['bronze', 'silver', 'gold']
 
 interface OfferBody {
-  items?: { quoteItemId?: number, unitPrice?: number, pricing?: PricingMode, days?: number, weeks?: number }[]
+  items?: {
+    quoteItemId?: number
+    unitPrice?: number
+    pricing?: PricingMode
+    days?: number
+    weeks?: number
+    extras?: { kind?: OfferExtraKind, tier?: InsuranceTier, qty?: number, unitPrice?: number }[]
+  }[]
   currency?: OfferCurrency
   discountType?: DiscountType | ''
   discountValue?: number
@@ -34,6 +44,14 @@ export default defineEventHandler(async (event) => {
       pricing: (i?.pricing === 'day' || i?.pricing === 'week' ? i.pricing : 'flat') as PricingMode,
       days: i?.pricing === 'day' ? Number(i?.days) : undefined,
       weeks: i?.pricing === 'week' ? Number(i?.weeks) : undefined,
+      extras: (Array.isArray(i?.extras) ? i.extras : [])
+        .filter(e => EXTRA_KINDS.includes(e?.kind!))
+        .map(e => ({
+          kind: e.kind!,
+          tier: e.kind === 'insurance' ? e.tier : undefined,
+          qty: e.kind === 'insurance' ? undefined : Number(e.qty),
+          unitPrice: Number(e.unitPrice),
+        })),
     }))
   if (!items.length || items.some(i => !Number.isFinite(i.quoteItemId) || !Number.isFinite(i.unitPrice) || i.unitPrice < 0)) {
     errors.push('Every item needs a price (0 or higher).')
@@ -43,6 +61,20 @@ export default defineEventHandler(async (event) => {
   }
   if (items.some(i => i.pricing === 'week' && (!Number.isFinite(i.weeks!) || i.weeks! <= 0 || i.weeks! > 999))) {
     errors.push('Per-week items need a number of weeks greater than 0 (e.g. 1.5).')
+  }
+
+  const extras = items.flatMap(i => i.extras)
+  if (extras.some(e => !Number.isFinite(e.unitPrice) || e.unitPrice < 0)) {
+    errors.push('Every vehicle extra needs a price (0 or higher).')
+  }
+  if (extras.some(e => e.kind === 'insurance' && !INSURANCE_TIERS.includes(e.tier!))) {
+    errors.push('Insurance must be Bronze, Silver or Gold.')
+  }
+  if (extras.some(e => e.kind === 'driver' && (!Number.isInteger(e.qty) || e.qty! < 1 || e.qty! > 99))) {
+    errors.push('Additional drivers need a count of 1 or more.')
+  }
+  if (extras.some(e => e.kind === 'km' && (!Number.isFinite(e.qty!) || e.qty! <= 0 || e.qty! > 1_000_000))) {
+    errors.push('KM charges need a number of kilometres greater than 0.')
   }
 
   if (errors.length) {
