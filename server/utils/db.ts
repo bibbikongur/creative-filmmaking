@@ -5,6 +5,7 @@ import { join, resolve } from 'node:path'
 import { vehicles as seedVehicles } from '~~/app/data/vehicles'
 import { equipment as seedEquipment } from '~~/app/data/equipment'
 import { equipmentLandings, seedSlugOf } from '~~/app/data/equipmentLandings'
+import { restructureEquipmentCategories } from './equipmentCategoryRestructure'
 import isMessages from '~~/i18n/locales/is.json'
 import enMessages from '~~/i18n/locales/en.json'
 import type { EquipmentCategoryDef, LocalizedText } from '~~/app/types'
@@ -53,6 +54,7 @@ export function getDb(): Database.Database {
   importLegacyCatalogue(db)
   seedCatalogueAdditions(db)
   seedEquipmentCategories(db)
+  restructureEquipmentCategories(db)
   stripStockPhotos(db)
   backfillCatalogueTimestamps(db)
   return db

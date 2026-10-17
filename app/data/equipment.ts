@@ -176,7 +176,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-mr754c8n9357',
     slug: 'kastari-led-nova-6k-med-thrifaeti',
-    category: 'power',
+    category: 'lighting',
     name: {
       en: 'LED Work Light NOVA 6K with Tripod',
       is: 'Kastari LED NOVA 6K með þrífæti',
@@ -279,7 +279,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-016',
     slug: 'drattartog-15-m-24-mm',
-    category: 'safety',
+    category: 'tools',
     name: {
       en: 'Tow Rope 15 m × 24 mm',
       is: 'Dráttartóg 15 m × 24 mm',
@@ -313,7 +313,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-018',
     slug: 'starttaeki-fyrir-vorubila-24v',
-    category: 'power',
+    category: 'tools',
     name: {
       en: 'Jump Starter for Trucks 24V (NOCO GB251+)',
       is: 'Starttæki fyrir vörubíla 24V',
@@ -347,7 +347,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-020',
     slug: 'starttaeki-12v-noco-gbx155',
-    category: 'power',
+    category: 'tools',
     name: {
       en: 'Jump Starter 12V (NOCO GBX155)',
       is: 'Starttæki 12V (NOCO GBX155)',
@@ -420,7 +420,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-023',
     slug: 'strekkibordi-0-25-t',
-    category: 'safety',
+    category: 'shelter',
     name: {
       en: 'Lashing Strap 0.25 t',
       is: 'Strekkiborði 0,25 t',
@@ -437,7 +437,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-024',
     slug: 'strekkjari-med-krok-appelsinugulur',
-    category: 'safety',
+    category: 'shelter',
     name: {
       en: 'Ratchet Strap with Hook (orange)',
       is: 'Strekkjari með krók (appelsínugulur)',
@@ -844,7 +844,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-msejvh5a659c',
     slug: 'loftdaela',
-    category: 'heating',
+    category: 'tools',
     name: {
       en: 'Air Pump',
       is: 'Loftdæla',
@@ -896,7 +896,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-mu77oa2z8637',
     slug: 'oryggis-blikkljos',
-    category: 'heating',
+    category: 'safety',
     name: {
       en: 'Blinking light',
       is: 'Öryggis blikkljós',
@@ -982,7 +982,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-mur645nn404b',
     slug: 'mini-scangrip-ljos-9-ljos-i-tosku',
-    category: 'power',
+    category: 'lighting',
     name: {
       en: 'Mini Scangrip lights Set of 9 in Pelicase',
       is: 'Mini Scangrip ljós - 9 ljós í tösku',
@@ -1002,7 +1002,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-mur67h7t57f2',
     slug: 'midlungs-scangrip-ljos-battery',
-    category: 'power',
+    category: 'lighting',
     name: {
       en: 'Medium Scangrip lights - Battery',
       is: 'Miðlungs Scangrip ljós - Battery',
@@ -1038,7 +1038,7 @@ export const equipment: EquipmentItem[] = [
   {
     id: 'e-murd25ab187f',
     slug: 'location-basecamp-techbase-crew-parking-skilti',
-    category: 'shelter',
+    category: 'safety',
     name: {
       en: 'Location & Basecamp & Techbase & Crew parking Signs',
       is: 'Location & Basecamp & Techbase & Crew parking Skilti',
