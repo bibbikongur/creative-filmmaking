@@ -243,6 +243,7 @@
 
 <script setup lang="ts">
 import type { InsuranceTier, Offer, PricingMode, QuoteDetail, QuoteItem } from '~/types'
+import { INSURANCE_EXCESS } from '~/data/insurance'
 const { confirmDialog } = useAppDialog()
 
 const props = defineProps<{ quote: QuoteDetail }>()
@@ -269,7 +270,12 @@ interface ExtrasState {
 }
 const extras = reactive<Record<number, ExtrasState>>({})
 const INSURANCE_TIERS: InsuranceTier[] = ['bronze', 'silver', 'gold']
-const TIER_LABEL: Record<InsuranceTier, string> = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' }
+const TIER_NAME: Record<InsuranceTier, string> = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' }
+// e.g. "Gold (excess 65,000 kr.)" — the excess is printed on the offer too.
+const TIER_LABEL = Object.fromEntries(INSURANCE_TIERS.map((t) => {
+  const ex = INSURANCE_EXCESS[t]
+  return [t, ex ? `${TIER_NAME[t]} (excess ${ex.isk.toLocaleString('en-US')} kr.)` : TIER_NAME[t]]
+})) as Record<InsuranceTier, string>
 const seedItem = (item: QuoteItem) => {
   const prev = latest?.items.find(i => i.quoteItemId === item.id)
   prices[item.id] = prev ? prev.unitPrice : null
@@ -326,10 +332,11 @@ type Currency = 'ISK' | 'EUR'
 const fxRate = ref<number | null>(null)
 const fxMeta = ref<{ date: string, source: 'ecb' | 'fallback' } | null>(null)
 const fxInfo = computed(() => {
-  if (!fxMeta.value) return 'Switching currency converts the prices at this rate.'
+  const how = 'Switching to EUR converts the prices; switching back restores the ISK prices you typed.'
+  if (!fxMeta.value) return how
   return fxMeta.value.source === 'ecb'
-    ? `ECB reference rate from ${fxMeta.value.date}. Switching currency converts the prices.`
-    : 'Live rate unavailable; this is an estimate. Switching currency converts the prices.'
+    ? `ECB reference rate from ${fxMeta.value.date}. ${how}`
+    : `Live rate unavailable; this is an estimate. ${how}`
 })
 onMounted(async () => {
   try {
@@ -348,24 +355,50 @@ const convert = (n: number | null, from: Currency, to: Currency): number | null 
   if (from === 'EUR' && to === 'ISK') return Math.round(n * rate)
   return n
 }
+// The ISK figures the admin typed are the reference. Leaving ISK stores them;
+// coming back restores them instead of re-converting the EUR figures, so a
+// EUR tweak (or rounding) never drifts the ISK price. Fields that were empty
+// in ISK and filled in while in EUR are converted back as before.
+interface IskSnapshot {
+  prices: Record<number, number | null>
+  extras: Record<number, { insPrice: number | null, driverPrice: number | null, kmPrice: number | null }>
+  discount: number | null
+}
+let iskSnapshot: IskSnapshot | null = null
 watch(currency, (to, from) => {
   if (to === from) return
   if (!fxRate.value || fxRate.value <= 0) {
     notice.value = 'No exchange rate set, so the prices were left as they are.'
     return
   }
-  for (const item of props.quote.items) {
-    prices[item.id] = convert(prices[item.id] ?? null, from, to)
-    const e = extras[item.id]
-    if (e) {
-      e.insPrice = convert(e.insPrice, from, to)
-      e.driverPrice = convert(e.driverPrice, from, to)
-      e.kmPrice = convert(e.kmPrice, from, to)
+  if (from === 'ISK') {
+    iskSnapshot = {
+      prices: Object.fromEntries(props.quote.items.map(i => [i.id, prices[i.id] ?? null])),
+      extras: Object.fromEntries(props.quote.items.flatMap((i) => {
+        const e = extras[i.id]
+        return e ? [[i.id, { insPrice: e.insPrice, driverPrice: e.driverPrice, kmPrice: e.kmPrice }]] : []
+      })),
+      discount: discountType.value === 'fixed' ? discountValue.value : null,
     }
   }
-  if (discountType.value === 'fixed') discountValue.value = convert(discountValue.value, from, to)
+  const restoring = to === 'ISK' && iskSnapshot != null
+  const back = (saved: number | null | undefined, current: number | null) =>
+    restoring && saved != null ? saved : convert(current, from, to)
+  for (const item of props.quote.items) {
+    prices[item.id] = back(iskSnapshot?.prices[item.id], prices[item.id] ?? null)
+    const e = extras[item.id]
+    if (e) {
+      const saved = iskSnapshot?.extras[item.id]
+      e.insPrice = back(saved?.insPrice, e.insPrice)
+      e.driverPrice = back(saved?.driverPrice, e.driverPrice)
+      e.kmPrice = back(saved?.kmPrice, e.kmPrice)
+    }
+  }
+  if (discountType.value === 'fixed') discountValue.value = back(iskSnapshot?.discount, discountValue.value)
   error.value = ''
-  notice.value = `Prices converted from ${from} to ${to} at 1 EUR = ${fxRate.value} ISK.`
+  notice.value = restoring
+    ? 'Back to ISK: the ISK prices you typed are restored.'
+    : `Prices converted from ${from} to ${to} at 1 EUR = ${fxRate.value} ISK.`
 })
 
 const needsPeriod = (id: number) => modes[id] === 'day' || modes[id] === 'week'

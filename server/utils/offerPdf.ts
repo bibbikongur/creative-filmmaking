@@ -2,6 +2,7 @@ import PDFDocument from 'pdfkit'
 import { promises as fs } from 'node:fs'
 import { basename, join, normalize, resolve } from 'node:path'
 import type { LocaleCode, Offer, OfferItemExtra, Quote } from '~~/app/types'
+import { INSURANCE_EXCESS } from '~~/app/data/insurance'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Offer PDF — generated from the stored offer snapshot, so it can be
@@ -21,7 +22,7 @@ const STRINGS = {
     date: 'Date',
     preparedFor: 'Prepared for',
     kennitala: 'Reg. no.',
-    dates: 'Shooting dates',
+    dates: 'Rental period',
     item: 'Item',
     qty: 'Qty',
     unitPrice: 'Unit price',
@@ -43,6 +44,7 @@ const STRINGS = {
     afterDiscount: 'After discount',
     tiers: { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' },
     insurance: (tier: string) => `${tier} insurance`,
+    excess: (amount: string) => `Excess ${amount} per incident`,
     driver: (n: number) => n === 1 ? 'Additional driver' : 'Additional drivers',
     driversUnlimited: 'Unlimited authorised drivers',
     km: 'Kilometres',
@@ -54,7 +56,7 @@ const STRINGS = {
     date: 'Dagsetning',
     preparedFor: 'Tilboð fyrir',
     kennitala: 'Kt.',
-    dates: 'Tökudagar',
+    dates: 'Leigutími',
     item: 'Liður',
     qty: 'Fj.',
     unitPrice: 'Einingarverð',
@@ -76,6 +78,7 @@ const STRINGS = {
     afterDiscount: 'Eftir afslátt',
     tiers: { bronze: 'Brons', silver: 'Silfur', gold: 'Gull' },
     insurance: (tier: string) => `Trygging (${tier})`,
+    excess: (amount: string) => `Sjálfsábyrgð ${amount} á hvert tjón`,
     driver: (n: number) => n === 1 ? 'Aukaökumaður' : 'Aukaökumenn',
     driversUnlimited: 'Ótakmarkaður fjöldi ökumanna',
     km: 'Kílómetrar',
@@ -264,8 +267,25 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   }
   tableHeader()
 
-  const ensureRoom = (rowH: number) => {
-    if (y + rowH > doc.page.height - 140) {
+  // Closing-block geometry is needed up front: the last table row reserves
+  // room for the totals ledger and the footer text, so neither the grand total
+  // nor the acceptance note ever sits alone on a page.
+  const vat = offer.vatAmount ?? 0
+  const hasDiscount = offer.discountAmount > 0
+  const totalsH = 8 // leading gap
+    + (hasDiscount ? 36 + (vat > 0 ? 8 : 0) : 0) // subtotal + discount rows (+ rule)
+    + (vat > 0 ? 36 : 0) // net + VAT rows
+    + 8 + 20 // rule + grand total
+  doc.font('Helvetica').fontSize(9)
+  const footerH = 16
+    + (offer.note ? doc.heightOfString(offer.note, { width }) + 12 : 0)
+    + (offer.validUntil ? 11 + 12 : 0)
+    + doc.heightOfString(s.accept, { width }) + 4
+    + doc.heightOfString(vat > 0 ? s.vatNoteItemized(offer.vatRate) : s.vatNote, { width })
+  const tailH = totalsH + footerH
+  const bottom = doc.page.height - 90
+  const ensureRoom = (need: number) => {
+    if (y + need > bottom) {
       doc.addPage()
       y = doc.page.margins.top
       tableHeader()
@@ -305,7 +325,10 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     ]
     const blockH = 12 + subLines.reduce((h, l) => h + l.lines * 10 + 1, 0)
     const rowH = Math.max(thumbH, blockH) + 12
-    ensureRoom(rowH)
+    const extras = item.extras ?? []
+    const isLastItem = idx === offer.items.length - 1
+    // Keep the final row on the same page as the totals that follow it.
+    ensureRoom(rowH + (isLastItem && extras.length === 0 ? tailH : 0))
     const thumb = thumbs[idx]
     if (thumb) {
       try {
@@ -333,9 +356,18 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     y += rowH
 
     // Vehicle extras as indented sub-rows, priced over the same period.
-    for (const extra of item.extras ?? []) {
-      const extraH = discounted ? 26 : 18
-      ensureRoom(extraH)
+    extras.forEach((extra, extraIdx) => {
+      // Insurance carries its excess on a second line so the renter sees what
+      // they are liable for per incident, in the offer currency (ISK alongside
+      // when the offer is in EUR).
+      const excess = extra.kind === 'insurance' ? INSURANCE_EXCESS[extra.tier ?? 'bronze'] : null
+      const excessLine = excess
+        ? s.excess(offer.currency === 'EUR'
+          ? `${formatMoney(excess.eur, 'EUR', locale)} (${formatMoney(excess.isk, 'ISK', locale)})`
+          : formatMoney(excess.isk, 'ISK', locale))
+        : null
+      const extraH = (discounted ? 26 : 18) + (excessLine ? 10 : 0)
+      ensureRoom(extraH + (isLastItem && extraIdx === extras.length - 1 ? tailH : 0))
       const label = `+ ${extraLabel(extra)}`
       const detail = extra.kind === 'km'
         ? s.perKm(money(extra.unitPrice))
@@ -354,6 +386,10 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
           .text(detail, col.name + 8 + (nameW - 14 - detailW) + 6, textY + 1,
             { width: detailW, ellipsis: true, height: 10 })
       }
+      if (excessLine) {
+        doc.font('Helvetica').fontSize(8).fillColor(GRAY)
+          .text(excessLine, col.name + 8, textY + 12, { width: nameW - 8, ellipsis: true, height: 10 })
+      }
       doc.font('Helvetica').fontSize(9).fillColor(INK)
       // Unlimited drivers is per vehicle, so its qty is the vehicle count.
       doc.text(extra.qty.toLocaleString(locale === 'is' ? 'is-IS' : 'en-US', { maximumFractionDigits: 2 }),
@@ -361,7 +397,7 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
       doc.text(money(extra.unitPrice), col.unit, textY, { width: 70, align: 'right' })
       totalCell(extra.total, rowIdx++, textY, 9)
       y += extraH
-    }
+    })
     doc.moveTo(left, y - 6).lineTo(right, y - 6).lineWidth(0.5).strokeColor(LINE).stroke()
   })
 
@@ -370,12 +406,10 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   // discount, net), then what is added on top (VAT), then the grand total.
   // The value column is wide enough that a seven-figure ISK total stays on
   // one line.
-  const vat = offer.vatAmount ?? 0
-  const hasDiscount = offer.discountAmount > 0
   const net = offer.subtotal - offer.discountAmount
   const tot = { label: right - 300, value: right - 130, valueW: 130 }
-  const totalsH = 40 + (hasDiscount ? 54 : 0) + (vat > 0 ? 36 : 0)
-  if (y + totalsH > doc.page.height - 90) {
+  // Safety net only: the last row already reserved this space.
+  if (y + totalsH > bottom) {
     doc.addPage()
     y = doc.page.margins.top
   }

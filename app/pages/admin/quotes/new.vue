@@ -44,7 +44,7 @@
           <p class="mt-1 text-[11px] text-bone-400">Controls the offer email + PDF language.</p>
         </div>
         <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Shooting dates</label>
+          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Rental period</label>
           <input v-model.trim="dates" type="text" class="input-dark" placeholder="e.g. 12–18 August 2026 (optional)">
         </div>
       </div>

@@ -38,7 +38,7 @@
             <p class="mt-1 text-bone-100">{{ quote.kennitala || '–' }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-widest text-bone-400">Shooting dates</p>
+            <p class="text-xs uppercase tracking-widest text-bone-400">Rental period</p>
             <p class="mt-1 text-bone-100">{{ quote.dates || '–' }}</p>
           </div>
           <div>
@@ -102,7 +102,7 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Shooting dates</label>
+            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Rental period</label>
             <input v-model.trim="edit.dates" type="text" class="input-dark" placeholder="e.g. 12–18 August 2026 (optional)">
           </div>
         </div>

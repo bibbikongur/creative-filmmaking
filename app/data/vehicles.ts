@@ -14,8 +14,8 @@ export const vehicles: Vehicle[] = [
     kind: 'pickup',
     featured: false,
     name: {
-      en: '4x4 Silverado Location Pickup',
-      is: '4x4 Silverado location pallbíll',
+      en: '4x4 Silverado Pickup',
+      is: '4x4 Silverado pallbíll',
     },
     tagline: {
       en: 'A 4x4 pickup for rent: 33" tires, tow hitch and room for the whole location kit.',

@@ -187,6 +187,10 @@ const SEED_UPDATES: { id: string, rev: number }[] = [
   { id: 'v-mre1v2ud010c', rev: 2 },
   { id: 'v-mre45ytvabcb', rev: 2 },
   { id: 'v-mszu795f21be', rev: 2 },
+  // 2026-10-29: Silverado renamed "4x4 Silverado Pickup" (film-only wording
+  // dropped; it is offered to non-film renters too). Seed verified identical
+  // to the live row before the rename, slug unchanged.
+  { id: 'v-mr6s6va62bc8', rev: 3 },
 ]
 
 // Equipment copy fixes pushed 2026-08-27 (SEO pass): typo/casing/translation
