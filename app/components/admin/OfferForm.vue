@@ -351,7 +351,8 @@ onMounted(async () => {
 const convert = (n: number | null, from: Currency, to: Currency): number | null => {
   const rate = fxRate.value
   if (n == null || !Number.isFinite(n) || !rate || rate <= 0) return n
-  if (from === 'ISK' && to === 'EUR') return Math.round(n / rate * 100) / 100
+  // EUR figures are kept whole; cents on a rental quote only look like noise.
+  if (from === 'ISK' && to === 'EUR') return Math.round(n / rate)
   if (from === 'EUR' && to === 'ISK') return Math.round(n * rate)
   return n
 }
