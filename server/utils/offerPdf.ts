@@ -289,7 +289,22 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   let rowIdx = 0
 
   offer.items.forEach((item, idx) => {
-    const rowH = thumbH + 12
+    // Lines under the name: the per-period breakdown (one line) and the
+    // free-text note (wraps to two lines, then ellipsis).
+    const nameW = col.qty - col.name - 10
+    const periodLine = item.pricing === 'day' && item.days
+      ? s.perDay(item.days, money(item.unitPrice))
+      : item.pricing === 'week' && item.weeks
+        ? s.perWeek(item.weeks, money(item.unitPrice))
+        : null
+    const note = item.note?.trim() || null
+    doc.font('Helvetica').fontSize(8)
+    const subLines: { text: string, lines: number }[] = [
+      ...(periodLine ? [{ text: periodLine, lines: 1 }] : []),
+      ...(note ? [{ text: note, lines: doc.widthOfString(note) > nameW ? 2 : 1 }] : []),
+    ]
+    const blockH = 12 + subLines.reduce((h, l) => h + l.lines * 10 + 1, 0)
+    const rowH = Math.max(thumbH, blockH) + 12
     ensureRoom(rowH)
     const thumb = thumbs[idx]
     if (thumb) {
@@ -299,19 +314,15 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
       catch { /* corrupt image — skip the thumbnail */ }
     }
     const name = item.name[locale] || item.name.en
-    const periodLine = item.pricing === 'day' && item.days
-      ? s.perDay(item.days, money(item.unitPrice))
-      : item.pricing === 'week' && item.weeks
-        ? s.perWeek(item.weeks, money(item.unitPrice))
-        : null
-    // Per-period rows carry a second (gray) line, so the text block starts higher.
-    const textY = periodLine ? y + (thumbH - 24) / 2 : y + (thumbH - 10) / 2 - 4
+    // The text block is centred on the thumbnail; with sub-lines it starts higher.
+    const textY = y + Math.max(0, (thumbH - blockH) / 2) - (subLines.length ? 0 : 4)
     doc.font('Helvetica-Bold').fontSize(10).fillColor(INK)
-      .text(name, col.name, textY, { width: col.qty - col.name - 10, ellipsis: true, height: 12 })
-    if (periodLine) {
+      .text(name, col.name, textY, { width: nameW, ellipsis: true, height: 12 })
+    let subY = textY + 14
+    for (const line of subLines) {
       doc.font('Helvetica').fontSize(8).fillColor(GRAY)
-        .text(periodLine, col.name, textY + 14,
-          { width: col.qty - col.name - 10, ellipsis: true, height: 10 })
+        .text(line.text, col.name, subY, { width: nameW, ellipsis: true, height: line.lines * 10, lineGap: 1 })
+      subY += line.lines * 10 + 1
     }
     doc.font('Helvetica').fontSize(10).fillColor(INK)
     doc.text(String(item.qty), col.qty, textY, { width: 30, align: 'right' })
@@ -344,11 +355,9 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
             { width: detailW, ellipsis: true, height: 10 })
       }
       doc.font('Helvetica').fontSize(9).fillColor(INK)
-      // Unlimited drivers has no meaningful count, so the qty cell stays empty.
-      if (!extra.unlimited) {
-        doc.text(extra.qty.toLocaleString(locale === 'is' ? 'is-IS' : 'en-US', { maximumFractionDigits: 2 }),
-          col.qty, textY, { width: 30, align: 'right' })
-      }
+      // Unlimited drivers is per vehicle, so its qty is the vehicle count.
+      doc.text(extra.qty.toLocaleString(locale === 'is' ? 'is-IS' : 'en-US', { maximumFractionDigits: 2 }),
+        col.qty, textY, { width: 30, align: 'right' })
       doc.text(money(extra.unitPrice), col.unit, textY, { width: 70, align: 'right' })
       totalCell(extra.total, rowIdx++, textY, 9)
       y += extraH

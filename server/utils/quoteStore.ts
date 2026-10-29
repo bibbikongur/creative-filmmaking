@@ -34,6 +34,8 @@ export interface NewQuoteInput {
     nameIs: string
     image?: string
     qty: number
+    /** Free text printed under the line on the offer. */
+    note?: string
   }[]
 }
 
@@ -62,8 +64,8 @@ export function createQuote(input: NewQuoteInput): Quote {
   const createdAt = new Date().toISOString()
 
   const insertItem = db.prepare(`
-    INSERT INTO quote_items (quote_id, item_type, item_id, slug, name_en, name_is, image, qty)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO quote_items (quote_id, item_type, item_id, slug, name_en, name_is, image, qty, note)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
   db.transaction(() => {
     db.prepare(`
@@ -73,7 +75,7 @@ export function createQuote(input: NewQuoteInput): Quote {
       input.phone ?? null, input.company ?? null, input.kennitala ?? null, input.dates ?? null, input.message ?? null)
     for (const item of input.items) {
       insertItem.run(id, item.itemType, item.itemId, item.slug ?? null,
-        item.nameEn, item.nameIs, item.image ?? null, item.qty)
+        item.nameEn, item.nameIs, item.image ?? null, item.qty, item.note ?? null)
     }
   })()
 
@@ -94,11 +96,11 @@ export function updateQuote(id: string, input: UpdateQuoteInput): QuoteDetail | 
   if (!existing) return null
 
   const updateItem = db.prepare(`
-    UPDATE quote_items SET slug = ?, name_en = ?, name_is = ?, image = ?, qty = ? WHERE id = ?
+    UPDATE quote_items SET slug = ?, name_en = ?, name_is = ?, image = ?, qty = ?, note = ? WHERE id = ?
   `)
   const insertItem = db.prepare(`
-    INSERT INTO quote_items (quote_id, item_type, item_id, slug, name_en, name_is, image, qty)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO quote_items (quote_id, item_type, item_id, slug, name_en, name_is, image, qty, note)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
   const deleteItem = db.prepare('DELETE FROM quote_items WHERE id = ?')
 
@@ -115,11 +117,11 @@ export function updateQuote(id: string, input: UpdateQuoteInput): QuoteDetail | 
       const prev = prevByKey.get(`${item.itemType}:${item.itemId}`)
       if (prev) {
         kept.add(prev.id)
-        updateItem.run(item.slug ?? null, item.nameEn, item.nameIs, item.image ?? null, item.qty, prev.id)
+        updateItem.run(item.slug ?? null, item.nameEn, item.nameIs, item.image ?? null, item.qty, item.note ?? null, prev.id)
       }
       else {
         insertItem.run(id, item.itemType, item.itemId, item.slug ?? null,
-          item.nameEn, item.nameIs, item.image ?? null, item.qty)
+          item.nameEn, item.nameIs, item.image ?? null, item.qty, item.note ?? null)
       }
     }
     for (const prev of existing.items) {
@@ -196,12 +198,12 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
     const weeks = pricing === 'week' ? Math.max(0.01, round2(priced.weeks ?? 1)) : undefined
     const period = days ?? weeks ?? 1
     // Insurance and drivers are charged over the vehicle's period; km is not.
-    // Unlimited drivers is one flat add-on per period (qty 1).
+    // Insurance and unlimited drivers are per vehicle, so qty is the vehicle qty.
     const extras: OfferItemExtra[] = qi.itemType !== 'vehicle'
       ? []
       : (priced.extras ?? []).map((e) => {
           const unlimited = e.kind === 'driver' && e.unlimited === true
-          const qty = e.kind === 'insurance' ? qi.qty : unlimited ? 1 : e.kind === 'driver' ? Math.round(e.qty ?? 1) : round2(e.qty ?? 0)
+          const qty = e.kind === 'insurance' || unlimited ? qi.qty : e.kind === 'driver' ? Math.round(e.qty ?? 1) : round2(e.qty ?? 0)
           return {
             kind: e.kind,
             tier: e.kind === 'insurance' ? e.tier : undefined,
@@ -216,6 +218,7 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
       name: qi.name,
       image: qi.image,
       qty: qi.qty,
+      note: qi.note,
       unitPrice: priced.unitPrice,
       pricing,
       days,
@@ -291,6 +294,7 @@ function rowToQuoteItem(r: Record<string, unknown>): QuoteItem {
     name: { en: r.name_en as string, is: (r.name_is as string) || (r.name_en as string) },
     image: (r.image as string | null) ?? undefined,
     qty: r.qty as number,
+    note: (r.note as string | null) ?? undefined,
   }
 }
 

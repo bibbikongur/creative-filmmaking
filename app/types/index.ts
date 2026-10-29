@@ -146,6 +146,8 @@ export interface QuoteDraftItem {
   qty: number
   name: string
   image?: string
+  /** Free text shown under the line on the offer, e.g. what a transport is for. */
+  note?: string
 }
 
 export type QuoteStatus = 'new' | 'offered' | 'won' | 'lost'
@@ -162,6 +164,8 @@ export interface QuoteItem {
   name: LocalizedText
   image?: string
   qty: number
+  /** Free text shown under the line on the offer, e.g. what a transport is for. */
+  note?: string
 }
 
 export interface Quote {
@@ -205,9 +209,9 @@ export interface OfferItemExtra {
   kind: OfferExtraKind
   /** Only for insurance. */
   tier?: InsuranceTier
-  /** Insurance: vehicle qty · driver: number of drivers (1 when unlimited) · km: kilometres. */
+  /** Insurance: vehicle qty · driver: number of drivers (vehicle qty when unlimited) · km: kilometres. */
   qty: number
-  /** Driver only: unlimited authorised drivers, charged as one flat add-on per period. */
+  /** Driver only: unlimited authorised drivers, charged per vehicle per period. */
   unlimited?: boolean
   unitPrice: number
   total: number
@@ -219,6 +223,8 @@ export interface OfferItem {
   name: LocalizedText
   image?: string
   qty: number
+  /** Copied from the quote item: free text printed under the line. */
+  note?: string
   unitPrice: number
   /** Absent on offers created before per-day pricing existed → 'flat'. */
   pricing?: PricingMode

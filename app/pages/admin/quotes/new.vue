@@ -105,7 +105,7 @@ const create = async () => {
         phone: phone.value || undefined,
         dates: dates.value || undefined,
         locale: locale.value,
-        items: selected.value.map(e => ({ type: e.type, id: e.id, qty: e.qty || 1 })),
+        items: selected.value.map(e => ({ type: e.type, id: e.id, qty: e.qty || 1, note: e.note || undefined })),
       },
     })
     await navigateTo(`/admin/quotes/${res.id}`)

@@ -14,7 +14,8 @@ interface AdminQuoteBody {
   phone?: string
   dates?: string
   locale?: LocaleCode
-  items?: CartEntry[]
+  /** `note` is free text for the line (what a transport is for); admin only. */
+  items?: (CartEntry & { note?: string })[]
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -39,6 +40,7 @@ export default defineEventHandler(async (event) => {
   const seen = new Set<string>()
   for (const raw of body.items!) {
     const qty = Math.max(1, Math.round(Number(raw?.qty)) || 1)
+    const note = typeof raw?.note === 'string' ? raw.note.trim().slice(0, 200) || undefined : undefined
     const key = `${raw?.type}:${raw?.id}`
     if (seen.has(key)) continue
     seen.add(key)
@@ -48,7 +50,7 @@ export default defineEventHandler(async (event) => {
         items.push({
           itemType: 'vehicle', itemId: v.id, slug: v.slug,
           nameEn: v.name.en, nameIs: v.name.is || v.name.en,
-          image: v.images[0], qty,
+          image: v.images[0], qty, note,
         })
       }
     }
@@ -58,7 +60,7 @@ export default defineEventHandler(async (event) => {
         items.push({
           itemType: 'equipment', itemId: e.id,
           nameEn: e.name.en, nameIs: e.name.is || e.name.en,
-          image: e.images[0], qty,
+          image: e.images[0], qty, note,
         })
       }
     }
@@ -68,7 +70,7 @@ export default defineEventHandler(async (event) => {
         items.push({
           itemType: 'service', itemId: s.id,
           nameEn: s.name.en, nameIs: s.name.is || s.name.en,
-          image: s.images[0], qty,
+          image: s.images[0], qty, note,
         })
       }
     }

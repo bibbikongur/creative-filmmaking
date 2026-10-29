@@ -17,6 +17,6 @@ export const SERVICES: ServiceItem[] = [
   {
     id: 'svc-transport',
     name: { en: 'Transport', is: 'Flutningur' },
-    images: ['/images/services/transport.jpg'],
+    images: ['/images/services/transport.png'],
   },
 ]

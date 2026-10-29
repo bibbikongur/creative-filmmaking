@@ -377,7 +377,8 @@ function initSchema(db: Database.Database) {
       name_en   TEXT NOT NULL,
       name_is   TEXT NOT NULL,
       image     TEXT,
-      qty       INTEGER NOT NULL DEFAULT 1
+      qty       INTEGER NOT NULL DEFAULT 1,
+      note      TEXT
     );
     CREATE INDEX IF NOT EXISTS idx_quote_items_quote ON quote_items(quote_id);
 
@@ -915,6 +916,10 @@ function migrate(db: Database.Database) {
     db.pragma('foreign_keys = ON')
     console.log('[db] migrated quote_items to allow service items')
   }
+
+  // v12: quote lines carry an optional free-text note (what a transport is
+  // for, etc.), printed under the line on the offer.
+  ensureColumn('quote_items', 'note', 'note TEXT')
 }
 
 /**

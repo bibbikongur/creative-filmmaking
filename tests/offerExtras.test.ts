@@ -67,7 +67,7 @@ describe('createOffer with vehicle extras', () => {
     expect(offer.total).toBe(265000 * 1.24)
   })
 
-  it('charges unlimited authorised drivers as one flat add-on over the period', async () => {
+  it('charges unlimited authorised drivers per vehicle over the period', async () => {
     const { createOffer, getQuote } = await import('../server/utils/quoteStore')
     const { generateOfferPdf } = await import('../server/utils/offerPdf')
     const quote = await newQuote()
@@ -80,7 +80,7 @@ describe('createOffer with vehicle extras', () => {
           unitPrice: 20000,
           pricing: 'day',
           days: 5,
-          // qty is ignored when unlimited; the add-on is priced once per day.
+          // qty is ignored when unlimited; the add-on is priced per vehicle (qty 2) per day.
           extras: [{ kind: 'driver', qty: 7, unlimited: true, unitPrice: 2500 }],
         },
         { quoteItemId: radio!.id, unitPrice: 5000 },
@@ -88,9 +88,9 @@ describe('createOffer with vehicle extras', () => {
     })
     const [v] = offer.items
     expect(v!.extras).toEqual([
-      { kind: 'driver', tier: undefined, unlimited: true, qty: 1, unitPrice: 2500, total: 12500 },
+      { kind: 'driver', tier: undefined, unlimited: true, qty: 2, unitPrice: 2500, total: 25000 },
     ])
-    expect(offer.subtotal).toBe(200000 + 12500 + 5000)
+    expect(offer.subtotal).toBe(200000 + 25000 + 5000)
     const pdf = await generateOfferPdf(getQuote(quote.id)!, offer)
     expect(pdf.subarray(0, 4).toString()).toBe('%PDF')
   })

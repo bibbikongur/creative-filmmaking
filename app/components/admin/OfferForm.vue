@@ -38,6 +38,7 @@
           <div v-else class="w-20 h-14 bg-ink-800 shrink-0" />
           <div class="min-w-0 flex-1">
             <p class="font-semibold text-bone-100 truncate">{{ item.name.en }}</p>
+            <p v-if="item.note" class="mt-0.5 text-sm text-bone-300 truncate" :title="item.note">{{ item.note }}</p>
             <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">
               {{ item.itemType }}<span v-if="item.qty > 1"> · qty {{ item.qty }}</span>
             </p>
@@ -89,7 +90,7 @@
               step="any"
               class="input-dark !w-32 text-right"
               :placeholder="extraPlaceholder(item.id)"
-              :title="item.qty > 1 ? `Per vehicle — multiplied by qty ${item.qty}` : undefined"
+              :title="item.qty > 1 ? `Per vehicle, multiplied by qty ${item.qty}` : undefined"
             >
             <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(insuranceTotal(item)) }}</span>
           </div>
@@ -119,7 +120,9 @@
               step="any"
               class="input-dark !w-32 text-right"
               :placeholder="unlimitedDrivers(item.id) ? extraPlaceholder(item.id) : `${extraPlaceholder(item.id)} / driver`"
-              :title="unlimitedDrivers(item.id) ? 'Flat price for unlimited authorised drivers' : undefined"
+              :title="unlimitedDrivers(item.id)
+                ? (item.qty > 1 ? `Unlimited drivers per vehicle, multiplied by qty ${item.qty}` : 'Price for unlimited authorised drivers')
+                : undefined"
             >
             <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(driverTotal(item)) }}</span>
           </div>
@@ -383,7 +386,7 @@ const pricePlaceholder = (id: number) =>
 
 // Extras mirror the server: insurance per vehicle (× qty) and drivers are
 // charged over the vehicle's period; km is km × rate. Unlimited drivers is
-// one flat add-on per period.
+// per vehicle (× qty), like insurance.
 const isNum = (n: number | null | undefined): n is number => typeof n === 'number' && Number.isFinite(n) && n >= 0
 const unlimitedDrivers = (id: number) => extras[id]?.driverMode === 'unlimited'
 const hasDrivers = (id: number) => !!extras[id]?.driverMode
@@ -398,7 +401,7 @@ const driverTotal = (item: QuoteItem): number | null => {
   const e = extras[item.id]
   if (!e || !hasDrivers(item.id)) return 0
   if (!unlimitedDrivers(item.id) && !(isNum(e.drivers) && e.drivers >= 1)) return null
-  const count = unlimitedDrivers(item.id) ? 1 : Math.round(e.drivers!)
+  const count = unlimitedDrivers(item.id) ? item.qty : Math.round(e.drivers!)
   return isNum(e.driverPrice) ? e.driverPrice * count * extraPeriod(item.id) : null
 }
 const kmTotal = (item: QuoteItem): number | null => {
@@ -442,7 +445,7 @@ const extrasPayload = (id: number) => {
     ...(e.insTier ? [{ kind: 'insurance' as const, tier: e.insTier, unitPrice: e.insPrice! }] : []),
     ...(hasDrivers(id)
       ? [unlimitedDrivers(id)
-          ? { kind: 'driver' as const, qty: 1, unlimited: true, unitPrice: e.driverPrice! }
+          ? { kind: 'driver' as const, unlimited: true, unitPrice: e.driverPrice! }
           : { kind: 'driver' as const, qty: e.drivers!, unitPrice: e.driverPrice! }]
       : []),
     ...(hasKm(id) ? [{ kind: 'km' as const, qty: e.km!, unitPrice: e.kmPrice! }] : []),

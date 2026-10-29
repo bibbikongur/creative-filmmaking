@@ -221,7 +221,7 @@ const startEdit = () => {
   edit.dates = quote.value.dates ?? ''
   edit.locale = quote.value.locale
   draftItems.value = quote.value.items.map(i => ({
-    type: i.itemType, id: i.itemId, qty: i.qty, name: i.name.en, image: i.image,
+    type: i.itemType, id: i.itemId, qty: i.qty, name: i.name.en, image: i.image, note: i.note,
   }))
   saveError.value = ''
   editing.value = true
@@ -244,7 +244,7 @@ const saveEdit = async () => {
         phone: edit.phone || undefined,
         dates: edit.dates || undefined,
         locale: edit.locale,
-        items: draftItems.value.map(e => ({ type: e.type, id: e.id, qty: e.qty || 1 })),
+        items: draftItems.value.map(e => ({ type: e.type, id: e.id, qty: e.qty || 1, note: e.note || undefined })),
       },
     })
     await reload()

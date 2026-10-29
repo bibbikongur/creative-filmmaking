@@ -30,6 +30,15 @@
           <div class="min-w-0 flex-1">
             <p class="font-semibold text-bone-100 truncate">{{ entry.name }}</p>
             <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">{{ entry.type }}</p>
+            <!-- Services need saying what they are for; the text is printed under the line on the offer. -->
+            <input
+              v-if="entry.type === 'service'"
+              v-model.trim="entry.note"
+              type="text"
+              maxlength="200"
+              class="input-dark mt-2 !py-1.5 text-sm"
+              placeholder="What is it for? e.g. Crew transfer Keflavík – Reykjavík, 12 Nov"
+            >
           </div>
           <div class="flex items-center gap-2">
             <label class="text-xs uppercase tracking-widest text-bone-400">Qty</label>

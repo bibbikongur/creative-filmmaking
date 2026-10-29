@@ -52,7 +52,8 @@ export default defineEventHandler(async (event) => {
           kind: e.kind!,
           tier: e.kind === 'insurance' ? e.tier : undefined,
           unlimited: e.kind === 'driver' && e.unlimited === true ? true : undefined,
-          qty: e.kind === 'insurance' ? undefined : e.kind === 'driver' && e.unlimited === true ? 1 : Number(e.qty),
+          // Insurance and unlimited drivers are per vehicle; the store fills qty from the line.
+          qty: e.kind === 'insurance' || (e.kind === 'driver' && e.unlimited === true) ? undefined : Number(e.qty),
           unitPrice: Number(e.unitPrice),
         })),
     }))
