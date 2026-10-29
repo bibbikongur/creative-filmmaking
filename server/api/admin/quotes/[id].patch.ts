@@ -1,5 +1,6 @@
 import type { CartEntry, LocaleCode, QuoteStatus } from '~~/app/types'
 import type { UpdateQuoteInput } from '~~/server/utils/quoteStore'
+import { SERVICES } from '~~/app/data/services'
 
 // Two patch shapes on one endpoint:
 //   { status }                     → status change only
@@ -78,6 +79,17 @@ export default defineEventHandler(async (event) => {
           itemType: 'equipment', itemId: e.id,
           nameEn: e.name.en, nameIs: e.name.is || e.name.en,
           image: e.images[0], qty,
+        })
+        continue
+      }
+    }
+    else if (raw?.type === 'service') {
+      const s = SERVICES.find(x => x.id === raw.id)
+      if (s) {
+        items.push({
+          itemType: 'service', itemId: s.id,
+          nameEn: s.name.en, nameIs: s.name.is || s.name.en,
+          image: s.images[0], qty,
         })
         continue
       }

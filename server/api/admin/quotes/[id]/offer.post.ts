@@ -10,13 +10,15 @@ interface OfferBody {
     pricing?: PricingMode
     days?: number
     weeks?: number
-    extras?: { kind?: OfferExtraKind, tier?: InsuranceTier, qty?: number, unitPrice?: number }[]
+    extras?: { kind?: OfferExtraKind, tier?: InsuranceTier, qty?: number, unlimited?: boolean, unitPrice?: number }[]
   }[]
   currency?: OfferCurrency
   discountType?: DiscountType | ''
   discountValue?: number
   note?: string
   validUntil?: string
+  /** false = offer without VAT (e.g. foreign customers); defaults to true. */
+  vat?: boolean
   /** false = save only (PDF preview); true = save + email the customer */
   send?: boolean
 }
@@ -49,7 +51,8 @@ export default defineEventHandler(async (event) => {
         .map(e => ({
           kind: e.kind!,
           tier: e.kind === 'insurance' ? e.tier : undefined,
-          qty: e.kind === 'insurance' ? undefined : Number(e.qty),
+          unlimited: e.kind === 'driver' && e.unlimited === true ? true : undefined,
+          qty: e.kind === 'insurance' ? undefined : e.kind === 'driver' && e.unlimited === true ? 1 : Number(e.qty),
           unitPrice: Number(e.unitPrice),
         })),
     }))
@@ -70,7 +73,7 @@ export default defineEventHandler(async (event) => {
   if (extras.some(e => e.kind === 'insurance' && !INSURANCE_TIERS.includes(e.tier!))) {
     errors.push('Insurance must be Bronze, Silver or Gold.')
   }
-  if (extras.some(e => e.kind === 'driver' && (!Number.isInteger(e.qty) || e.qty! < 1 || e.qty! > 99))) {
+  if (extras.some(e => e.kind === 'driver' && !e.unlimited && (!Number.isInteger(e.qty) || e.qty! < 1 || e.qty! > 99))) {
     errors.push('Additional drivers need a count of 1 or more.')
   }
   if (extras.some(e => e.kind === 'km' && (!Number.isFinite(e.qty!) || e.qty! <= 0 || e.qty! > 1_000_000))) {
@@ -87,6 +90,7 @@ export default defineEventHandler(async (event) => {
     discountValue,
     note: body.note?.trim() || undefined,
     validUntil: body.validUntil?.trim() || undefined,
+    vatRate: body.vat === false ? 0 : VAT_RATE,
     items,
   })
 

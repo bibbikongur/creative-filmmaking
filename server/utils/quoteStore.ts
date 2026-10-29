@@ -13,7 +13,7 @@ import type {
 
 export const QUOTE_STATUSES: QuoteStatus[] = ['new', 'offered', 'won', 'lost']
 
-/** Icelandic standard VAT, added on top of the net amount of every new offer. */
+/** Icelandic standard VAT, added on top of the net amount unless the offer opts out. */
 export const VAT_RATE = 24
 
 export interface NewQuoteInput {
@@ -43,6 +43,8 @@ export interface NewOfferInput {
   discountValue?: number
   note?: string
   validUntil?: string
+  /** VAT percentage on the net amount; 0 = offer without VAT. Defaults to VAT_RATE. */
+  vatRate?: number
   items: {
     quoteItemId: number
     unitPrice: number
@@ -50,7 +52,7 @@ export interface NewOfferInput {
     days?: number
     weeks?: number
     /** Vehicle items only; insurance qty is taken from the quote item. */
-    extras?: { kind: OfferExtraKind, tier?: InsuranceTier, qty?: number, unitPrice: number }[]
+    extras?: { kind: OfferExtraKind, tier?: InsuranceTier, qty?: number, unlimited?: boolean, unitPrice: number }[]
   }[]
 }
 
@@ -194,13 +196,16 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
     const weeks = pricing === 'week' ? Math.max(0.01, round2(priced.weeks ?? 1)) : undefined
     const period = days ?? weeks ?? 1
     // Insurance and drivers are charged over the vehicle's period; km is not.
+    // Unlimited drivers is one flat add-on per period (qty 1).
     const extras: OfferItemExtra[] = qi.itemType !== 'vehicle'
       ? []
       : (priced.extras ?? []).map((e) => {
-          const qty = e.kind === 'insurance' ? qi.qty : e.kind === 'driver' ? Math.round(e.qty ?? 1) : round2(e.qty ?? 0)
+          const unlimited = e.kind === 'driver' && e.unlimited === true
+          const qty = e.kind === 'insurance' ? qi.qty : unlimited ? 1 : e.kind === 'driver' ? Math.round(e.qty ?? 1) : round2(e.qty ?? 0)
           return {
             kind: e.kind,
             tier: e.kind === 'insurance' ? e.tier : undefined,
+            unlimited: unlimited || undefined,
             qty,
             unitPrice: e.unitPrice,
             total: round2(e.unitPrice * qty * (e.kind === 'km' ? 1 : period)),
@@ -230,7 +235,8 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
     discountAmount = round2(Math.min(input.discountValue, subtotal))
   }
   const net = round2(subtotal - discountAmount)
-  const vatAmount = round2(net * VAT_RATE / 100)
+  const vatRate = input.vatRate ?? VAT_RATE
+  const vatAmount = round2(net * vatRate / 100)
   const total = round2(net + vatAmount)
   const createdAt = new Date().toISOString()
 
@@ -241,7 +247,7 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
   `).run(quoteId, createdAt, input.currency,
     input.discountType ?? null, input.discountType ? input.discountValue ?? null : null,
     input.note ?? null, input.validUntil ?? null,
-    JSON.stringify(items), subtotal, discountAmount, VAT_RATE, vatAmount, total)
+    JSON.stringify(items), subtotal, discountAmount, vatRate, vatAmount, total)
 
   return getOffer(quoteId, Number(result.lastInsertRowid))!
 }

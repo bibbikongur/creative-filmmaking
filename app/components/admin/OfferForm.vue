@@ -94,25 +94,32 @@
             <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(insuranceTotal(item)) }}</span>
           </div>
           <div class="flex flex-wrap items-center justify-end gap-2">
-            <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">Additional drivers</span>
+            <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">Drivers</span>
+            <select v-model="extras[item.id]!.driverMode" class="input-dark !w-32">
+              <option value="">None</option>
+              <option value="count">Additional</option>
+              <option value="unlimited">Unlimited</option>
+            </select>
             <input
+              v-if="extras[item.id]!.driverMode === 'count'"
               v-model.number="extras[item.id]!.drivers"
               type="number"
-              min="0"
+              min="1"
               max="99"
               step="1"
               class="input-dark !w-20 text-right"
-              placeholder="0"
+              placeholder="1"
               title="Number of additional drivers"
             >
             <input
-              v-if="(extras[item.id]!.drivers ?? 0) > 0"
+              v-if="extras[item.id]!.driverMode"
               v-model.number="extras[item.id]!.driverPrice"
               type="number"
               min="0"
               step="any"
               class="input-dark !w-32 text-right"
-              :placeholder="`${extraPlaceholder(item.id)} / driver`"
+              :placeholder="unlimitedDrivers(item.id) ? extraPlaceholder(item.id) : `${extraPlaceholder(item.id)} / driver`"
+              :title="unlimitedDrivers(item.id) ? 'Flat price for unlimited authorised drivers' : undefined"
             >
             <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(driverTotal(item)) }}</span>
           </div>
@@ -152,6 +159,27 @@
         </select>
       </div>
       <div>
+        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Exchange rate (1 EUR in ISK)</label>
+        <input
+          v-model.number="fxRate"
+          type="number"
+          min="1"
+          step="0.01"
+          class="input-dark"
+          title="Used to convert the entered prices when you switch currency"
+        >
+        <p class="mt-1 text-[11px] text-bone-400">
+          {{ fxInfo }}
+        </p>
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">VAT</label>
+        <label class="flex items-center gap-2 py-2.5 text-sm text-bone-100 cursor-pointer select-none">
+          <input v-model="includeVat" type="checkbox" class="accent-gold-400">
+          Add {{ VAT_RATE }}% VAT
+        </label>
+      </div>
+      <div>
         <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Discount</label>
         <select v-model="discountType" class="input-dark">
           <option value="">No discount</option>
@@ -182,8 +210,8 @@
         Discount{{ discountType === 'percent' ? ` (${discountValue}%)` : '' }}:
         <span class="text-gold-400 tabular-nums">−{{ fmt(discountAmount) }}</span>
       </p>
-      <p class="text-bone-400">VAT ({{ VAT_RATE }}%): <span class="text-bone-100 tabular-nums">{{ fmt(vatAmount) }}</span></p>
-      <p class="text-lg font-semibold text-bone-100">Total incl. VAT: <span class="tabular-nums">{{ fmt(total) }}</span></p>
+      <p v-if="includeVat" class="text-bone-400">VAT ({{ VAT_RATE }}%): <span class="text-bone-100 tabular-nums">{{ fmt(vatAmount) }}</span></p>
+      <p class="text-lg font-semibold text-bone-100">{{ includeVat ? 'Total incl. VAT' : 'Total (no VAT)' }}: <span class="tabular-nums">{{ fmt(total) }}</span></p>
     </div>
 
     <p v-if="error" class="mt-4 text-sm text-signal-500">{{ error }}</p>
@@ -225,9 +253,12 @@ const modes = reactive<Record<number, PricingMode>>({})
 // Count of days or weeks, depending on the item's mode. Weeks may be fractional.
 const periods = reactive<Record<number, number | null>>({})
 // Vehicle add-ons, keyed by quote item id (vehicles only).
+// '' = no driver add-on · 'count' = N additional drivers (× price) · 'unlimited' = one flat add-on.
+type DriverMode = '' | 'count' | 'unlimited'
 interface ExtrasState {
   insTier: InsuranceTier | ''
   insPrice: number | null
+  driverMode: DriverMode
   drivers: number | null
   driverPrice: number | null
   km: number | null
@@ -248,7 +279,8 @@ const seedItem = (item: QuoteItem) => {
     extras[item.id] = {
       insTier: ins?.tier ?? '',
       insPrice: ins?.unitPrice ?? null,
-      drivers: drv?.qty ?? null,
+      driverMode: !drv ? '' : drv.unlimited ? 'unlimited' : 'count',
+      drivers: drv && !drv.unlimited ? drv.qty : null,
       driverPrice: drv?.unitPrice ?? null,
       km: km?.qty ?? null,
       kmPrice: km?.unitPrice ?? null,
@@ -280,6 +312,59 @@ const busy = ref<'' | 'preview' | 'send'>('')
 const error = ref('')
 const notice = ref('')
 
+// VAT is on by default; it can be left off (e.g. foreign productions). An
+// earlier revision without VAT keeps it off when revising.
+const includeVat = ref(latest ? latest.vatRate > 0 : true)
+
+// EUR→ISK reference rate (ECB, fetched once) used to convert every entered
+// price when the currency is switched. Editable so a negotiated rate can be
+// used instead; a manual entry is never overwritten by the fetch.
+type Currency = 'ISK' | 'EUR'
+const fxRate = ref<number | null>(null)
+const fxMeta = ref<{ date: string, source: 'ecb' | 'fallback' } | null>(null)
+const fxInfo = computed(() => {
+  if (!fxMeta.value) return 'Switching currency converts the prices at this rate.'
+  return fxMeta.value.source === 'ecb'
+    ? `ECB reference rate from ${fxMeta.value.date}. Switching currency converts the prices.`
+    : 'Live rate unavailable; this is an estimate. Switching currency converts the prices.'
+})
+onMounted(async () => {
+  try {
+    const r = await $fetch<{ eurIsk: number, date: string, source: 'ecb' | 'fallback' }>('/api/admin/fx')
+    if (fxRate.value == null) fxRate.value = r.eurIsk
+    fxMeta.value = { date: r.date, source: r.source }
+  }
+  catch {
+    // Leave the field empty; the admin can type a rate by hand.
+  }
+})
+const convert = (n: number | null, from: Currency, to: Currency): number | null => {
+  const rate = fxRate.value
+  if (n == null || !Number.isFinite(n) || !rate || rate <= 0) return n
+  if (from === 'ISK' && to === 'EUR') return Math.round(n / rate * 100) / 100
+  if (from === 'EUR' && to === 'ISK') return Math.round(n * rate)
+  return n
+}
+watch(currency, (to, from) => {
+  if (to === from) return
+  if (!fxRate.value || fxRate.value <= 0) {
+    notice.value = 'No exchange rate set, so the prices were left as they are.'
+    return
+  }
+  for (const item of props.quote.items) {
+    prices[item.id] = convert(prices[item.id] ?? null, from, to)
+    const e = extras[item.id]
+    if (e) {
+      e.insPrice = convert(e.insPrice, from, to)
+      e.driverPrice = convert(e.driverPrice, from, to)
+      e.kmPrice = convert(e.kmPrice, from, to)
+    }
+  }
+  if (discountType.value === 'fixed') discountValue.value = convert(discountValue.value, from, to)
+  error.value = ''
+  notice.value = `Prices converted from ${from} to ${to} at 1 EUR = ${fxRate.value} ISK.`
+})
+
 const needsPeriod = (id: number) => modes[id] === 'day' || modes[id] === 'week'
 const isPriced = (id: number) => typeof prices[id] === 'number' && Number.isFinite(prices[id]!) && prices[id]! >= 0
 const round2 = (n: number) => Math.round(n * 100) / 100
@@ -297,9 +382,11 @@ const pricePlaceholder = (id: number) =>
   modes[id] === 'day' ? 'Price / day' : modes[id] === 'week' ? 'Price / week' : 'Price / unit'
 
 // Extras mirror the server: insurance per vehicle (× qty) and drivers are
-// charged over the vehicle's period; km is km × rate.
+// charged over the vehicle's period; km is km × rate. Unlimited drivers is
+// one flat add-on per period.
 const isNum = (n: number | null | undefined): n is number => typeof n === 'number' && Number.isFinite(n) && n >= 0
-const hasDrivers = (id: number) => (extras[id]?.drivers ?? 0) > 0
+const unlimitedDrivers = (id: number) => extras[id]?.driverMode === 'unlimited'
+const hasDrivers = (id: number) => !!extras[id]?.driverMode
 const hasKm = (id: number) => (extras[id]?.km ?? 0) > 0
 const extraPeriod = (id: number) => hasPeriod(id) ? periodCount(id) : 0
 const insuranceTotal = (item: QuoteItem): number | null => {
@@ -310,7 +397,9 @@ const insuranceTotal = (item: QuoteItem): number | null => {
 const driverTotal = (item: QuoteItem): number | null => {
   const e = extras[item.id]
   if (!e || !hasDrivers(item.id)) return 0
-  return isNum(e.driverPrice) ? e.driverPrice * Math.round(e.drivers!) * extraPeriod(item.id) : null
+  if (!unlimitedDrivers(item.id) && !(isNum(e.drivers) && e.drivers >= 1)) return null
+  const count = unlimitedDrivers(item.id) ? 1 : Math.round(e.drivers!)
+  return isNum(e.driverPrice) ? e.driverPrice * count * extraPeriod(item.id) : null
 }
 const kmTotal = (item: QuoteItem): number | null => {
   const e = extras[item.id]
@@ -321,7 +410,7 @@ const extrasTotal = (item: QuoteItem) =>
   item.itemType === 'vehicle' ? (insuranceTotal(item) ?? 0) + (driverTotal(item) ?? 0) + (kmTotal(item) ?? 0) : 0
 const extrasComplete = (item: QuoteItem) => item.itemType !== 'vehicle'
   || (insuranceTotal(item) != null && driverTotal(item) != null && kmTotal(item) != null
-    && (!hasDrivers(item.id) || Number.isInteger(extras[item.id]!.drivers)))
+    && (!hasDrivers(item.id) || unlimitedDrivers(item.id) || Number.isInteger(extras[item.id]!.drivers)))
 const extraPlaceholder = (id: number) =>
   modes[id] === 'day' ? 'Price / day' : modes[id] === 'week' ? 'Price / week' : 'Price'
 const extraLabel = (n: number | null) => n == null ? currencySuffix.value : n > 0 ? `+ ${fmt(n)}` : ''
@@ -337,9 +426,9 @@ const discountAmount = computed(() => {
     ? subtotal.value * Math.min(v, 100) / 100
     : Math.min(v, subtotal.value)
 })
-// Mirrors the server (quoteStore.createOffer): VAT on the net amount.
+// Mirrors the server (quoteStore.createOffer): VAT on the net amount, or none.
 const VAT_RATE = 24
-const vatAmount = computed(() => (subtotal.value - discountAmount.value) * VAT_RATE / 100)
+const vatAmount = computed(() => includeVat.value ? (subtotal.value - discountAmount.value) * VAT_RATE / 100 : 0)
 const total = computed(() => subtotal.value - discountAmount.value + vatAmount.value)
 
 const fmt = (n: number) => currency.value === 'EUR'
@@ -351,7 +440,11 @@ const extrasPayload = (id: number) => {
   if (!e) return undefined
   return [
     ...(e.insTier ? [{ kind: 'insurance' as const, tier: e.insTier, unitPrice: e.insPrice! }] : []),
-    ...(hasDrivers(id) ? [{ kind: 'driver' as const, qty: e.drivers!, unitPrice: e.driverPrice! }] : []),
+    ...(hasDrivers(id)
+      ? [unlimitedDrivers(id)
+          ? { kind: 'driver' as const, qty: 1, unlimited: true, unitPrice: e.driverPrice! }
+          : { kind: 'driver' as const, qty: e.drivers!, unitPrice: e.driverPrice! }]
+      : []),
     ...(hasKm(id) ? [{ kind: 'km' as const, qty: e.km!, unitPrice: e.kmPrice! }] : []),
   ]
 }
@@ -359,6 +452,7 @@ const extrasPayload = (id: number) => {
 const payload = (send: boolean) => ({
   send,
   currency: currency.value,
+  vat: includeVat.value,
   discountType: discountType.value || undefined,
   discountValue: discountType.value ? discountValue.value : undefined,
   note: note.value || undefined,

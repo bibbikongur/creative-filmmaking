@@ -130,7 +130,7 @@ export interface EquipmentItem {
 
 // ── Cart, quote requests & offers ────────────────────────────────────────────
 
-export type CartItemType = 'vehicle' | 'equipment'
+export type CartItemType = 'vehicle' | 'equipment' | 'service'
 
 /** A line in the visitor's cart — resolved against the catalogue on submit. */
 export interface CartEntry {
@@ -205,8 +205,10 @@ export interface OfferItemExtra {
   kind: OfferExtraKind
   /** Only for insurance. */
   tier?: InsuranceTier
-  /** Insurance: vehicle qty · driver: number of drivers · km: kilometres. */
+  /** Insurance: vehicle qty · driver: number of drivers (1 when unlimited) · km: kilometres. */
   qty: number
+  /** Driver only: unlimited authorised drivers, charged as one flat add-on per period. */
+  unlimited?: boolean
   unitPrice: number
   total: number
 }

@@ -52,7 +52,9 @@ export const useCart = () => {
 
   /** Drop entries whose catalogue item no longer exists (deleted in admin). */
   const prune = (validIds: { vehicle: Set<string>, equipment: Set<string> }) => {
-    const pruned = entries.value.filter(e => validIds[e.type].has(e.id))
+    // Services never enter the public cart (admin-only quote lines), so an
+    // entry of any other type is dropped.
+    const pruned = entries.value.filter(e => (e.type === 'vehicle' || e.type === 'equipment') && validIds[e.type].has(e.id))
     if (pruned.length !== entries.value.length) {
       entries.value = pruned
       persist()

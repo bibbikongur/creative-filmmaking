@@ -31,6 +31,8 @@ const STRINGS = {
     vat: 'VAT',
     total: 'Total',
     totalInclVat: 'Total incl. VAT',
+    totalExclVat: 'Total excl. VAT',
+    netExclVat: 'Net excl. VAT',
     validUntil: 'Valid until',
     accept: 'To accept this offer, or to discuss it, simply reply to the email it arrived with.',
     vatNote: 'All prices are without VAT unless otherwise stated.',
@@ -42,6 +44,7 @@ const STRINGS = {
     tiers: { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' },
     insurance: (tier: string) => `${tier} insurance`,
     driver: (n: number) => n === 1 ? 'Additional driver' : 'Additional drivers',
+    driversUnlimited: 'Unlimited authorised drivers',
     km: 'Kilometres',
     perKm: (rate: string) => `${rate}/km`,
   },
@@ -61,6 +64,8 @@ const STRINGS = {
     vat: 'VSK',
     total: 'Samtals',
     totalInclVat: 'Samtals með VSK',
+    totalExclVat: 'Samtals án VSK',
+    netExclVat: 'Nettó án VSK',
     validUntil: 'Gildir til',
     accept: 'Til að samþykkja tilboðið, eða ræða það nánar, er nóg að svara tölvupóstinum sem það fylgdi.',
     vatNote: 'Öll verð eru án VSK nema annað sé tekið fram.',
@@ -72,6 +77,7 @@ const STRINGS = {
     tiers: { bronze: 'Brons', silver: 'Silfur', gold: 'Gull' },
     insurance: (tier: string) => `Trygging (${tier})`,
     driver: (n: number) => n === 1 ? 'Aukaökumaður' : 'Aukaökumenn',
+    driversUnlimited: 'Ótakmarkaður fjöldi ökumanna',
     km: 'Kílómetrar',
     perKm: (rate: string) => `${rate}/km`,
   },
@@ -279,7 +285,7 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   }
   const extraLabel = (e: OfferItemExtra) => e.kind === 'insurance'
     ? s.insurance(s.tiers[e.tier ?? 'bronze'])
-    : e.kind === 'driver' ? s.driver(e.qty) : s.km
+    : e.kind === 'driver' ? (e.unlimited ? s.driversUnlimited : s.driver(e.qty)) : s.km
   let rowIdx = 0
 
   offer.items.forEach((item, idx) => {
@@ -338,8 +344,11 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
             { width: detailW, ellipsis: true, height: 10 })
       }
       doc.font('Helvetica').fontSize(9).fillColor(INK)
-      doc.text(extra.qty.toLocaleString(locale === 'is' ? 'is-IS' : 'en-US', { maximumFractionDigits: 2 }),
-        col.qty, textY, { width: 30, align: 'right' })
+      // Unlimited drivers has no meaningful count, so the qty cell stays empty.
+      if (!extra.unlimited) {
+        doc.text(extra.qty.toLocaleString(locale === 'is' ? 'is-IS' : 'en-US', { maximumFractionDigits: 2 }),
+          col.qty, textY, { width: 30, align: 'right' })
+      }
       doc.text(money(extra.unitPrice), col.unit, textY, { width: 70, align: 'right' })
       totalCell(extra.total, rowIdx++, textY, 9)
       y += extraH
@@ -348,34 +357,48 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   })
 
   // ── Totals ─────────────────────────────────────────────────────────────────
-  if (y + 120 > doc.page.height - 90) {
+  // A right-aligned ledger in two groups: what the items come to (subtotal,
+  // discount, net), then what is added on top (VAT), then the grand total.
+  // The value column is wide enough that a seven-figure ISK total stays on
+  // one line.
+  const vat = offer.vatAmount ?? 0
+  const hasDiscount = offer.discountAmount > 0
+  const net = offer.subtotal - offer.discountAmount
+  const tot = { label: right - 300, value: right - 130, valueW: 130 }
+  const totalsH = 40 + (hasDiscount ? 54 : 0) + (vat > 0 ? 36 : 0)
+  if (y + totalsH > doc.page.height - 90) {
     doc.addPage()
     y = doc.page.margins.top
   }
   y += 8
-  const totalRow = (label: string, value: string, bold = false, color = INK, size?: number) => {
-    doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(size ?? (bold ? 12 : 10)).fillColor(color)
-    doc.text(label, col.qty - 60, y, { width: col.total - col.qty + 20, align: 'right' })
-    doc.text(value, col.total, y, { width: 70, align: 'right' })
-    y += bold && !size ? 20 : 16
+  const totalRow = (label: string, value: string, opts: { bold?: boolean, color?: string } = {}) => {
+    const size = opts.bold ? 12 : 10
+    doc.font(opts.bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(size).fillColor(opts.color ?? INK)
+    doc.text(label, tot.label, y, { width: tot.value - tot.label - 12, align: 'right' })
+    doc.text(value, tot.value, y, { width: tot.valueW, align: 'right' })
+    y += size + 8
   }
-  const vat = offer.vatAmount ?? 0
-  if (offer.discountAmount > 0 || vat > 0) {
-    totalRow(s.subtotal, money(offer.subtotal))
+  const rule = (color: string, lineWidth: number) => {
+    doc.moveTo(tot.label, y).lineTo(right, y).lineWidth(lineWidth).strokeColor(color).stroke()
+    y += 8
   }
-  if (offer.discountAmount > 0) {
+
+  if (hasDiscount) {
+    totalRow(s.subtotal, money(offer.subtotal), { color: GRAY })
     const discountLabel = offer.discountType === 'percent'
       ? `${s.discount} (${offer.discountValue}%)`
       : s.discount
     // ASCII hyphen — the U+2212 minus sign is outside WinAnsi and won't render.
-    totalRow(discountLabel, `-${money(offer.discountAmount)}`, true, GOLD, 10)
+    totalRow(discountLabel, `-${money(offer.discountAmount)}`, { color: GOLD })
+    if (vat > 0) rule(LINE, 0.5)
   }
   if (vat > 0) {
+    // VAT is charged on the net amount, so that amount is shown right above it.
+    totalRow(hasDiscount ? s.netExclVat : s.subtotal, money(net))
     totalRow(`${s.vat} (${offer.vatRate}%)`, money(vat))
   }
-  doc.moveTo(col.qty - 60, y).lineTo(right, y).lineWidth(1).strokeColor(INK).stroke()
-  y += 8
-  totalRow(vat > 0 ? s.totalInclVat : s.total, money(offer.total), true)
+  rule(INK, 1)
+  totalRow(vat > 0 ? s.totalInclVat : s.totalExclVat, money(offer.total), { bold: true })
 
   // ── Note / validity / footer ───────────────────────────────────────────────
   y += 16

@@ -371,7 +371,7 @@ function initSchema(db: Database.Database) {
     CREATE TABLE IF NOT EXISTS quote_items (
       id        INTEGER PRIMARY KEY AUTOINCREMENT,
       quote_id  TEXT NOT NULL REFERENCES quotes(id) ON DELETE CASCADE,
-      item_type TEXT NOT NULL CHECK (item_type IN ('vehicle', 'equipment')),
+      item_type TEXT NOT NULL CHECK (item_type IN ('vehicle', 'equipment', 'service')),
       item_id   TEXT NOT NULL,
       slug      TEXT,
       name_en   TEXT NOT NULL,
@@ -883,6 +883,37 @@ function migrate(db: Database.Database) {
     })()
     db.pragma('foreign_keys = ON')
     console.log('[db] migrated timesheet_weeks to the two-stage-approval schema')
+  }
+
+  // v11: quote_items gained the 'service' item type (Transport etc., picked in
+  // the admin quote builder). The CHECK constraint can't be altered in place,
+  // so rebuild the table once. Detected from the stored CREATE statement.
+  const quoteItemsSql = (db.prepare(`SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'quote_items'`)
+    .get() as { sql: string } | undefined)?.sql ?? ''
+  if (quoteItemsSql && !quoteItemsSql.includes("'service'")) {
+    db.pragma('foreign_keys = OFF')
+    db.transaction(() => {
+      db.exec(`
+        CREATE TABLE quote_items_new (
+          id        INTEGER PRIMARY KEY AUTOINCREMENT,
+          quote_id  TEXT NOT NULL REFERENCES quotes(id) ON DELETE CASCADE,
+          item_type TEXT NOT NULL CHECK (item_type IN ('vehicle', 'equipment', 'service')),
+          item_id   TEXT NOT NULL,
+          slug      TEXT,
+          name_en   TEXT NOT NULL,
+          name_is   TEXT NOT NULL,
+          image     TEXT,
+          qty       INTEGER NOT NULL DEFAULT 1
+        );
+        INSERT INTO quote_items_new (id, quote_id, item_type, item_id, slug, name_en, name_is, image, qty)
+          SELECT id, quote_id, item_type, item_id, slug, name_en, name_is, image, qty FROM quote_items;
+        DROP TABLE quote_items;
+        ALTER TABLE quote_items_new RENAME TO quote_items;
+        CREATE INDEX IF NOT EXISTS idx_quote_items_quote ON quote_items(quote_id);
+      `)
+    })()
+    db.pragma('foreign_keys = ON')
+    console.log('[db] migrated quote_items to allow service items')
   }
 }
 

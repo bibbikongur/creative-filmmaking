@@ -8,7 +8,7 @@
         v-model.trim="search"
         type="search"
         class="input-dark !w-64"
-        placeholder="Search vehicles & equipment…"
+        placeholder="Search vehicles, equipment & services…"
       >
     </div>
 
@@ -52,7 +52,7 @@
       </div>
 
       <!-- Catalogue -->
-      <div class="mt-4 grid gap-x-8 gap-y-6 lg:grid-cols-2">
+      <div class="mt-4 grid gap-x-8 gap-y-6 lg:grid-cols-3">
         <div v-for="group in groups" :key="group.label">
           <h3 class="text-xs uppercase tracking-widest text-bone-400">{{ group.label }}</h3>
           <div class="mt-2 border border-ink-800 divide-y divide-ink-800 max-h-96 overflow-y-auto">
@@ -87,6 +87,9 @@
 
 <script setup lang="ts">
 import type { CartItemType, EquipmentItem, QuoteDraftItem, Vehicle } from '~/types'
+import { SERVICES, type ServiceItem } from '~/data/services'
+
+type PickableItem = Vehicle | EquipmentItem | ServiceItem
 
 const props = defineProps<{ modelValue: QuoteDraftItem[] }>()
 const emit = defineEmits<{ 'update:modelValue': [QuoteDraftItem[]] }>()
@@ -115,7 +118,7 @@ const isSelected = (type: CartItemType, id: string) =>
 const remove = (type: CartItemType, id: string) =>
   emit('update:modelValue', props.modelValue.filter(e => !(e.type === type && e.id === id)))
 
-const toggle = (type: CartItemType, item: Vehicle | EquipmentItem) => {
+const toggle = (type: CartItemType, item: PickableItem) => {
   if (isSelected(type, item.id)) return remove(type, item.id)
   emit('update:modelValue', [
     ...props.modelValue,
@@ -124,12 +127,14 @@ const toggle = (type: CartItemType, item: Vehicle | EquipmentItem) => {
 }
 
 const search = ref('')
-const matches = (item: Vehicle | EquipmentItem) => {
+const matches = (item: PickableItem) => {
   const q = search.value.toLowerCase()
   return !q || item.name.en.toLowerCase().includes(q) || item.name.is.toLowerCase().includes(q)
 }
 const groups = computed(() => [
   { label: 'Vehicles', rows: vehicles.value.filter(matches).map(item => ({ type: 'vehicle' as const, item })) },
   { label: 'Equipment', rows: equipment.value.filter(matches).map(item => ({ type: 'equipment' as const, item })) },
+  // Built-in services (see app/data/services.ts); not part of the public catalogue.
+  { label: 'Services', rows: SERVICES.filter(matches).map(item => ({ type: 'service' as const, item })) },
 ])
 </script>

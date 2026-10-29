@@ -143,6 +143,7 @@
             <p class="font-semibold text-bone-100">
               Offer #{{ o.id }} · {{ formatMoneyLocal(o.total, o.currency) }}
               <span v-if="o.discountAmount" class="text-bone-400 font-normal">(incl. {{ o.discountType === 'percent' ? `${o.discountValue}%` : formatMoneyLocal(o.discountAmount, o.currency) }} discount)</span>
+              <span class="ml-1 text-bone-400 font-normal">{{ o.vatAmount > 0 ? `(incl. ${o.vatRate}% VAT)` : '(no VAT)' }}</span>
             </p>
             <p class="mt-0.5 text-xs text-bone-400">
               {{ o.sentAt ? `Sent ${formatDateTime(o.sentAt)}` : `Saved ${formatDateTime(o.createdAt)}, not sent` }}
