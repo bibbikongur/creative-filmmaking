@@ -27,16 +27,16 @@ const CATEGORIES: Spec[] = [
     id: 'heating',
     slug: t('hitablasarar', 'heaters'),
     name: t('Hitablásarar', 'Heaters'),
-    title: t('Hitablásarar til leigu', 'Heaters for rent'),
-    metaTitle: t('Hitablásarar til leigu', 'Heater Rental for Film Shoots'),
+    title: t('Hitablásarar til leigu', 'Heaters for rent in Iceland'),
+    metaTitle: t('Hitablásarar til leigu', 'Heater Rental in Iceland · Diesel, Gas and Electric Heaters'),
     metaDescription: t(
-      'Olíuhitablásarar (21 og 81 kW), gashitari og rafmagnshitablásari til leigu fyrir kvikmyndatökur, tjöld og vinnusvæði. Hreint, þurrt loft, barkar og strompar fylgja. Afhending um land allt.',
-      'Indirect diesel heaters (21 and 81 kW), a gas heater and an electric fan heater for rent for film shoots, tents and work sites. Clean, dry air, ducts and chimneys included. Delivery anywhere in Iceland.',
+      'Olíuhitablásarar (21 og 81 kW), gashitari og rafmagnshitablásari til leigu fyrir tjöld, viðburði, framkvæmdir og kvikmyndatökur. Hreint, þurrt loft, barkar og strompar fylgja. Afhending um land allt.',
+      'Diesel, gas and electric heaters for rent in Iceland: for tents, events, construction sites, film shoots and homes. Clean, dry air, ducts and chimneys included. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
-        'Allir hitablásararnir okkar á einum stað: olíuhitablásarar, gashitari og rafmagnshitablásari til leigu fyrir kvikmyndatökur, tjöld, vinnusvæði og viðburði. Master olíuhitablásararnir eru óbeinir: útblásturinn fer út um stromp og aðeins hreint, þurrt og lyktarlaust heitt loft kemur inn í rýmið.',
-        'All our heaters in one place: diesel heaters, a gas heater and an electric fan heater for rent for film shoots, tents, work sites and events. The Master diesel heaters are indirect-fired: the exhaust leaves through a chimney and only clean, dry, odourless warm air enters the space.',
+        'Allir hitablásararnir okkar á einum stað: olíuhitablásarar, gashitari og rafmagnshitablásari til leigu fyrir tjöld, viðburði, framkvæmdir, kvikmyndatökur og hvar sem þarf hita í hvelli. Master olíuhitablásararnir eru óbeinir: útblásturinn fer út um stromp og aðeins hreint, þurrt og lyktarlaust heitt loft kemur inn í rýmið.',
+        'All our heaters in one place: diesel heaters, a gas heater and an electric fan heater for rent in Iceland for tents, events, construction sites, film shoots and anywhere that needs warmth fast. The Master diesel heaters are indirect-fired: the exhaust leaves through a chimney and only clean, dry, odourless warm air enters the space.',
       ),
       t(
         'BV 77 E (21 kW) hitar tjald tökuliðs eða biðsvæði og gengur um 19 klukkustundir á tankfylli. BV 290 E (81 kW) hitar stór tjöld, sali og stærri tökustaði hratt. Fyrir minni rými er samanfellanlegur gashitari á hjólum og 2000 W rafmagnshitablásari sem fer í venjulega innstungu.',
@@ -72,11 +72,11 @@ const CATEGORIES: Spec[] = [
     id: 'power',
     slug: t('rafmagn', 'power'),
     name: t('Rafmagn', 'Power'),
-    title: t('Rafstöðvar og rafmagn til leigu', 'Generators and power for rent'),
-    metaTitle: t('Rafstöð til leigu', 'Generator Rental for Film Shoots'),
+    title: t('Rafstöðvar og rafmagn til leigu', 'Generators and power for rent in Iceland'),
+    metaTitle: t('Rafstöð til leigu', 'Generator Rental in Iceland · Inverter Generators and Power Stations'),
     metaDescription: t(
-      'Rafstöðvar, EcoFlow rafhlöðustöðvar, rafmagnstöflur, framlengingarsnúrur, kefli og fjöltengi til leigu fyrir kvikmyndatökur og vinnusvæði. Hljóðlátar inverter-stöðvar. Afhending um land allt.',
-      'Generators, EcoFlow power stations, distribution boards, extension cables, reels and multiplugs for rent for film shoots and work sites. Quiet inverter units. Delivery anywhere in Iceland.',
+      'Rafstöðvar, EcoFlow rafhlöðustöðvar, rafmagnstöflur, framlengingarsnúrur, kefli og fjöltengi til leigu fyrir viðburði, framkvæmdir, kvikmyndatökur og rafmagnslausa staði. Hljóðlátar inverter-stöðvar. Afhending um land allt.',
+      'Generators, EcoFlow power stations, distribution boards, extension cables, reels and multiplugs for rent in Iceland for events, construction sites, film shoots and off-grid power. Quiet inverter units. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
@@ -114,10 +114,10 @@ const CATEGORIES: Spec[] = [
     slug: t('lysing', 'lighting'),
     name: t('Lýsing', 'Lighting'),
     title: t('Lýsing til leigu', 'Lighting for rent'),
-    metaTitle: t('Vinnuljós og kastarar til leigu', 'Work Light and Floodlight Rental'),
+    metaTitle: t('Vinnuljós og kastarar til leigu', 'Work Light and Floodlight Rental in Iceland'),
     metaDescription: t(
       'LED Nova 6K kastari á þrífæti og Scangrip batterísvinnuljós til leigu fyrir tökustaði, grunnbúðir og vinnusvæði. Engin snúra, fara upp á mínútu. Afhending um land allt.',
-      'LED Nova 6K floodlight on a tripod and Scangrip battery work lights for rent for locations, basecamp and work sites. No cable, up in a minute. Delivery anywhere in Iceland.',
+      'LED Nova 6K floodlight on a tripod and Scangrip battery work lights for rent in Iceland for work sites, events, film locations and basecamp. No cable, up in a minute. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
@@ -144,10 +144,10 @@ const CATEGORIES: Spec[] = [
     slug: t('tjold-regnvarnir-og-festingar', 'tents-rain-cover-and-rigging'),
     name: t('Tjöld, regnvarnir og festingar', 'Tents, Rain Cover & Rigging'),
     title: t('Tjöld, regnvarnir og festingar til leigu', 'Tents, rain cover and rigging for rent'),
-    metaTitle: t('Skjóltjöld og yfirbreiðslur til leigu', 'Shelter Tent and Tarp Rental for Locations'),
+    metaTitle: t('Skjóltjöld og yfirbreiðslur til leigu', 'Shelter Tent and Tarp Rental in Iceland'),
     metaDescription: t(
       'Einangrað popup skjóltjald, yfirbreiðslur, regnhlífar, gúmmímottur, sandpokar, klemmur og strekkibönd til leigu fyrir kvikmyndatökur og grunnbúðir. Afhending um land allt.',
-      'Insulated pop-up shelter, tarps, umbrellas, rubber mats, sandbags, clamps and ratchet straps for rent for film shoots and basecamp. Delivery anywhere in Iceland.',
+      'Insulated pop-up shelter, tarps, umbrellas, rubber mats, sandbags, clamps and ratchet straps for rent in Iceland for events, work sites, film shoots and basecamp. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
@@ -170,23 +170,23 @@ const CATEGORIES: Spec[] = [
     slug: t('umferdaroryggi', 'safety-and-traffic'),
     name: t('Öryggi og umferð', 'Safety & Traffic'),
     title: t('Öryggis- og umferðarbúnaður til leigu', 'Safety and traffic equipment for rent'),
-    metaTitle: t('Umferðarkeilur og skilti til leigu', 'Traffic Cone and Sign Rental'),
+    metaTitle: t('Umferðarkeilur og skilti til leigu', 'Traffic Cone and Sign Rental in Iceland'),
     metaDescription: t(
-      'Umferðarkeilur 50 og 100 cm, hjáleiðarskilti, tökuskilti, grunnbúðaskilti, keiluljós, blikkljós, öryggisvesti og hjálmar til leigu fyrir kvikmyndatökur og vegalokanir. Afhending um land allt.',
-      'Traffic cones 50 and 100 cm, detour signs, filming signs, basecamp signs, cone lights, warning beacons, safety vests and helmets for rent for film shoots and road closures. Delivery anywhere in Iceland.',
+      'Umferðarkeilur 50 og 100 cm, hjáleiðarskilti, tökuskilti, grunnbúðaskilti, keiluljós, blikkljós, öryggisvesti og hjálmar til leigu fyrir vegavinnu, viðburði, framkvæmdir og kvikmyndatökur. Afhending um land allt.',
+      'Traffic cones 50 and 100 cm, detour signs, filming signs, basecamp signs, cone lights, warning beacons, safety vests and helmets for rent in Iceland for road work, events, construction sites and film shoots. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
-        'Umferðarkeilur, skilti og öryggisbúnaður til leigu fyrir kvikmyndatökur, vegalokanir og vinnusvæði. Keilur í 50 og 100 cm, bannað-að-leggja keilur, LED keiluljós, öryggisblikkljós, hjáleiðarskilti og skilti sem segja vegfarendum að tökur séu í gangi.',
-        'Traffic cones, signs and safety kit for rent for film shoots, road closures and work sites. Cones in 50 and 100 cm, no-parking cones, LED cone lights, warning beacons, detour signs and signs telling passers-by that filming is in progress.',
+        'Umferðarkeilur, skilti og öryggisbúnaður til leigu fyrir vegavinnu, viðburði, framkvæmdir og kvikmyndatökur. Keilur í 50, 75 og 100 cm, bannað-að-leggja keilur, LED keiluljós, öryggisblikkljós, hjáleiðarskilti og skilti sem segja vegfarendum að tökur séu í gangi.',
+        'Traffic cones, signs and safety kit for rent in Iceland for road work, events, construction sites and film shoots. Cones in 50, 75 and 100 cm, no-parking cones, LED cone lights, warning beacons, detour signs and signs telling passers-by that filming is in progress.',
       ),
       t(
         'Skilti fyrir tökustað, grunnbúðir, tækjabækistöð og bílastæði tökuliðs vísa fólki rétta leið. Fyrir tökuliðið eru öryggisvesti, NOX hjálmar og plaststaurar til að girða af svæði. Allt leigist í magni, svo heil gata eða grunnbúðir merkjast úr einni afhendingu.',
         'Signs for location, basecamp, techbase and crew parking point everyone the right way. For the crew there are safety vests, NOX helmets and fence posts for closing off an area. Everything rents in quantity, so a whole street or basecamp can be marked from one delivery.',
       ),
       t(
-        'Við afhendum hvert á land sem er og setjum saman umferðarpakka fyrir tökuna þína. Óskaðu eftir tilboði.',
-        'We deliver anywhere in Iceland and put together a traffic package for your shoot. Request an offer.',
+        'Við afhendum hvert á land sem er og setjum saman umferðarpakka fyrir tökuna, viðburðinn eða vinnusvæðið þitt. Óskaðu eftir tilboði.',
+        'We deliver anywhere in Iceland and put together a traffic package for your shoot, event or work site. Request an offer.',
       ),
     ],
     faq: [],
@@ -196,10 +196,10 @@ const CATEGORIES: Spec[] = [
     slug: t('husgogn', 'furniture'),
     name: t('Húsgögn', 'Furniture'),
     title: t('Húsgögn til leigu fyrir grunnbúðir', 'Basecamp furniture for rent'),
-    metaTitle: t('Borð og stólar til leigu fyrir tökustaði', 'Table and Chair Rental for Locations'),
+    metaTitle: t('Borð og stólar til leigu fyrir tökustaði', 'Folding Table and Chair Rental in Iceland'),
     metaDescription: t(
       'Samanbrjótanleg borð og stólar til leigu fyrir grunnbúðir og tökustaði. Leigjast með tjöldum og hitablásurum. Afhending um land allt. Óskaðu eftir tilboði.',
-      'Folding tables and chairs for rent for basecamp and locations. Rent with tents and heaters. Delivery anywhere in Iceland. Request an offer.',
+      'Folding tables and chairs for rent in Iceland for events, basecamp and locations. Rent with tents and heaters. Delivery anywhere in Iceland. Request an offer.',
     ),
     intro: [
       t(
@@ -218,10 +218,10 @@ const CATEGORIES: Spec[] = [
     slug: t('catering', 'catering'),
     name: t('Catering', 'Catering'),
     title: t('Catering búnaður til leigu', 'Catering equipment for rent'),
-    metaTitle: t('Catering búnaður til leigu fyrir tökustaði', 'Catering Equipment Rental for Locations'),
+    metaTitle: t('Catering búnaður til leigu fyrir tökustaði', 'Catering Equipment Rental in Iceland'),
     metaDescription: t(
       'Hitakönnur og annar búnaður fyrir kaffi og veitingar á tökustað til leigu. Leigist með borðum, stólum og tjöldum fyrir grunnbúðir. Afhending um land allt.',
-      'Thermal jugs and other kit for coffee and catering on location for rent. Rents with tables, chairs and tents for basecamp. Delivery anywhere in Iceland.',
+      'Thermal jugs and other kit for coffee and catering for rent in Iceland, for events and locations. Rents with tables, chairs and tents for basecamp. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
@@ -240,10 +240,10 @@ const CATEGORIES: Spec[] = [
     slug: t('buningar-og-makeup', 'costume-and-makeup'),
     name: t('Búningar og makeup', 'Costume & Makeup'),
     title: t('Búnaður fyrir búninga og förðun til leigu', 'Costume and makeup equipment for rent'),
-    metaTitle: t('Fataslár og herðatré til leigu', 'Clothes Rail and Hanger Rental for Film Shoots'),
+    metaTitle: t('Fataslár og herðatré til leigu', 'Clothes Rail and Hanger Rental in Iceland'),
     metaDescription: t(
       'Fellanlegar fataslár, non slip herðatré og buxnaherðatré til leigu fyrir búningadeild og förðun á tökustað. Leigist með borðum, stólum og tjöldum. Afhending um land allt.',
-      'Folding clothes rails, non-slip hangers and trouser hangers for rent for the costume and makeup departments on location. Rents with tables, chairs and tents. Delivery anywhere in Iceland.',
+      'Folding clothes rails, non-slip hangers and trouser hangers for rent in Iceland for film shoots, theatre, fashion shoots and events. Rents with tables, chairs and tents. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
@@ -262,10 +262,10 @@ const CATEGORIES: Spec[] = [
     slug: t('verkfaeri', 'tools'),
     name: t('Verkfæri', 'Tools'),
     title: t('Verkfæri til leigu', 'Tools for rent'),
-    metaTitle: t('Verkfæri til leigu fyrir tökustaði', 'Tool Rental for Film Shoots'),
+    metaTitle: t('Verkfæri til leigu fyrir tökustaði', 'Jump Starter and Tool Rental in Iceland'),
     metaDescription: t(
       'Starttæki 12 V og 24 V, loftdæla, stigi og dráttartóg til leigu fyrir kvikmyndatökur og vinnusvæði. Leigist með bílum og öðrum búnaði. Afhending um land allt.',
-      '12 V and 24 V jump starters, an air pump, a step ladder and a tow rope for rent for film shoots and work sites. Rents with our vehicles and the rest of the kit. Delivery anywhere in Iceland.',
+      '12 V and 24 V jump starters, an air pump, a step ladder and a tow rope for rent in Iceland for work sites, film shoots and private renters. Rents with our vehicles and the rest of the kit. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
@@ -284,10 +284,10 @@ const CATEGORIES: Spec[] = [
     slug: t('thrif-og-rusl', 'cleaning-and-waste'),
     name: t('Þrif og rusl', 'Cleaning & Waste'),
     title: t('Þrif og rusl á tökustað', 'Cleaning and waste on location'),
-    metaTitle: t('Skóflur, kústar og ruslatunnur til leigu', 'Shovel, Broom and Bin Rental'),
+    metaTitle: t('Skóflur, kústar og ruslatunnur til leigu', 'Shovel, Broom and Bin Rental in Iceland'),
     metaDescription: t(
       'Skóflur, kústar, Makita laufblásari og ruslatunnur til leigu fyrir tökustaði og grunnbúðir. Skilaðu tökustaðnum eins og hann var. Afhending um land allt.',
-      'Shovels, brooms, a Makita blower and bins for rent for locations and basecamp. Leave the location the way it was. Delivery anywhere in Iceland.',
+      'Shovels, brooms, a Makita blower and bins for rent in Iceland for work sites, events, locations and basecamp. Leave the location the way it was. Delivery anywhere in Iceland.',
     ),
     intro: [
       t(
@@ -390,4 +390,48 @@ export function restructureEquipmentCategories(db: Database.Database) {
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(FLAG, '1')
     console.log(`[db] equipment_categories: restructured into ${CATEGORIES.length} categories, moved ${moved} items`)
   })()
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Copy refreshes after the restructure. Bump COPY_REV when the text in
+// CATEGORIES changes and should replace what production has. Rewrites the copy
+// fields only (name, title, meta, intro, faq); slug, previousSlugs, sort and
+// status stay as the admin left them. Runs once per rev (meta flag). Only bump
+// it after diffing CATEGORIES against the live categories, because it
+// overwrites admin edits to those fields.
+//
+// rev 1 (2026-11-04): titles and descriptions widened from "for film shoots"
+// to the broad market (events, construction, private renters), with "in
+// Iceland" in every English meta title.
+// ─────────────────────────────────────────────────────────────────────────────
+const COPY_REV = 1
+
+export function refreshEquipmentCategoryCopy(db: Database.Database) {
+  const flag = `equipment-categories:copy:${COPY_REV}`
+  if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) return
+
+  const now = new Date().toISOString()
+  const getRow = db.prepare('SELECT data FROM equipment_categories WHERE id = ?')
+  const update = db.prepare('UPDATE equipment_categories SET data = ?, updated_at = ? WHERE id = ?')
+  let refreshed = 0
+  db.transaction(() => {
+    for (const spec of CATEGORIES) {
+      const row = getRow.get(spec.id) as { data: string } | undefined
+      if (!row) continue
+      const prev = JSON.parse(row.data) as Partial<EquipmentCategoryDef>
+      const data = {
+        ...prev,
+        name: spec.name,
+        title: spec.title,
+        metaTitle: spec.metaTitle,
+        metaDescription: spec.metaDescription,
+        intro: spec.intro,
+        faq: spec.faq,
+      }
+      update.run(JSON.stringify(data), now, spec.id)
+      refreshed++
+    }
+    db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  })()
+  console.log(`[db] equipment_categories: refreshed copy of ${refreshed} categories at rev ${COPY_REV}`)
 }

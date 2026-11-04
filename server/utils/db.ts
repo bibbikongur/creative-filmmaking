@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path'
 import { vehicles as seedVehicles } from '~~/app/data/vehicles'
 import { equipment as seedEquipment } from '~~/app/data/equipment'
 import { equipmentLandings, seedSlugOf } from '~~/app/data/equipmentLandings'
-import { restructureEquipmentCategories } from './equipmentCategoryRestructure'
+import { refreshEquipmentCategoryCopy, restructureEquipmentCategories } from './equipmentCategoryRestructure'
 import isMessages from '~~/i18n/locales/is.json'
 import enMessages from '~~/i18n/locales/en.json'
 import type { EquipmentCategoryDef, LocalizedText } from '~~/app/types'
@@ -55,6 +55,7 @@ export function getDb(): Database.Database {
   seedCatalogueAdditions(db)
   seedEquipmentCategories(db)
   restructureEquipmentCategories(db)
+  refreshEquipmentCategoryCopy(db)
   stripStockPhotos(db)
   backfillCatalogueTimestamps(db)
   return db
@@ -255,6 +256,14 @@ const SEED_EQUIPMENT_UPDATES: { id: string, rev: number }[] = [
     'e-muub65yha82a', 'e-muuatqyc5071', 'e-muubqyjq4e7f', 'e-muubwpj7e4b1', 'e-muvovrfn3da0',
     'e-muuayhik0574', 'e-muuawds101e3', 'e-muubj0xl996d', 'e-muubfa11444e', 'e-mutqcluib7f1',
   ].map(id => ({ id, rev: 1 })),
+  // 2026-11-04, same day: generic type before the brand in the name ("Diesel
+  // Heater 21 kW (Master BV 77 E)") so the page title matches what people
+  // search for. Slugs are pinned, so nothing moves.
+  { id: 'e-mr754bhada10', rev: 3 },
+  { id: 'e-mr754bmhf449', rev: 3 },
+  { id: 'e-021', rev: 3 },
+  { id: 'e-mr754c8n9357', rev: 3 },
+  { id: 'e-mrw8w5pqb2c8', rev: 4 },
 ]
 
 function seedCatalogueAdditions(db: Database.Database) {

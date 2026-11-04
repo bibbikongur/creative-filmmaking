@@ -36,7 +36,9 @@ useSeoMeta({
 
 // Global business identity for search engines. Vehicle nodes on detail pages
 // deliberately carry no offers/prices — the business model is offer-on-request.
-// AutoRental is the schema.org LocalBusiness subtype for vehicle rental.
+// Plain LocalBusiness rather than the AutoRental subtype: the catalogue is as
+// much heaters, generators and traffic kit as vehicles, and the narrower type
+// told Google this was a car rental when someone searched for a heater.
 //
 // No openingHoursSpecification: phone availability is not opening hours, and a
 // 24/7 claim Google can't verify is worse than none. sameAs comes from the
@@ -44,7 +46,6 @@ useSeoMeta({
 const sameAs = Object.values(config.public.social).filter(Boolean)
 useSchemaOrg([
   defineLocalBusiness({
-    '@type': 'AutoRental',
     name: 'Creative Filmmaking',
     description: t('meta.businessDescription'),
     url: config.public.siteUrl,

@@ -30,21 +30,21 @@
     "label": "Breadcrumb"
   },
   "hero": {
-    "kicker": "Production vehicle rental in Iceland",
-    "title": "Production vehicles and gear for rent",
-    "subtitle": "Box trucks, caravans, six-wheelers, generators and set gear for productions in Iceland. Delivered to any location in the country.",
-    "availability": "Available for production"
+    "kicker": "Vehicle & equipment rental in Iceland",
+    "title": "Vehicles and equipment for rent in Iceland",
+    "subtitle": "Box trucks, caravans, six-wheelers, generators, heaters, tents and traffic kit for film productions, events, businesses and private renters. Delivered anywhere in Iceland.",
+    "availability": "Available for rent"
   },
   "home": {
     "featuredKicker": "Featured",
-    "featuredTitle": "Production favourites",
+    "featuredTitle": "Fleet favourites",
     "featuredAll": "See the full fleet",
     "featuredEquipmentKicker": "Equipment",
     "featuredEquipmentTitle": "Popular equipment",
     "featuredEquipmentIntro": "Generators, heaters, LED lights, distribution boards, traffic signs, shelter tents and the other gear that keeps a shoot running. Just as useful to private and business renters.",
     "featuredEquipmentAll": "See all equipment",
     "whyKicker": "Why us",
-    "whyTitle": "Made for film work",
+    "whyTitle": "Made for work on location",
     "why1Title": "Set-ready",
     "why1Text": "Don't see what you're looking for? Drop us a line and we'll see what we can do. We're always happy to make things happen.",
     "why2Title": "4x4 & winter capable",
@@ -62,13 +62,13 @@
     },
     "howKicker": "How it works",
     "howTitle": "From enquiry to location",
-    "howIntro": "No listed prices, because every production is different. Three steps and the vehicles and gear are on set.",
-    "how1Title": "Tell us about the shoot",
+    "howIntro": "No listed prices, because every job is different. Three steps and the vehicles and gear are where you need them.",
+    "how1Title": "Tell us about the job",
     "how1Text": "Dates, location and what you need. A quick enquiry or a list from the quote basket.",
     "how2Title": "We put together an offer",
     "how2Text": "One tailored offer for the whole package, usually within one business day.",
     "how3Title": "Delivered to location",
-    "how3Text": "We bring the vehicles and equipment to wherever you are shooting, anywhere in Iceland."
+    "how3Text": "We bring the vehicles and equipment to wherever you need them, anywhere in Iceland."
   },
   "categories": {
     "campers": "Campers",
@@ -105,10 +105,10 @@
   },
   "equipmentCatalogue": {
     "kicker": "Equipment",
-    "title": "Production equipment",
-    "intro": "Gear that keeps a shoot running, rented alongside the fleet: heating units, tents, safety kit and basecamp furniture. No listed prices. Tell us what you need and we'll put together an offer.",
+    "title": "Equipment for rent",
+    "intro": "Generators, heaters, lights, tents, traffic cones and signs, tables and chairs: for film shoots, events, construction sites and private renters. No listed prices. Tell us what you need and we will put together an offer.",
     "seoTitle": "What's for rent?",
-    "seoText": "We rent out production equipment for film & TV projects: generators, oil-fired heaters and diesel heating units, LED lights, battery power stations, cords and distribution boards, traffic cones and signs, safety vests, shelter tents, tarpaulins, tables and chairs. Much of it serves private and business renters just as well.",
+    "seoText": "We rent out equipment in Iceland: generators, diesel and gas heaters, LED lights, battery power stations, cables and distribution boards, traffic cones and signs, safety vests, shelter tents, tarpaulins, tables and chairs. Built for film & TV work and just as useful for events, construction sites, businesses and private renters.",
     "seoText2": "Equipment rents on its own or together with our vehicles, delivered anywhere in Iceland. Tell us what you need and we'll put together an offer the same day.",
     "all": "All equipment",
     "empty": "No equipment in this category yet. Contact us and we'll find a solution.",
@@ -235,7 +235,7 @@
     "decline": "Decline"
   },
   "footer": {
-    "tagline": "Production vehicle rental for film & TV crews shooting in Iceland. We also rent all kinds of production equipment.",
+    "tagline": "Vehicle and equipment rental in Iceland, for film & TV productions, events, businesses and private renters.",
     "navTitle": "Site",
     "contactTitle": "Contact",
     "rentalsTitle": "For rent",
@@ -260,27 +260,27 @@
   },
   "meta": {
     "home": {
-      "title": "Film Production Vehicle & Equipment Rental in Iceland",
-      "description": "Box trucks, cargo vans, actor caravans, trailers and six-wheelers for rent for film & TV productions in Iceland. Also available to private and business renters. Contact us for an offer."
+      "title": "Equipment & Vehicle Rental in Iceland",
+      "description": "Box trucks, cargo vans, caravans, trailers, generators, heaters, tents and traffic equipment for rent in Iceland. For film productions, events, businesses and private renters. Contact us for an offer."
     },
     "vehicles": {
-      "title": "Vehicles for Rent",
+      "title": "Vehicles for Rent in Iceland",
       "description": "Vehicles for rent in Iceland: box trucks with tail lift, cargo vans, 4x4 pickups, caravans, trailers and six-wheelers. For film productions as well as private and business renters. Request an offer."
     },
     "equipment": {
-      "title": "Production Equipment for Rent",
-      "description": "Production equipment for rent for film & TV shoots in Iceland: heating units, tents, safety and traffic kit and basecamp furniture. Request an offer."
+      "title": "Equipment Rental in Iceland",
+      "description": "Equipment for rent in Iceland: generators, heaters, lights, tents, traffic cones and signs, tables and chairs. For events, construction sites, film shoots and private renters. Request an offer."
     },
     "vehicleTitle": "{name} for rent",
     "rentInIceland": "{name} for rent in Iceland",
-    "businessDescription": "Vehicle and equipment rental for film & TV productions in Iceland. Box trucks, cargo vans, caravans, trailers and six-wheelers also available to private and business renters.",
+    "businessDescription": "Equipment and vehicle rental in Iceland: generators, heaters, tents, traffic equipment, box trucks, cargo vans, caravans, trailers and six-wheelers. For film productions, events, businesses and private renters.",
     "about": {
       "title": "About Us",
-      "description": "Creative Filmmaking rents set-ready production vehicles and gear to film & TV crews in Iceland: box trucks, cargo vans, caravans, trailers and six-wheelers. Also available to private and business renters."
+      "description": "Creative Filmmaking rents vehicles and equipment in Iceland: box trucks, cargo vans, caravans, trailers, six-wheelers, generators, heaters and tents. Built for film & TV crews and available to events, businesses and private renters."
     },
     "contact": {
       "title": "Contact",
-      "description": "Tell us about your production in Iceland and we'll reply with availability and a tailored vehicle offer within one business day."
+      "description": "Tell us about your project in Iceland and we will reply with availability and a tailored offer within one business day."
     }
   },
   "faq": {

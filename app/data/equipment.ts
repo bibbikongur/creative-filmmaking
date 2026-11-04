@@ -15,8 +15,8 @@ export const equipment: EquipmentItem[] = [
     slug: 'master-oliuhitablasari-bv-77-e-21-kw',
     category: 'heating',
     name: {
-      en: 'Master BV 77 E Indirect Diesel Heater 21 kW',
-      is: 'Master olíuhitablásari BV 77 E – 21 kW',
+      en: 'Diesel Heater 21 kW (Master BV 77 E)',
+      is: 'Olíuhitablásari 21 kW (Master BV 77 E)',
     },
     tagline: {
       en: 'Master oil heater perfect for heating up tents and other big areas. 100% clean, dry, odourless air straight into your tents or other areas. Runs about 19 h per tank. Comes with a tube and a chimney to direct the heat to the desired space.',
@@ -54,8 +54,8 @@ export const equipment: EquipmentItem[] = [
     slug: 'master-oliuhitablasari-bv-290-e-81-kw',
     category: 'heating',
     name: {
-      en: 'Master BV 290 E Indirect Diesel Heater 81 kW',
-      is: 'Master olíuhitablásari BV 290 E – 81 kW',
+      en: 'Diesel Heater 81 kW (Master BV 290 E)',
+      is: 'Olíuhitablásari 81 kW (Master BV 290 E)',
     },
     tagline: {
       en: 'High-output indirect heater pushing 3,300 m³/h: heats big tents, halls and large sets fast. 100% clean, dry, odourless air straight into your tents or other big areas. Comes with 2x tubes, a splitter and a chimney to direct the heat to the desired space.',
@@ -199,8 +199,8 @@ export const equipment: EquipmentItem[] = [
     slug: 'kastari-led-nova-6k-med-thrifaeti',
     category: 'lighting',
     name: {
-      en: 'LED Work Light NOVA 6K with Tripod',
-      is: 'Kastari LED NOVA 6K með þrífæti',
+      en: 'LED Floodlight 6,000 lm on Tripod (NOVA 6K)',
+      is: 'LED kastari 6.000 lm á þrífæti (NOVA 6K)',
     },
     tagline: {
       en: '6,000-lumen dimmable COB floodlight (IP67) on a 1.35–3 m tripod, this is battery powered so easy to set up whenever its needed, durable work light for night setups.',
@@ -545,8 +545,8 @@ export const equipment: EquipmentItem[] = [
     slug: 'eskimo-outbreak-450xdp-einangrad-skjoltjald',
     category: 'shelter',
     name: {
-      en: 'Eskimo Outbreak 450XDP Insulated Pop-Up Shelter',
-      is: 'Eskimo Outbreak 450XDP einangrað skjóltjald',
+      en: 'Insulated Pop-Up Tent (Eskimo Outbreak 450XDP)',
+      is: 'Einangrað skjóltjald (Eskimo Outbreak 450XDP)',
     },
     tagline: {
       en: 'Insulated 4–5 person pop-up shelter (~7 m² floor) with StormShield fabric, 7 windows and heater ports, a warm crew refuge.',
@@ -768,8 +768,8 @@ export const equipment: EquipmentItem[] = [
     slug: 'skipper-keiluhaus-med-9-m-borda',
     category: 'safety',
     name: {
-      en: 'Skipper Cone-Top Barrier, 9 m Tape',
-      is: 'Skipper keiluhaus með 9 m borða',
+      en: 'Cone-Top Tape Barrier 9 m (Skipper)',
+      is: 'Keiluhaus með 9 m borða (Skipper)',
     },
     tagline: {
       en: 'Cone-top barrier with 9 m of retractable red and white hazard tape, for closing off sets and work areas in seconds.',
@@ -848,8 +848,8 @@ export const equipment: EquipmentItem[] = [
     slug: 'fordunarspegill-thridskiptur-med-led-ljosum',
     category: 'costume',
     name: {
-      en: 'Nestor LED Makeup Mirror (Triptych)',
-      is: 'Nestor förðunarspegill með LED ljósum',
+      en: 'LED Makeup Mirror (Nestor Triptych)',
+      is: 'Förðunarspegill með LED ljósum (Nestor)',
     },
     tagline: {
       en: 'Portable three-panel makeup mirror with dimmable LED light from 2700 to 6100 K, for makeup stations on location.',
@@ -1236,8 +1236,8 @@ export const equipment: EquipmentItem[] = [
     slug: 'nox-kjalkahjalmar',
     category: 'safety',
     name: {
-      en: 'NOX Modular Motorcycle Helmet',
-      is: 'NOX kjálkahjálmur',
+      en: 'Modular Motorcycle Helmet (NOX)',
+      is: 'Kjálkahjálmur (NOX)',
     },
     tagline: {
       en: 'Modular helmet with built-in sun visor and intercom space, ECE 22.06 certified, for the six-wheeler and motorcycle shoots.',
