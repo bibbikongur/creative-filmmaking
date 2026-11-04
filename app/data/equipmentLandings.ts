@@ -1,8 +1,8 @@
 import type { LocaleCode } from '~/types'
 
 /**
- * SEED ONLY. The six original equipment categories and the URL of each one's
- * keyword landing page. On first boot the server copies these (plus the
+ * SEED ONLY. The equipment categories and the URL of each one's keyword
+ * landing page. On first boot the server copies these (plus the
  * matching copy in the locale files under `equipmentCategories.<id>` and
  * `landings.equipment.<key>`) into the `equipment_categories` table; after
  * that the database is the source of truth and categories are managed in
@@ -23,9 +23,17 @@ export interface EquipmentLandingSeed {
 export const equipmentLandings: EquipmentLandingSeed[] = [
   { id: 'heating', paths: { is: '/equipment/hitablasarar', en: '/equipment/heaters' }, key: 'landings.equipment.heating' },
   { id: 'power', paths: { is: '/equipment/rafstodvar-og-rafmagn', en: '/equipment/power-and-light' }, key: 'landings.equipment.power' },
+  // lighting, catering, costume and tools were created in admin when the
+  // catalogue was restructured into ten groups (2026-10); mirrored here on
+  // 2026-11-04 with the live slugs and copy so a fresh install seeds the same
+  // set and every seed item has a category.
+  { id: 'lighting', paths: { is: '/equipment/lysing', en: '/equipment/lighting' }, key: 'landings.equipment.lighting' },
   { id: 'shelter', paths: { is: '/equipment/tjold-og-skyli', en: '/equipment/shelter-and-tents' }, key: 'landings.equipment.shelter' },
   { id: 'safety', paths: { is: '/equipment/umferdaroryggi', en: '/equipment/safety-and-traffic' }, key: 'landings.equipment.safety' },
   { id: 'furniture', paths: { is: '/equipment/husgogn', en: '/equipment/furniture' }, key: 'landings.equipment.furniture' },
+  { id: 'catering', paths: { is: '/equipment/catering', en: '/equipment/catering' }, key: 'landings.equipment.catering' },
+  { id: 'costume', paths: { is: '/equipment/buningar-og-makeup', en: '/equipment/costume-and-makeup' }, key: 'landings.equipment.costume' },
+  { id: 'tools', paths: { is: '/equipment/verkfaeri', en: '/equipment/tools' }, key: 'landings.equipment.tools' },
   { id: 'cleaning', paths: { is: '/equipment/thrif', en: '/equipment/cleaning' }, key: 'landings.equipment.cleaning' },
 ]
 

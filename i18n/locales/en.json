@@ -97,7 +97,11 @@
     "safety": "Safety & Traffic",
     "furniture": "Furniture",
     "power": "Power & Light",
-    "cleaning": "Cleaning"
+    "cleaning": "Cleaning",
+    "lighting": "Lighting",
+    "catering": "Catering",
+    "costume": "Costume & Makeup",
+    "tools": "Tools"
   },
   "equipmentCatalogue": {
     "kicker": "Equipment",
@@ -268,6 +272,7 @@
       "description": "Production equipment for rent for film & TV shoots in Iceland: heating units, tents, safety and traffic kit and basecamp furniture. Request an offer."
     },
     "vehicleTitle": "{name} for rent",
+    "rentInIceland": "{name} for rent in Iceland",
     "businessDescription": "Vehicle and equipment rental for film & TV productions in Iceland. Box trucks, cargo vans, caravans, trailers and six-wheelers also available to private and business renters.",
     "about": {
       "title": "About Us",
@@ -528,6 +533,44 @@
         "intro2": "Rents with the rest of the equipment and our vehicles, delivered anywhere in Iceland.",
         "metaTitle": "Shovel and Broom Rental",
         "metaDescription": "Shovels, brooms and bins for rent for locations and basecamp. Rents with the rest of the equipment. Delivery anywhere in Iceland."
+      },
+      "lighting": {
+        "kicker": "Equipment",
+        "title": "Lighting for rent",
+        "intro1": "Work lighting for rent for locations, basecamp and work sites. The LED Nova 6K floodlight gives 6,000 lumens from a dimmable COB panel on a tripod and lights a whole work area or techbase. The Scangrip lights are smaller and handy: a case of nine small lights and a medium battery light.",
+        "intro2": "All the lights are battery powered and go up without a cable, so they work where there is no mains power. Chargers are included and generators and power stations are in the Power category. Delivered anywhere in Iceland. Request an offer.",
+        "metaTitle": "Work Light and Floodlight Rental",
+        "metaDescription": "LED Nova 6K floodlight on a tripod and Scangrip battery work lights for rent for locations, basecamp and work sites. No cable, up in a minute. Delivery anywhere in Iceland.",
+        "faq": [
+          {
+            "q": "Do the lights need mains power?",
+            "a": "No, the LED Nova floodlight and the Scangrip lights run on built-in batteries. They arrive charged and chargers are included."
+          }
+        ]
+      },
+      "catering": {
+        "kicker": "Equipment",
+        "title": "Catering equipment for rent",
+        "intro1": "Kit for coffee and catering on location. The thermal jugs keep coffee and hot water hot through the whole shooting day, in basecamp or out on set.",
+        "intro2": "The catering kit rents with folding tables and chairs, tents and heaters, so the catering area arrives ready in one delivery, anywhere in Iceland. If you need something that is not on the list, get in touch.",
+        "metaTitle": "Catering Equipment Rental for Locations",
+        "metaDescription": "Thermal jugs and other kit for coffee and catering on location for rent. Rents with tables, chairs and tents for basecamp. Delivery anywhere in Iceland."
+      },
+      "costume": {
+        "kicker": "Equipment",
+        "title": "Costume and makeup equipment for rent",
+        "intro1": "Kit for the costume and makeup departments on location. A folding 1,000 mm clothes rail gets the costumes out of the bags, and non-slip hangers in sets of 50 and trouser hangers in sets of 20 keep them clean and uncreased between takes.",
+        "intro2": "Rents with folding tables and chairs, tents and heaters, so the costume and makeup station arrives ready in one delivery, anywhere in Iceland. Request an offer.",
+        "metaTitle": "Clothes Rail and Hanger Rental for Film Shoots",
+        "metaDescription": "Folding clothes rails, non-slip hangers and trouser hangers for rent for the costume and makeup departments on location. Rents with tables, chairs and tents. Delivery anywhere in Iceland."
+      },
+      "tools": {
+        "kicker": "Equipment",
+        "title": "Tools for rent",
+        "intro1": "The tools that save the shooting day. A NOCO GBX155 jump starter for 12 V cars and SUVs and a 24 V starter for trucks get a dead vehicle going on the spot. The air pump handles tyres and air mattresses, the four-step ladder reaches lights and signs, and the 15 m tow rope frees a vehicle that is stuck.",
+        "intro2": "Tools rent on their own or with our vehicles and the rest of the kit, delivered anywhere in Iceland. Request an offer.",
+        "metaTitle": "Tool Rental for Film Shoots",
+        "metaDescription": "12 V and 24 V jump starters, an air pump, a step ladder and a tow rope for rent for film shoots and work sites. Rents with our vehicles and the rest of the kit. Delivery anywhere in Iceland."
       }
     }
   },

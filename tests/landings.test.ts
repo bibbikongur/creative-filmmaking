@@ -56,8 +56,16 @@ describe('equipment category seeds', () => {
     for (const e of equipment) expect(seedSlugs, e.id).not.toContain(equipmentSlug(e))
   })
 
-  it('have unique slugs across both locales and unique ids', () => {
-    expect(new Set(seedSlugs).size).toBe(seedSlugs.length)
+  it('never point one slug at two categories, and have unique ids', () => {
+    // A category may use the same segment in both locales (catering does);
+    // what the page cannot resolve is one segment shared by two categories.
+    const owner = new Map<string, string>()
+    for (const l of equipmentLandings) {
+      for (const slug of [seedSlugOf(l, 'is'), seedSlugOf(l, 'en')]) {
+        expect(owner.get(slug) ?? l.id, slug).toBe(l.id)
+        owner.set(slug, l.id)
+      }
+    }
     const ids = equipmentLandings.map(l => l.id)
     expect(new Set(ids).size).toBe(ids.length)
   })

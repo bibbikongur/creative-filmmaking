@@ -60,7 +60,7 @@ export function getDb(): Database.Database {
   return db
 }
 
-// One-time seed of the equipment_categories table from the six original
+// One-time seed of the equipment_categories table from the seed list of
 // categories: ids and URLs from app/data/equipmentLandings.ts, names from the
 // locale files (`equipmentCategories.<id>`) and landing copy from
 // `landings.equipment.<id>`. After this the database is the source of truth
@@ -156,7 +156,7 @@ function stripStockPhotos(db: Database.Database) {
 // (v-012 was removed 2026-08-27 when the seed file was trimmed to the live
 // catalogue; its flag is already set in existing databases.)
 const SEED_ADDITIONS = ['v-010', 'v-011', 'v-013']
-const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024']
+const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024', 'e-025', 'e-026', 'e-027', 'e-028', 'e-mw1dznnq20e9']
 
 // One-time content refreshes: bump the rev to push the current seed data over
 // what's in the database. Upserts — replaces the row if it exists (including
@@ -235,6 +235,26 @@ const SEED_EQUIPMENT_UPDATES: { id: string, rev: number }[] = [
     'e-mur4li283b3a', 'e-mur5wgvi73e2', 'e-mur645nn404b', 'e-mur67h7t57f2', 'e-murcnlula6b1',
     'e-murd25ab187f', 'e-murd47u51b0d',
   ].map(id => ({ id, rev: 2 })),
+  // 2026-11-04 SEO pass: description + highlights on every item, one-line
+  // taglines (spec lists moved into highlights), shorter names, and the
+  // traffic kit copy widened to events, road work and construction. Seed was
+  // diffed against the live catalogue first (no admin edits since 10-03), so
+  // every live row that changed gets rev 3 ...
+  ...[
+    'e-mr754brqcd2c', 'e-mr754cdu38ba', 'e-mr754cj10dbb', 'e-mr754coccab2', 'e-mre0iyjs764f',
+    'e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-022', 'e-023', 'e-024',
+    'e-mrl0eqb86480', 'e-mrl0gz0p4b08', 'e-mrl0vha3a57a', 'e-mrpjovke1eda', 'e-mrpk2yn45a70',
+    'e-mrpkv0o93613', 'e-mrpkwla84949', 'e-mrpkxz90eec4', 'e-mrpl7l4td85e', 'e-mrpl9cphbc39',
+    'e-mrw8w5pqb2c8', 'e-mrzktoe5d0c9', 'e-mrzl0c5k7565', 'e-mrzl66ydd657', 'e-msejvh5a659c',
+    'e-mu77oa2z8637', 'e-muk5i5vm92bc', 'e-mur4li283b3a', 'e-mur5wgvi73e2', 'e-mur645nn404b',
+    'e-mur67h7t57f2', 'e-murcnlula6b1', 'e-murd25ab187f', 'e-murd47u51b0d',
+  ].map(id => ({ id, rev: 3 })),
+  // ... and the ten items added in admin since the last sync, now mirrored in
+  // the seed with their slug pinned, get their first rev.
+  ...[
+    'e-muub65yha82a', 'e-muuatqyc5071', 'e-muubqyjq4e7f', 'e-muubwpj7e4b1', 'e-muvovrfn3da0',
+    'e-muuayhik0574', 'e-muuawds101e3', 'e-muubj0xl996d', 'e-muubfa11444e', 'e-mutqcluib7f1',
+  ].map(id => ({ id, rev: 1 })),
 ]
 
 function seedCatalogueAdditions(db: Database.Database) {

@@ -179,15 +179,16 @@ if (item) {
   const absImage = (src: string) => (src.startsWith('http') ? src : `${siteUrl}${src}`)
   const { ogImageUrl } = useOgImage()
 
-  // Make sure the rental phrase appears in the SERP snippet: "{name} til leigu."
-  // followed by the first description paragraph when there is one (richer than
-  // the card tagline), else the tagline. Google bolds the query terms in
-  // descriptions, which lifts click-through. Trimmed to the ~160-char window.
+  // Make sure the rental phrase and the country appear in the SERP snippet:
+  // "{name} til leigu á Íslandi." followed by the first description paragraph
+  // when there is one (richer than the card tagline), else the tagline. Google
+  // bolds the query terms in descriptions, which lifts click-through. Trimmed
+  // to the ~160-char window at a word break.
   const metaDescription = computed(() => {
-    const title = t('meta.vehicleTitle', { name: lt(item.name) })
+    const lead = t('meta.rentInIceland', { name: lt(item.name) })
     const body = paragraphs.value[0] || lt(item.tagline) || t('meta.equipment.description')
-    const full = /til leigu|for rent/i.test(body) ? body : `${title}. ${body}`
-    return full.length > 160 ? `${full.slice(0, 157).trimEnd()}…` : full
+    const full = /til leigu|for rent/i.test(body) ? body : `${lead}. ${body}`
+    return trimMetaDescription(full)
   })
 
   useSeoMeta({

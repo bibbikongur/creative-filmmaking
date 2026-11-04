@@ -144,7 +144,7 @@ const { ogImageUrl } = useOgImage()
 // description and trim to Google's ~160-character display window.
 const metaDescription = computed(() => {
   const full = `${lt(vehicle.tagline)} ${lt(vehicle.description).split('\n\n')[0] ?? ''}`.trim()
-  return full.length > 160 ? `${full.slice(0, 157).trimEnd()}…` : full
+  return trimMetaDescription(full)
 })
 
 // "Til leigu" / "for rent" in the tab & SERP title — that's what people

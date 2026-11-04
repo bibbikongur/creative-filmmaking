@@ -97,7 +97,11 @@
     "safety": "Öryggi og umferð",
     "furniture": "Húsgögn",
     "power": "Rafmagn og ljós",
-    "cleaning": "Þrif"
+    "cleaning": "Þrif",
+    "lighting": "Lýsing",
+    "catering": "Catering",
+    "costume": "Búningar og makeup",
+    "tools": "Verkfæri"
   },
   "equipmentCatalogue": {
     "kicker": "Búnaður",
@@ -268,6 +272,7 @@
       "description": "Framleiðslubúnaður til leigu fyrir kvikmynda- og sjónvarpstökur á Íslandi: dísilmiðstöðvar, tjöld, öryggis- og umferðarbúnaður og húsgögn fyrir grunnbúðir. Óskaðu eftir tilboði."
     },
     "vehicleTitle": "{name} til leigu",
+    "rentInIceland": "{name} til leigu á Íslandi",
     "businessDescription": "Bíla- og tækjaleiga fyrir kvikmynda- og sjónvarpsverkefni á Íslandi. Kassabílar, sendibílar, hjólhýsi, kerrur og sexhjól einnig til leigu fyrir einstaklinga og fyrirtæki.",
     "about": {
       "title": "Um okkur",
@@ -528,6 +533,44 @@
         "intro2": "Leigist með öðrum búnaði og bílunum okkar, afhent hvert á land sem er.",
         "metaTitle": "Skóflur og kústar til leigu",
         "metaDescription": "Skóflur, kústar og ruslatunnur til leigu fyrir tökustaði og grunnbúðir. Leigist með öðrum búnaði. Afhending um land allt."
+      },
+      "lighting": {
+        "kicker": "Búnaður",
+        "title": "Lýsing til leigu",
+        "intro1": "Vinnulýsing til leigu fyrir tökustaði, grunnbúðir og vinnusvæði. LED Nova 6K kastarinn gefur 6.000 lúmen frá deyfanlegri COB-plötu á þrífæti og lýsir upp heilt vinnusvæði eða tækjabækistöð. Scangrip ljósin eru minni og handhæg: taska með níu litlum ljósum og miðlungsstórt batterísljós.",
+        "intro2": "Öll ljósin eru batterísknúin og fara upp án snúru, svo þau nýtast þar sem ekkert rafmagn er. Hleðslutæki fylgja og rafstöðvar og rafhlöðustöðvar eru í flokknum Rafmagn. Afhent hvert á land sem er. Óskaðu eftir tilboði.",
+        "metaTitle": "Vinnuljós og kastarar til leigu",
+        "metaDescription": "LED Nova 6K kastari á þrífæti og Scangrip batterísvinnuljós til leigu fyrir tökustaði, grunnbúðir og vinnusvæði. Engin snúra, fara upp á mínútu. Afhending um land allt.",
+        "faq": [
+          {
+            "q": "Þarf rafmagn fyrir ljósin?",
+            "a": "Nei, LED Nova kastarinn og Scangrip ljósin ganga á innbyggðum rafhlöðum. Þau eru hlaðin við afhendingu og hleðslutæki fylgja."
+          }
+        ]
+      },
+      "catering": {
+        "kicker": "Búnaður",
+        "title": "Catering búnaður til leigu",
+        "intro1": "Búnaður fyrir kaffi og veitingar á tökustað. Hitakönnurnar halda kaffi og heitu vatni heitu allan tökudaginn, hvort sem er í grunnbúðum eða úti á tökustað.",
+        "intro2": "Catering búnaðurinn leigist með samanbrjótanlegum borðum og stólum, tjöldum og hitablásurum, svo veitingasvæðið kemur tilbúið í einni afhendingu, hvert á land sem er. Vanti þig eitthvað sem er ekki á listanum, hafðu samband.",
+        "metaTitle": "Catering búnaður til leigu fyrir tökustaði",
+        "metaDescription": "Hitakönnur og annar búnaður fyrir kaffi og veitingar á tökustað til leigu. Leigist með borðum, stólum og tjöldum fyrir grunnbúðir. Afhending um land allt."
+      },
+      "costume": {
+        "kicker": "Búnaður",
+        "title": "Búnaður fyrir búninga og förðun til leigu",
+        "intro1": "Búnaður fyrir búningadeild og förðun á tökustað. Fellanleg fataslá, 1000 mm breið, kemur búningunum upp úr töskunum og non slip herðatré í settum af 50 og buxnaherðatré í settum af 20 halda þeim hreinum og krumpulausum milli taka.",
+        "intro2": "Leigist með samanbrjótanlegum borðum og stólum, tjöldum og hitablásurum, svo búninga- og förðunaraðstaðan kemur tilbúin í einni afhendingu, hvert á land sem er. Óskaðu eftir tilboði.",
+        "metaTitle": "Fataslár og herðatré til leigu",
+        "metaDescription": "Fellanlegar fataslár, non slip herðatré og buxnaherðatré til leigu fyrir búningadeild og förðun á tökustað. Leigist með borðum, stólum og tjöldum. Afhending um land allt."
+      },
+      "tools": {
+        "kicker": "Búnaður",
+        "title": "Verkfæri til leigu",
+        "intro1": "Verkfærin sem bjarga tökudeginum. NOCO GBX155 starttæki fyrir 12 V fólksbíla og jeppa og 24 V starttæki fyrir vörubíla koma dauðum bíl í gang á staðnum. Loftdælan sér um dekk og loftdýnur, fjögurra þrepa stiginn nær upp í ljós og skilti og 15 m dráttartógið losar bíl sem situr fastur.",
+        "intro2": "Verkfærin leigjast stök eða með bílunum okkar og öðrum búnaði, afhent hvert á land sem er. Óskaðu eftir tilboði.",
+        "metaTitle": "Verkfæri til leigu fyrir tökustaði",
+        "metaDescription": "Starttæki 12 V og 24 V, loftdæla, stigi og dráttartóg til leigu fyrir kvikmyndatökur og vinnusvæði. Leigist með bílum og öðrum búnaði. Afhending um land allt."
       }
     }
   },
