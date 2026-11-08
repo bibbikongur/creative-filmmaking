@@ -4,11 +4,15 @@
       <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <!-- Brand -->
         <div>
-          <NuxtLink :to="localePath('/')" class="flex items-center gap-3">
-            <img src="/logo.svg" alt="" class="w-8 h-8" width="32" height="32">
-            <span class="font-heading font-semibold uppercase tracking-widest text-bone-100">
-              Creative<span class="text-gold-500">&nbsp;Filmmaking</span>
-            </span>
+          <NuxtLink :to="localePath('/')" class="inline-flex items-center">
+            <img
+              src="/logo-cf-rentals-dark.png"
+              alt="CF Rentals · Creative Filmmaking"
+              class="h-10 w-auto"
+              width="811"
+              height="124"
+              loading="lazy"
+            >
           </NuxtLink>
           <p class="mt-4 text-sm text-bone-400 leading-relaxed max-w-xs">
             {{ t('footer.tagline') }}

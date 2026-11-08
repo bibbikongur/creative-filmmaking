@@ -3,11 +3,15 @@
     <div class="wrap">
       <div class="flex items-center justify-between h-16 xl:h-20">
         <!-- Wordmark -->
-        <NuxtLink :to="localePath('/')" class="flex shrink-0 items-center gap-3" @click="mobileOpen = false">
-          <img src="/logo.svg" alt="" class="w-8 h-8" width="32" height="32">
-          <span class="font-heading font-semibold uppercase tracking-widest text-bone-100 text-lg leading-none">
-            Creative<span class="text-gold-500">&nbsp;Filmmaking</span>
-          </span>
+        <NuxtLink :to="localePath('/')" class="flex shrink-0 items-center" @click="mobileOpen = false">
+          <img
+            src="/logo-cf-rentals-dark.png"
+            alt="CF Rentals · Creative Filmmaking"
+            class="h-8 xl:h-10 w-auto"
+            width="811"
+            height="124"
+            fetchpriority="high"
+          >
         </NuxtLink>
 
         <!-- Desktop nav -->
