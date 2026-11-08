@@ -69,7 +69,7 @@ const deleting = ref('')
 const load = async () => {
   loadError.value = ''
   try {
-    vehicles.value = await $fetch<Vehicle[]>('/api/vehicles', {
+    vehicles.value = await $fetch<Vehicle[]>('/api/admin/vehicles', {
       query: { t: Date.now() }, // bypass any intermediary cache
     })
     loaded.value = true

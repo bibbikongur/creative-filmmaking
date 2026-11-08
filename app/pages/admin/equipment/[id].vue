@@ -10,6 +10,7 @@
       <h1 class="mt-3 text-3xl font-semibold uppercase tracking-wide text-bone-100">
         Edit · {{ item.name.en }}
       </h1>
+      <AdminItemRentalStats item-type="equipment" :item-id="item.id" class="mt-8" />
       <div class="mt-8">
         <AdminEquipmentForm :item="item" :saving="saving" :error="error" @save="save" />
       </div>

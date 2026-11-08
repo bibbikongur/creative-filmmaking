@@ -432,6 +432,19 @@ function initSchema(db: Database.Database) {
       vat_amount      REAL NOT NULL DEFAULT 0,
       total           REAL NOT NULL
     );
+
+    -- Printable rental agreements (admin "Contracts"). Prefilled from a quote's
+    -- offer, then edited by hand; the whole form is one JSON document (data,
+    -- see RentalContractData). The row survives deletion of its quote.
+    CREATE TABLE IF NOT EXISTS rental_contracts (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      quote_id   TEXT REFERENCES quotes(id) ON DELETE SET NULL,
+      offer_id   INTEGER,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      data       TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_rental_contracts_quote ON rental_contracts(quote_id);
     CREATE INDEX IF NOT EXISTS idx_offers_quote ON offers(quote_id);
 
     -- ── Timesheet portal ─────────────────────────────────────────────────────
@@ -766,6 +779,10 @@ function migrate(db: Database.Database) {
   // v4: VAT itemized on offers. 0 on pre-VAT offers so old PDFs regenerate unchanged.
   ensureColumn('offers', 'vat_rate', 'vat_rate REAL NOT NULL DEFAULT 0')
   ensureColumn('offers', 'vat_amount', 'vat_amount REAL NOT NULL DEFAULT 0')
+
+  // v11: an offer can be marked as confirmed by the customer. Confirmed offers
+  // feed the per-item rental statistics (times rented, gross per item).
+  ensureColumn('offers', 'confirmed_at', 'confirmed_at TEXT')
 
   // v2: departments on job_members.
   ensureColumn('job_members', 'department_id', 'department_id TEXT')

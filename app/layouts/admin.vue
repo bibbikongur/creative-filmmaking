@@ -15,6 +15,12 @@
           <NuxtLink to="/admin/quotes" class="transition-colors hover:text-gold-400" :class="section === 'quotes' ? 'text-gold-400' : 'text-bone-400'">
             Quotes
           </NuxtLink>
+          <NuxtLink to="/admin/rentals" class="transition-colors hover:text-gold-400" :class="section === 'rentals' ? 'text-gold-400' : 'text-bone-400'">
+            Rentals
+          </NuxtLink>
+          <NuxtLink to="/admin/contracts" class="transition-colors hover:text-gold-400" :class="section === 'contracts' ? 'text-gold-400' : 'text-bone-400'">
+            Contracts
+          </NuxtLink>
           <NuxtLink to="/admin/companies" class="transition-colors hover:text-gold-400" :class="section === 'companies' ? 'text-gold-400' : 'text-bone-400'">
             Companies
           </NuxtLink>
@@ -82,7 +88,11 @@ const section = computed(() =>
     ? 'equipment'
     : route.path.includes('/admin/quotes')
       ? 'quotes'
-      : route.path.includes('/admin/companies') ? 'companies' : 'vehicles')
+      : route.path.includes('/admin/rentals')
+        ? 'rentals'
+        : route.path.includes('/admin/contracts')
+          ? 'contracts'
+          : route.path.includes('/admin/companies') ? 'companies' : 'vehicles')
 
 const password = ref('')
 const error = ref('')

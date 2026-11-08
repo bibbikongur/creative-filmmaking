@@ -27,7 +27,8 @@
           <p class="mt-0.5 text-xs text-bone-400 truncate">
             {{ formatDate(q.createdAt) }} · {{ q.itemCount }} {{ q.itemCount === 1 ? 'item' : 'items' }}
             · {{ q.email }}
-            <span v-if="q.lastOfferTotal != null"> · last offer {{ formatTotal(q) }}</span>
+            <span v-if="q.confirmedOfferTotal != null" class="text-emerald-400"> · confirmed {{ formatMoney(q.confirmedOfferTotal, q.confirmedOfferCurrency) }}</span>
+            <span v-else-if="q.lastOfferTotal != null"> · last offer {{ formatMoney(q.lastOfferTotal, q.lastOfferCurrency) }}</span>
           </p>
         </div>
         <AdminQuoteStatusBadge :status="q.status" />
@@ -77,10 +78,8 @@ onMounted(load)
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 
-const formatTotal = (q: QuoteSummary) =>
-  q.lastOfferCurrency === 'EUR'
-    ? `€${q.lastOfferTotal!.toLocaleString('en-US')}`
-    : `${q.lastOfferTotal!.toLocaleString('is-IS')} kr.`
+const formatMoney = (n: number, currency?: string) =>
+  currency === 'EUR' ? `€${n.toLocaleString('en-US')}` : `${n.toLocaleString('is-IS')} kr.`
 
 const remove = async (q: QuoteSummary) => {
   if (!await confirmDialog(`Delete the quote for "${q.name || q.email}"? This also deletes its offers.`)) return

@@ -41,6 +41,13 @@
         <input v-model="form.featured" type="checkbox" class="accent-gold-500 w-4 h-4">
         Featured: show on the home page
       </label>
+      <div class="mt-5 max-w-lg">
+        <label class="admin-label">Registration numbers</label>
+        <input v-model.trim="form.plates" type="text" class="input-dark font-mono uppercase" placeholder="e.g. ABC12, DEF34">
+        <p class="mt-1 text-xs text-bone-400">
+          One per unit, separated by commas. Never shown on the website; used to prefill rental agreements under Contracts.
+        </p>
+      </div>
     </section>
 
     <!-- Text -->
@@ -266,6 +273,7 @@ const form = reactive({
   description: { en: v?.description.en ?? '', is: v?.description.is ?? '' },
   highlights: (v?.highlights ?? []).map(h => ({ en: h.en ?? '', is: h.is ?? '' })),
   images: [...(v?.images ?? [])],
+  plates: (v?.plates ?? []).join(', '),
   specs: {
     units: v?.specs.units ?? ('' as number | ''),
     seats: v?.specs.seats ?? ('' as number | ''),
@@ -362,6 +370,7 @@ const submit = () => {
     description: form.description,
     highlights: form.highlights.filter(h => h.en || h.is),
     images: form.images,
+    plates: form.plates,
     specs: {
       ...form.specs,
       units: form.specs.units || undefined,

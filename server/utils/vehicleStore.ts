@@ -116,6 +116,11 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
     extra: extra.en || extra.is ? extra : undefined,
   }
 
+  // Registration numbers: array or one comma/newline-separated string.
+  const plates = (Array.isArray(b.plates) ? b.plates : asText(b.plates).split(/[,\n;]/))
+    .map(p => asText(p).toUpperCase().slice(0, 12))
+    .filter((p, i, arr) => p && arr.indexOf(p) === i)
+
   if (errors.length) {
     throw createError({ statusCode: 400, statusMessage: 'Validation failed', data: { errors } })
   }
@@ -131,5 +136,12 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
     highlights,
     specs,
     images,
+    ...(plates.length ? { plates } : {}),
   }
+}
+
+/** Public shape of a vehicle: registration numbers stay in the admin panel. */
+export function publicVehicle(v: Vehicle): Vehicle {
+  const { plates: _plates, ...rest } = v
+  return rest
 }

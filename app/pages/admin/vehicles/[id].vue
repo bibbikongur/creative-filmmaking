@@ -10,6 +10,7 @@
       <h1 class="mt-3 text-3xl font-semibold uppercase tracking-wide text-bone-100">
         Edit · {{ vehicle.name.en }}
       </h1>
+      <AdminItemRentalStats item-type="vehicle" :item-id="vehicle.id" class="mt-8" />
       <div class="mt-8">
         <AdminVehicleForm :vehicle="vehicle" :saving="saving" :error="error" @save="save" />
       </div>
@@ -30,7 +31,7 @@ const error = ref<string | string[]>('')
 
 onMounted(async () => {
   try {
-    const all = await $fetch<Vehicle[]>('/api/vehicles', { query: { t: Date.now() } })
+    const all = await $fetch<Vehicle[]>('/api/admin/vehicles', { query: { t: Date.now() } })
     vehicle.value = all.find(v => v.id === route.params.id)
   }
   finally {

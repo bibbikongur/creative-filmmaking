@@ -138,7 +138,9 @@ export function listQuotes(): QuoteSummary[] {
       (SELECT COUNT(*) FROM quote_items i WHERE i.quote_id = q.id) AS item_count,
       (SELECT o.sent_at  FROM offers o WHERE o.quote_id = q.id AND o.sent_at IS NOT NULL ORDER BY o.id DESC LIMIT 1) AS last_offer_at,
       (SELECT o.total    FROM offers o WHERE o.quote_id = q.id AND o.sent_at IS NOT NULL ORDER BY o.id DESC LIMIT 1) AS last_offer_total,
-      (SELECT o.currency FROM offers o WHERE o.quote_id = q.id AND o.sent_at IS NOT NULL ORDER BY o.id DESC LIMIT 1) AS last_offer_currency
+      (SELECT o.currency FROM offers o WHERE o.quote_id = q.id AND o.sent_at IS NOT NULL ORDER BY o.id DESC LIMIT 1) AS last_offer_currency,
+      (SELECT o.total    FROM offers o WHERE o.quote_id = q.id AND o.confirmed_at IS NOT NULL ORDER BY o.id DESC LIMIT 1) AS confirmed_total,
+      (SELECT o.currency FROM offers o WHERE o.quote_id = q.id AND o.confirmed_at IS NOT NULL ORDER BY o.id DESC LIMIT 1) AS confirmed_currency
     FROM quotes q
     ORDER BY q.created_at DESC
   `).all() as Record<string, unknown>[]
@@ -148,6 +150,8 @@ export function listQuotes(): QuoteSummary[] {
     lastOfferAt: (r.last_offer_at as string | null) ?? undefined,
     lastOfferTotal: (r.last_offer_total as number | null) ?? undefined,
     lastOfferCurrency: (r.last_offer_currency as string | null) ?? undefined,
+    confirmedOfferTotal: (r.confirmed_total as number | null) ?? undefined,
+    confirmedOfferCurrency: (r.confirmed_currency as string | null) ?? undefined,
   }))
 }
 
@@ -215,6 +219,8 @@ export function createOffer(quoteId: string, input: NewOfferInput): Offer {
         })
     return {
       quoteItemId: qi.id,
+      itemType: qi.itemType,
+      itemId: qi.itemId,
       name: qi.name,
       image: qi.image,
       qty: qi.qty,
@@ -266,6 +272,72 @@ export function markOfferSent(offerId: number) {
     .run(new Date().toISOString(), offerId)
 }
 
+/**
+ * Mark an offer as accepted by the customer. Only one offer per quote can be
+ * confirmed at a time (confirming another revision moves the mark), and the
+ * quote flips to "won". Confirmed offers feed the rental statistics.
+ */
+export function confirmOffer(quoteId: string, offerId: number): Offer | null {
+  const db = getDb()
+  const offer = getOffer(quoteId, offerId)
+  if (!offer) return null
+  db.transaction(() => {
+    db.prepare('UPDATE offers SET confirmed_at = NULL WHERE quote_id = ? AND id <> ?').run(quoteId, offerId)
+    db.prepare('UPDATE offers SET confirmed_at = COALESCE(confirmed_at, ?) WHERE id = ?')
+      .run(new Date().toISOString(), offerId)
+    db.prepare("UPDATE quotes SET status = 'won' WHERE id = ?").run(quoteId)
+  })()
+  return getOffer(quoteId, offerId)
+}
+
+/** Undo a confirmation. The quote goes back to "offered" (its offer still went out). */
+export function unconfirmOffer(quoteId: string, offerId: number): Offer | null {
+  const db = getDb()
+  const offer = getOffer(quoteId, offerId)
+  if (!offer) return null
+  db.transaction(() => {
+    db.prepare('UPDATE offers SET confirmed_at = NULL WHERE id = ?').run(offerId)
+    const stillConfirmed = db.prepare('SELECT COUNT(*) AS n FROM offers WHERE quote_id = ? AND confirmed_at IS NOT NULL')
+      .get(quoteId) as { n: number }
+    if (!stillConfirmed.n) {
+      db.prepare("UPDATE quotes SET status = 'offered' WHERE id = ? AND status = 'won'").run(quoteId)
+    }
+  })()
+  return getOffer(quoteId, offerId)
+}
+
+/** Every confirmed offer with its quote, newest confirmation first (for rental stats). */
+export function listConfirmedOffers(): { quote: Quote, offer: Offer }[] {
+  const rows = getDb().prepare(`
+    SELECT o.*, q.id AS q_id, q.created_at AS q_created_at, q.status AS q_status, q.source AS q_source,
+           q.locale AS q_locale, q.name AS q_name, q.email AS q_email, q.phone AS q_phone,
+           q.company AS q_company, q.kennitala AS q_kennitala, q.dates AS q_dates, q.message AS q_message
+    FROM offers o JOIN quotes q ON q.id = o.quote_id
+    WHERE o.confirmed_at IS NOT NULL
+    ORDER BY o.confirmed_at DESC, o.id DESC
+  `).all() as Record<string, unknown>[]
+  return rows.map(r => ({
+    offer: rowToOffer(r),
+    quote: rowToQuote({
+      id: r.q_id, created_at: r.q_created_at, status: r.q_status, source: r.q_source, locale: r.q_locale,
+      name: r.q_name, email: r.q_email, phone: r.q_phone, company: r.q_company, kennitala: r.q_kennitala,
+      dates: r.q_dates, message: r.q_message,
+    }),
+  }))
+}
+
+/** Catalogue references for quote items, keyed by quote_items.id (for offers that predate the snapshot). */
+export function getQuoteItemRefs(ids: number[]): Map<number, { itemType: CartItemType, itemId: string }> {
+  const out = new Map<number, { itemType: CartItemType, itemId: string }>()
+  if (!ids.length) return out
+  const stmt = getDb().prepare('SELECT id, item_type, item_id FROM quote_items WHERE id = ?')
+  for (const id of ids) {
+    const r = stmt.get(id) as { id: number, item_type: CartItemType, item_id: string } | undefined
+    if (r) out.set(r.id, { itemType: r.item_type, itemId: r.item_id })
+  }
+  return out
+}
+
 // ── Row mappers ──────────────────────────────────────────────────────────────
 
 function rowToQuote(r: Record<string, unknown>): Quote {
@@ -304,6 +376,7 @@ function rowToOffer(r: Record<string, unknown>): Offer {
     quoteId: r.quote_id as string,
     createdAt: r.created_at as string,
     sentAt: (r.sent_at as string | null) ?? undefined,
+    confirmedAt: (r.confirmed_at as string | null) ?? undefined,
     currency: r.currency as OfferCurrency,
     discountType: (r.discount_type as DiscountType | null) ?? undefined,
     discountValue: (r.discount_value as number | null) ?? undefined,

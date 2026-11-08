@@ -68,6 +68,12 @@ export interface Vehicle {
   images: string[]
   /** Featured vehicles appear on the home page */
   featured: boolean
+  /**
+   * Registration numbers of the physical units behind this listing (one per
+   * unit). Admin-only: stripped from the public API. Prefills the rental
+   * agreement's "Reg. no." column.
+   */
+  plates?: string[]
 }
 
 /**
@@ -190,6 +196,55 @@ export interface QuoteSummary extends Quote {
   lastOfferAt?: string
   lastOfferTotal?: number
   lastOfferCurrency?: string
+  confirmedOfferTotal?: number
+  confirmedOfferCurrency?: string
+}
+
+/** One confirmed offer line, as listed under an item's rental history. */
+export interface ItemRental {
+  quoteId: string
+  offerId: number
+  confirmedAt: string
+  customer: string
+  company?: string
+  dates?: string
+  qty: number
+  /** Rental days charged on this line (weeks × 7); undefined for flat-priced lines. */
+  days?: number
+  currency: OfferCurrency
+  /** Line total incl. vehicle extras, before discount and VAT. */
+  gross: number
+  /** Gross minus this line's proportional share of the offer discount, before VAT. */
+  net: number
+}
+
+/** Aggregated rental statistics for one catalogue item, built from confirmed offers. */
+export interface ItemRentalStats {
+  key: string
+  itemType: CartItemType
+  itemId: string
+  name: LocalizedText
+  image?: string
+  /** Still exists in the catalogue (vehicles/equipment only; services always true). */
+  inCatalogue: boolean
+  /** Number of confirmed offers that included this item. */
+  timesRented: number
+  /** Sum of quantities over all confirmed offers. */
+  unitsRented: number
+  /** Sum of qty × days over per-day/per-week lines. */
+  rentalDays: number
+  gross: Record<OfferCurrency, number>
+  net: Record<OfferCurrency, number>
+  lastRentedAt?: string
+  rentals: ItemRental[]
+}
+
+export interface RentalStatsSummary {
+  confirmedOffers: number
+  gross: Record<OfferCurrency, number>
+  net: Record<OfferCurrency, number>
+  /** Grand totals of confirmed offers (incl. VAT) per currency. */
+  total: Record<OfferCurrency, number>
 }
 
 export type OfferCurrency = 'ISK' | 'EUR'
@@ -220,6 +275,9 @@ export interface OfferItemExtra {
 /** A priced line inside an offer — frozen at send time so PDFs are regenerable. */
 export interface OfferItem {
   quoteItemId: number
+  /** Catalogue reference copied from the quote item (absent on offers made before rental stats existed). */
+  itemType?: CartItemType
+  itemId?: string
   name: LocalizedText
   image?: string
   qty: number
@@ -243,6 +301,8 @@ export interface Offer {
   quoteId: string
   createdAt: string
   sentAt?: string
+  /** Set when the customer accepted this offer; at most one confirmed offer per quote. */
+  confirmedAt?: string
   currency: OfferCurrency
   discountType?: DiscountType
   discountValue?: number
@@ -261,6 +321,121 @@ export interface Offer {
 export interface QuoteDetail extends Quote {
   items: QuoteItem[]
   offers: Offer[]
+}
+
+// ── Rental agreements (printable contracts) ──────────────────────────────────
+
+/** Which page-1 layout the agreement prints with; 'auto' = by vehicle count. */
+export type ContractTemplate = 'auto' | 'single' | 'multi'
+export type ContractFuel = '' | 'petrol' | 'diesel' | 'electric'
+/** Which Annex A (condition record) diagram a vehicle gets. */
+export type ContractAnnexKind = 'pickup' | 'van' | 'box' | 'generic' | 'none'
+export type ContractPaymentMethod = '' | 'card' | 'bank' | 'invoice'
+export type ContractPaymentTiming = '' | 'pickup' | 'invoice' | 'return'
+
+export interface ContractDriver {
+  name: string
+  idNo: string
+  licenceNo: string
+  issuingCountry: string
+  /** Annex B only. */
+  expiry: string
+  phone: string
+}
+
+export interface ContractVehicle {
+  /** Catalogue reference, when the line came from a vehicle in the offer. */
+  vehicleId?: string
+  makeModel: string
+  regNo: string
+  fuel: ContractFuel
+  /** Free text, e.g. "12 Aug 2026, 09:00". */
+  pickupAt: string
+  returnAt: string
+  kmOut: string
+  fRoads: boolean
+  /** Daily rate in the contract currency; null = not printed. */
+  ratePerDay: number | null
+  annexKind: ContractAnnexKind
+}
+
+export interface ContractCharges {
+  rentalDays: number | null
+  rentalRate: number | null
+  rental: number | null
+  insuranceDays: number | null
+  insuranceRate: number | null
+  insurance: number | null
+  driversCount: number | null
+  driversDays: number | null
+  driversRate: number | null
+  extrasText: string
+  extras: number | null
+  total: number | null
+}
+
+/** Everything printed on the agreement. Saved as one JSON document per contract. */
+export interface RentalContractData {
+  template: ContractTemplate
+  /** YYYY-MM-DD */
+  agreementDate: string
+  renter: {
+    name: string
+    idNo: string
+    phone: string
+    passportNo: string
+    address: string
+    email: string
+    licenceNo: string
+    licenceCountryExpiry: string
+  }
+  drivers: ContractDriver[]
+  pickupLocation: string
+  returnLocation: string
+  kmUnlimited: boolean
+  kmPerDay: number | null
+  vehicles: ContractVehicle[]
+  currency: OfferCurrency
+  vatRate: number
+  charges: ContractCharges
+  paymentMethod: ContractPaymentMethod
+  paymentRef: string
+  paymentTiming: ContractPaymentTiming
+  existingDamage: string
+  annexA: boolean
+  photosTaken: boolean
+  annexB: boolean
+  annexBContact: string
+  annexBProject: string
+  placeAndDate: string
+  /** Car-rental licence number printed in the footer. */
+  licenceNo: string
+}
+
+export interface RentalContract {
+  id: number
+  /** Printed agreement number, e.g. CF-0012. */
+  number: string
+  quoteId?: string
+  offerId?: number
+  createdAt: string
+  updatedAt: string
+  data: RentalContractData
+}
+
+export interface RentalContractSummary {
+  id: number
+  number: string
+  quoteId?: string
+  offerId?: number
+  createdAt: string
+  updatedAt: string
+  renterName: string
+  vehicleCount: number
+  regNos: string[]
+  total: number | null
+  currency: OfferCurrency
+  agreementDate: string
 }
 
 /** Body of POST /api/quotes (public cart submission). */
