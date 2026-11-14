@@ -81,12 +81,19 @@ async function buildLockups() {
 }
 
 // Vector redraw of the mark: 3×3 grid, cell 14, gap 3 → 48 wide, centred in 64.
-function faviconSvg() {
+// boxed: white rounded square behind the mark (home-screen icons, which must be opaque).
+// Unboxed (browser tab): transparent, mark fills the frame; with `adaptive` the bolt
+// tile flips to bone on dark browser themes so it does not vanish.
+function faviconSvg({ boxed = false, adaptive = false } = {}) {
   const amber = '#F0A83B', ink = '#141920'
   const cell = (x, y, fill) => `<rect x="${x}" y="${y}" width="14" height="14" rx="2" fill="${fill}"/>`
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  const style = adaptive
+    ? `<style>.k{fill:${ink}}.b{fill:#FFFFFF}@media (prefers-color-scheme:dark){.k{fill:#EEF1F4}.b{fill:${ink}}}</style>`
+    : `<style>.k{fill:${ink}}.b{fill:#FFFFFF}</style>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${boxed ? '0 0 64 64' : '7 7 50 50'}">
   <!-- CF Rentals mark: striped + amber tiles, bolt tile bottom-right -->
-  <rect width="64" height="64" rx="12" fill="#FFFFFF"/>
+  ${style}
+  ${boxed ? '<rect width="64" height="64" rx="12" fill="#FFFFFF"/>' : ''}
   <defs><clipPath id="s"><rect x="8" y="8" width="14" height="14" rx="2"/></clipPath></defs>
   <g clip-path="url(#s)" stroke="${amber}" stroke-width="4" fill="none">
     <path d="M-9.3 30 30 -9.3M0 30 30 0M9.3 30 30 9.3"/>
@@ -95,21 +102,22 @@ function faviconSvg() {
   ${cell(42, 8, amber)}
   ${cell(25, 25, amber)}
   ${cell(42, 25, amber)}
-  ${cell(42, 42, ink)}
-  <path d="M50.7 43.4 46.2 49.7h2.5l-1.4 5.2 4.8-6.6h-2.5z" fill="#FFFFFF"/>
+  <rect class="k" x="42" y="42" width="14" height="14" rx="2"/>
+  <path class="b" d="M50.7 43.4 46.2 49.7h2.5l-1.4 5.2 4.8-6.6h-2.5z"/>
 </svg>
 `
 }
 
 async function buildIcons() {
-  const svg = faviconSvg()
-  fs.writeFileSync(path.join(OUT, 'favicon.svg'), svg)
-  const render = (size, file) =>
-    sharp(Buffer.from(svg), { density: 72 * size / 64 }).resize(size, size).png({ compressionLevel: 9 }).toFile(path.join(OUT, file))
-  await render(32, 'favicon-32.png')
-  await render(180, 'apple-touch-icon.png')
-  await render(192, 'icon-192.png')
-  await render(512, 'icon-512.png')
+  fs.writeFileSync(path.join(OUT, 'favicon.svg'), faviconSvg({ adaptive: true }))
+  const render = (svg, size, file) =>
+    sharp(Buffer.from(svg), { density: 72 * size / 50 }).resize(size, size).png({ compressionLevel: 9 }).toFile(path.join(OUT, file))
+  // Tab icons: transparent. Home-screen icons: keep the white tile (iOS paints transparency black).
+  await render(faviconSvg(), 32, 'favicon-32.png')
+  const boxed = faviconSvg({ boxed: true })
+  await render(boxed, 180, 'apple-touch-icon.png')
+  await render(boxed, 192, 'icon-192.png')
+  await render(boxed, 512, 'icon-512.png')
 }
 
 ;(async () => {

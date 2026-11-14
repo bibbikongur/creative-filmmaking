@@ -61,6 +61,7 @@
             <span v-if="c.quoteId"> · quote {{ c.quoteId }}</span>
           </p>
         </div>
+        <button type="button" class="btn-ghost !px-4 !py-2 !text-xs" @click.prevent.stop="view(c)">View PDF</button>
         <a
           :href="`/api/admin/contracts/${c.id}/pdf`"
           target="_blank"
@@ -81,6 +82,8 @@
         No agreements yet. Pick a quote above, or open a quote and use “Rental agreement” next to its offer.
       </p>
     </div>
+
+    <ContractPdfViewer :src="viewerSrc" :title="viewerTitle" @close="viewerSrc = null" />
   </div>
 </template>
 
@@ -159,6 +162,14 @@ const createBlank = async () => {
   finally {
     creating.value = ''
   }
+}
+
+// In-page PDF viewer
+const viewerSrc = ref<string | null>(null)
+const viewerTitle = ref('')
+const view = (c: RentalContractSummary) => {
+  viewerTitle.value = `Rental agreement ${c.number}${c.renterName ? ` · ${c.renterName}` : ''}`
+  viewerSrc.value = `/api/admin/contracts/${c.id}/pdf?t=${Date.now()}`
 }
 
 const remove = async (c: RentalContractSummary) => {

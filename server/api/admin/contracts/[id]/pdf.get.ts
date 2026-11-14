@@ -6,6 +6,8 @@ export default defineEventHandler(async (event) => {
   const pdf = await generateRentalContractPdf(contract)
   setHeader(event, 'content-type', 'application/pdf')
   setHeader(event, 'cache-control', 'no-store')
-  setHeader(event, 'content-disposition', `inline; filename="rental-agreement-${contract.number}.pdf"`)
+  // ?download=1 saves the file instead of showing it.
+  const disposition = getQuery(event).download ? 'attachment' : 'inline'
+  setHeader(event, 'content-disposition', `${disposition}; filename="rental-agreement-${contract.number}.pdf"`)
   return pdf
 })

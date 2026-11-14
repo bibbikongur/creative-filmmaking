@@ -24,6 +24,9 @@
         <button type="button" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="save()">
           {{ saving ? 'Saving…' : dirty ? 'Save' : 'Saved' }}
         </button>
+        <button type="button" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="preview">
+          {{ dirty ? 'Save & view PDF' : 'View PDF' }}
+        </button>
         <button type="button" class="btn-gold !px-5 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="print">
           Save &amp; print PDF ↗
         </button>
@@ -340,12 +343,17 @@
           <button type="submit" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="saving">
             {{ saving ? 'Saving…' : 'Save' }}
           </button>
+          <button type="button" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="preview">
+            View PDF
+          </button>
           <button type="button" class="btn-gold !px-5 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="print">
             Save &amp; print PDF ↗
           </button>
         </div>
       </div>
     </form>
+
+    <ContractPdfViewer :src="viewerSrc" :title="`Rental agreement ${contract.number}`" @close="viewerSrc = null" />
   </div>
 
   <p v-else-if="loadError" class="text-sm text-signal-500">{{ loadError }}</p>
@@ -508,6 +516,14 @@ const print = async () => {
   const url = `/api/admin/contracts/${contract.value.id}/pdf?t=${Date.now()}`
   if (tab) tab.location.href = url
   else window.open(url, '_blank')
+}
+
+// In-page viewer. The PDF is built from the stored agreement, so unsaved edits are saved first.
+const viewerSrc = ref<string | null>(null)
+const preview = async () => {
+  if (!contract.value) return
+  if (dirty.value && !await save()) return
+  viewerSrc.value = `/api/admin/contracts/${contract.value.id}/pdf?t=${Date.now()}`
 }
 
 const remove = async () => {
