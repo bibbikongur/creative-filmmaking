@@ -9,7 +9,7 @@
     <!-- Image -->
     <div
       class="relative overflow-hidden bg-ink-900 aspect-card"
-      :class="row ? 'md:w-[38%] md:shrink-0 md:aspect-auto md:min-h-[14rem]' : ''"
+      :class="row ? 'md:w-[22rem] lg:w-[26rem] md:shrink-0' : ''"
     >
       <NuxtImg
         v-if="vehicle.images[0]"
@@ -18,7 +18,7 @@
         :alt="lt(vehicle.name)"
         class="w-full h-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-105"
         :class="row ? 'md:absolute md:inset-0' : ''"
-        :sizes="row ? 'xs:100vw md:40vw' : sizes"
+        :sizes="row ? 'xs:100vw md:416px' : sizes"
         format="webp"
         loading="lazy"
       />
