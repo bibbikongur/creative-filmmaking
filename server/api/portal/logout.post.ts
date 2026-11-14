@@ -1,5 +1,4 @@
 export default defineEventHandler(async (event) => {
-  const session = await getPortalSession(event)
-  await session.clear()
+  deleteCookie(event, 'cf-portal', { path: '/' })
   return { ok: true }
 })

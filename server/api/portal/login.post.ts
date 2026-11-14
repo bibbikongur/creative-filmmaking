@@ -9,9 +9,16 @@ const isLocked = (key: string) => {
   return Boolean(entry && entry.lockedUntil > Date.now())
 }
 
-const recordFailure = (key: string) => {
-  const count = (attempts.get(key)?.count ?? 0) + 1
-  attempts.set(key, { count, lockedUntil: count >= MAX_ATTEMPTS ? Date.now() + LOCK_MS : 0 })
+// The per-email lock is what stops a guessing attack spread over many IPs, but
+// it also lets anyone lock a known user out. A higher threshold keeps the
+// first while making the second take a deliberate, sustained effort.
+const MAX_EMAIL_ATTEMPTS = 20
+
+const recordFailure = (key: string, max = MAX_ATTEMPTS) => {
+  const prev = attempts.get(key)
+  // A lock that has run out starts a fresh count.
+  const count = (prev && prev.lockedUntil && prev.lockedUntil <= Date.now() ? 0 : prev?.count ?? 0) + 1
+  attempts.set(key, { count, lockedUntil: count >= max ? Date.now() + LOCK_MS : 0 })
 }
 
 export default defineEventHandler(async (event) => {
@@ -33,7 +40,7 @@ export default defineEventHandler(async (event) => {
 
   const fail = () => {
     recordFailure(`ip:${ip}`)
-    if (email) recordFailure(`email:${email}`)
+    if (email) recordFailure(`email:${email}`, MAX_EMAIL_ATTEMPTS)
     throw createError({ statusCode: 401, statusMessage: 'Wrong email or password.' })
   }
 

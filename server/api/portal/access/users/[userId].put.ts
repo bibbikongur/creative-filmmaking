@@ -13,6 +13,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Company admins always have full access' })
   }
 
+  if (userWorksOutside(companyIds, userId)) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: 'This person also works for another company, so their tool access cannot be changed here.',
+    })
+  }
+
   const body = await readBody<{ tools?: unknown }>(event).catch(() => ({} as Record<string, unknown>))
   const tools = body?.tools === null ? null : sanitizeToolSlugs(body?.tools)
   setToolAccess(userId, tools)

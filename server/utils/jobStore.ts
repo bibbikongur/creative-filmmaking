@@ -57,13 +57,23 @@ export function parsePerDiemRate(value: unknown): number {
   return rate
 }
 
+/**
+ * Job names appear in the subject and body of emails sent from the site's own
+ * address, so they are kept to one line and may not carry a link.
+ */
+const cleanJobName = (raw: unknown) => {
+  // eslint-disable-next-line no-control-regex
+  const name = String(raw ?? '').replace(/[\x00-\x1F\x7F]+/g, ' ').replace(/\s+/g, ' ').trim()
+  return /:\/\/|www\./i.test(name) ? '' : name
+}
+
 export function createJob(companyId: string, name: string): Job {
-  const trimmed = name.trim()
+  const trimmed = cleanJobName(name)
   if (!trimmed || trimmed.length > 120) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Validation failed',
-      data: { errors: ['Job name is required (max 120 characters).'] },
+      data: { errors: ['Job name is required (max 120 characters, no links).'] },
     })
   }
   const id = newPortalId('j')
@@ -114,12 +124,12 @@ export function updateJob(id: string, input: { name?: string, status?: JobStatus
   const db = getDb()
   if (!db.prepare('SELECT id FROM jobs WHERE id = ?').get(id)) return false
   if (input.name !== undefined) {
-    const name = input.name.trim()
+    const name = cleanJobName(input.name)
     if (!name || name.length > 120) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Validation failed',
-        data: { errors: ['Job name is required (max 120 characters).'] },
+        data: { errors: ['Job name is required (max 120 characters, no links).'] },
       })
     }
     db.prepare('UPDATE jobs SET name = ? WHERE id = ?').run(name, id)

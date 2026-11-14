@@ -26,6 +26,8 @@ const sessionOptions = () => {
     name: 'cf-portal',
     password: createHash('sha256').update(`cf-portal-session:${sessionSecret}`).digest('hex'),
     maxAge: 60 * 60 * 24 * 14, // 14 days
+    // Cookie only: no x-cf-portal-session header transport.
+    sessionHeader: false as const,
     cookie: {
       httpOnly: true,
       sameSite: 'lax' as const,
@@ -40,16 +42,20 @@ export const getPortalSession = (event: H3Event) =>
 /** Signed-in user or null — never throws for anonymous visitors. */
 export async function getPortalUser(event: H3Event): Promise<PortalUserPublic | null> {
   if (!portalConfigured()) return null
+  // Read-only: unseal the cookie the request carries instead of useSession(),
+  // which would mint a sealed cookie for every anonymous visitor.
+  const sealed = getCookie(event, 'cf-portal')
+  if (!sealed) return null
   try {
-    const session = await getPortalSession(event)
-    if (!session.data.uid) return null
+    const session = await unsealSession(event, sessionOptions(), sealed) as { data?: PortalSession }
+    if (!session.data?.uid) return null
     const user = getUserById(session.data.uid)
     if (!user || user.status !== 'active') return null
     // Reject cookies issued before the last credential change. Cookies predating
     // this feature carry no epoch (→ 0), matching the default epoch of accounts
     // that never reset, so existing sessions survive the rollout.
     const epoch = getUserEpoch(user.id) ?? 0
-    if ((session.data.epoch ?? 0) !== epoch) return null
+    if ((session.data?.epoch ?? 0) !== epoch) return null
     return user
   }
   catch {

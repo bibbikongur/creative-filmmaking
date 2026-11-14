@@ -11,7 +11,7 @@ const TOOL_ROUTES: { pattern: RegExp, slugs: string[] }[] = [
   { pattern: /^\/api\/portal\/tools\/recce-plans(\/|$)/, slugs: ['recce-plan'] },
   { pattern: /^\/api\/portal\/tools\/purchase-orders(\/|$)/, slugs: ['purchase-orders'] },
   // Shared helper used by both map-based tools — allowed with either.
-  { pattern: /^\/api\/portal\/tools\/resolve-maps-link$/, slugs: ['location-map', 'recce-plan'] },
+  { pattern: /^\/api\/portal\/tools\/resolve-maps-link(\/|$)/, slugs: ['location-map', 'recce-plan'] },
   { pattern: /^\/api\/portal\/jobs\/[^/]+\/purchase-orders(\/|$)/, slugs: ['purchase-orders'] },
 ]
 

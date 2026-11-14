@@ -143,8 +143,21 @@ export function getReccePlan(userId: string, id: string): ReccePlanDoc | null {
   return row ? rowToDoc(row) : null
 }
 
+/** Total JSON one user may store across all their plans (plans embed photos). */
+const MAX_USER_PLAN_BYTES = 300 * 1024 * 1024
+
+/** Per-user ceiling: plan blobs live in the database file itself. */
+function assertPlanQuota(userId: string, incomingBytes: number, replacingId?: string) {
+  const { used } = getDb().prepare('SELECT COALESCE(SUM(LENGTH(data)), 0) AS used FROM recce_plans WHERE user_id = ? AND id != ?')
+    .get(userId, replacingId ?? '') as { used: number }
+  if (used + incomingBytes > MAX_USER_PLAN_BYTES) {
+    fail('Your recce plan storage is full. Delete some plans before saving more.')
+  }
+}
+
 export function createReccePlan(userId: string, name: string, data: ReccePlanData, jobId: string | null = null): ReccePlanDoc {
   const now = new Date().toISOString()
+  assertPlanQuota(userId, JSON.stringify(data).length)
   const id = newPortalId('rp')
   getDb().prepare('INSERT INTO recce_plans (id, user_id, job_id, created_at, updated_at, name, data) VALUES (?, ?, ?, ?, ?, ?, ?)')
     .run(id, userId, jobId, now, now, name, JSON.stringify(data))
@@ -160,6 +173,7 @@ export function updateReccePlan(
   if (!existing) return null
   const name = patch.name ?? existing.name
   const data = patch.data ?? existing.data
+  if (patch.data) assertPlanQuota(userId, JSON.stringify(data).length, id)
   const now = new Date().toISOString()
   getDb().prepare('UPDATE recce_plans SET name = ?, data = ?, updated_at = ? WHERE id = ? AND user_id = ?')
     .run(name, JSON.stringify(data), now, id, userId)

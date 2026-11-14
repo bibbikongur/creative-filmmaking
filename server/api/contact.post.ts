@@ -20,18 +20,31 @@ const isRateLimited = (ip: string) => {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<ContactPayload>(event)
+  const raw = await readBody<ContactPayload>(event).catch(() => null)
+  if (!raw || typeof raw !== 'object') {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid submission' })
+  }
 
   // Honeypot filled → a bot. Pretend success so it doesn't adapt.
-  if (body.website) {
+  if (raw.website) {
     return { ok: true }
   }
 
-  const name = body.name?.trim()
-  const email = body.email?.trim()
-  const message = body.message?.trim()
+  // One-line text fields: strings only, control characters out, length capped.
+  const line = (v: unknown, max: number) =>
+    // eslint-disable-next-line no-control-regex
+    typeof v === 'string' ? v.replace(/[\u0000-\u001F\u007F]+/g, ' ').trim().slice(0, max) : ''
+  const body = {
+    phone: line(raw.phone, 60),
+    company: line(raw.company, 200),
+    dates: line(raw.dates, 200),
+    vehicle: line(raw.vehicle, 200),
+  }
+  const name = line(raw.name, 201)
+  const email = line(raw.email, 201)
+  const message = typeof raw.message === 'string' ? raw.message.trim() : ''
 
-  if (!name || !email || !message || !EMAIL_RE.test(email) || message.length > 5000 || name.length > 200) {
+  if (!name || !email || !message || !EMAIL_RE.test(email) || email.length > 200 || message.length > 5000 || name.length > 200) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid submission' })
   }
 
@@ -69,7 +82,7 @@ export default defineEventHandler(async (event) => {
     await mailer.createTransport().sendMail({
       from: `"Creative Filmmaking" <${mailer.fromAddress}>`,
       to: mailer.contactTo,
-      replyTo: `"${name.replace(/"/g, '')}" <${email}>`,
+      replyTo: { name, address: email },
       subject: `[Creative Filmmaking] Offer request: ${vehicle}`,
       text: lines,
     })

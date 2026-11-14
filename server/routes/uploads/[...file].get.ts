@@ -19,6 +19,8 @@ const RESIZABLE = new Set(['.jpg', '.jpeg', '.png', '.webp'])
 // no matter what w= values clients invent.
 const WIDTHS = [120, 240, 320, 480, 640, 960, 1280, 1600, 2048]
 
+const QUALITIES = [40, 60, 80, 90]
+
 const OUTPUT = {
   avif: { ext: '.avif', type: 'image/avif' },
   webp: { ext: '.webp', type: 'image/webp' },
@@ -47,7 +49,10 @@ const OG_SIZE = { width: 1200, height: 630 } as const
  */
 export default defineEventHandler(async (event) => {
   // basename() strips any path segments — no traversal out of the uploads dir.
-  const name = basename(decodeURIComponent(getRouterParam(event, 'file') || ''))
+  let decoded = ''
+  try { decoded = decodeURIComponent(getRouterParam(event, 'file') || '') }
+  catch { /* malformed escape → 404 below */ }
+  const name = basename(decoded)
   const ext = extname(name).toLowerCase()
   const type = MIME[ext]
   if (!name || name.startsWith('.') || !type) {
@@ -85,7 +90,12 @@ export default defineEventHandler(async (event) => {
   if (requested === 'webp') setHeader(event, 'vary', 'Accept')
   const rawQ = Number.parseInt(String(query.q ?? ''), 10)
   // avif reaches webp-80 visual quality around q60 at a fraction of the bytes.
-  const quality = rawQ >= 20 && rawQ <= 100 ? rawQ : fmt === 'avif' ? 60 : 80
+  // Quality snaps to a short ladder, like widths: every distinct value is a
+  // separate encode and a separate file on the data volume, so a free 20-100
+  // range would let anyone fill the disk the database lives on.
+  const quality = rawQ >= 20 && rawQ <= 100
+    ? QUALITIES.reduce((best, q) => Math.abs(q - rawQ) < Math.abs(best - rawQ) ? q : best)
+    : fmt === 'avif' ? 60 : 80
   const out = OUTPUT[fmt]
   setHeader(event, 'content-type', out.type)
 

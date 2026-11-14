@@ -67,6 +67,12 @@ export function getOrCreateWeek(userId: string, jobId: string, weekStart: string
   const existing = db.prepare('SELECT * FROM timesheet_weeks WHERE user_id = ? AND job_id = ? AND week_start = ?')
     .get(userId, jobId, weekStart) as Record<string, unknown> | undefined
   if (existing) return rowToWeek(existing)
+  // New rows only for a plausible window: without it any member could mint a
+  // row for every Monday between year 0 and 9999 just by requesting them.
+  const today = new Date().toISOString().slice(0, 10)
+  if (weekStart < addDays(today, -730) || weekStart > addDays(today, 90)) {
+    throw createError({ statusCode: 400, statusMessage: 'That week is outside the allowed range.' })
+  }
   const result = db.prepare(`
     INSERT INTO timesheet_weeks (job_id, user_id, week_start, status) VALUES (?, ?, ?, 'draft')
   `).run(jobId, userId, weekStart)
@@ -316,10 +322,19 @@ function addEvent(weekId: number, actorUserId: string, type: WeekEventType, deta
     .run(weekId, new Date().toISOString(), actorUserId, type, detail === undefined ? null : JSON.stringify(detail))
 }
 
-function assertFrom(week: TimesheetWeek, allowedFrom: WeekStatus[], to: string) {
-  if (!allowedFrom.includes(week.status)) {
-    throw createError({ statusCode: 409, statusMessage: `Cannot change a ${week.status} week to ${to}.` })
+/**
+ * Guards a transition against the week's CURRENT row, re-read inside the
+ * caller's transaction. The `week` a handler loaded can be stale by the time
+ * it gets here (it awaits the request body in between), and a stale status
+ * would let a slow request rewrite a week that was approved in the meantime.
+ */
+function assertFrom(week: TimesheetWeek, allowedFrom: WeekStatus[], to: string): TimesheetWeek {
+  const current = getWeekById(week.id)
+  if (!current) throw createError({ statusCode: 404, statusMessage: 'Timesheet not found' })
+  if (!allowedFrom.includes(current.status)) {
+    throw createError({ statusCode: 409, statusMessage: `Cannot change a ${current.status} week to ${to}.` })
   }
+  return current
 }
 
 export function submitWeek(week: TimesheetWeek, actorUserId: string) {
@@ -359,8 +374,8 @@ export function approveWeek(week: TimesheetWeek, actorUserId: string, snapshot: 
 export function confirmWeek(week: TimesheetWeek, actorUserId: string, snapshot: WeekPayroll) {
   const db = getDb()
   db.transaction(() => {
-    assertFrom(week, ['altered'], 'approved')
-    if (week.alteredTarget === 'dept_approved') {
+    const current = assertFrom(week, ['altered'], 'approved')
+    if (current.alteredTarget === 'dept_approved') {
       db.prepare('UPDATE timesheet_weeks SET status = \'dept_approved\', dept_approved_at = ?, dept_approved_by = ?, altered_target = NULL WHERE id = ?')
         .run(new Date().toISOString(), actorUserId, week.id)
     }
@@ -448,12 +463,21 @@ export function getWeekEvents(weekId: number): WeekEvent[] {
   }))
 }
 
-export function getShiftsForUser(userId: string, jobId: string, from: string, to: string): PayrollShift[] {
+/**
+ * Shifts feeding a week's payroll: the week's own entries plus the lookback.
+ * Lookback shifts only count once their week has been submitted. Draft weeks
+ * are freely editable by the member and never reviewed, so letting them seed
+ * rest-gap penalties and the 7th-day streak would let a member raise the pay
+ * of a later week without any reviewer seeing why.
+ */
+export function getShiftsForUser(userId: string, jobId: string, from: string, to: string, weekId: number): PayrollShift[] {
   return (getDb().prepare(`
-    SELECT date, start_min, end_min FROM time_entries
-    WHERE user_id = ? AND job_id = ? AND date >= ? AND date <= ?
-    ORDER BY date, start_min
-  `).all(userId, jobId, from, to) as Record<string, unknown>[])
+    SELECT e.date, e.start_min, e.end_min FROM time_entries e
+    JOIN timesheet_weeks w ON w.id = e.week_id
+    WHERE e.user_id = ? AND e.job_id = ? AND e.date >= ? AND e.date <= ?
+      AND (e.week_id = ? OR w.status != 'draft')
+    ORDER BY e.date, e.start_min
+  `).all(userId, jobId, from, to, weekId) as Record<string, unknown>[])
     .map(r => ({ date: r.date as string, startMin: r.start_min as number, endMin: r.end_min as number }))
 }
 
@@ -465,7 +489,7 @@ export function getShiftsForUser(userId: string, jobId: string, from: string, to
 export function computeWeekPayroll(week: TimesheetWeek): WeekPayroll | null {
   const dayRate = getMemberDayRate(week.jobId, week.userId)
   if (dayRate === null) return null
-  const shifts = getShiftsForUser(week.userId, week.jobId, addDays(week.weekStart, -LOOKBACK_DAYS), addDays(week.weekStart, 6))
+  const shifts = getShiftsForUser(week.userId, week.jobId, addDays(week.weekStart, -LOOKBACK_DAYS), addDays(week.weekStart, 6), week.id)
   const flags: Record<string, PayrollDayFlags> = {}
   for (const f of getDayFlags(week.id)) flags[f.date] = { perDiem: f.perDiem, runningLunch: f.runningLunch }
   return computePayroll(shifts, dayRate, week.weekStart, addDays(week.weekStart, 6), {

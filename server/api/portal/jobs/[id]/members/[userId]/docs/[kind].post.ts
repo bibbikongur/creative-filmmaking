@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, statusMessage: 'Place a signature field before sending.' })
   }
 
+  assertInviteMailAllowed(user.id, member.email)
   const { doc, token } = createSigningRequest({ jobId: id, userId, kind, sentBy: user.id })
 
   const companyName = getCompanySummary(job.companyId)?.name ?? 'Creative Filmmaking'

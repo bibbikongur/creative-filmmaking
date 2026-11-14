@@ -19,6 +19,11 @@ export default defineEventHandler(async (event) => {
   if (!ctx.isJobAdmin && (order.createdById !== ctx.user.id || !ctx.canLog)) {
     throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
   }
+  // Once an order is approved, rejected or paid its receipt is evidence: only
+  // an admin may replace it (replacing deletes the previous file).
+  if (!ctx.isJobAdmin && order.status !== 'pending') {
+    throw createError({ statusCode: 409, statusMessage: 'This order has been reviewed. Ask an admin to change the attachment.' })
+  }
 
   const parts = (await readMultipartFormData(event)) ?? []
   const file = parts.find(p => p.name === 'file' && p.filename)

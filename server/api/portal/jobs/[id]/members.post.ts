@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')!
-  const { companyId } = await requireJobAdmin(event, id)
+  const { companyId, user } = await requireJobAdmin(event, id)
 
   const job = getJob(id)!
   if (job.status !== 'active') {
@@ -13,9 +13,10 @@ export default defineEventHandler(async (event) => {
     role?: string, phone?: string
   }>(event)
   const locale = body?.locale === 'en' ? 'en' : 'is'
+  assertInviteMailAllowed(user.id, String(body?.email ?? ''))
   const { member, inviteToken } = addMember(id, {
     email: String(body?.email ?? ''),
-    name: String(body?.name ?? '').trim() || undefined,
+    name: cleanPersonName(body?.name),
     dayRate: body?.dayRate as number,
     locale,
     departmentId: body?.departmentId ?? null,

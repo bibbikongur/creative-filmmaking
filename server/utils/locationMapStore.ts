@@ -306,8 +306,21 @@ export function getLocationMap(userId: string, id: string): LocationMapDoc | nul
   return row ? rowToDoc(row) : null
 }
 
+/** Total JSON one user may store across all their maps (maps embed images). */
+const MAX_USER_MAP_BYTES = 400 * 1024 * 1024
+
+/** Per-user ceiling: map blobs live in the database file itself. */
+function assertMapQuota(userId: string, incomingBytes: number, replacingId?: string) {
+  const { used } = getDb().prepare('SELECT COALESCE(SUM(LENGTH(pages)), 0) AS used FROM location_maps WHERE user_id = ? AND id != ?')
+    .get(userId, replacingId ?? '') as { used: number }
+  if (used + incomingBytes > MAX_USER_MAP_BYTES) {
+    fail('Your map storage is full. Delete some maps before saving more.')
+  }
+}
+
 export function createLocationMap(userId: string, name: string, pages: LocationMapPage[], jobId: string | null = null): LocationMapDoc {
   const now = new Date().toISOString()
+  assertMapQuota(userId, JSON.stringify(pages).length)
   const id = newPortalId('lm')
   getDb().prepare('INSERT INTO location_maps (id, user_id, job_id, created_at, updated_at, name, pages) VALUES (?, ?, ?, ?, ?, ?, ?)')
     .run(id, userId, jobId, now, now, name, JSON.stringify(pages))
@@ -324,6 +337,7 @@ export function updateLocationMap(
   if (!existing) return null
   const name = patch.name ?? existing.name
   const pages = patch.pages ?? existing.pages
+  if (patch.pages) assertMapQuota(userId, JSON.stringify(pages).length, id)
   const now = new Date().toISOString()
   db.prepare('UPDATE location_maps SET name = ?, pages = ?, updated_at = ? WHERE id = ? AND user_id = ?')
     .run(name, JSON.stringify(pages), now, id, userId)

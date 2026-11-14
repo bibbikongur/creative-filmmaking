@@ -34,6 +34,8 @@ const MAX_CAPTION = 300
 const MAX_DEPTH = 8
 /** A stored photo (already downscaled client-side to ~2560px). */
 export const MAX_PHOTO_BYTES = 20 * 1024 * 1024
+/** Total stored photo bytes one user may hold across all folders. */
+const MAX_USER_PHOTO_BYTES = 5 * 1024 * 1024 * 1024
 /** The grid thumbnail (client-side, ~480px). */
 export const MAX_THUMB_BYTES = 3 * 1024 * 1024
 
@@ -397,6 +399,14 @@ export function addPhoto(userId: string, albumId: string, input: {
   const kind = sniffImage(input.full)
   if (!kind) fail('Images must be a JPEG, PNG or WebP file.')
   if (!sniffImage(input.thumb)) fail('The thumbnail is not a valid image.')
+
+  // Per-user ceiling: the photos share a volume with the database, so one
+  // account must not be able to fill it.
+  const { used } = db.prepare('SELECT COALESCE(SUM(size), 0) AS used FROM location_photos WHERE user_id = ?')
+    .get(userId) as { used: number }
+  if (used + input.full.length > MAX_USER_PHOTO_BYTES) {
+    fail('Your photo storage is full. Delete some photos or folders before adding more.')
+  }
 
   const id = newPortalId('lp')
   const stamp = `${Date.now().toString(36)}-${id}`

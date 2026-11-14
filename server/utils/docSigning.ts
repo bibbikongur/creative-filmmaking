@@ -42,7 +42,15 @@ const dataUrlToPng = (dataUrl: string): Buffer => {
   if (!m) {
     throw createError({ statusCode: 400, statusMessage: 'Signature must be a PNG image.' })
   }
-  return Buffer.from(m[1]!, 'base64')
+  const png = Buffer.from(m[1]!, 'base64')
+  // A small file can declare enormous dimensions and inflate to gigabytes when
+  // decoded. Read width/height from the IHDR chunk and refuse anything a
+  // signature canvas would never produce.
+  const isPng = png.length > 24 && png.readUInt32BE(0) === 0x89504E47 && png.toString('latin1', 12, 16) === 'IHDR'
+  if (!isPng || png.readUInt32BE(16) > 4000 || png.readUInt32BE(20) > 4000) {
+    throw createError({ statusCode: 400, statusMessage: 'Signature must be a PNG image.' })
+  }
+  return png
 }
 
 export async function stampSignedPdf(input: {

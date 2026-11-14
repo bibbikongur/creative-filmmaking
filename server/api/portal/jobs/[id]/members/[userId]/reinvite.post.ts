@@ -1,11 +1,12 @@
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')!
-  const { companyId } = await requireJobAdmin(event, id)
+  const { companyId, user } = await requireJobAdmin(event, id)
   const userId = getRouterParam(event, 'userId')!
 
   const member = listMembers(id).find(m => m.userId === userId)
   if (!member) throw createError({ statusCode: 404, statusMessage: 'Member not found' })
 
+  assertInviteMailAllowed(user.id, member.email)
   const token = reissueInvite(userId)
   if (!token) {
     throw createError({ statusCode: 409, statusMessage: 'This member has already activated their account.' })

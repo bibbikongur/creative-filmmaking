@@ -93,6 +93,22 @@ export function adminManagesUser(adminCompanyIds: string[], targetId: string): b
   `).get(targetId, ...adminCompanyIds))
 }
 
+/**
+ * Is the target also an active member of a job in a company the caller does
+ * NOT administer? tool_access is a single per-user setting, so changing it for
+ * such a person would reach into the other company's jobs.
+ */
+export function userWorksOutside(adminCompanyIds: string[], targetId: string): boolean {
+  if (!adminCompanyIds.length) return true
+  const placeholders = adminCompanyIds.map(() => '?').join(', ')
+  return Boolean(getDb().prepare(`
+    SELECT 1 FROM job_members m
+    JOIN jobs j ON j.id = m.job_id
+    JOIN companies c ON c.id = j.company_id AND c.status = 'active'
+    WHERE m.user_id = ? AND m.status = 'active' AND j.company_id NOT IN (${placeholders})
+  `).get(targetId, ...adminCompanyIds))
+}
+
 export interface ToolAccessUser {
   id: string
   email: string

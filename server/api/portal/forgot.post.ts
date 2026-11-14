@@ -1,4 +1,6 @@
 const isRateLimited = makeRateLimiter(60_000, 5)
+// Per address too, so rotating IPs cannot bury one user in reset emails.
+const addressFlooded = makeRateLimiter(60 * 60 * 1000, 3)
 
 export default defineEventHandler(async (event) => {
   if (!portalConfigured()) {
@@ -14,7 +16,7 @@ export default defineEventHandler(async (event) => {
   const email = String(body?.email ?? '').trim()
 
   // Always 200 — never reveal whether an account exists.
-  if (isValidEmail(email)) {
+  if (isValidEmail(email) && !addressFlooded(email.toLowerCase())) {
     const result = startPasswordReset(email)
     if (result) {
       await sendPasswordResetEmail({ email: result.user.email, locale: result.user.locale, token: result.token })

@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   if (!order || (!ctx.viewAll && !ctx.departmentIds.includes(order.departmentId ?? null))) {
     throw createError({ statusCode: 404, statusMessage: 'Order not found' })
   }
-  const mayDelete = ctx.isJobAdmin || (order.createdById === ctx.user.id && order.status === 'pending')
+  const mayDelete = ctx.isJobAdmin || (order.createdById === ctx.user.id && ctx.canLog && order.status === 'pending')
   if (!mayDelete) throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
 
   deletePurchaseOrder(id, poId)

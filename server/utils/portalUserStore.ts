@@ -51,6 +51,27 @@ export function getCredentials(email: string): { id: string, status: PortalUserS
 
 export const normalizeEmail = (email: string) => email.trim().toLowerCase()
 
+/**
+ * A person's display name as it may be stored and put into emails: one line,
+ * at most 120 characters, and never a link. The name opens the invite and
+ * sign-request emails sent from the site's own address, so free text here
+ * would let whoever adds a member write that email's first paragraph.
+ */
+export function cleanPersonName(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') return undefined
+  // eslint-disable-next-line no-control-regex
+  const name = raw.replace(/[\x00-\x1F\x7F]+/g, ' ').replace(/\s+/g, ' ').trim()
+  if (!name) return undefined
+  if (name.length > 120 || /:\/\/|www\./i.test(name)) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Validation failed',
+      data: { errors: ['Name must be at most 120 characters and cannot contain a link.'] },
+    })
+  }
+  return name
+}
+
 export const isValidEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 200
 
@@ -65,6 +86,7 @@ export function ensureUserForInvite(email: string, opts: { name?: string, locale
   inviteToken: string | null
 } {
   const db = getDb()
+  const cleanName = cleanPersonName(opts.name)
   const existing = getUserByEmail(email)
 
   if (existing) {
@@ -84,7 +106,7 @@ export function ensureUserForInvite(email: string, opts: { name?: string, locale
   db.prepare(`
     INSERT INTO portal_users (id, created_at, email, name, status, locale, token_hash, token_expires_at, token_purpose)
     VALUES (?, ?, ?, ?, 'invited', ?, ?, ?, 'invite')
-  `).run(id, new Date().toISOString(), normalizeEmail(email), opts.name?.trim() || null, opts.locale, tokenHash, expiresAt)
+  `).run(id, new Date().toISOString(), normalizeEmail(email), cleanName ?? null, opts.locale, tokenHash, expiresAt)
   return { user: getUserById(id)!, inviteToken: token }
 }
 
@@ -119,7 +141,7 @@ export function acceptInvite(rawToken: string, input: { password: string, name?:
         token_hash = NULL, token_expires_at = NULL, token_purpose = NULL,
         session_epoch = session_epoch + 1
     WHERE id = ?
-  `).run(hashPassword(input.password), input.name?.trim() || null, user.id)
+  `).run(hashPassword(input.password), cleanPersonName(input.name) ?? null, user.id)
   return getUserById(user.id)
 }
 

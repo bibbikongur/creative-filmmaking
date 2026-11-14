@@ -88,6 +88,22 @@ const STRINGS = {
   },
 } as const
 
+// Invite and sign-request emails go to an address the sender typed in, from
+// the site's own From address. Two hourly caps keep that from being used to
+// flood one inbox (re-sending) or to mail a long list of strangers.
+const recipientFlooded = makeRateLimiter(60 * 60 * 1000, 5)
+const senderFlooded = makeRateLimiter(60 * 60 * 1000, 300)
+
+/** Call before issuing an invite / sign-request token. Throws 429 when over the cap. */
+export function assertInviteMailAllowed(senderId: string, recipientEmail: string) {
+  if (recipientFlooded(recipientEmail.trim().toLowerCase()) || senderFlooded(senderId)) {
+    throw createError({
+      statusCode: 429,
+      statusMessage: 'Too many emails sent in the last hour. Try again later.',
+    })
+  }
+}
+
 const portalUrl = (locale: LocaleCode, path = '') => {
   const base = String(useRuntimeConfig().public.siteUrl).replace(/\/$/, '')
   return `${base}${locale === 'en' ? '/en' : ''}/portal${path}`
