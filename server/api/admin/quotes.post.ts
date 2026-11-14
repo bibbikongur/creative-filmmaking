@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   const items: NewQuoteInput['items'] = []
   const seen = new Set<string>()
   for (const raw of body.items!) {
-    const qty = Math.max(1, Math.round(Number(raw?.qty)) || 1)
+    const qty = Math.min(9999, Math.max(1, Math.round(Number(raw?.qty)) || 1))
     const note = typeof raw?.note === 'string' ? raw.note.trim().slice(0, 200) || undefined : undefined
     const key = `${raw?.type}:${raw?.id}`
     if (seen.has(key)) continue

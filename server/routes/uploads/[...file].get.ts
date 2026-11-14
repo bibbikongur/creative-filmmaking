@@ -21,6 +21,13 @@ const WIDTHS = [120, 240, 320, 480, 640, 960, 1280, 1600, 2048]
 
 const QUALITIES = [40, 60, 80, 90]
 
+// Decode ceiling (100 megapixels, far above any camera original): a small
+// file that decompresses to a huge bitmap must not take the memory with it.
+const MAX_INPUT_PIXELS = 100_000_000
+
+// Encodes in progress, by cache path (see encodeVariant below).
+const inFlight = new Map<string, Promise<Buffer>>()
+
 const OUTPUT = {
   avif: { ext: '.avif', type: 'image/avif' },
   webp: { ext: '.webp', type: 'image/webp' },
@@ -110,28 +117,40 @@ export default defineEventHandler(async (event) => {
     return sendStream(event, createReadStream(cachePath))
   }
 
-  // .rotate() bakes in EXIF orientation, which webp/avif output would otherwise lose.
-  // The share crop is always exactly 1200×630 (scrapers trust the declared
-  // og:image dimensions); everything else only ever shrinks.
-  const image = sharp(path).rotate().resize(ogCrop
-    ? { width: OG_SIZE.width, height: OG_SIZE.height, fit, background: '#ffffff' }
-    : { width, withoutEnlargement: true })
-  const buf = fmt === 'jpeg'
-    ? await image.jpeg({ quality, mozjpeg: true }).toBuffer()
-    : fmt === 'avif'
-      ? await image.avif({ quality, effort: 4 }).toBuffer()
-      : await image.webp({ quality }).toBuffer()
-
-  // Cache best-effort: write to a unique temp name, then rename. A concurrent
-  // request may win the rename race — fine, serving the buffer still works.
-  try {
-    await fs.mkdir(cacheDir, { recursive: true })
-    const tmp = `${cachePath}.${process.pid}-${Math.random().toString(36).slice(2)}.tmp`
-    await fs.writeFile(tmp, buf)
-    await fs.rename(tmp, cachePath).catch(() => fs.unlink(tmp).catch(() => {}))
+  // One encode per variant at a time: parallel requests for the same uncached
+  // variant share it instead of each starting their own (an avif encode at
+  // 2048px is slow enough that a burst of them would pin the CPU).
+  let pending = inFlight.get(cachePath)
+  if (!pending) {
+    pending = encodeVariant().finally(() => inFlight.delete(cachePath))
+    inFlight.set(cachePath, pending)
   }
-  catch { /* serving the response matters more than caching it */ }
+  const buf = await pending
 
   setHeader(event, 'content-length', buf.length)
   return buf
+
+  async function encodeVariant(): Promise<Buffer> {
+    // .rotate() bakes in EXIF orientation, which webp/avif output would otherwise lose.
+    // The share crop is always exactly 1200×630 (scrapers trust the declared
+    // og:image dimensions); everything else only ever shrinks.
+    const image = sharp(path, { limitInputPixels: MAX_INPUT_PIXELS }).rotate().resize(ogCrop
+      ? { width: OG_SIZE.width, height: OG_SIZE.height, fit, background: '#ffffff' }
+      : { width, withoutEnlargement: true })
+    const encoded = fmt === 'jpeg'
+      ? await image.jpeg({ quality, mozjpeg: true }).toBuffer()
+      : fmt === 'avif'
+        ? await image.avif({ quality, effort: 4 }).toBuffer()
+        : await image.webp({ quality }).toBuffer()
+
+    // Cache best-effort: write to a unique temp name, then rename.
+    try {
+      await fs.mkdir(cacheDir, { recursive: true })
+      const tmp = `${cachePath}.${process.pid}-${Math.random().toString(36).slice(2)}.tmp`
+      await fs.writeFile(tmp, encoded)
+      await fs.rename(tmp, cachePath).catch(() => fs.unlink(tmp).catch(() => {}))
+    }
+    catch { /* serving the response matters more than caching it */ }
+    return encoded
+  }
 })

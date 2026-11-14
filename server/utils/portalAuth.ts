@@ -256,9 +256,10 @@ export interface WeekReviewContext {
  * department (dept approver, and not the submitter). Anyone else → 404.
  */
 export async function requireWeekReviewer(event: H3Event, weekId: number): Promise<WeekReviewContext> {
+  // Sign-in first: otherwise 404 vs 401 tells an anonymous caller which ids exist.
+  const user = await requirePortalUser(event)
   const week = Number.isInteger(weekId) ? getWeekById(weekId) : null
   if (!week) throw createError({ statusCode: 404, statusMessage: 'Timesheet not found' })
-  const user = await requirePortalUser(event)
 
   const companyRow = getDb().prepare(`
     SELECT j.company_id FROM jobs j

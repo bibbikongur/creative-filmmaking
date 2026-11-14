@@ -38,6 +38,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'This signing link is invalid or has expired.' })
   }
 
+  // The PDF was replaced after this link went out: what the signer read is not
+  // what would be stamped. Their signature must never land on a document they
+  // were not sent.
+  if (template.uploadedAt > req.sentAt) {
+    throw createError({ statusCode: 409, statusMessage: 'This document was changed after the link was sent. Ask for a new link.' })
+  }
+
   const pdf = await fs.readFile(templateFilePath(template.fileName)).catch(() => null)
   if (!pdf) {
     throw createError({ statusCode: 409, statusMessage: 'Document is missing. Ask for a new link.' })
@@ -64,7 +71,11 @@ export default defineEventHandler(async (event) => {
   const fileName = `${Date.now().toString(36)}-${randomBytes(6).toString('hex')}.pdf`
   mkdirSync(signedDocsDir(), { recursive: true })
   await fs.writeFile(join(signedDocsDir(), fileName), stamped)
-  completeSigning(req.id, { signedName, ip, fileName })
+  if (!completeSigning(req.id, { signedName, ip, fileName })) {
+    // Signed or declined by a parallel request while this one was stamping.
+    await fs.unlink(join(signedDocsDir(), fileName)).catch(() => {})
+    throw createError({ statusCode: 409, statusMessage: 'This signing link has already been used.' })
+  }
 
   // Copies to the signer and the admin who sent it, in each one's language.
   const attachmentName = `${req.kind}-${job.name.replace(/[^\w-]+/g, '_')}.pdf`.toLowerCase()

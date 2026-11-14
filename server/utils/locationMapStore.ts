@@ -68,7 +68,7 @@ export function validatePages(input: unknown): LocationMapPage[] {
     let imageW: number | undefined
     let imageH: number | undefined
     if (base === 'image') {
-      if (typeof p.image !== 'string' || !/^data:image\/(jpeg|png|webp);base64,/.test(p.image)) {
+      if (typeof p.image !== 'string' || !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(p.image)) {
         fail(`${where}: image pages need an uploaded picture.`)
       }
       image = p.image as string
@@ -170,7 +170,9 @@ export function validatePages(input: unknown): LocationMapPage[] {
         // Custom uploaded sign: a small raster data URL (resized client-side).
         const custom = str(g.custom, 400000)
         if (custom) {
-          if (!/^data:image\/(png|jpeg|webp);base64,/.test(custom)) fail(`${where}: bad custom sign image.`)
+          // Whole string, not just the prefix: the editor puts this value in an
+          // HTML attribute, so a quote in it must never get stored.
+          if (!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(custom)) fail(`${where}: bad custom sign image.`)
           const cw = Math.round(num(g.customW, `${where} custom sign width`, 2000))
           const ch = Math.round(num(g.customH, `${where} custom sign height`, 2000))
           if (cw <= 0 || ch <= 0) fail(`${where}: bad custom sign dimensions.`)

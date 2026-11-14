@@ -30,8 +30,12 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody<{ email?: string, password?: string }>(event).catch(() => ({} as Record<string, string>))
-  const email = normalizeEmail(String(body?.email ?? ''))
-  const password = String(body?.password ?? '')
+  // The email becomes a key in the lockout map: anything that is not a
+  // plausible address is dropped first, so a caller cannot park megabytes of
+  // junk in memory per failed attempt. (It still fails, against the IP only.)
+  const rawEmail = String(body?.email ?? '')
+  const email = rawEmail.length <= 200 && isValidEmail(rawEmail.trim()) ? normalizeEmail(rawEmail) : ''
+  const password = String(body?.password ?? '').slice(0, 1024)
 
   const ip = getClientIp(event)
   if (isLocked(`ip:${ip}`) || (email && isLocked(`email:${email}`))) {
@@ -54,7 +58,9 @@ export default defineEventHandler(async (event) => {
   }
   if (!verifyPassword(password, creds!.passwordHash)) fail()
 
-  attempts.delete(`ip:${ip}`)
+  // Only the account's own counter is cleared. Clearing the IP counter too
+  // would let anyone with an account reset it between guesses at someone
+  // else's password; it simply runs out on its own.
   attempts.delete(`email:${email}`)
 
   const session = await getPortalSession(event)

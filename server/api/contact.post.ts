@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const ip = getClientIp(event)
-  if (isRateLimited(ip)) {
+  if (isRateLimited(ip) || publicFormsFlooded()) {
     throw createError({ statusCode: 429, statusMessage: 'Too many requests' })
   }
 

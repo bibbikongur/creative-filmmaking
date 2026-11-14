@@ -20,6 +20,11 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'This signing link is invalid or has expired.' })
   }
 
+  // Same rule as sign.post: a PDF replaced after the link went out voids the link.
+  if (template.uploadedAt > req.sentAt) {
+    throw createError({ statusCode: 409, statusMessage: 'This document was changed after the link was sent. Ask for a new link.' })
+  }
+
   markViewed(req.id)
 
   return {

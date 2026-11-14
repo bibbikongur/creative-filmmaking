@@ -131,7 +131,11 @@ const renderPins = () => {
   for (const pin of pins.value) {
     // Chosen options are drawn with a star; every pin uses its location's color.
     const m = L.marker([pin.lat, pin.lng], { icon: pinDivIcon(L, pin.color, pin.chosen ? '★' : ' ') }).addTo(map)
-    m.bindTooltip(pin.chosen ? `★ ${pin.name}` : pin.name, { direction: 'top', offset: [0, -34], opacity: 0.95 })
+    // Leaflet treats a string as HTML: hand it a text node so a folder name
+    // can never be parsed as markup.
+    const label = document.createElement('span')
+    label.textContent = pin.chosen ? `★ ${pin.name}` : pin.name
+    m.bindTooltip(label, { direction: 'top', offset: [0, -34], opacity: 0.95 })
     m.on('click', () => { selected.value = pin })
     latlngs.push([pin.lat, pin.lng])
   }

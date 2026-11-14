@@ -4,7 +4,8 @@ import type { H3Event } from 'h3'
 // ─────────────────────────────────────────────────────────────────────────────
 // Single-password admin auth. NUXT_ADMIN_PASSWORD unlocks the panel; the
 // session lives in a sealed (encrypted) cookie. Changing the password
-// invalidates all sessions.
+// invalidates all sessions. An optional second factor (authenticator app) is
+// layered on top: see adminTwoFactor.ts.
 //
 // The seal key is derived from the password AND NUXT_SESSION_SECRET through
 // scrypt. A sealed cookie is something an attacker can test password guesses
@@ -13,7 +14,7 @@ import type { H3Event } from 'h3'
 // expensive even on a deploy where the secret is not set.
 // ─────────────────────────────────────────────────────────────────────────────
 
-type AdminSession = { admin?: boolean }
+type AdminSession = { admin?: boolean, epoch?: number }
 
 export const adminConfigured = () => Boolean(useRuntimeConfig().adminPassword)
 
@@ -54,6 +55,12 @@ const sessionOptions = () => {
 export const getAdminSession = (event: H3Event) =>
   useSession<AdminSession>(event, sessionOptions())
 
+/** Issues (or refreshes) the signed-in cookie. Only call after full authentication. */
+export async function issueAdminSession(event: H3Event) {
+  const session = await getAdminSession(event)
+  await session.update({ admin: true, epoch: adminSessionEpoch() })
+}
+
 export async function isAdmin(event: H3Event): Promise<boolean> {
   if (!adminConfigured()) return false
   // Read-only check: unseal the cookie the request carries. useSession() would
@@ -63,7 +70,10 @@ export async function isAdmin(event: H3Event): Promise<boolean> {
   if (!sealed) return false
   try {
     const session = await unsealSession(event, sessionOptions(), sealed) as { data?: AdminSession }
-    return session.data?.admin === true
+    if (session.data?.admin !== true) return false
+    // Cookies issued before two-factor was last switched on or off are void.
+    // Cookies predating the epoch carry none (→ 0), matching the initial epoch.
+    return (session.data.epoch ?? 0) === adminSessionEpoch()
   }
   catch {
     return false
@@ -73,6 +83,21 @@ export async function isAdmin(event: H3Event): Promise<boolean> {
 export async function requireAdmin(event: H3Event) {
   if (!(await isAdmin(event))) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
+}
+
+// Sensitive changes (two-factor on/off) ask for the password again, so a
+// borrowed or stolen session alone cannot make them. Throttled per IP: the
+// session must not become a way to guess the password past the login limits.
+const reauthLimited = makeRateLimiter(15 * 60 * 1000, 10)
+
+export async function requireAdminReauth(event: H3Event, password: unknown) {
+  await requireAdmin(event)
+  if (reauthLimited(getClientIp(event))) {
+    throw createError({ statusCode: 429, statusMessage: 'Too many attempts. Try again in 15 minutes.' })
+  }
+  if (typeof password !== 'string' || !passwordMatches(password)) {
+    throw createError({ statusCode: 403, statusMessage: 'Wrong password.' })
   }
 }
 

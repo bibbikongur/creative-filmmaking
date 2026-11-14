@@ -19,7 +19,9 @@ export default defineEventHandler(async (event) => {
   if (isValidEmail(email) && !addressFlooded(email.toLowerCase())) {
     const result = startPasswordReset(email)
     if (result) {
-      await sendPasswordResetEmail({ email: result.user.email, locale: result.user.locale, token: result.token })
+      // Not awaited: waiting for the mail server only when the account exists
+      // would reveal, by response time, which addresses have one.
+      void sendPasswordResetEmail({ email: result.user.email, locale: result.user.locale, token: result.token })
         .catch(e => console.error('[portal] reset email failed:', e))
     }
   }

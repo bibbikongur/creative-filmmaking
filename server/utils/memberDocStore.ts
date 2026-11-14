@@ -89,12 +89,18 @@ export function markViewed(id: number): void {
   `).run(new Date().toISOString(), id)
 }
 
-export function completeSigning(id: number, input: { signedName: string, ip: string, fileName: string }): void {
-  getDb().prepare(`
+/**
+ * Marks the request signed. False when it was no longer open (signed, declined
+ * or re-sent by a concurrent request in the meantime): the caller must then
+ * discard its PDF and send nothing.
+ */
+export function completeSigning(id: number, input: { signedName: string, ip: string, fileName: string }): boolean {
+  const res = getDb().prepare(`
     UPDATE member_docs SET status = 'completed', completed_at = ?, signed_name = ?,
       signed_ip = ?, signed_file = ?, token_hash = NULL
-    WHERE id = ?
+    WHERE id = ? AND status IN ('sent', 'delivered')
   `).run(new Date().toISOString(), input.signedName, input.ip, input.fileName, id)
+  return res.changes > 0
 }
 
 export function declineSigning(id: number): void {

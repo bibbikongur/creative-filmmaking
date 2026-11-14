@@ -1411,7 +1411,7 @@ function renderOverlays() {
     const src = sg.custom ?? `/signs/is/${sg.sign}.svg`
     const icon = L.divIcon({
       className: 'lm-icon',
-      html: `<img class="lm-signimg" src="${src}" style="width:${w}px;height:${h}px${sg.rotation ? `;transform:rotate(${sg.rotation}deg)` : ''}" draggable="false">`,
+      html: `<img class="lm-signimg" src="${esc(src)}" style="width:${w}px;height:${h}px${sg.rotation ? `;transform:rotate(${sg.rotation}deg)` : ''}" draggable="false">`,
       iconSize: [w, h],
       iconAnchor: [w / 2, h / 2],
     })

@@ -1,10 +1,19 @@
 // Log a new purchase order (multipart: vendor, amount, description, optional
 // departmentId for admins, optional receipt file). Department admins always
 // log against their own department.
+//
+// Per-user ceiling: every order can carry a 10 MB receipt and emails each
+// approver, so a looping client must not be able to fill the volume or flood
+// inboxes. 60 an hour is far above any real bookkeeping session.
+const userFlooded = makeRateLimiter(60 * 60 * 1000, 60)
+
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')!
   const ctx = await requirePurchaseOrderAccess(event, id)
   if (!ctx.canLog) throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
+  if (!ctx.isJobAdmin && userFlooded(ctx.user.id)) {
+    throw createError({ statusCode: 429, statusMessage: 'Too many orders in a short time. Try again in an hour.' })
+  }
 
   const job = getJob(id)
   if (!job) throw createError({ statusCode: 404, statusMessage: 'Job not found.' })

@@ -1,3 +1,5 @@
+import { createHash, timingSafeEqual } from 'node:crypto'
+
 /**
  * Site-wide password gate (HTTP Basic Auth) for the private preview period.
  *
@@ -20,7 +22,10 @@ export default defineEventHandler((event) => {
     const sep = decoded.indexOf(':')
     const user = sep === -1 ? decoded : decoded.slice(0, sep)
     const pass = sep === -1 ? '' : decoded.slice(sep + 1)
-    if (user === expectedUser && pass === password) return // authorized
+    // Constant-time: hash both sides so the comparison leaks no prefix length.
+    const same = (a: string, b: string) =>
+      timingSafeEqual(createHash('sha256').update(a).digest(), createHash('sha256').update(b).digest())
+    if (same(user, expectedUser) && same(pass, password)) return // authorized
   }
 
   // Set the challenge header BEFORE throwing so the browser shows its native

@@ -28,7 +28,14 @@ export interface EntryInput {
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
-export const isIsoDate = (s: string) => DATE_RE.test(s) && !Number.isNaN(Date.parse(`${s}T00:00:00Z`))
+// Round-trips through Date: JavaScript rolls "2026-02-30" over to 2 March
+// instead of rejecting it, and such an alias would be a second, separately
+// payable key for a real day (or a second week for a real Monday).
+export const isIsoDate = (s: string) => {
+  if (!DATE_RE.test(s)) return false
+  const t = Date.parse(`${s}T00:00:00Z`)
+  return !Number.isNaN(t) && new Date(t).toISOString().slice(0, 10) === s
+}
 
 export const isMonday = (s: string) => isIsoDate(s) && new Date(`${s}T00:00:00Z`).getUTCDay() === 1
 

@@ -54,7 +54,7 @@ export function validatePlanData(input: unknown): ReccePlanData {
       fail(`${where}: at most ${MAX_PHOTOS_PER_STOP} photos.`)
     }
     const photos = (photosRaw as unknown[]).map((p) => {
-      if (typeof p !== 'string' || !p.startsWith('data:image/jpeg;base64,')) fail(`${where}: bad photo data.`)
+      if (typeof p !== 'string' || !/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(p)) fail(`${where}: bad photo data.`)
       if ((p as string).length > MAX_PHOTO_BYTES) fail(`${where}: a photo is too large.`)
       return p as string
     })

@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const ip = getClientIp(event)
-  if (isRateLimited(ip)) {
+  if (isRateLimited(ip) || publicFormsFlooded()) {
     throw createError({ statusCode: 429, statusMessage: 'Too many requests' })
   }
 
@@ -53,7 +53,8 @@ export default defineEventHandler(async (event) => {
   const items: NewQuoteInput['items'] = []
   const seen = new Set<string>()
   for (const raw of body.items as CartEntry[]) {
-    const qty = Math.max(1, Math.round(Number(raw?.qty)) || 1)
+    // Capped: an uncapped (or infinite) quantity would flow into offer totals.
+    const qty = Math.min(999, Math.max(1, Math.round(Number(raw?.qty)) || 1))
     const key = `${raw?.type}:${raw?.id}`
     if (seen.has(key)) continue
     seen.add(key)

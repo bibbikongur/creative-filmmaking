@@ -177,6 +177,10 @@ export default defineNuxtConfig({
     contactTo: '',
     // Password for /admin (NUXT_ADMIN_PASSWORD). Unset = admin panel disabled.
     adminPassword: '',
+    // Emergency switch for a lost authenticator (NUXT_ADMIN_TWO_FACTOR_RESET=true):
+    // wipes the admin panel's two-factor enrollment so the password alone works
+    // again. Remove the variable afterwards, then enroll anew at /admin/security.
+    adminTwoFactorReset: '',
     // Seals the timesheet-portal session cookie (NUXT_SESSION_SECRET).
     // Use 32+ random characters; rotating it logs every portal user out.
     sessionSecret: '',

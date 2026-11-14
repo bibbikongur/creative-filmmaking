@@ -404,7 +404,10 @@ export function addPhoto(userId: string, albumId: string, input: {
   // account must not be able to fill it.
   const { used } = db.prepare('SELECT COALESCE(SUM(size), 0) AS used FROM location_photos WHERE user_id = ?')
     .get(userId) as { used: number }
-  if (used + input.full.length > MAX_USER_PHOTO_BYTES) {
+  // The thumbnail counts too: charging only the full image would let a
+  // few-byte "photo" with a maximum-size thumbnail slip past the ceiling.
+  const storedBytes = input.full.length + input.thumb.length
+  if (used + storedBytes > MAX_USER_PHOTO_BYTES) {
     fail('Your photo storage is full. Delete some photos or folders before adding more.')
   }
 
@@ -427,7 +430,7 @@ export function addPhoto(userId: string, albumId: string, input: {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(id, albumId, userId, now, fileName, thumbName, kind!.mime,
         input.originalName.slice(0, 200), Math.max(0, Math.round(input.width)),
-        Math.max(0, Math.round(input.height)), input.full.length, n)
+        Math.max(0, Math.round(input.height)), storedBytes, n)
       db.prepare('UPDATE location_albums SET updated_at = ? WHERE id = ?').run(now, albumId)
     })()
   }
@@ -439,7 +442,7 @@ export function addPhoto(userId: string, albumId: string, input: {
   return {
     id, albumId, createdAt: now, originalName: input.originalName.slice(0, 200),
     width: Math.max(0, Math.round(input.width)), height: Math.max(0, Math.round(input.height)),
-    size: input.full.length, sort: 0,
+    size: storedBytes, sort: 0,
   }
 }
 

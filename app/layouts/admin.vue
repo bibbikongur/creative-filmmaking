@@ -26,11 +26,19 @@
           </NuxtLink>
         </nav>
         <div class="flex items-center gap-5 text-sm">
-          <a href="/" target="_blank" class="text-bone-400 hover:text-gold-400 transition-colors">View site ↗</a>
+          <a href="/" target="_blank" class="whitespace-nowrap text-bone-400 hover:text-gold-400 transition-colors">View site ↗</a>
+          <NuxtLink
+            v-if="authed"
+            to="/admin/security"
+            class="transition-colors hover:text-gold-400 uppercase text-xs tracking-widest"
+            :class="route.path.includes('/admin/security') ? 'text-gold-400' : 'text-bone-400'"
+          >
+            Security
+          </NuxtLink>
           <button
             v-if="authed"
             type="button"
-            class="text-bone-400 hover:text-gold-400 transition-colors uppercase text-xs tracking-widest"
+            class="whitespace-nowrap text-bone-400 hover:text-gold-400 transition-colors uppercase text-xs tracking-widest"
             @click="signOut"
           >
             Log out
@@ -67,8 +75,25 @@
             autofocus
           >
         </div>
+        <div v-if="twoFactor">
+          <label for="admin-code" class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Authenticator code</label>
+          <input
+            id="admin-code"
+            v-model="code"
+            type="text"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="123 456"
+            class="input-dark tracking-widest"
+          >
+          <p class="mt-1.5 text-xs text-bone-400">
+            The 6-digit code from your authenticator app. Lost the phone? Enter a recovery code instead.
+          </p>
+        </div>
         <p v-if="error" class="text-sm text-signal-500">{{ error }}</p>
-        <button type="submit" class="btn-gold w-full disabled:opacity-60" :disabled="pending || !password">
+        <button type="submit" class="btn-gold w-full disabled:opacity-60" :disabled="pending || !password || (twoFactor && !code.trim())">
           {{ pending ? 'Logging in…' : 'Log in' }}
         </button>
       </form>
@@ -80,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-const { authed, configured, check, login, logout } = useAdminAuth()
+const { authed, configured, twoFactor, check, login, logout } = useAdminAuth()
 
 const route = useRoute()
 const section = computed(() =>
@@ -92,9 +117,12 @@ const section = computed(() =>
         ? 'rentals'
         : route.path.includes('/admin/contracts')
           ? 'contracts'
-          : route.path.includes('/admin/companies') ? 'companies' : 'vehicles')
+          : route.path.includes('/admin/companies')
+            ? 'companies'
+            : route.path.includes('/admin/security') ? 'security' : 'vehicles')
 
 const password = ref('')
+const code = ref('')
 const error = ref('')
 const pending = ref(false)
 
@@ -104,11 +132,16 @@ const submit = async () => {
   error.value = ''
   pending.value = true
   try {
-    await login(password.value)
+    await login(password.value, twoFactor.value ? code.value : '')
     password.value = ''
+    code.value = ''
   }
   catch (e: any) {
     error.value = e?.data?.statusMessage || 'Login failed. Please try again.'
+    // A code works once and expires in seconds: never resubmit the old one.
+    code.value = ''
+    // Two-factor may have been switched on since this form loaded.
+    check()
   }
   finally {
     pending.value = false
