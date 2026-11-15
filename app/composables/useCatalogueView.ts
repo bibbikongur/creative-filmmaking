@@ -6,7 +6,7 @@ export type CatalogueView = 'grid' | 'list'
  * items, so it opens as a grid); the visitor's last choice for that page is
  * restored from localStorage after mount.
  */
-export const useCatalogueView = (page: 'vehicles' | 'equipment', fallback: CatalogueView) => {
+export const useCatalogueView = (page: 'vehicles' | 'equipment' | 'equipment-category', fallback: CatalogueView) => {
   const storageKey = `cf-view-${page}`
   const view = useState<CatalogueView>(`catalogue-view-${page}`, () => fallback)
 

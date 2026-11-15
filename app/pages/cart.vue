@@ -53,6 +53,7 @@
               <p class="text-xs text-bone-400 mt-0.5 truncate">{{ item.tagline }}</p>
             </div>
             <AddToCartButton v-if="item.entry.type === 'equipment'" type="equipment" :id="item.entry.id" compact />
+            <AddToCartButton v-else-if="item.units > 1" type="vehicle" :id="item.entry.id" :max="item.units" compact />
             <button
               type="button"
               class="p-2 text-bone-400 hover:text-signal-400 transition-colors"
@@ -102,10 +103,10 @@ const { all: allEquipment } = await useEquipment()
 const items = computed(() => cart.entries.value.flatMap((entry) => {
   if (entry.type === 'vehicle') {
     const v = allVehicles().find(x => x.id === entry.id)
-    return v ? [{ entry, name: lt(v.name), tagline: lt(v.tagline), image: v.images[0], link: `/vehicles/${v.slug}` }] : []
+    return v ? [{ entry, name: lt(v.name), tagline: lt(v.tagline), image: v.images[0], link: `/vehicles/${v.slug}`, units: v.specs.units ?? 1 }] : []
   }
   const e = allEquipment().find(x => x.id === entry.id)
-  return e ? [{ entry, name: lt(e.name), tagline: lt(e.tagline), image: e.images[0], link: `/equipment/${equipmentSlug(e)}` }] : []
+  return e ? [{ entry, name: lt(e.name), tagline: lt(e.tagline), image: e.images[0], link: `/equipment/${equipmentSlug(e)}`, units: 1 }] : []
 }))
 
 onMounted(() => {

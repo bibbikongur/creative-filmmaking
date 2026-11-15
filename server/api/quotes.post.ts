@@ -64,7 +64,8 @@ export default defineEventHandler(async (event) => {
         items.push({
           itemType: 'vehicle', itemId: v.id, slug: v.slug,
           nameEn: v.name.en, nameIs: v.name.is || v.name.en,
-          image: v.images[0], qty: 1,
+          // One of each, except where the fleet has several identical units.
+          image: v.images[0], qty: Math.min(qty, Math.max(1, v.specs.units ?? 1)),
         })
       }
     }

@@ -140,9 +140,20 @@
     @apply btn-outline;
   }
 
-  /* "Already on your list" state: gold outline, turns red on hover because a click removes */
+  /* "Already on your list" state: gold outline. With a pointer that can hover it turns red
+     (a click removes); on touch screens "hover" sticks after a tap, so there it stays gold. */
   .btn-selected {
-    @apply btn border border-gold-500/60 text-gold-400 hover:border-signal-500/60 hover:text-signal-400;
+    @apply btn border border-gold-500/60 text-gold-400;
+  }
+
+  .btn-selected:focus-visible {
+    @apply border-signal-500/60 text-signal-400;
+  }
+
+  @media (hover: hover) {
+    .btn-selected:hover {
+      @apply border-signal-500/60 text-signal-400;
+    }
   }
 
   /* Declared after the variants so it wins on padding without !important */

@@ -2,6 +2,7 @@
   <NuxtLink
     :to="localePath('/cart')"
     class="relative p-2 text-bone-400 hover:text-bone-100 transition-colors"
+    :title="t('equipmentCatalogue.browser.listTitle')"
     :aria-label="cart.count.value ? `${t('cart.title')} (${cart.count.value})` : t('cart.title')"
   >
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

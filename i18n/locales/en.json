@@ -23,7 +23,7 @@
     "contact": "Contact",
     "services": "Services",
     "crewLogin": "Crew login",
-    "cta": "Get an offer",
+    "cta": "Get a quote",
     "menu": "Menu"
   },
   "breadcrumbs": {
@@ -79,17 +79,47 @@
   "catalogue": {
     "kicker": "The fleet",
     "title": "Production vehicles",
-    "intro": "Every vehicle is maintained for production work and can be delivered anywhere in Iceland. Box trucks and cargo vans are also available to private and business renters, for moving days and everyday hauls. No listed prices. Tell us about your shoot and we'll put together an offer.",
-    "all": "All vehicles",
+    "intro": "Every vehicle is maintained for production work and can be delivered anywhere in Iceland. Box trucks and cargo vans are also available to private and business renters, for moving days and everyday hauls.",
+    "all": "The whole fleet",
     "empty": "No vehicles in this category yet. Contact us and we'll find a solution.",
     "emptyCta": "Contact us",
     "categoriesTitle": "Categories",
-    "count": "{n} vehicle | {n} vehicles",
+    "count": "{n} model | {n} models",
     "seeAll": "See all",
     "otherGroup": "Other vehicles",
     "viewLabel": "Layout",
     "viewGrid": "Grid",
-    "viewList": "List"
+    "viewList": "List",
+    "types": "Types",
+    "kinds": {
+      "box-truck": "Box trucks",
+      "cargo-van": "Cargo vans",
+      "caravan": "Caravans",
+      "trailer": "Trailers",
+      "atv": "ATVs",
+      "pickup": "Pickups"
+    },
+    "kindOne": {
+      "box-truck": "Box truck",
+      "cargo-van": "Cargo van",
+      "caravan": "Caravan",
+      "trailer": "Trailer",
+      "atv": "ATV",
+      "pickup": "Pickup"
+    },
+    "steps": [
+      { "title": "Pick your vehicles", "text": "And equipment, if you need it." },
+      { "title": "Send the list", "text": "With dates and location." },
+      { "title": "Get a quote", "text": "One price, no commitment." }
+    ],
+    "unitsAvailable": "{n} identical in the fleet",
+    "noLicence": "No special licence",
+    "aboutType": "About {type}",
+    "otherTitle": "Also in the fleet",
+    "priceOnQuote": "Price on quote",
+    "equipmentTitle": "Need equipment with the vehicles?",
+    "equipmentText": "Generators, heaters, tents and traffic kit go on the same list and the same quote.",
+    "listEmpty": "The list is empty. Add vehicles to it and send it to us for a quote."
   },
   "equipmentCategories": {
     "heating": "Heating",
@@ -106,7 +136,7 @@
   "equipmentCatalogue": {
     "kicker": "Equipment",
     "title": "Equipment for rent",
-    "intro": "Generators, heaters, lights, tents, traffic cones and signs, tables and chairs: for film shoots, events, construction sites and private renters. No listed prices. Tell us what you need and we will put together an offer.",
+    "intro": "Generators, heaters, lights, tents, traffic cones and signs, tables and chairs: for film shoots, events, construction sites and private renters.",
     "seoTitle": "What's for rent?",
     "seoText": "We rent out equipment in Iceland: generators, diesel and gas heaters, LED lights, battery power stations, cables and distribution boards, traffic cones and signs, safety vests, shelter tents, tarpaulins, tables and chairs. Built for film & TV work and just as useful for events, construction sites, businesses and private renters.",
     "seoText2": "Equipment rents on its own or together with our vehicles, delivered anywhere in Iceland. Tell us what you need and we'll put together an offer the same day.",
@@ -115,6 +145,41 @@
     "emptyCta": "Contact us",
     "count": "{n} item | {n} items",
     "otherGroup": "Other equipment",
+    "browser": {
+      "categories": "Categories",
+      "searchLabel": "Search all equipment",
+      "searchPlaceholder": "Search all equipment",
+      "clear": "Clear search",
+      "resultsTitle": "Search results",
+      "noResults": "Nothing matches “{q}”",
+      "noResultsHint": "Try another word, or get in touch and we'll find a solution.",
+      "viewCategory": "View category",
+      "stepsTitle": "How renting works",
+      "steps": [
+        { "title": "Pick your kit", "text": "In the quantities you need." },
+        { "title": "Send the list", "text": "With dates and location." },
+        { "title": "Get a quote", "text": "One price, no commitment." }
+      ],
+      "lead": "One quote for the whole package within one business day.",
+      "leadNote": "We don't publish prices: build a list and send it to us.",
+      "priceNote": "Price on quote",
+      "listCta": "Send list, get a quote",
+      "listCtaShort": "Send list",
+      "listWithCount": "Quote list ({n})",
+      "listShow": "Show the list",
+      "listHide": "Hide the list",
+      "aboutCategory": "About this category",
+      "readMore": "Read more",
+      "readLess": "Show less",
+      "ctaTitle": "Need equipment for your project?",
+      "ctaText": "Tell us what you are doing and when. We put the package together and reply with a quote, no commitment.",
+      "listTitle": "Quote list",
+      "listCount": "{n} item on the list | {n} items on the list",
+      "listEmpty": "The list is empty. Add equipment to it and send it to us for a quote.",
+      "listOpen": "View the list",
+      "helpTitle": "Can't find what you need?",
+      "helpText": "Tell us what you need and we'll find a solution."
+    },
     "factsTitle": "Key facts",
     "facts": {
       "category": "Category",
@@ -147,6 +212,7 @@
       "towingCapacityKg": "Towing capacity",
       "payloadKg": "Payload",
       "boxDimensions": "Box dimensions (L × W × H)",
+      "boxShort": "Box (L × W × H)",
       "drivetrain": "Drivetrain",
       "transmission": "Transmission",
       "fuel": "Fuel",
@@ -167,8 +233,9 @@
   "cart": {
     "kicker": "Your selection",
     "title": "Quote request",
-    "add": "Add to quote",
+    "add": "Add to list",
     "added": "On the list",
+    "ofMax": "{qty} of {max}",
     "remove": "Remove",
     "increase": "Increase quantity",
     "decrease": "Decrease quantity",
@@ -225,6 +292,8 @@
     "responseNote": "We reply within one business day, faster during production season."
   },
   "cta": {
+    "listTitle": "Your list is ready",
+    "listText": "{n} on the quote list. Send it to us with your dates and we reply with one quote within one business day.",
     "title": "Planning a production in Iceland?",
     "text": "Tell us what you're shooting and we'll put together the right vehicles and an offer, no obligation.",
     "button": "Request an offer"

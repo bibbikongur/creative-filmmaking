@@ -5,6 +5,8 @@
   <article
     class="group relative flex bg-ink-800 border-t-2 border-transparent hover:border-gold-500 focus-within:border-gold-500 transition-colors duration-300"
     :class="row ? 'flex-col md:flex-row md:items-stretch' : 'flex-col'"
+    @touchstart.passive="swipeStart"
+    @touchend.passive="swipeEnd"
   >
     <!-- Image -->
     <div
@@ -12,9 +14,10 @@
       :class="row ? 'md:w-[22rem] lg:w-[26rem] md:shrink-0' : ''"
     >
       <NuxtImg
-        v-if="vehicle.images[0]"
-        :src="vehicle.images[0]"
-        :provider="imgProvider(vehicle.images[0])"
+        v-if="vehicle.images.length"
+        :key="active"
+        :src="vehicle.images[active]!"
+        :provider="imgProvider(vehicle.images[active]!)"
         :alt="lt(vehicle.name)"
         class="w-full h-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-105"
         :class="row ? 'md:absolute md:inset-0' : ''"
@@ -26,6 +29,48 @@
       <span class="absolute top-3 left-3 px-2.5 py-1 bg-ink-950/70 backdrop-blur text-gold-400 text-[11px] uppercase tracking-widest font-semibold">
         {{ t(`categories.${vehicle.category}`) }}
       </span>
+
+      <!-- Prev / next + dots when there is more than one photo (same as the equipment
+           cards). Arrows are always visible on touch screens and appear on hover/focus
+           elsewhere; a sideways swipe on the card does the same. -->
+      <template v-if="vehicle.images.length > 1">
+        <button
+          type="button"
+          class="absolute z-10 left-2 top-1/2 -translate-y-1/2 p-2.5 bg-ink-950/60 backdrop-blur text-bone-100 hover:text-gold-400 hover:bg-ink-950/80 transition md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
+          :aria-label="t('common.prevImage')"
+          @click.stop="step(-1)"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="absolute z-10 right-2 top-1/2 -translate-y-1/2 p-2.5 bg-ink-950/60 backdrop-blur text-bone-100 hover:text-gold-400 hover:bg-ink-950/80 transition md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
+          :aria-label="t('common.nextImage')"
+          @click.stop="step(1)"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <div class="absolute z-10 bottom-1 inset-x-0 flex flex-wrap justify-center px-10">
+          <button
+            v-for="(_, i) in vehicle.images"
+            :key="i"
+            type="button"
+            class="p-1.5"
+            :aria-label="t('common.imageN', { n: i + 1 })"
+            :aria-current="i === active ? 'true' : undefined"
+            @click.stop="active = i"
+          >
+            <span
+              class="block w-2 h-2 rounded-full ring-1 ring-ink-950/40 transition-colors"
+              :class="i === active ? 'bg-gold-400' : 'bg-bone-100/70 hover:bg-bone-100'"
+            />
+          </button>
+        </div>
+      </template>
     </div>
 
     <!-- Body -->
@@ -126,4 +171,23 @@ const row = computed(() => props.layout === 'row')
 const { t, locale } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
+
+// Photo browsing on the card
+const active = ref(0)
+const step = (dir: number) => {
+  active.value = (active.value + dir + props.vehicle.images.length) % props.vehicle.images.length
+}
+
+let swipeX = 0
+let swipeY = 0
+const swipeStart = (e: TouchEvent) => {
+  swipeX = e.touches[0]?.clientX ?? 0
+  swipeY = e.touches[0]?.clientY ?? 0
+}
+const swipeEnd = (e: TouchEvent) => {
+  if (props.vehicle.images.length < 2) return
+  const dx = (e.changedTouches[0]?.clientX ?? 0) - swipeX
+  const dy = (e.changedTouches[0]?.clientY ?? 0) - swipeY
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1)
+}
 </script>

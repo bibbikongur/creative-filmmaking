@@ -1,5 +1,5 @@
 <template>
-  <header class="fixed top-0 inset-x-0 z-50 bg-ink-950/85 backdrop-blur border-b border-ink-800">
+  <header class="fixed top-0 inset-x-0 z-50 bg-ink-950 border-b border-ink-800">
     <div class="wrap">
       <div class="flex items-center justify-between h-16 xl:h-20">
         <!-- Wordmark -->
@@ -7,7 +7,7 @@
           <img
             src="/logo-cf-rentals-dark.png"
             alt="CF Rentals · Creative Filmmaking"
-            class="h-6 xl:h-8 w-auto"
+            class="h-6 xl:h-7 2xl:h-8 w-auto"
             width="811"
             height="124"
             fetchpriority="high"
@@ -15,20 +15,25 @@
         </NuxtLink>
 
         <!-- Desktop nav -->
-        <nav class="hidden xl:flex items-center gap-5" :aria-label="t('footer.navTitle')">
+        <nav class="hidden xl:flex items-center gap-4 2xl:gap-5" :aria-label="t('footer.navTitle')">
           <NuxtLink
             v-for="item in navItems"
             :key="item.to"
             :to="localePath(item.to)"
-            class="whitespace-nowrap text-sm uppercase tracking-wider font-medium text-bone-400 hover:text-bone-100 transition-colors"
+            class="whitespace-nowrap text-[13px] 2xl:text-sm uppercase tracking-wide 2xl:tracking-wider font-medium text-bone-400 hover:text-bone-100 transition-colors"
             active-class="!text-gold-400"
+            :class="inSection(item.to) ? '!text-gold-400' : ''"
           >
             {{ t(item.label) }}
           </NuxtLink>
-          <NuxtLink :to="localePath('/contact')" class="btn-gold btn-sm whitespace-nowrap">
+          <!-- One quote button: with something on the quote list it IS the list
+               (with its count); with an empty list it asks for an offer. -->
+          <NuxtLink v-if="cart.count.value" :to="localePath('/cart')" class="btn-gold btn-sm whitespace-nowrap">
+            {{ t('equipmentCatalogue.browser.listWithCount', { n: cart.count.value }) }}
+          </NuxtLink>
+          <NuxtLink v-else :to="localePath('/contact')" class="btn-gold btn-sm whitespace-nowrap">
             {{ t('nav.cta') }}
           </NuxtLink>
-          <CartLink />
           <LanguageSwitcher />
           <!-- Crew portal login: a private, noindexed app. Labelled as such and
                nofollowed so neither visitors nor crawlers read it as "Services". -->
@@ -76,6 +81,7 @@
           :to="localePath(item.to)"
           class="block px-3 py-3 text-sm uppercase tracking-wider font-medium text-bone-400 hover:text-bone-100 hover:bg-ink-900 transition-colors"
           active-class="!text-gold-400"
+          :class="inSection(item.to) ? '!text-gold-400' : ''"
           @click="mobileOpen = false"
         >
           {{ t(item.label) }}
@@ -97,6 +103,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
+// With something on the quote list, "get an offer" means sending that list.
+const cart = useCart()
 
 const navItems = [
   { to: '/', label: 'nav.home' },
@@ -105,6 +113,10 @@ const navItems = [
   { to: '/about', label: 'nav.about' },
   { to: '/contact', label: 'nav.contact' },
 ]
+
+// /vehicles/kassabilar and /equipment/<item> belong to their section's nav item.
+const route = useRoute()
+const inSection = (to: string) => to !== '/' && route.path.startsWith(`${localePath(to)}/`)
 
 const mobileOpen = ref(false)
 
