@@ -203,6 +203,11 @@ export default defineNuxtConfig({
         address: process.env.NUXT_PUBLIC_CONTACT_ADDRESS || 'Grensásvegur 1, 108 Reykjavík',
         phone: process.env.NUXT_PUBLIC_CONTACT_PHONE || '+354 772 4968',
         email: process.env.NUXT_PUBLIC_CONTACT_EMAIL || 'info@creativefilmmaking.is',
+        // Legal identity printed in the footer of offer PDFs. Each one is optional:
+        // unset = that part is left out (the trading name is used for the legal name).
+        legalName: process.env.NUXT_PUBLIC_CONTACT_LEGAL_NAME || '',
+        kennitala: process.env.NUXT_PUBLIC_CONTACT_KENNITALA || '',
+        vatNumber: process.env.NUXT_PUBLIC_CONTACT_VAT_NUMBER || '',
         // Pin for the schema.org geo block and the contact-page map (Grensásvegur 1).
         lat: 64.1353,
         lng: -21.8689,
