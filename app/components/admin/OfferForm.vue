@@ -30,157 +30,186 @@
       </div>
     </div>
 
-    <!-- Item pricing: one line per item (item · price · line total) on a shared grid -->
-    <div class="admin-eyebrow hidden gap-x-4 border-b border-ink-800 py-2 lg:grid" :class="cols">
-      <span>Item</span>
-      <span>Price</span>
-      <span class="text-right">Line total</span>
+    <!-- Item pricing. Every item is a small table with the same four columns,
+         so what is charged, for how many, at what price and what it comes to
+         always sit in the same place:
+         charge · option · how many / how long · unit price · row total -->
+    <div class="admin-eyebrow hidden border-b border-ink-800 pb-2 sm:pl-[3.75rem] md:grid" :class="row">
+      <span>Charge</span>
+      <span>Option</span>
+      <span>Qty / period</span>
+      <span>Unit price</span>
+      <span class="text-right">Total</span>
     </div>
     <div class="divide-y divide-ink-800">
-      <div v-for="item in quote.items" :key="item.id" class="py-3">
-        <div class="grid items-center gap-x-4 gap-y-3" :class="cols">
-          <div class="flex min-w-0 items-center gap-3">
-            <AdminThumb :src="item.image" :alt="item.name.en" size="sm" :icon="item.itemType === 'vehicle' ? 'vehicles' : 'equipment'" />
-            <div class="min-w-0">
-              <p class="truncate font-semibold text-bone-100" :title="item.name.en">{{ item.name.en }}</p>
-              <p class="truncate text-xs text-ink-400">
-                <span class="capitalize">{{ item.itemType }}</span><span v-if="item.qty > 1"> · qty {{ item.qty }}</span><span v-if="item.note" :title="item.note"> · {{ item.note }}</span>
-              </p>
-            </div>
+      <section v-for="item in quote.items" :key="item.id" class="py-4" :aria-label="item.name.en">
+        <!-- What it is, and what it comes to -->
+        <div class="flex items-start gap-3">
+          <AdminThumb :src="item.image" :alt="item.name.en" size="sm" :icon="item.itemType === 'vehicle' ? 'vehicles' : 'equipment'" />
+          <div class="min-w-0 flex-1">
+            <p class="font-semibold text-bone-100">
+              {{ item.name.en }}
+              <span v-if="item.qty > 1" class="admin-chip ml-1.5 border-ink-500 text-bone-100">× {{ item.qty }}</span>
+            </p>
+            <p class="mt-0.5 text-xs text-ink-400">
+              <span class="capitalize">{{ item.itemType }}</span><template v-if="item.note"> · {{ item.note }}</template>
+            </p>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <select v-model="modes[item.id]" class="input-dark !w-36 !py-2" :aria-label="`Pricing for ${item.name.en}`">
+          <p class="shrink-0 text-right">
+            <span v-if="lineTotal(item) != null" class="block font-heading text-lg font-semibold tabular-nums text-bone-100">{{ fmt(lineTotal(item)! + extrasTotal(item)) }}</span>
+            <span v-else class="block text-sm text-gold-400">Price missing</span>
+            <span v-if="item.itemType === 'vehicle' && extrasTotal(item) > 0" class="block text-xs tabular-nums text-ink-400">incl. {{ fmt(extrasTotal(item)) }} add-ons</span>
+          </p>
+        </div>
+
+        <div class="mt-3 space-y-2 sm:pl-[3.75rem]">
+          <!-- Rental -->
+          <div class="grid items-center" :class="row">
+            <span class="admin-eyebrow max-md:col-span-2">{{ item.itemType === 'service' ? 'Price' : 'Rental' }}</span>
+            <select v-model="modes[item.id]" class="input-dark !py-2 max-md:col-span-2" :aria-label="`Pricing for ${item.name.en}`">
               <option value="flat">Flat price</option>
               <option value="day">Per day</option>
               <option value="week">Per week</option>
             </select>
-            <span class="relative block w-36">
-              <input
-                v-model.number="prices[item.id]"
-                type="number"
-                min="0"
-                step="any"
-                class="input-dark !py-2 !pr-9 text-right"
-                :placeholder="pricePlaceholder(item.id)"
-                :aria-label="`${pricePlaceholder(item.id)} for ${item.name.en}`"
-              >
-              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}</span>
-            </span>
-            <label v-if="modes[item.id] === 'day' || modes[item.id] === 'week'" class="flex items-center gap-2 text-xs text-bone-400">
-              <span aria-hidden="true">×</span>
+            <template v-if="modes[item.id] === 'day' || modes[item.id] === 'week'">
+            <span class="relative block">
               <input
                 v-model.number="periods[item.id]"
                 type="number"
+                class="input-dark !py-2 text-right !pr-16"
                 :min="modes[item.id] === 'week' ? 0.5 : 1"
                 max="999"
                 :step="modes[item.id] === 'week' ? 0.5 : 1"
-                class="input-dark !w-16 !px-2 !py-2 text-right"
                 :aria-label="modes[item.id] === 'week' ? 'Number of weeks' : 'Number of days'"
                 :title="modes[item.id] === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
               >
-              {{ unit(modes[item.id], periods[item.id]) }}
-            </label>
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ unit(modes[item.id], periods[item.id]) }}</span>
+            </span>
+            </template>
+            <span v-else class="text-xs text-ink-400 max-md:hidden">One price</span>
+            <span class="relative block">
+              <input
+                v-model.number="prices[item.id]"
+                type="number"
+                class="input-dark !py-2 text-right !pr-[4.5rem]"
+                min="0"
+                step="any"
+                placeholder="0"
+                :aria-label="`${pricePlaceholder(item.id)} for ${item.name.en}`"
+              >
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}{{ per(modes[item.id]) }}</span>
+            </span>
+            <p class="text-right text-sm tabular-nums max-md:col-span-2">
+              <span v-if="lineTotal(item) != null" class="text-bone-100">{{ fmt(lineTotal(item)!) }}</span>
+              <span v-else class="text-ink-400">–</span>
+              <span v-if="item.qty > 1 && lineTotal(item) != null" class="block text-[11px] text-ink-400">{{ item.qty }} × {{ fmt(lineTotal(item)! / item.qty) }}</span>
+            </p>
           </div>
-          <p class="text-sm tabular-nums lg:text-right">
-            <span v-if="lineTotal(item) != null" class="font-semibold text-bone-100">{{ fmt(lineTotal(item)! + extrasTotal(item)) }}</span>
-            <span v-else class="text-ink-400">No price yet</span>
-          </p>
-        </div>
 
-        <!-- Vehicle extras on one line: insurance & drivers follow the vehicle's period, km is km × rate -->
-        <div v-if="item.itemType === 'vehicle' && extras[item.id]" class="mt-3 flex flex-col gap-x-6 gap-y-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-y-3 sm:pl-[3.75rem]">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="admin-eyebrow max-sm:w-24">Insurance</span>
-            <select v-model="extras[item.id]!.insTier" class="input-dark !py-2" :class="extras[item.id]!.insTier ? '!w-60' : '!w-28'" :aria-label="`Insurance for ${item.name.en}`">
-              <option value="">None</option>
-              <option v-for="t in INSURANCE_TIERS" :key="t" :value="t">{{ TIER_LABEL[t] }}</option>
-            </select>
-            <template v-if="extras[item.id]!.insTier">
-            <span class="relative block w-32">
+          <!-- Vehicle add-ons: insurance and drivers run over the rental period above, km is km × rate -->
+          <template v-if="item.itemType === 'vehicle' && extras[item.id]">
+            <div class="grid items-center" :class="row">
+              <span class="admin-eyebrow max-md:col-span-2">Insurance</span>
+              <select v-model="extras[item.id]!.insTier" class="input-dark !py-2 max-md:col-span-2" :aria-label="`Insurance for ${item.name.en}`">
+                <option value="">None</option>
+                <option v-for="t in INSURANCE_TIERS" :key="t" :value="t">{{ TIER_NAME[t] }}</option>
+              </select>
+              <template v-if="extras[item.id]!.insTier">
+                <span class="text-xs leading-tight text-ink-400 max-md:hidden">{{ periodText(item.id) }}<span v-if="excessText(extras[item.id]!.insTier)" class="block">{{ excessText(extras[item.id]!.insTier) }}</span></span>
+                <span class="relative block">
               <input
                 v-model.number="extras[item.id]!.insPrice"
                 type="number"
+                class="input-dark !py-2 text-right !pr-[4.5rem]"
                 min="0"
                 step="any"
-                class="input-dark !py-2 !pr-9 text-right"
-                :placeholder="extraPlaceholder(item.id)"
+                placeholder="0"
                 :aria-label="`Insurance: ${extraPlaceholder(item.id)}`"
                 :title="item.qty > 1 ? `Per vehicle, multiplied by qty ${item.qty}` : undefined"
               >
-              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}</span>
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}{{ per(modes[item.id]) }}</span>
             </span>
-            </template>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="admin-eyebrow max-sm:w-24">Drivers</span>
-            <select v-model="extras[item.id]!.driverMode" class="input-dark !w-36 !py-2" :aria-label="`Extra drivers for ${item.name.en}`">
-              <option value="">None</option>
-              <option value="count">Additional</option>
-              <option value="unlimited">Unlimited</option>
-            </select>
-            <input
-              v-if="extras[item.id]!.driverMode === 'count'"
-              v-model.number="extras[item.id]!.drivers"
-              type="number"
-              min="1"
-              max="99"
-              step="1"
-              class="input-dark !w-16 !px-2 !py-2 text-right"
-              placeholder="1"
-              aria-label="Number of additional drivers"
-              title="Number of additional drivers"
-            >
-            <template v-if="extras[item.id]!.driverMode">
-            <span class="relative block w-32">
+                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">{{ rowTotal(insuranceTotal(item)) }}</p>
+              </template>
+            </div>
+
+            <div class="grid items-center" :class="row">
+              <span class="admin-eyebrow max-md:col-span-2">Drivers</span>
+              <select v-model="extras[item.id]!.driverMode" class="input-dark !py-2 max-md:col-span-2" :aria-label="`Extra drivers for ${item.name.en}`">
+                <option value="">None</option>
+                <option value="count">Additional</option>
+                <option value="unlimited">Unlimited</option>
+              </select>
+              <template v-if="extras[item.id]!.driverMode">
+                <template v-if="extras[item.id]!.driverMode === 'count'">
+                <span class="relative block">
+              <input
+                v-model.number="extras[item.id]!.drivers"
+                type="number"
+                class="input-dark !py-2 text-right !pr-16"
+                min="1"
+                max="99"
+                step="1"
+                placeholder="1"
+                aria-label="Number of additional drivers"
+              >
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ extras[item.id]!.drivers === 1 ? 'driver' : 'drivers' }}</span>
+            </span>
+                </template>
+                <span v-else class="text-xs text-ink-400 max-md:hidden">{{ periodText(item.id) }}</span>
+                <span class="relative block">
               <input
                 v-model.number="extras[item.id]!.driverPrice"
                 type="number"
+                class="input-dark !py-2 text-right !pr-[4.5rem]"
                 min="0"
                 step="any"
-                class="input-dark !py-2 !pr-9 text-right"
-                :placeholder="unlimitedDrivers(item.id) ? extraPlaceholder(item.id) : 'Per driver'"
+                placeholder="0"
                 :aria-label="unlimitedDrivers(item.id) ? 'Price for unlimited drivers' : 'Price per driver'"
                 :title="unlimitedDrivers(item.id)
                   ? (item.qty > 1 ? `Unlimited drivers per vehicle, multiplied by qty ${item.qty}` : 'Price for unlimited authorised drivers')
                   : `${extraPlaceholder(item.id)} per driver`"
               >
-              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}</span>
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}{{ per(modes[item.id]) }}</span>
             </span>
-            </template>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="admin-eyebrow max-sm:w-24">Kilometres</span>
-            <span class="relative block w-28">
+                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">{{ rowTotal(driverTotal(item)) }}</p>
+              </template>
+            </div>
+
+            <div class="grid items-center" :class="row">
+              <span class="admin-eyebrow max-md:col-span-2">Kilometres</span>
+              <span class="text-xs text-ink-400 max-md:hidden">{{ (extras[item.id]!.km ?? 0) > 0 ? 'Charged per km' : 'Not charged' }}</span>
+              <span class="relative block">
               <input
                 v-model.number="extras[item.id]!.km"
                 type="number"
+                class="input-dark !py-2 text-right !pr-16"
                 min="0"
                 step="any"
-                class="input-dark !py-2 !pr-10 text-right"
                 placeholder="0"
                 aria-label="Number of kilometres"
               >
-              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">km</span>
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">km</span>
             </span>
-            <template v-if="(extras[item.id]!.km ?? 0) > 0">
-            <span class="text-xs text-bone-400" aria-hidden="true">×</span>
-            <span class="relative block w-32">
+              <template v-if="(extras[item.id]!.km ?? 0) > 0">
+                <span class="relative block">
               <input
                 v-model.number="extras[item.id]!.kmPrice"
                 type="number"
+                class="input-dark !py-2 text-right !pr-[4.5rem]"
                 min="0"
                 step="any"
-                class="input-dark !py-2 !pr-9 text-right"
-                placeholder="Per km"
+                placeholder="0"
                 aria-label="Price per kilometre"
               >
-              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}</span>
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}/km</span>
             </span>
-            </template>
-          </div>
-          <p v-if="extrasTotal(item) > 0" class="ml-auto text-xs tabular-nums text-bone-400">incl. {{ fmt(extrasTotal(item)) }} extras</p>
+                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">{{ rowTotal(kmTotal(item)) }}</p>
+              </template>
+            </div>
+          </template>
         </div>
-      </div>
+      </section>
     </div>
 
     <!-- Discount / currency / note -->
@@ -279,7 +308,8 @@ const { confirmDialog } = useAppDialog()
 const props = defineProps<{ quote: QuoteDetail }>()
 
 // Item · price controls · line total. The header strip and every item row share it.
-const cols = 'lg:grid-cols-[minmax(0,1fr)_26rem_8rem]'
+// charge · option · how many / how long · unit price · row total. Two columns on a phone.
+const row = 'grid-cols-2 gap-x-3 gap-y-2 md:grid-cols-[5.5rem_minmax(8.5rem,13rem)_8rem_9.5rem_minmax(5.5rem,1fr)]'
 const emit = defineEmits<{ saved: [], delete: [] }>()
 
 // Prefill from the latest offer revision so "revise & resend" starts from
@@ -304,11 +334,11 @@ interface ExtrasState {
 const extras = reactive<Record<number, ExtrasState>>({})
 const INSURANCE_TIERS: InsuranceTier[] = ['bronze', 'silver', 'gold']
 const TIER_NAME: Record<InsuranceTier, string> = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' }
-// e.g. "Gold (excess 65,000 kr.)" — the excess is printed on the offer too.
-const TIER_LABEL = Object.fromEntries(INSURANCE_TIERS.map((t) => {
-  const ex = INSURANCE_EXCESS[t]
-  return [t, ex ? `${TIER_NAME[t]} (excess ${ex.isk.toLocaleString('en-US')} kr.)` : TIER_NAME[t]]
-})) as Record<InsuranceTier, string>
+// "excess 65,000 kr.": printed on the offer too, so the admin sees it while pricing
+const excessText = (tier: InsuranceTier | '') => {
+  const ex = tier ? INSURANCE_EXCESS[tier] : null
+  return ex ? `excess ${ex.isk.toLocaleString('en-US')} kr.` : ''
+}
 const seedItem = (item: QuoteItem) => {
   const prev = latest?.items.find(i => i.quoteItemId === item.id)
   prices[item.id] = prev ? prev.unitPrice : null
@@ -338,6 +368,13 @@ watch(() => props.quote.items, (items) => {
 
 // "1 week", "2 weeks", "1 day"
 const unit = (mode: PricingMode | undefined, n: number | null | undefined) => `${mode === 'week' ? 'week' : 'day'}${n === 1 ? '' : 's'}`
+
+// "/day", "/week" or nothing, printed after the currency inside a price field
+const per = (mode: PricingMode | undefined) => mode === 'day' ? '/day' : mode === 'week' ? '/week' : ''
+// The rental period an add-on is charged over, e.g. "for 12 days"
+const periodText = (id: number) => needsPeriod(id) && hasPeriod(id) ? `for ${periods[id]} ${unit(modes[id], periods[id])}` : needsPeriod(id) ? 'Set the period above' : 'One price'
+// An add-on row's total: the amount, or a prompt while its price is missing
+const rowTotal = (n: number | null) => n == null ? 'Price missing' : n > 0 ? fmt(n) : '–'
 
 const bulkMode = ref<PricingMode>('week')
 const bulkPeriod = ref<number | null>(1)
@@ -486,7 +523,6 @@ const extrasComplete = (item: QuoteItem) => item.itemType !== 'vehicle'
     && (!hasDrivers(item.id) || unlimitedDrivers(item.id) || Number.isInteger(extras[item.id]!.drivers)))
 const extraPlaceholder = (id: number) =>
   modes[id] === 'day' ? 'Price / day' : modes[id] === 'week' ? 'Price / week' : 'Price'
-const extraLabel = (n: number | null) => n != null && n > 0 ? `+ ${fmt(n)}` : ''
 
 const complete = computed(() => props.quote.items.every(i => isPriced(i.id) && hasPeriod(i.id) && extrasComplete(i)))
 
