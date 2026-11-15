@@ -1,5 +1,5 @@
 <template>
-  <form class="space-y-5" @submit.prevent="submit">
+  <form ref="formEl" class="space-y-5" @submit.prevent="submit">
     <!-- Basics -->
     <section class="admin-card p-5 sm:p-6">
       <h2 class="admin-card-title">Basics</h2>
@@ -30,11 +30,36 @@
           </p>
         </div>
         <div>
-        <label class="admin-label">Registration numbers</label>
-        <input v-model.trim="form.plates" type="text" class="input-dark" placeholder="e.g. ABC12, DEF34">
-        <p class="mt-1 max-w-3xl text-xs text-bone-400">
-          One per unit, separated by commas. Never shown on the website; used to prefill rental agreements under Contracts.
-        </p>
+          <label class="admin-label">Registration numbers</label>
+          <div class="space-y-2">
+            <div v-for="(_, i) in form.plates" :key="i" class="flex items-center gap-2">
+              <input
+                v-model.trim="form.plates[i]"
+                type="text"
+                class="input-dark font-mono uppercase"
+                maxlength="12"
+                :placeholder="`Unit ${i + 1}, e.g. ABC12`"
+                :aria-label="`Registration number, unit ${i + 1}`"
+                @keydown.enter.prevent="addPlate"
+              >
+              <button
+                v-if="form.plates.length > 1"
+                type="button"
+                class="admin-icon-action-danger !ml-0"
+                aria-label="Remove registration number"
+                title="Remove registration number"
+                @click="form.plates.splice(i, 1)"
+              >
+                <AdminIcon name="close" :size="16" />
+              </button>
+            </div>
+          </div>
+          <button type="button" class="btn-outline btn-sm mt-2" @click="addPlate">
+            <AdminIcon name="plus" :size="16" /> Add registration number
+          </button>
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">
+            One per unit, so a listing with 4 caravans gets 4 numbers. Never shown on the website; used to prefill rental agreements under Contracts.
+          </p>
         </div>
         <div>
           <label class="admin-label">Web address *</label>
@@ -289,7 +314,7 @@ const form = reactive({
   description: { en: v?.description.en ?? '', is: v?.description.is ?? '' },
   highlights: (v?.highlights ?? []).map(h => ({ en: h.en ?? '', is: h.is ?? '' })),
   images: [...(v?.images ?? [])],
-  plates: (v?.plates ?? []).join(', '),
+  plates: v?.plates?.length ? [...v.plates] : [''], // one field per unit
   specs: {
     units: v?.specs.units ?? ('' as number | ''),
     seats: v?.specs.seats ?? ('' as number | ''),
@@ -316,6 +341,15 @@ const form = reactive({
   },
 })
 if (!form.highlights.length) form.highlights.push({ en: '', is: '' })
+
+const addPlate = async () => {
+  form.plates.push('')
+  await nextTick()
+  plateInputs()?.at(-1)?.focus()
+}
+const formEl = useTemplateRef<HTMLFormElement>('formEl')
+const plateInputs = () =>
+  formEl.value ? Array.from(formEl.value.querySelectorAll<HTMLInputElement>('input[aria-label^="Registration number"]')) : null
 
 // ── Slug auto-fill (new vehicles only, until the user edits it by hand) ─────
 const slugTouched = ref(isEdit.value)
@@ -386,7 +420,8 @@ const submit = () => {
     description: form.description,
     highlights: form.highlights.filter(h => h.en || h.is),
     images: form.images,
-    plates: form.plates,
+    // A pasted "ABC12, DEF34" in one field still becomes two numbers.
+    plates: form.plates.flatMap(p => p.split(/[,;]/)).map(p => p.trim()).filter(Boolean),
     specs: {
       ...form.specs,
       units: form.specs.units || undefined,
