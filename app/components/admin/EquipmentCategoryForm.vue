@@ -1,31 +1,29 @@
 <template>
-  <form class="space-y-10" @submit.prevent="submit">
+  <form class="space-y-5" @submit.prevent="submit">
     <!-- Name + address -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Name and address</h2>
-      <p class="mt-1 text-xs text-bone-400">
-        The name is the short label on chips and card badges. The URL slug is the category page's address and is
-        kept separate on purpose: renaming the category never moves the page. If you do change a slug, the old
-        address keeps working and redirects to the new one.
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Name and address</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">
+        The name is the short label shown on the website. You can rename a category without changing its web address.
       </p>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
-        <div>
-          <label class="admin-label">Name (Icelandic) *</label>
-          <input v-model.trim="form.name.is" type="text" class="input-dark" @input="autoSlug('is')">
-        </div>
         <div>
           <label class="admin-label">Name (English) *</label>
           <input v-model.trim="form.name.en" type="text" class="input-dark" @input="autoSlug('en')">
         </div>
         <div>
-          <label class="admin-label">URL slug (Icelandic)</label>
-          <input v-model.trim="form.slug.is" type="text" class="input-dark font-mono" placeholder="hitablasarar" @input="touched.is = true">
-          <p class="mt-1 text-xs text-bone-400">/equipment/{{ form.slug.is || '…' }}</p>
+          <label class="admin-label">Name (Icelandic) *</label>
+          <input v-model.trim="form.name.is" type="text" class="input-dark" @input="autoSlug('is')">
         </div>
         <div>
-          <label class="admin-label">URL slug (English)</label>
+          <label class="admin-label">Web address (English)</label>
           <input v-model.trim="form.slug.en" type="text" class="input-dark font-mono" placeholder="heaters" @input="touched.en = true">
-          <p class="mt-1 text-xs text-bone-400">/en/equipment/{{ form.slug.en || '…' }}</p>
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">Page address: /en/equipment/{{ form.slug.en || '…' }}</p>
+        </div>
+        <div>
+          <label class="admin-label">Web address (Icelandic)</label>
+          <input v-model.trim="form.slug.is" type="text" class="input-dark font-mono" placeholder="hitablasarar" @input="touched.is = true">
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">Page address: /equipment/{{ form.slug.is || '…' }}</p>
         </div>
       </div>
       <p v-if="isEdit && slugChanged" class="mt-3 text-xs text-gold-400">
@@ -34,74 +32,72 @@
     </section>
 
     <!-- Landing page copy -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Category page</h2>
-      <p class="mt-1 text-xs text-bone-400">
-        What the /equipment/&lt;slug&gt; page says. The title is the page heading, ideally the phrase people search for
-        ("Hitablásarar til leigu"). The intro is the body copy; separate paragraphs with a blank line. Empty fields fall
-        back to the name. The page stays out of Google until the category has at least one item.
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Category page</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">
+        The heading and intro text on this category's page on the website. A good heading is the phrase people search
+        for, like "Hitablásarar til leigu". Empty fields use the name.
       </p>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
-        <div>
-          <label class="admin-label">Page title (Icelandic)</label>
-          <input v-model.trim="form.title.is" type="text" class="input-dark" placeholder="Hitablásarar til leigu">
-        </div>
         <div>
           <label class="admin-label">Page title (English)</label>
           <input v-model.trim="form.title.en" type="text" class="input-dark" placeholder="Heaters for rent">
         </div>
         <div>
-          <label class="admin-label">Intro (Icelandic)</label>
-          <textarea v-model="form.intro.is" rows="7" class="input-dark resize-y" placeholder="Separate paragraphs with a blank line." />
+          <label class="admin-label">Page title (Icelandic)</label>
+          <input v-model.trim="form.title.is" type="text" class="input-dark" placeholder="Hitablásarar til leigu">
         </div>
         <div>
           <label class="admin-label">Intro (English)</label>
           <textarea v-model="form.intro.en" rows="7" class="input-dark resize-y" />
         </div>
         <div>
-          <label class="admin-label">Search result title (Icelandic)</label>
-          <input v-model.trim="form.metaTitle.is" type="text" class="input-dark">
+          <label class="admin-label">Intro (Icelandic)</label>
+          <textarea v-model="form.intro.is" rows="7" class="input-dark resize-y" placeholder="Separate paragraphs with a blank line." />
         </div>
         <div>
           <label class="admin-label">Search result title (English)</label>
           <input v-model.trim="form.metaTitle.en" type="text" class="input-dark">
         </div>
         <div>
-          <label class="admin-label">Search result description (Icelandic)</label>
-          <textarea v-model.trim="form.metaDescription.is" rows="3" class="input-dark resize-y" />
+          <label class="admin-label">Search result title (Icelandic)</label>
+          <input v-model.trim="form.metaTitle.is" type="text" class="input-dark">
         </div>
         <div>
           <label class="admin-label">Search result description (English)</label>
           <textarea v-model.trim="form.metaDescription.en" rows="3" class="input-dark resize-y" />
         </div>
+        <div>
+          <label class="admin-label">Search result description (Icelandic)</label>
+          <textarea v-model.trim="form.metaDescription.is" rows="3" class="input-dark resize-y" />
+        </div>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Questions and answers</h2>
-      <p class="mt-1 text-xs text-bone-400">Shown at the bottom of the category page and marked up for search engines. Optional.</p>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Questions and answers</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">Optional. Shown at the bottom of the category page, and Google can show them in search results.</p>
       <div class="mt-4 space-y-5">
-        <div v-for="(f, i) in form.faq" :key="i" class="border border-ink-800 p-4 space-y-3">
-          <div class="grid gap-3 sm:grid-cols-2">
-            <input v-model.trim="f.q.is" type="text" class="input-dark" placeholder="Question (Icelandic)">
+        <div v-for="(f, i) in form.faq" :key="i" class="flex items-start gap-3">
+          <div class="grid flex-1 gap-3 sm:grid-cols-2">
             <input v-model.trim="f.q.en" type="text" class="input-dark" placeholder="Question (English)">
-            <textarea v-model.trim="f.a.is" rows="3" class="input-dark resize-y" placeholder="Answer (Icelandic)" />
+            <input v-model.trim="f.q.is" type="text" class="input-dark" placeholder="Question (Icelandic)">
             <textarea v-model.trim="f.a.en" rows="3" class="input-dark resize-y" placeholder="Answer (English)" />
+            <textarea v-model.trim="f.a.is" rows="3" class="input-dark resize-y" placeholder="Answer (Icelandic)" />
           </div>
-          <button type="button" class="text-xs uppercase tracking-widest text-signal-500/80 hover:text-signal-500 transition-colors" @click="form.faq.splice(i, 1)">
-            Remove question
-          </button>
+          <button type="button" class="admin-icon-action-danger !ml-0 mt-1" aria-label="Remove question" title="Remove question" @click="form.faq.splice(i, 1)"><AdminIcon name="close" :size="16" /></button>
+
         </div>
       </div>
-      <button type="button" class="btn-ghost !px-4 !py-2 !text-xs mt-3" @click="form.faq.push(emptyFaq())">
-        + Add question
+      <button type="button" class="btn-outline btn-sm mt-3" @click="form.faq.push(emptyFaq())">
+        <AdminIcon name="plus" :size="16" /> Add question
       </button>
     </section>
 
     <!-- Status -->
-    <section v-if="isEdit">
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Status</h2>
+    <section v-if="isEdit" class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Status</h2>
       <label class="mt-3 flex items-start gap-2.5 text-sm text-bone-100 cursor-pointer">
         <input v-model="form.archived" type="checkbox" class="accent-gold-500 w-4 h-4 mt-0.5">
         <span>
@@ -112,19 +108,17 @@
     </section>
 
     <!-- Save -->
-    <div class="border-t border-ink-800 pt-6">
-      <div v-if="error" class="mb-5 border border-signal-500/50 bg-signal-500/10 p-4 text-sm">
-        <p class="font-semibold text-signal-500">Could not save</p>
-        <ul class="mt-1 text-bone-400 list-disc list-inside">
-          <li v-for="(msg, i) in errorList" :key="i">{{ msg }}</li>
-        </ul>
-      </div>
-      <div class="flex items-center gap-4">
-        <button type="submit" class="btn-gold disabled:opacity-60" :disabled="saving">
-          {{ saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create category' }}
-        </button>
-        <NuxtLink to="/admin/equipment/categories" class="btn-ghost !px-5 !py-2.5">Cancel</NuxtLink>
-      </div>
+    <div v-if="error" role="alert" class="border border-signal-500/50 bg-signal-500/10 p-4 text-sm">
+      <p class="font-semibold text-signal-500">Could not save</p>
+      <ul class="mt-1 text-bone-400 list-disc list-inside">
+        <li v-for="(msg, i) in errorList" :key="i">{{ msg }}</li>
+      </ul>
+    </div>
+    <div class="admin-savebar">
+      <button type="submit" class="btn-gold" :disabled="saving">
+        {{ saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create category' }}
+      </button>
+      <NuxtLink to="/admin/equipment/categories" class="btn-outline">Cancel</NuxtLink>
     </div>
   </form>
 </template>

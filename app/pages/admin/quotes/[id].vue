@@ -1,108 +1,107 @@
 <template>
   <div v-if="quote">
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <p class="kicker">
-          <NuxtLink to="/admin/quotes" class="hover:text-gold-400 transition-colors">Quotes</NuxtLink>
-          <span class="text-ink-500 mx-1">/</span> {{ quote.id }}
-        </p>
-        <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">
-          {{ quote.name || quote.email }}
-          <span v-if="quote.company" class="text-bone-400">· {{ quote.company }}</span>
-        </h1>
-        <p v-if="quote.source === 'admin'" class="mt-1 text-xs uppercase tracking-widest text-gold-400/80">Created in the admin panel</p>
-      </div>
-      <AdminQuoteStatusBadge :status="quote.status" class="!text-xs" />
-    </div>
+    <AdminPageHeader stack-actions :crumbs="[{ label: 'Sales' }, { label: 'Quotes', to: '/admin/quotes' }, { label: quote.name || quote.email }]">
+      <template #title>
+        {{ quote.name || quote.email }}
+        <span v-if="quote.company" class="text-bone-400">· {{ quote.company }}</span>
+      </template>
+      <template #description>
+        Received {{ new Date(quote.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) }}{{ quote.source === 'admin' ? ', created by you in the admin panel' : ' from the website' }}.
+      </template>
+      <template #actions>
+        <!-- The one status control: shows the state and changes it -->
+        <div class="flex items-center gap-3">
+          <span id="quote-status-label" class="admin-eyebrow">Status</span>
+          <div role="group" aria-labelledby="quote-status-label" class="inline-flex border border-ink-700">
+            <button
+              v-for="s in statusOptions"
+              :key="s"
+              type="button"
+              class="h-11 md:h-9 px-3 text-xs font-semibold capitalize transition-colors border-l border-ink-700 first:border-l-0"
+              :class="quote.status === s ? 'bg-gold-500 text-ink-950' : 'text-bone-400 hover:bg-ink-800 hover:text-bone-100'"
+              :aria-pressed="quote.status === s"
+              @click="setStatus(s)"
+            >
+              {{ s }}
+            </button>
+          </div>
+        </div>
+      </template>
+    </AdminPageHeader>
 
     <!-- Customer / edit form -->
-    <div class="mt-8 border border-ink-800 bg-ink-900/50 p-5">
+    <div class="mt-6 admin-card p-5 sm:p-6">
       <template v-if="!editing">
         <div class="flex items-start justify-between gap-4">
-          <h2 class="text-xs uppercase tracking-widest text-bone-400">Details</h2>
-          <button type="button" class="btn-ghost !px-4 !py-1.5 !text-xs" @click="startEdit">
+          <h2 class="admin-card-title">Details</h2>
+          <button type="button" class="btn-outline btn-sm" @click="startEdit">
             Edit quote
           </button>
         </div>
         <div class="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 text-sm">
           <div>
-            <p class="text-xs uppercase tracking-widest text-bone-400">Email</p>
+            <p class="admin-eyebrow">Email</p>
             <a :href="`mailto:${quote.email}`" class="mt-1 block text-gold-400 hover:text-gold-500 transition-colors break-all">{{ quote.email }}</a>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-widest text-bone-400">Phone</p>
+            <p class="admin-eyebrow">Phone</p>
             <p class="mt-1 text-bone-100">{{ quote.phone || '–' }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-widest text-bone-400">Kennitala</p>
+            <p class="admin-eyebrow">Kennitala</p>
             <p class="mt-1 text-bone-100">{{ quote.kennitala || '–' }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-widest text-bone-400">Rental period</p>
+            <p class="admin-eyebrow">Rental period</p>
             <p class="mt-1 text-bone-100">{{ quote.dates || '–' }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-widest text-bone-400">{{ quote.source === 'admin' ? 'Created' : 'Submitted' }}</p>
+            <p class="admin-eyebrow">{{ quote.source === 'admin' ? 'Created' : 'Submitted' }}</p>
             <p class="mt-1 text-bone-100">{{ formatDateTime(quote.createdAt) }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-widest text-bone-400">Language</p>
+            <p class="admin-eyebrow">Language</p>
             <p class="mt-1 text-bone-100">{{ quote.locale === 'is' ? 'Icelandic' : 'English' }} <span class="text-bone-400 text-xs">(offer email + PDF)</span></p>
           </div>
-          <div>
-            <p class="text-xs uppercase tracking-widest text-bone-400">Status</p>
-            <div class="mt-1.5 flex gap-2">
-              <button
-                v-for="s in statusOptions"
-                :key="s"
-                type="button"
-                class="text-[10px] uppercase tracking-widest px-2 py-1 border transition-colors"
-                :class="quote.status === s ? 'text-gold-400 border-gold-500/60' : 'text-bone-400 border-ink-700 hover:border-bone-400/50'"
-                @click="setStatus(s)"
-              >
-                {{ s }}
-              </button>
-            </div>
-          </div>
           <div v-if="quote.message" class="sm:col-span-2 lg:col-span-3">
-            <p class="text-xs uppercase tracking-widest text-bone-400">Message</p>
+            <p class="admin-eyebrow">Message</p>
             <p class="mt-1 text-bone-100 whitespace-pre-line">{{ quote.message }}</p>
           </div>
         </div>
       </template>
 
       <template v-else>
-        <h2 class="text-xs uppercase tracking-widest text-bone-400">Edit quote</h2>
+        <h2 class="admin-card-title">Edit quote</h2>
         <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Email *</label>
+            <label class="admin-label">Email *</label>
             <input v-model.trim="edit.email" type="email" class="input-dark" placeholder="customer@example.com">
           </div>
           <div>
-            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Name</label>
+            <label class="admin-label">Name</label>
             <input v-model.trim="edit.name" type="text" class="input-dark" placeholder="Contact name (optional)">
           </div>
           <div>
-            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Company</label>
+            <label class="admin-label">Company</label>
             <input v-model.trim="edit.company" type="text" class="input-dark" placeholder="Optional">
           </div>
           <div>
-            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Kennitala</label>
+            <label class="admin-label">Kennitala</label>
             <input v-model.trim="edit.kennitala" type="text" class="input-dark" placeholder="Optional">
           </div>
           <div>
-            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Phone</label>
+            <label class="admin-label">Phone</label>
             <input v-model.trim="edit.phone" type="text" class="input-dark" placeholder="Optional">
           </div>
           <div>
-            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Language</label>
+            <label class="admin-label">Language</label>
             <select v-model="edit.locale" class="input-dark">
               <option value="en">English</option>
               <option value="is">Icelandic</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Rental period</label>
+            <label class="admin-label">Rental period</label>
             <input v-model.trim="edit.dates" type="text" class="input-dark" placeholder="e.g. 12–18 August 2026 (optional)">
           </div>
         </div>
@@ -112,12 +111,12 @@
         <p v-if="saveError" class="mt-4 text-sm text-signal-500">{{ saveError }}</p>
 
         <div class="mt-6 flex flex-wrap gap-3 justify-end">
-          <button type="button" class="btn-ghost !text-xs" :disabled="saving" @click="editing = false">
+          <button type="button" class="btn-outline btn-sm" :disabled="saving" @click="editing = false">
             Cancel
           </button>
           <button
             type="button"
-            class="btn-gold !px-5 !py-2.5 disabled:opacity-50"
+            class="btn-gold"
             :disabled="!canSave || saving"
             @click="saveEdit"
           >
@@ -130,26 +129,26 @@
     <!-- Offer builder — hidden (not unmounted) while editing so unsaved
          prices, modes and periods survive item/qty changes. -->
     <div v-show="!editing">
-      <h2 class="mt-12 text-xl font-semibold uppercase tracking-wide text-bone-100">Make an offer</h2>
-      <AdminOfferForm :quote="quote" class="mt-5" @saved="reload" />
+      <h2 class="admin-section-title mt-10">Make an offer</h2>
+      <AdminOfferForm :quote="quote" class="mt-3" @saved="reload" @delete="removeQuote" />
     </div>
 
     <!-- Offer history -->
     <template v-if="quote.offers.length">
-      <h2 class="mt-12 text-xl font-semibold uppercase tracking-wide text-bone-100">Offer history</h2>
-      <div class="mt-5 border border-ink-800 divide-y divide-ink-800">
+      <h2 class="admin-section-title mt-10">Offer history</h2>
+      <div class="admin-list mt-3">
         <div
           v-for="o in [...quote.offers].reverse()"
           :key="o.id"
-          class="flex flex-wrap items-center gap-4 p-4 text-sm"
-          :class="o.confirmedAt ? 'bg-emerald-500/5' : 'bg-ink-900/50'"
+          class="admin-row flex-wrap text-sm"
+          :class="{ 'bg-emerald-500/5': o.confirmedAt }"
         >
           <div class="min-w-0 flex-1">
             <p class="font-semibold text-bone-100">
               Offer #{{ o.id }} · {{ formatMoneyLocal(o.total, o.currency) }}
               <span v-if="o.discountAmount" class="text-bone-400 font-normal">(incl. {{ o.discountType === 'percent' ? `${o.discountValue}%` : formatMoneyLocal(o.discountAmount, o.currency) }} discount)</span>
               <span class="ml-1 text-bone-400 font-normal">{{ o.vatAmount > 0 ? `(incl. ${o.vatRate}% VAT)` : '(no VAT)' }}</span>
-              <span v-if="o.confirmedAt" class="ml-2 text-[10px] uppercase tracking-widest text-emerald-400 border border-emerald-500/50 px-1.5 py-0.5 font-normal">Confirmed</span>
+              <span v-if="o.confirmedAt" class="admin-chip ml-2 border-emerald-500/50 text-emerald-400">Confirmed</span>
             </p>
             <p class="mt-0.5 text-xs text-bone-400">
               {{ o.sentAt ? `Sent ${formatDateTime(o.sentAt)}` : `Saved ${formatDateTime(o.createdAt)}, not sent` }}
@@ -159,7 +158,7 @@
           <button
             v-if="o.confirmedAt"
             type="button"
-            class="text-xs uppercase tracking-widest text-bone-400 hover:text-signal-500 transition-colors disabled:opacity-50"
+            class="admin-link"
             :disabled="confirming === o.id"
             @click="setConfirmed(o, false)"
           >
@@ -168,7 +167,7 @@
           <button
             v-else-if="o.sentAt"
             type="button"
-            class="btn-gold !px-4 !py-2 !text-xs disabled:opacity-50"
+            class="btn-gold btn-sm"
             :disabled="confirming === o.id"
             @click="setConfirmed(o, true)"
           >
@@ -177,41 +176,41 @@
           <a
             :href="`/api/admin/quotes/${quote.id}/offers/${o.id}`"
             target="_blank"
-            class="btn-ghost !px-4 !py-2 !text-xs"
-          >PDF ↗</a>
+            class="btn-outline btn-sm"
+          >PDF <AdminIcon name="external" :size="14" /></a>
           <NuxtLink
             v-if="contractFor(o.id)"
             :to="`/admin/contracts/${contractFor(o.id)!.id}`"
-            class="btn-ghost !px-4 !py-2 !text-xs"
-          >Agreement {{ contractFor(o.id)!.number }} →</NuxtLink>
+            class="btn-outline btn-sm"
+          >Agreement {{ contractFor(o.id)!.number }}</NuxtLink>
           <button
             v-else
             type="button"
-            class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50"
+            class="btn-outline btn-sm"
             :disabled="creatingContract === o.id"
             @click="createContract(o)"
           >
-            {{ creatingContract === o.id ? '…' : 'Rental agreement →' }}
+            {{ creatingContract === o.id ? 'Creating…' : 'Write agreement' }}
           </button>
         </div>
       </div>
-      <p class="mt-3 text-xs text-bone-400 leading-relaxed">
+      <p class="mt-3 max-w-3xl text-xs text-ink-400 leading-relaxed">
         Mark the offer the customer accepted as confirmed. Its lines are then counted in
-        <NuxtLink to="/admin/rentals" class="text-gold-400 hover:text-gold-500 transition-colors">Rentals</NuxtLink>
+        <NuxtLink to="/admin/rentals" class="text-gold-400 hover:text-gold-500 transition-colors">Rental stats</NuxtLink>
         (times rented and gross per item) and the quote is set to “won”. Only one offer per quote can be confirmed.
-        “Rental agreement” opens a printable contract prefilled from that offer (see
+        “Write agreement” opens a printable contract prefilled from that offer (see
         <NuxtLink to="/admin/contracts" class="text-gold-400 hover:text-gold-500 transition-colors">Contracts</NuxtLink>).
       </p>
     </template>
 
     <!-- Agreements made from this quote -->
     <template v-if="contracts.length">
-      <h2 class="mt-12 text-xl font-semibold uppercase tracking-wide text-bone-100">Rental agreements</h2>
-      <div class="mt-5 border border-ink-800 divide-y divide-ink-800">
-        <div v-for="c in contracts" :key="c.id" class="flex flex-wrap items-center gap-4 p-4 text-sm bg-ink-900/50">
+      <h2 class="admin-section-title mt-10">Rental agreements</h2>
+      <div class="admin-list mt-3">
+        <div v-for="c in contracts" :key="c.id" class="admin-row flex-wrap text-sm">
           <div class="min-w-0 flex-1">
             <p class="font-semibold text-bone-100">
-              <span class="font-mono text-gold-400">{{ c.number }}</span>
+              <NuxtLink :to="`/admin/contracts/${c.id}`" class="admin-row-link">Agreement {{ c.number }}</NuxtLink>
               <span v-if="c.offerId" class="text-bone-400 font-normal"> · from offer #{{ c.offerId }}</span>
             </p>
             <p class="mt-0.5 text-xs text-bone-400">
@@ -219,15 +218,22 @@
               · updated {{ formatDateTime(c.updatedAt) }}
             </p>
           </div>
-          <NuxtLink :to="`/admin/contracts/${c.id}`" class="btn-ghost !px-4 !py-2 !text-xs">Edit</NuxtLink>
-          <a :href="`/api/admin/contracts/${c.id}/pdf`" target="_blank" class="btn-ghost !px-4 !py-2 !text-xs">Print ↗</a>
+          <div class="admin-row-actions">
+            <a :href="`/api/admin/contracts/${c.id}/pdf`" target="_blank" rel="noopener" class="btn-outline btn-sm">PDF <AdminIcon name="external" :size="14" /></a>
+            <AdminIcon name="right" :size="16" class="ml-1 text-ink-500" />
+          </div>
         </div>
       </div>
     </template>
   </div>
 
-  <p v-else-if="loadError" class="text-sm text-signal-500">{{ loadError }}</p>
-  <p v-else class="text-sm text-bone-400">Loading…</p>
+  <AdminStateMessage v-else-if="loadError" kind="error">
+    {{ loadError }}
+    <template #action>
+      <NuxtLink to="/admin/quotes" class="btn-outline btn-sm">Back to quotes</NuxtLink>
+    </template>
+  </AdminStateMessage>
+  <AdminStateMessage v-else kind="loading">Loading…</AdminStateMessage>
 </template>
 
 <script setup lang="ts">
@@ -280,6 +286,18 @@ const createContract = async (offer: Offer) => {
   }
   finally {
     creatingContract.value = null
+  }
+}
+
+const removeQuote = async () => {
+  if (!quote.value) return
+  if (!await confirmDialog(`Delete the quote for "${quote.value.name || quote.value.email}"? This also deletes its offers.`)) return
+  try {
+    await $fetch(`/api/admin/quotes/${quote.value.id}`, { method: 'DELETE' })
+    await navigateTo('/admin/quotes')
+  }
+  catch (e: any) {
+    await alertDialog(e?.data?.statusMessage || 'Delete failed.')
   }
 }
 

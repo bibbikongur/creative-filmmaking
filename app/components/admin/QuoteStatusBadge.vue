@@ -1,6 +1,6 @@
 <template>
   <span
-    class="shrink-0 text-[10px] uppercase tracking-widest px-2 py-1 border"
+    class="admin-chip shrink-0"
     :class="classes[status]"
   >
     {{ status }}

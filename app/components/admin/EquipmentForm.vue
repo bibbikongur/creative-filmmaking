@@ -1,8 +1,8 @@
 <template>
-  <form class="space-y-10" @submit.prevent="submit">
+  <form class="space-y-5" @submit.prevent="submit">
     <!-- Basics -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Basics</h2>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Basics</h2>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
         <div>
           <label class="admin-label">Name (English) *</label>
@@ -13,22 +13,22 @@
           <input v-model.trim="form.name.is" type="text" class="input-dark" @input="autoSlug">
         </div>
         <div>
-          <label class="admin-label">URL slug</label>
-          <input v-model.trim="form.slug" type="text" class="input-dark font-mono" placeholder="rafstod-2-2-kva" @input="slugTouched = true">
-          <p class="mt-1 text-xs text-bone-400">
-            Page address: /equipment/{{ form.slug || '…' }}
-            <span v-if="isEdit" class="text-signal-500/80"> (changing it breaks links already shared).</span>
-          </p>
-        </div>
-        <div>
           <label class="admin-label">Category *</label>
           <select v-model="form.category" class="input-dark">
             <option v-for="c in categoryOptions" :key="c.id" :value="c.id">
-              {{ c.name.is || c.name.en }}{{ c.status === 'archived' ? ' (archived)' : '' }}
+              {{ c.name.en || c.name.is }}{{ c.status === 'archived' ? ' (archived)' : '' }}
             </option>
           </select>
-          <p class="mt-1 text-xs text-bone-400">
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">
             <NuxtLink to="/admin/equipment/categories" class="text-gold-400 hover:text-gold-500">Manage categories</NuxtLink>
+          </p>
+        </div>
+        <div>
+          <label class="admin-label">Web address</label>
+          <input v-model.trim="form.slug" type="text" class="input-dark font-mono" placeholder="rafstod-2-2-kva" @input="slugTouched = true">
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">
+            Page address: /equipment/{{ form.slug || '…' }}
+            <span v-if="isEdit" class="text-signal-500/80"> (changing it breaks links already shared).</span>
           </p>
         </div>
       </div>
@@ -39,17 +39,17 @@
     </section>
 
     <!-- Text -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Text</h2>
-      <p class="mt-1 text-xs text-bone-400">The tagline is the short line on the card. The description is the detail page's body copy: what it is, what it is for, what comes with it. Icelandic is optional; the site falls back to English when empty.</p>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Text</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">The tagline is the short line on the card. The description is the detail page's body copy: what it is, what it is for, what comes with it. Icelandic is optional; the site falls back to English when empty.</p>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
-        <div>
+        <div class="flex flex-col">
           <label class="admin-label">Tagline (English)</label>
-          <textarea v-model.trim="form.tagline.en" rows="3" class="input-dark resize-y" />
+          <textarea v-model.trim="form.tagline.en" rows="2" class="input-dark admin-autogrow flex-1" />
         </div>
-        <div>
+        <div class="flex flex-col">
           <label class="admin-label">Tagline (Icelandic)</label>
-          <textarea v-model.trim="form.tagline.is" rows="3" class="input-dark resize-y" />
+          <textarea v-model.trim="form.tagline.is" rows="2" class="input-dark admin-autogrow flex-1" />
         </div>
         <div>
           <label class="admin-label">Description (English)</label>
@@ -63,66 +63,67 @@
     </section>
 
     <!-- Highlights -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Highlights</h2>
-      <p class="mt-1 text-xs text-bone-400">3–5 short bullets shown on the detail page (what's included, output, runtime, licence).</p>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Highlights</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">3–5 short bullets shown on the detail page (what's included, output, runtime, licence).</p>
       <div class="mt-4 space-y-3">
         <div v-for="(h, i) in form.highlights" :key="i" class="flex gap-3 items-start">
           <div class="grid gap-3 sm:grid-cols-2 flex-1">
             <input v-model.trim="h.en" type="text" class="input-dark" placeholder="English">
             <input v-model.trim="h.is" type="text" class="input-dark" placeholder="Icelandic">
           </div>
-          <button type="button" class="admin-icon-btn mt-2" title="Remove" @click="form.highlights.splice(i, 1)">✕</button>
+          <button type="button" class="admin-icon-action-danger !ml-0 mt-1" aria-label="Remove highlight" title="Remove highlight" @click="form.highlights.splice(i, 1)"><AdminIcon name="close" :size="16" /></button>
         </div>
       </div>
-      <button type="button" class="btn-ghost !px-4 !py-2 !text-xs mt-3" @click="form.highlights.push({ en: '', is: '' })">
-        + Add highlight
+      <button type="button" class="btn-outline btn-sm mt-3" @click="form.highlights.push({ en: '', is: '' })">
+        <AdminIcon name="plus" :size="16" /> Add highlight
       </button>
     </section>
 
     <!-- Photos -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Photos</h2>
-      <p class="mt-1 text-xs text-bone-400">The first photo is the card image. Use the arrows to reorder.</p>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Photos</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">The first photo is the card image. Use the arrows to reorder.</p>
 
       <div v-if="form.images.length" class="mt-4 grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         <div v-for="(src, i) in form.images" :key="src" class="relative group border border-ink-700">
           <img :src="src" alt="" class="w-full aspect-[3/2] object-cover bg-ink-800">
           <span v-if="i === 0" class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-ink-950/80 text-gold-400 text-[10px] uppercase tracking-widest">Cover</span>
           <div class="absolute bottom-1.5 right-1.5 flex gap-1.5">
-            <button v-if="i > 0" type="button" class="admin-icon-btn" title="Move left" @click="move(i, -1)">←</button>
-            <button v-if="i < form.images.length - 1" type="button" class="admin-icon-btn" title="Move right" @click="move(i, 1)">→</button>
-            <button type="button" class="admin-icon-btn !text-signal-500" title="Remove" @click="form.images.splice(i, 1)">✕</button>
+            <button v-if="i > 0" type="button" class="admin-icon-btn" title="Move left" aria-label="Move photo left" @click="move(i, -1)"><AdminIcon name="back" :size="14" /></button>
+            <button v-if="i < form.images.length - 1" type="button" class="admin-icon-btn" title="Move right" aria-label="Move photo right" @click="move(i, 1)"><AdminIcon name="forward" :size="14" /></button>
+            <button type="button" class="admin-icon-btn ml-1.5 hover:!text-signal-400" title="Remove photo" aria-label="Remove photo" @click="form.images.splice(i, 1)"><AdminIcon name="close" :size="14" /></button>
           </div>
         </div>
       </div>
 
       <div class="mt-4 flex flex-wrap items-center gap-3">
-        <label class="btn-ghost !px-4 !py-2 !text-xs cursor-pointer">
-          {{ uploading ? 'Uploading…' : '⬆ Upload photos' }}
+        <label class="btn-outline btn-sm cursor-pointer">
+          <AdminIcon name="upload" :size="16" /> {{ uploading ? 'Uploading…' : 'Upload photos' }}
           <input type="file" accept="image/*" multiple class="hidden" :disabled="uploading" @change="upload">
         </label>
         <span class="text-xs text-bone-400">or</span>
         <input v-model.trim="imageUrl" type="url" class="input-dark !w-72 !py-2 text-xs" placeholder="https:// paste an image URL">
-        <button type="button" class="btn-ghost !px-4 !py-2 !text-xs" :disabled="!imageUrl" @click="addUrl">Add URL</button>
+        <button type="button" class="btn-outline btn-sm" :disabled="!imageUrl" @click="addUrl">Add URL</button>
       </div>
       <p v-if="uploadError" class="mt-2 text-xs text-signal-500">{{ uploadError }}</p>
     </section>
 
     <!-- Save -->
-    <div class="border-t border-ink-800 pt-6">
-      <div v-if="error" class="mb-5 border border-signal-500/50 bg-signal-500/10 p-4 text-sm">
-        <p class="font-semibold text-signal-500">Could not save</p>
-        <ul class="mt-1 text-bone-400 list-disc list-inside">
-          <li v-for="(msg, i) in errorList" :key="i">{{ msg }}</li>
-        </ul>
-      </div>
-      <div class="flex items-center gap-4">
-        <button type="submit" class="btn-gold disabled:opacity-60" :disabled="saving">
-          {{ saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create item' }}
-        </button>
-        <NuxtLink to="/admin/equipment" class="btn-ghost !px-5 !py-2.5">Cancel</NuxtLink>
-      </div>
+    <div v-if="error" role="alert" class="border border-signal-500/50 bg-signal-500/10 p-4 text-sm">
+      <p class="font-semibold text-signal-500">Could not save</p>
+      <ul class="mt-1 text-bone-400 list-disc list-inside">
+        <li v-for="(msg, i) in errorList" :key="i">{{ msg }}</li>
+      </ul>
+    </div>
+    <div class="admin-savebar">
+      <button type="submit" class="btn-gold" :disabled="saving">
+        {{ saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create item' }}
+      </button>
+      <NuxtLink to="/admin/equipment" class="btn-outline">Cancel</NuxtLink>
+      <button v-if="isEdit" type="button" class="admin-link ml-auto inline-flex items-center gap-2 !text-signal-400 !decoration-signal-500/40 hover:!text-signal-500" @click="emit('delete')">
+        <AdminIcon name="trash" :size="16" /> Delete equipment
+      </button>
     </div>
   </form>
 </template>
@@ -137,7 +138,7 @@ const props = defineProps<{
   error?: string | string[]
 }>()
 
-const emit = defineEmits<{ save: [payload: Record<string, unknown>] }>()
+const emit = defineEmits<{ save: [payload: Record<string, unknown>], delete: [] }>()
 
 const isEdit = computed(() => Boolean(props.item))
 
@@ -240,7 +241,7 @@ const submit = () => {
   @apply block text-xs uppercase tracking-widest text-bone-400 mb-1.5;
 }
 .admin-icon-btn {
-  @apply w-7 h-7 flex items-center justify-center bg-ink-950/80 text-bone-100 text-xs
+  @apply w-8 h-8 flex items-center justify-center bg-ink-950/80 text-bone-100 text-xs
     hover:text-gold-400 transition-colors;
 }
 </style>

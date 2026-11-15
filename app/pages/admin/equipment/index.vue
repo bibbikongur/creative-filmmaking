@@ -1,106 +1,130 @@
 <template>
   <div>
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <p class="kicker">Equipment</p>
-        <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">Manage equipment</h1>
-        <p class="mt-2 max-w-2xl text-sm text-bone-400">
-          Grouped the way the site shows them. Arrows reorder within a category; "Move to" puts an item in
-          another category. Category order is set on the Categories page.
-        </p>
-      </div>
-      <div class="flex items-center gap-3">
-        <NuxtLink to="/admin/equipment/categories" class="btn-ghost !px-5 !py-2.5">Categories</NuxtLink>
-        <NuxtLink to="/admin/equipment/new" class="btn-gold !px-5 !py-2.5">+ Add equipment</NuxtLink>
-      </div>
-    </div>
+    <AdminPageHeader
+      title="Equipment"
+      description="Grouped by category, in the order the website shows them."
+      :crumbs="[{ label: 'Catalogue' }, { label: 'Equipment' }]"
+    >
+      <template #actions>
+        <NuxtLink to="/admin/equipment/new" class="btn-gold btn-sm"><AdminIcon name="plus" :size="16" /> Add equipment</NuxtLink>
+      </template>
+    </AdminPageHeader>
 
-    <p v-if="loadError" class="mt-8 text-sm text-signal-500">{{ loadError }}</p>
-    <p v-else-if="!loaded" class="mt-8 text-sm text-bone-400">Loading equipment…</p>
+    <AdminStateMessage v-if="loadError" kind="error" class="mt-6">{{ loadError }}</AdminStateMessage>
+    <AdminStateMessage v-else-if="!loaded" kind="loading" class="mt-6">Loading equipment…</AdminStateMessage>
+
+    <AdminStateMessage v-else-if="!items.length" title="No equipment yet" class="mt-6">
+      Add the first item and it appears on the website straight away.
+      <template #action>
+        <NuxtLink to="/admin/equipment/new" class="btn-gold btn-sm">Add equipment</NuxtLink>
+      </template>
+    </AdminStateMessage>
 
     <template v-else>
-      <section v-for="group in groups" :key="group.id" class="mt-8">
-        <div class="flex flex-wrap items-end justify-between gap-3 pb-2 border-b border-ink-700">
-          <h2 class="font-heading font-semibold uppercase tracking-wide text-bone-100 flex items-baseline gap-2">
-            <button type="button" class="hover:text-gold-400 transition-colors inline-flex items-center gap-2" :aria-expanded="!collapsed.has(group.id)" @click="toggle(group.id)">
-              <span aria-hidden="true" class="text-xs text-bone-400">{{ collapsed.has(group.id) ? '▸' : '▾' }}</span>
-              {{ group.title }}
-            </button>
-            <span class="text-xs tracking-widest text-bone-400 font-sans font-normal">{{ group.items.length }} item{{ group.items.length === 1 ? '' : 's' }}</span>
-            <span v-if="group.archived" class="text-[10px] uppercase tracking-widest text-bone-400 border border-ink-700 px-1.5 py-0.5 font-sans font-normal">Archived</span>
-          </h2>
-          <NuxtLink v-if="group.editTo" :to="group.editTo" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors">Edit category</NuxtLink>
-        </div>
+      <AdminToolbar v-model:search="search" class="mt-6" placeholder="Search equipment…" :count="countLabel">
+        <template #end>
+          <button type="button" class="admin-pill" :disabled="searching" :class="{ 'opacity-40': searching }" @click="toggleAll">
+            {{ allCollapsed ? 'Expand all' : 'Collapse all' }}
+          </button>
+        </template>
+      </AdminToolbar>
+      <p v-if="searching" class="mt-3 hidden text-xs text-ink-400 sm:block">Reordering is paused while a search is active.</p>
 
-        <div v-if="!collapsed.has(group.id)" class="border border-t-0 border-ink-800 divide-y divide-ink-800">
-          <div
-            v-for="(e, i) in group.items"
-            :key="e.id"
-            class="flex items-center gap-4 p-4 bg-ink-900/50 hover:bg-ink-900 transition-colors"
-          >
-            <div class="flex flex-col shrink-0">
-              <button
-                type="button"
-                class="px-1.5 py-0.5 text-bone-400 hover:text-bone-100 transition-colors disabled:opacity-25 disabled:hover:text-bone-400"
-                :disabled="i === 0 || busy"
-                aria-label="Move up"
-                @click="move(group, i, -1)"
-              >▲</button>
-              <button
-                type="button"
-                class="px-1.5 py-0.5 text-bone-400 hover:text-bone-100 transition-colors disabled:opacity-25 disabled:hover:text-bone-400"
-                :disabled="i === group.items.length - 1 || busy"
-                aria-label="Move down"
-                @click="move(group, i, 1)"
-              >▼</button>
-            </div>
-            <img
-              v-if="e.images[0]"
-              :src="e.images[0]"
-              :alt="e.name.en"
-              class="w-20 h-14 object-cover bg-ink-800 shrink-0"
-              loading="lazy"
-            >
-            <div v-else class="w-20 h-14 flex items-center justify-center bg-ink-800 shrink-0 text-[10px] uppercase tracking-widest text-bone-400/50">
-              No photo
-            </div>
-            <div class="min-w-0 flex-1">
-              <p class="font-semibold text-bone-100 truncate">
-                {{ e.name.is || e.name.en }}
-                <span v-if="e.name.is && e.name.en" class="text-bone-400 font-normal">· {{ e.name.en }}</span>
-                <span v-if="e.featured" class="ml-2 text-[10px] uppercase tracking-widest text-gold-500 border border-gold-500/40 px-1.5 py-0.5">Featured</span>
-              </p>
-              <p class="mt-0.5 text-xs text-bone-400 font-mono truncate">/equipment/{{ equipmentSlug(e) }}</p>
-            </div>
-            <label class="shrink-0 flex items-center gap-2 text-xs uppercase tracking-widest text-bone-400">
-              <span class="hidden lg:inline">Move to</span>
-              <select
-                class="input-dark !w-44 !py-1.5 !text-xs normal-case tracking-normal"
-                :value="e.category"
-                :disabled="busy"
-                :aria-label="`Category for ${e.name.en}`"
-                @change="moveTo(e, ($event.target as HTMLSelectElement).value)"
-              >
-                <option v-for="c in activeCategories" :key="c.id" :value="c.id">{{ c.name.is || c.name.en }}</option>
-                <option v-if="!activeCategories.some(c => c.id === e.category)" :value="e.category">{{ categoryName(e.category) }}</option>
-              </select>
-            </label>
-            <NuxtLink :to="`/admin/equipment/${e.id}`" class="btn-ghost !px-4 !py-2 !text-xs">Edit</NuxtLink>
+      <section v-for="group in visibleGroups" :key="group.id" class="admin-list mt-4" :aria-labelledby="`group-${group.id}`">
+        <div class="flex items-center gap-3 bg-ink-900 pl-2 pr-4">
+          <h2 :id="`group-${group.id}`" class="min-w-0 flex-1 font-sans">
             <button
               type="button"
-              class="text-xs uppercase tracking-widest text-signal-500/80 hover:text-signal-500 transition-colors disabled:opacity-50"
-              :disabled="deleting === e.id"
-              @click="remove(e)"
+              class="flex w-full items-center gap-2 py-3 text-left text-sm font-semibold text-bone-100 transition-colors hover:text-gold-400"
+              :aria-expanded="!isCollapsed(group.id)"
+              @click="toggle(group.id)"
             >
-              {{ deleting === e.id ? '…' : 'Delete' }}
+              <AdminIcon :name="isCollapsed(group.id) ? 'right' : 'down'" :size="16" class="text-ink-400" />
+              <span class="truncate">{{ group.title }}</span>
+              <span v-if="group.subtitle" class="hidden truncate font-normal text-bone-400 sm:inline">· {{ group.subtitle }}</span>
+              <span class="text-xs font-normal text-ink-400 tabular-nums">{{ group.items.length }}</span>
+              <span v-if="group.archived" class="admin-chip border-ink-700 text-bone-400">Archived</span>
             </button>
-          </div>
+          </h2>
+          <NuxtLink v-if="group.editTo" :to="group.editTo" class="admin-link shrink-0 !no-underline">Edit category</NuxtLink>
         </div>
+
+        <template v-if="!isCollapsed(group.id)">
+          <div v-for="(e, i) in group.items" :key="e.id" class="admin-row !py-2 sm:!pl-2">
+            <div class="relative z-10 hidden shrink-0 flex-col sm:flex">
+              <button
+                type="button"
+                class="admin-icon-action !h-7 !w-8"
+                :disabled="i === 0 || busy || searching"
+                :aria-label="`Move ${e.name.en} up`"
+                title="Move up"
+                @click="move(group, i, -1)"
+              >
+                <AdminIcon name="up" :size="14" />
+              </button>
+              <button
+                type="button"
+                class="admin-icon-action !h-7 !w-8"
+                :disabled="i === group.items.length - 1 || busy || searching"
+                :aria-label="`Move ${e.name.en} down`"
+                title="Move down"
+                @click="move(group, i, 1)"
+              >
+                <AdminIcon name="down" :size="14" />
+              </button>
+            </div>
+            <AdminThumb :src="e.images[0]" :alt="e.name.en" size="sm" />
+            <div class="min-w-0 flex-1">
+              <p class="flex items-center gap-2">
+                <NuxtLink :to="`/admin/equipment/${e.id}`" class="admin-row-link line-clamp-2 sm:line-clamp-none sm:truncate">{{ e.name.en || e.name.is }}</NuxtLink>
+                <span v-if="e.featured" class="admin-chip hidden sm:inline-flex border-gold-500/40 text-gold-400">Featured</span>
+              </p>
+              <p v-if="(e.name.is && e.name.en && e.name.is !== e.name.en) || e.featured" class="mt-0.5 truncate text-xs text-ink-400">
+                <template v-if="e.name.is && e.name.en && e.name.is !== e.name.en">{{ e.name.is }}</template>
+                <span v-if="e.featured" class="text-gold-400 sm:hidden"> · Featured</span>
+              </p>
+            </div>
+            <div class="admin-row-actions">
+              <!-- "Move to another category": the native picker opens straight from the icon -->
+              <label class="admin-icon-action relative hidden cursor-pointer sm:inline-flex" :class="{ 'opacity-30': busy }" title="Move to another category">
+                <AdminIcon name="categories" />
+                <select
+                  class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                  :value="e.category"
+                  :disabled="busy"
+                  :aria-label="`Move ${e.name.en} to another category`"
+                  @change="moveTo(e, ($event.target as HTMLSelectElement).value)"
+                >
+                  <option v-for="c in activeCategories" :key="c.id" :value="c.id">{{ c.name.en || c.name.is }}</option>
+                  <option v-if="!activeCategories.some(c => c.id === e.category)" :value="e.category">{{ categoryName(e.category) }}</option>
+                </select>
+              </label>
+              <a :href="`/equipment/${equipmentSlug(e)}`" target="_blank" rel="noopener" class="admin-icon-action hidden sm:inline-flex" :aria-label="`View ${e.name.en} on the website`" title="View on the website">
+                <AdminIcon name="external" />
+              </a>
+              <button
+                type="button"
+                class="admin-icon-action-danger max-sm:!hidden"
+                :disabled="deleting === e.id"
+                :aria-label="`Delete ${e.name.en}`"
+                title="Delete"
+                @click="remove(e)"
+              >
+                <AdminIcon name="trash" />
+              </button>
+              <AdminIcon name="right" :size="16" class="ml-1 text-ink-500" />
+            </div>
+          </div>
+          <p v-if="!group.items.length" class="px-4 py-4 text-sm text-ink-400">No items in this category.</p>
+        </template>
       </section>
 
-      <p v-if="!items.length" class="mt-8 p-8 border border-ink-800 text-center text-sm text-bone-400">
-        No equipment yet. Add the first item.
-      </p>
+      <AdminStateMessage v-if="!visibleGroups.length" class="mt-4">
+        No equipment matches “{{ search }}”.
+        <template #action>
+          <button type="button" class="btn-outline btn-sm" @click="search = ''">Clear search</button>
+        </template>
+      </AdminStateMessage>
     </template>
   </div>
 </template>
@@ -122,12 +146,14 @@ const activeCategories = computed(() => categories.value.filter(c => c.status ==
 
 const categoryName = (id: string) => {
   const c = categories.value.find(x => x.id === id)
-  return c ? (c.name.is || c.name.en) + (c.status === 'archived' ? ' (archived)' : '') : id
+  return c ? (c.name.en || c.name.is) + (c.status === 'archived' ? ' (archived)' : '') : id
 }
 
 interface Group {
   id: string
   title: string
+  /** The Icelandic name, when it differs from the title */
+  subtitle: string
   archived: boolean
   editTo: string
   items: EquipmentItem[]
@@ -141,20 +167,46 @@ const groups = computed<Group[]>(() => {
   for (const c of categories.value) {
     const inCat = list.filter(e => e.category === c.id)
     if (c.status === 'archived' && !inCat.length) continue
-    out.push({ id: c.id, title: c.name.is || c.name.en, archived: c.status === 'archived', editTo: `/admin/equipment/categories/${c.id}`, items: inCat })
+    out.push({ id: c.id, title: c.name.en || c.name.is, subtitle: c.name.is && c.name.is !== c.name.en ? c.name.is : '', archived: c.status === 'archived', editTo: `/admin/equipment/categories/${c.id}`, items: inCat })
   }
   const known = new Set(categories.value.map(c => c.id))
   const orphans = list.filter(e => !known.has(e.category))
-  if (orphans.length) out.push({ id: 'other', title: 'No category', archived: false, editTo: '', items: orphans })
+  if (orphans.length) out.push({ id: 'other', title: 'No category', subtitle: '', archived: false, editTo: '', items: orphans })
   return out
 })
 
+// ---------- Search and collapse ----------
+const search = ref('')
+const searching = computed(() => !!search.value.trim())
+
+// While searching: only groups with a match, and only the matching items.
+const visibleGroups = computed<Group[]>(() => {
+  const q = search.value.trim().toLowerCase()
+  if (!q) return groups.value
+  return groups.value
+    .map(g => ({ ...g, items: g.items.filter(e => [e.name.is, e.name.en, equipmentSlug(e)].some(s => s?.toLowerCase().includes(q))) }))
+    .filter(g => g.items.length)
+})
+
+const countLabel = computed(() => {
+  const shown = visibleGroups.value.reduce((n, g) => n + g.items.length, 0)
+  return searching.value
+    ? `${shown} of ${items.value.length}`
+    : `${items.value.length} ${items.value.length === 1 ? 'item' : 'items'} in ${groups.value.length} ${groups.value.length === 1 ? 'category' : 'categories'}`
+})
+
 const collapsed = ref(new Set<string>())
+// A search always shows its matches, whatever was collapsed before.
+const isCollapsed = (id: string) => !searching.value && collapsed.value.has(id)
 const toggle = (id: string) => {
   const next = new Set(collapsed.value)
   if (next.has(id)) next.delete(id)
   else next.add(id)
   collapsed.value = next
+}
+const allCollapsed = computed(() => groups.value.length > 0 && groups.value.every(g => collapsed.value.has(g.id)))
+const toggleAll = () => {
+  collapsed.value = allCollapsed.value ? new Set() : new Set(groups.value.map(g => g.id))
 }
 
 const load = async () => {
@@ -193,7 +245,9 @@ const saveOrder = async (nextGroups: Group[]) => {
   }
 }
 
+// Only reachable with no search active, so `group` is a full, unfiltered group.
 const move = (group: Group, index: number, delta: number) => {
+  if (searching.value) return
   const reordered = [...group.items]
   const [moved] = reordered.splice(index, 1)
   reordered.splice(index + delta, 0, moved!)
@@ -238,5 +292,5 @@ const remove = async (e: EquipmentItem) => {
   }
 }
 
-useHead({ title: 'Equipment · Admin' })
+useHead({ title: 'Equipment · Admin · Creative Filmmaking' })
 </script>

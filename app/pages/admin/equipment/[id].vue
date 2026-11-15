@@ -1,18 +1,24 @@
 <template>
   <div>
-    <NuxtLink to="/admin/equipment" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors">← Equipment</NuxtLink>
-
-    <p v-if="!loaded" class="mt-8 text-sm text-bone-400">Loading…</p>
-    <div v-else-if="!item" class="mt-8 text-sm text-signal-500">
-      Item not found. It may have been deleted.
-    </div>
+    <AdminStateMessage v-if="!loaded" kind="loading">Loading…</AdminStateMessage>
+    <AdminStateMessage v-else-if="!item" kind="error" title="Item not found">
+      It may have been deleted.
+      <template #action>
+        <NuxtLink to="/admin/equipment" class="btn-outline btn-sm">Back to equipment</NuxtLink>
+      </template>
+    </AdminStateMessage>
     <template v-else>
-      <h1 class="mt-3 text-3xl font-semibold uppercase tracking-wide text-bone-100">
-        Edit · {{ item.name.en }}
-      </h1>
-      <AdminItemRentalStats item-type="equipment" :item-id="item.id" class="mt-8" />
-      <div class="mt-8">
-        <AdminEquipmentForm :item="item" :saving="saving" :error="error" @save="save" />
+      <AdminPageHeader
+        :title="item.name.en || item.name.is"
+        :crumbs="[{ label: 'Catalogue' }, { label: 'Equipment', to: '/admin/equipment' }, { label: 'Edit' }]"
+      >
+        <template #actions>
+          <a :href="`/equipment/${equipmentSlug(item)}`" target="_blank" rel="noopener" class="btn-outline btn-sm">View on website <AdminIcon name="external" :size="16" /></a>
+        </template>
+      </AdminPageHeader>
+      <div class="mt-6 space-y-5">
+        <AdminItemRentalStats item-type="equipment" :item-id="item.id" />
+        <AdminEquipmentForm :item="item" :saving="saving" :error="error" @save="save" @delete="remove" />
       </div>
     </template>
   </div>
@@ -55,5 +61,19 @@ const save = async (payload: Record<string, unknown>) => {
   }
 }
 
-useHead({ title: 'Edit equipment · Admin' })
+const { confirmDialog, alertDialog } = useAppDialog()
+const remove = async () => {
+  if (!item.value) return
+  if (!await confirmDialog(`Delete "${item.value.name.en}"? This removes it from the website immediately.`)) return
+  try {
+    await $fetch(`/api/admin/equipment/${item.value.id}`, { method: 'DELETE' })
+    clearNuxtData('equipment')
+    await navigateTo('/admin/equipment')
+  }
+  catch (e: any) {
+    await alertDialog(e?.data?.statusMessage || 'Delete failed.')
+  }
+}
+
+useHead({ title: 'Edit equipment · Admin · Creative Filmmaking' })
 </script>

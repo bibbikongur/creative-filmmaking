@@ -1,18 +1,24 @@
 <template>
   <div>
-    <NuxtLink to="/admin" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors">← Fleet</NuxtLink>
-
-    <p v-if="!loaded" class="mt-8 text-sm text-bone-400">Loading…</p>
-    <div v-else-if="!vehicle" class="mt-8 text-sm text-signal-500">
-      Vehicle not found. It may have been deleted.
-    </div>
+    <AdminStateMessage v-if="!loaded" kind="loading">Loading…</AdminStateMessage>
+    <AdminStateMessage v-else-if="!vehicle" kind="error" title="Vehicle not found">
+      It may have been deleted.
+      <template #action>
+        <NuxtLink to="/admin/vehicles" class="btn-outline btn-sm">Back to vehicles</NuxtLink>
+      </template>
+    </AdminStateMessage>
     <template v-else>
-      <h1 class="mt-3 text-3xl font-semibold uppercase tracking-wide text-bone-100">
-        Edit · {{ vehicle.name.en }}
-      </h1>
-      <AdminItemRentalStats item-type="vehicle" :item-id="vehicle.id" class="mt-8" />
-      <div class="mt-8">
-        <AdminVehicleForm :vehicle="vehicle" :saving="saving" :error="error" @save="save" />
+      <AdminPageHeader
+        :title="vehicle.name.en"
+        :crumbs="[{ label: 'Catalogue' }, { label: 'Vehicles', to: '/admin/vehicles' }, { label: 'Edit' }]"
+      >
+        <template #actions>
+          <a :href="`/vehicles/${vehicle.slug}`" target="_blank" rel="noopener" class="btn-outline btn-sm">View on website <AdminIcon name="external" :size="16" /></a>
+        </template>
+      </AdminPageHeader>
+      <div class="mt-6 space-y-5">
+        <AdminItemRentalStats item-type="vehicle" :item-id="vehicle.id" />
+        <AdminVehicleForm :vehicle="vehicle" :saving="saving" :error="error" @save="save" @delete="remove" />
       </div>
     </template>
   </div>
@@ -45,7 +51,7 @@ const save = async (payload: Record<string, unknown>) => {
   try {
     await $fetch(`/api/admin/vehicles/${route.params.id}`, { method: 'PUT', body: payload })
     clearNuxtData('fleet')
-    await navigateTo('/admin')
+    await navigateTo('/admin/vehicles')
   }
   catch (e: any) {
     error.value = e?.data?.data?.errors || e?.data?.statusMessage || 'Save failed. Please try again.'
@@ -55,5 +61,19 @@ const save = async (payload: Record<string, unknown>) => {
   }
 }
 
-useHead({ title: 'Edit vehicle · Admin' })
+const { confirmDialog, alertDialog } = useAppDialog()
+const remove = async () => {
+  if (!vehicle.value) return
+  if (!await confirmDialog(`Delete "${vehicle.value.name.en}"? This removes it from the website immediately.`)) return
+  try {
+    await $fetch(`/api/admin/vehicles/${vehicle.value.id}`, { method: 'DELETE' })
+    clearNuxtData('fleet')
+    await navigateTo('/admin/vehicles')
+  }
+  catch (e: any) {
+    await alertDialog(e?.data?.statusMessage || 'Delete failed.')
+  }
+}
+
+useHead({ title: 'Edit vehicle · Admin · Creative Filmmaking' })
 </script>

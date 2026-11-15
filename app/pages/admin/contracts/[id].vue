@@ -1,43 +1,28 @@
 <template>
   <div v-if="contract">
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <p class="kicker">
-          <NuxtLink to="/admin/contracts" class="hover:text-gold-400 transition-colors">Contracts</NuxtLink>
-          <span class="text-ink-500 mx-1">/</span> {{ contract.number }}
-        </p>
-        <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">
-          Rental agreement <span class="text-gold-400 font-mono">{{ contract.number }}</span>
-        </h1>
-        <p class="mt-1 text-xs text-bone-400">
-          <template v-if="contract.quoteId">
-            From quote
-            <NuxtLink :to="`/admin/quotes/${contract.quoteId}`" class="text-gold-400 hover:text-gold-500 transition-colors">{{ contract.quoteId }}</NuxtLink>
-            <span v-if="contract.offerId">, offer #{{ contract.offerId }}</span>.
-          </template>
-          <template v-else>Filled in by hand.</template>
-          Prints with the {{ effectiveTemplate === 'multi' ? 'multi-vehicle' : 'single-vehicle' }} layout, the terms,
-          {{ annexSheets }} condition {{ annexSheets === 1 ? 'record' : 'records' }} (annex A){{ needsAnnexB ? ' and the driver list (annex B)' : '' }}.
-        </p>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <button type="button" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="save()">
-          {{ saving ? 'Saving…' : dirty ? 'Save' : 'Saved' }}
-        </button>
-        <button type="button" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="preview">
-          {{ dirty ? 'Save & view PDF' : 'View PDF' }}
-        </button>
-        <button type="button" class="btn-gold !px-5 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="print">
-          Save &amp; print PDF ↗
-        </button>
-      </div>
-    </div>
+    <AdminPageHeader :crumbs="[{ label: 'Sales' }, { label: 'Contracts', to: '/admin/contracts' }, { label: contract.number }]">
+      <template #title>
+        Rental agreement <span class="text-gold-400 font-mono">{{ contract.number }}</span>
+      </template>
+      <template #description>
+        <template v-if="contract.quoteId">
+          From quote
+          <NuxtLink :to="`/admin/quotes/${contract.quoteId}`" class="text-gold-400 hover:text-gold-500 transition-colors">{{ contract.quoteId }}</NuxtLink><span v-if="contract.offerId">, offer #{{ contract.offerId }}</span>.{{ ' ' }}
+        </template>
+        <template v-else>Filled in by hand.{{ ' ' }}</template>
+        <template v-if="!d.vehicles.length">Add the vehicles below to finish it.</template>
+        <template v-else>
+          Prints as a {{ effectiveTemplate === 'multi' ? 'multi-vehicle' : 'single-vehicle' }} agreement with the terms,
+          {{ annexSheets }} condition {{ annexSheets === 1 ? 'record' : 'records' }}{{ needsAnnexB ? ' and the driver list' : '' }}.
+        </template>
+      </template>
+    </AdminPageHeader>
     <p v-if="saveError" class="mt-4 text-sm text-signal-500">{{ saveError }}</p>
 
-    <form class="mt-8 space-y-10" @submit.prevent="save()">
+    <form class="mt-6 space-y-5" @submit.prevent="save()">
       <!-- Agreement -->
-      <section class="border border-ink-800 bg-ink-900/50 p-5">
-        <h2 class="admin-h2">Agreement</h2>
+      <section class="admin-card p-5 sm:p-6">
+        <h2 class="admin-card-title">Agreement</h2>
         <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label class="admin-label">Date of agreement</label>
@@ -46,25 +31,25 @@
           <div>
             <label class="admin-label">Layout</label>
             <select v-model="d.template" class="input-dark">
-              <option value="auto">Automatic (by number of vehicles)</option>
+              <option value="auto">Automatic</option>
               <option value="single">Single vehicle</option>
               <option value="multi">Multiple vehicles</option>
             </select>
           </div>
           <div>
-            <label class="admin-label">Place and date (signature box)</label>
+            <label class="admin-label">Signed at (place, date)</label>
             <input v-model.trim="d.placeAndDate" type="text" class="input-dark" placeholder="e.g. Mosfellsbær, 12.08.2026">
           </div>
           <div>
-            <label class="admin-label">Car-rental licence no. (footer)</label>
-            <input v-model.trim="d.licenceNo" type="text" class="input-dark" placeholder="Optional">
+            <label class="admin-label">Rental licence no.</label>
+            <input v-model.trim="d.licenceNo" type="text" class="input-dark" placeholder="Optional, prints in the footer">
           </div>
         </div>
       </section>
 
       <!-- Renter -->
-      <section class="border border-ink-800 bg-ink-900/50 p-5">
-        <h2 class="admin-h2">2 · Renter</h2>
+      <section class="admin-card p-5 sm:p-6">
+        <h2 class="admin-card-title">Renter</h2>
         <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <div class="lg:col-span-2">
             <label class="admin-label">Full name (and company)</label>
@@ -95,18 +80,16 @@
             <input v-model.trim="d.renter.licenceNo" type="text" class="input-dark">
           </div>
           <div>
-            <label class="admin-label">Licence issuing country / expiry</label>
+            <label class="admin-label">Licence country / expiry</label>
             <input v-model.trim="d.renter.licenceCountryExpiry" type="text" class="input-dark" placeholder="e.g. Iceland / 2031">
           </div>
         </div>
       </section>
 
       <!-- Drivers -->
-      <section class="border border-ink-800 bg-ink-900/50 p-5">
-        <div class="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 class="admin-h2">3 · Authorised drivers</h2>
-          <p class="text-xs text-bone-400">The first three print on page 1; further drivers go on the driver list (annex B).</p>
-        </div>
+      <section class="admin-card p-5 sm:p-6">
+        <h2 class="admin-card-title">Authorised drivers</h2>
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">The first three print on page 1; further drivers go on the driver list (annex B).</p>
         <div v-if="d.drivers.length" class="mt-4 space-y-3">
           <div v-for="(drv, i) in d.drivers" :key="i" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_1fr_auto] items-center">
             <span class="hidden lg:block text-xs text-bone-400 w-5 text-right tabular-nums">{{ i + 1 }}</span>
@@ -116,18 +99,16 @@
             <input v-model.trim="drv.issuingCountry" type="text" class="input-dark !py-2 text-sm" placeholder="Issuing country">
             <input v-model.trim="drv.expiry" type="text" class="input-dark !py-2 text-sm" placeholder="Expiry (annex B)">
             <input v-model.trim="drv.phone" type="text" class="input-dark !py-2 text-sm" placeholder="Phone (annex B)">
-            <button type="button" class="admin-icon-btn justify-self-end" title="Remove driver" @click="d.drivers.splice(i, 1)">✕</button>
+            <button type="button" class="admin-icon-action-danger !ml-0 justify-self-end" aria-label="Remove driver" title="Remove driver" @click="d.drivers.splice(i, 1)"><AdminIcon name="close" :size="16" /></button>
           </div>
         </div>
-        <button type="button" class="btn-ghost !px-4 !py-2 !text-xs mt-4" @click="d.drivers.push(blankDriver())">+ Add driver</button>
+        <button type="button" class="btn-outline btn-sm mt-4" @click="d.drivers.push(blankDriver())"><AdminIcon name="plus" :size="16" /> Add driver</button>
       </section>
 
       <!-- Vehicles -->
-      <section class="border border-ink-800 bg-ink-900/50 p-5">
-        <div class="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 class="admin-h2">4 · Vehicles and rental period</h2>
-          <p class="text-xs text-bone-400">One line per vehicle; each gets its own condition record (annex A).</p>
-        </div>
+      <section class="admin-card p-5 sm:p-6">
+        <h2 class="admin-card-title">Vehicles and rental period</h2>
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">One line per vehicle; each gets its own condition record (annex A).</p>
 
         <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <div>
@@ -159,8 +140,8 @@
         <div class="mt-6 space-y-4">
           <div v-for="(v, i) in d.vehicles" :key="i" class="border border-ink-800 bg-ink-950/40 p-4">
             <div class="flex items-center justify-between gap-3">
-              <p class="text-xs uppercase tracking-widest text-bone-400">Vehicle {{ i + 1 }}</p>
-              <button type="button" class="admin-icon-btn" title="Remove vehicle" @click="d.vehicles.splice(i, 1)">✕</button>
+              <p class="admin-eyebrow">Vehicle {{ i + 1 }}</p>
+              <button type="button" class="admin-icon-action-danger !ml-0" aria-label="Remove vehicle" title="Remove vehicle" @click="d.vehicles.splice(i, 1)"><AdminIcon name="close" :size="16" /></button>
             </div>
             <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <div class="lg:col-span-2">
@@ -229,16 +210,14 @@
             <option v-for="fv in fleet" :key="fv.id" :value="fv.id">{{ fv.name.en }}{{ fv.plates?.length ? ` (${fv.plates.join(', ')})` : '' }}</option>
             <option value="blank">Blank line</option>
           </select>
-          <button type="button" class="btn-ghost !px-4 !py-2 !text-xs" :disabled="!addVehicleId" @click="addVehicle">+ Add vehicle</button>
+          <button type="button" class="btn-outline btn-sm" :disabled="!addVehicleId" @click="addVehicle"><AdminIcon name="plus" :size="16" /> Add vehicle</button>
         </div>
       </section>
 
       <!-- Charges -->
-      <section class="border border-ink-800 bg-ink-900/50 p-5">
-        <div class="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 class="admin-h2">6 · Charges and payment</h2>
-          <p class="text-xs text-bone-400">Amounts print as entered. Leave a field empty to print a blank.</p>
-        </div>
+      <section class="admin-card p-5 sm:p-6">
+        <h2 class="admin-card-title">Charges and payment</h2>
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">Amounts print as entered. Leave a field empty to print a blank.</p>
         <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label class="admin-label">Currency</label>
@@ -253,32 +232,37 @@
           </div>
         </div>
 
-        <div class="mt-5 grid gap-x-5 gap-y-4 lg:grid-cols-[1fr_7rem_7rem_9rem] items-end">
-          <p class="text-sm text-bone-100 self-center">Vehicle rental</p>
+        <div class="mt-5 grid gap-x-5 gap-y-3 lg:grid-cols-[1fr_7rem_9rem_9rem] items-end">
+          <!-- One header for the three charge lines (each field keeps its own label on small screens) -->
+          <span class="admin-eyebrow hidden lg:block">Charge</span>
+          <span class="admin-eyebrow hidden lg:block">Quantity</span>
+          <span class="admin-eyebrow hidden lg:block">Rate ({{ d.currency }})</span>
+          <span class="admin-eyebrow hidden lg:block">Amount ({{ d.currency }})</span>
+
+          <p class="text-sm font-medium text-bone-100 lg:pb-2.5">Vehicle rental</p>
           <NumField v-model="d.charges.rentalDays" label="Days" />
           <NumField v-model="d.charges.rentalRate" :label="`${d.currency}/day`" />
           <NumField v-model="d.charges.rental" :label="`Amount (${d.currency})`" strong />
 
-          <p class="text-sm text-bone-100 self-center">Insurance (Gold)</p>
+          <p class="text-sm font-medium text-bone-100 lg:pb-2.5">Insurance (Gold)</p>
           <NumField v-model="d.charges.insuranceDays" label="Days" />
           <NumField v-model="d.charges.insuranceRate" :label="`${d.currency}/day`" />
           <NumField v-model="d.charges.insurance" :label="`Amount (${d.currency})`" strong />
 
           <div class="lg:col-span-1">
-            <label class="admin-label">Additional drivers and extras (text)</label>
-            <input v-model.trim="d.charges.extrasText" type="text" class="input-dark !py-2 text-sm" placeholder="e.g. 2 heaters, unlimited km">
+            <label class="sr-only" for="extras-text">Additional drivers and extras</label>
+            <input id="extras-text" v-model.trim="d.charges.extrasText" type="text" class="input-dark !py-2 text-sm" placeholder="Additional drivers and extras, e.g. 2 heaters">
           </div>
           <NumField v-model="d.charges.driversCount" label="Drivers" />
-          <NumField v-model="d.charges.driversRate" :label="`${d.currency}/driver/day`" />
+          <NumField v-model="d.charges.driversRate" :label="`${d.currency} per driver per day`" />
           <NumField v-model="d.charges.extras" :label="`Amount (${d.currency})`" strong />
 
-          <p class="text-sm text-bone-100 self-center lg:col-span-2">Total {{ d.vatRate > 0 ? `incl. ${d.vatRate}% VAT` : 'excl. VAT' }}</p>
-          <p class="text-xs text-bone-400 self-center text-right">Sum of lines: {{ formatMoney(sumOfLines) }}</p>
+          <p class="text-sm font-semibold text-bone-100 lg:col-span-2 lg:pb-2.5">Total {{ d.vatRate > 0 ? `incl. ${d.vatRate}% VAT` : 'excl. VAT' }}</p>
+          <p class="text-xs text-ink-400 lg:pb-3 lg:text-right">Sum of lines: {{ formatMoney(sumOfLines) }}</p>
           <NumField v-model="d.charges.total" :label="`Total (${d.currency})`" strong />
         </div>
-        <p class="mt-2 text-xs text-bone-400">Driver days (single-vehicle layout only): <input v-model.number="driversDays" type="number" min="0" class="input-dark !inline-block !w-20 !py-1 !text-xs"></p>
 
-        <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label class="admin-label">Payment method</label>
             <select v-model="d.paymentMethod" class="input-dark">
@@ -293,7 +277,7 @@
             <input v-model.trim="d.paymentRef" type="text" class="input-dark">
           </div>
           <div>
-            <label class="admin-label">Payment</label>
+            <label class="admin-label">Paid when</label>
             <select v-model="d.paymentTiming" class="input-dark">
               <option value="">–</option>
               <option value="pickup">Paid at pickup</option>
@@ -301,18 +285,24 @@
               <option value="return">Paid at return</option>
             </select>
           </div>
+          <div>
+            <label for="driver-days" class="admin-label">Driver days</label>
+            <input id="driver-days" v-model.number="driversDays" type="number" min="0" class="input-dark">
+            <p class="mt-1 text-xs text-ink-400">Single-vehicle layout only.</p>
+          </div>
         </div>
       </section>
 
       <!-- Condition + annexes -->
-      <section class="border border-ink-800 bg-ink-900/50 p-5">
-        <h2 class="admin-h2">7 · Condition at pickup and annexes</h2>
+      <section class="admin-card p-5 sm:p-6">
+        <h2 class="admin-card-title">Condition at pickup and annexes</h2>
         <div class="mt-4 grid gap-5 sm:grid-cols-2">
           <div>
-            <label class="admin-label">Existing damage (single-vehicle layout; multi prints “recorded on annex A”)</label>
+            <label class="admin-label">Existing damage</label>
             <input v-model.trim="d.existingDamage" type="text" class="input-dark" placeholder="e.g. scratch on rear bumper, see annex A">
+            <p class="mt-1 text-xs text-ink-400">Single-vehicle layout only. The multi-vehicle layout prints “recorded on annex A”.</p>
           </div>
-          <div class="flex flex-wrap gap-x-6 gap-y-3 self-end pb-2.5">
+          <div class="flex flex-wrap gap-x-6 gap-y-3 self-start sm:pt-8">
             <label class="flex items-center gap-2 text-sm text-bone-100 cursor-pointer">
               <input v-model="d.annexA" type="checkbox" class="accent-gold-500 w-4 h-4"> Annex A attached (condition records)
             </label>
@@ -335,29 +325,31 @@
         </div>
       </section>
 
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <button type="button" class="text-xs uppercase tracking-widest text-signal-500/80 hover:text-signal-500 transition-colors" @click="remove">
-          Delete agreement
+      <div class="admin-savebar">
+        <button v-if="dirty || saving" type="submit" class="btn-gold" :disabled="saving">
+          {{ saving ? 'Saving…' : 'Save changes' }}
         </button>
-        <div class="flex gap-3">
-          <button type="submit" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="saving">
-            {{ saving ? 'Saving…' : 'Save' }}
-          </button>
-          <button type="button" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="preview">
-            View PDF
-          </button>
-          <button type="button" class="btn-gold !px-5 !py-2 !text-xs disabled:opacity-50" :disabled="saving" @click="print">
-            Save &amp; print PDF ↗
-          </button>
-        </div>
+        <button type="button" :class="dirty || saving ? 'btn-outline' : 'btn-gold'" :disabled="saving" @click="preview">View PDF</button>
+        <button type="button" class="btn-outline" :disabled="saving" @click="print">
+          <AdminIcon name="print" :size="16" /> Print
+        </button>
+        <span class="text-xs" :class="dirty ? 'text-gold-400' : 'text-ink-400'" role="status">{{ saving ? 'Saving…' : dirty ? 'Unsaved changes' : 'All changes saved' }}</span>
+        <button type="button" class="admin-link ml-auto inline-flex items-center gap-2 !text-signal-400 !decoration-signal-500/40 hover:!text-signal-500" @click="remove">
+          <AdminIcon name="trash" :size="16" /> Delete agreement
+        </button>
       </div>
     </form>
 
     <ContractPdfViewer :src="viewerSrc" :title="`Rental agreement ${contract.number}`" @close="viewerSrc = null" />
   </div>
 
-  <p v-else-if="loadError" class="text-sm text-signal-500">{{ loadError }}</p>
-  <p v-else class="text-sm text-bone-400">Loading…</p>
+  <AdminStateMessage v-else-if="loadError" kind="error">
+    {{ loadError }}
+    <template #action>
+      <NuxtLink to="/admin/contracts" class="btn-outline btn-sm">Back to contracts</NuxtLink>
+    </template>
+  </AdminStateMessage>
+  <AdminStateMessage v-else kind="loading">Loading…</AdminStateMessage>
 </template>
 
 <script setup lang="ts">
@@ -432,7 +424,7 @@ const NumField = defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     return () => h('div', [
-      h('label', { class: 'admin-label' }, props.label),
+      h('label', { class: 'admin-label lg:sr-only' }, props.label),
       h('input', {
         type: 'number', min: 0, step: 'any',
         class: ['input-dark !py-2 text-sm tabular-nums', props.strong ? 'font-semibold' : ''],
@@ -553,9 +545,6 @@ useHead({ title: 'Rental agreement · Admin · Creative Filmmaking' })
 </script>
 
 <style scoped>
-.admin-h2 {
-  @apply text-sm font-heading font-semibold uppercase tracking-widest text-gold-500;
-}
 .admin-label {
   @apply block text-xs uppercase tracking-widest text-bone-400 mb-1.5;
 }

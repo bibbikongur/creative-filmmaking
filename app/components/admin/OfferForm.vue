@@ -1,102 +1,119 @@
 <template>
-  <div class="border border-ink-800 bg-ink-900/50 p-5">
+  <div class="admin-card p-5 sm:p-6">
     <!-- Apply pricing to every item at once -->
-    <div class="mb-2 flex flex-wrap items-center justify-end gap-2 border-b border-ink-800 pb-4">
-      <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">Apply to all items</span>
-      <select v-model="bulkMode" class="input-dark !w-28">
-        <option value="flat">Flat price</option>
-        <option value="day">Per day</option>
-        <option value="week">Per week</option>
-      </select>
-      <input
-        v-if="bulkMode === 'day' || bulkMode === 'week'"
-        v-model.number="bulkPeriod"
-        type="number"
-        :min="bulkMode === 'week' ? 0.5 : 1"
-        max="999"
-        :step="bulkMode === 'week' ? 0.5 : 1"
-        class="input-dark !w-20 text-right"
-        :placeholder="bulkMode === 'week' ? 'Weeks' : 'Days'"
-        :title="bulkMode === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
-      >
-      <button type="button" class="btn-ghost !px-4 !py-2 !text-xs" @click="applyToAll">
-        Apply
-      </button>
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 pb-3">
+      <h3 class="admin-card-title">Prices</h3>
+      <div class="ml-auto flex flex-wrap items-center gap-2">
+        <span class="text-xs text-bone-400 max-sm:w-full">Set every item to</span>
+        <select v-model="bulkMode" class="input-dark !w-36 !py-2" aria-label="Pricing for every item">
+          <option value="flat">Flat price</option>
+          <option value="day">Per day</option>
+          <option value="week">Per week</option>
+        </select>
+        <label v-if="bulkMode === 'day' || bulkMode === 'week'" class="flex items-center gap-2 text-xs text-bone-400">
+          <span aria-hidden="true">×</span>
+          <input
+            v-model.number="bulkPeriod"
+            type="number"
+            :min="bulkMode === 'week' ? 0.5 : 1"
+            max="999"
+            :step="bulkMode === 'week' ? 0.5 : 1"
+            class="input-dark !w-16 !px-2 !py-2 text-right"
+            :aria-label="bulkMode === 'week' ? 'Number of weeks' : 'Number of days'"
+            :title="bulkMode === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
+          >
+          {{ unit(bulkMode, bulkPeriod) }}
+        </label>
+        <button type="button" class="btn-outline btn-sm" @click="applyToAll">
+          Apply
+        </button>
+      </div>
     </div>
 
-    <!-- Item pricing -->
+    <!-- Item pricing: one line per item (item · price · line total) on a shared grid -->
+    <div class="admin-eyebrow hidden gap-x-4 border-b border-ink-800 py-2 lg:grid" :class="cols">
+      <span>Item</span>
+      <span>Price</span>
+      <span class="text-right">Line total</span>
+    </div>
     <div class="divide-y divide-ink-800">
       <div v-for="item in quote.items" :key="item.id" class="py-3">
-        <div class="flex items-center gap-4">
-          <img
-            v-if="item.image"
-            :src="item.image"
-            :alt="item.name.en"
-            class="w-20 h-14 object-cover bg-ink-800 shrink-0"
-            loading="lazy"
-          >
-          <div v-else class="w-20 h-14 bg-ink-800 shrink-0" />
-          <div class="min-w-0 flex-1">
-            <p class="font-semibold text-bone-100 truncate">{{ item.name.en }}</p>
-            <p v-if="item.note" class="mt-0.5 text-sm text-bone-300 truncate" :title="item.note">{{ item.note }}</p>
-            <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">
-              {{ item.itemType }}<span v-if="item.qty > 1"> · qty {{ item.qty }}</span>
-            </p>
+        <div class="grid items-center gap-x-4 gap-y-3" :class="cols">
+          <div class="flex min-w-0 items-center gap-3">
+            <AdminThumb :src="item.image" :alt="item.name.en" size="sm" :icon="item.itemType === 'vehicle' ? 'vehicles' : 'equipment'" />
+            <div class="min-w-0">
+              <p class="truncate font-semibold text-bone-100" :title="item.name.en">{{ item.name.en }}</p>
+              <p class="truncate text-xs text-ink-400">
+                <span class="capitalize">{{ item.itemType }}</span><span v-if="item.qty > 1"> · qty {{ item.qty }}</span><span v-if="item.note" :title="item.note"> · {{ item.note }}</span>
+              </p>
+            </div>
           </div>
-          <div class="flex items-center gap-2 flex-wrap justify-end">
-            <select v-model="modes[item.id]" class="input-dark !w-28">
+          <div class="flex flex-wrap items-center gap-2">
+            <select v-model="modes[item.id]" class="input-dark !w-36 !py-2" :aria-label="`Pricing for ${item.name.en}`">
               <option value="flat">Flat price</option>
               <option value="day">Per day</option>
               <option value="week">Per week</option>
             </select>
-            <input
-              v-model.number="prices[item.id]"
-              type="number"
-              min="0"
-              step="any"
-              class="input-dark !w-32 text-right"
-              :placeholder="pricePlaceholder(item.id)"
-            >
-            <input
-              v-if="modes[item.id] === 'day' || modes[item.id] === 'week'"
-              v-model.number="periods[item.id]"
-              type="number"
-              :min="modes[item.id] === 'week' ? 0.5 : 1"
-              max="999"
-              :step="modes[item.id] === 'week' ? 0.5 : 1"
-              class="input-dark !w-20 text-right"
-              :placeholder="modes[item.id] === 'week' ? 'Weeks' : 'Days'"
-              :title="modes[item.id] === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
-            >
-            <span class="text-xs text-bone-400 w-24 text-right">
-              {{ lineTotal(item) != null ? `= ${fmt(lineTotal(item)!)}` : currencySuffix }}
+            <span class="relative block w-36">
+              <input
+                v-model.number="prices[item.id]"
+                type="number"
+                min="0"
+                step="any"
+                class="input-dark !py-2 !pr-9 text-right"
+                :placeholder="pricePlaceholder(item.id)"
+                :aria-label="`${pricePlaceholder(item.id)} for ${item.name.en}`"
+              >
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}</span>
             </span>
+            <label v-if="modes[item.id] === 'day' || modes[item.id] === 'week'" class="flex items-center gap-2 text-xs text-bone-400">
+              <span aria-hidden="true">×</span>
+              <input
+                v-model.number="periods[item.id]"
+                type="number"
+                :min="modes[item.id] === 'week' ? 0.5 : 1"
+                max="999"
+                :step="modes[item.id] === 'week' ? 0.5 : 1"
+                class="input-dark !w-16 !px-2 !py-2 text-right"
+                :aria-label="modes[item.id] === 'week' ? 'Number of weeks' : 'Number of days'"
+                :title="modes[item.id] === 'week' ? 'Number of weeks (e.g. 1.5)' : 'Number of days'"
+              >
+              {{ unit(modes[item.id], periods[item.id]) }}
+            </label>
           </div>
+          <p class="text-sm tabular-nums lg:text-right">
+            <span v-if="lineTotal(item) != null" class="font-semibold text-bone-100">{{ fmt(lineTotal(item)! + extrasTotal(item)) }}</span>
+            <span v-else class="text-ink-400">No price yet</span>
+          </p>
         </div>
 
-        <!-- Vehicle extras: insurance & drivers follow the vehicle's period, km is km × rate -->
-        <div v-if="item.itemType === 'vehicle' && extras[item.id]" class="mt-3 sm:ml-24 grid gap-2 border-l border-ink-800 pl-4">
-          <div class="flex flex-wrap items-center justify-end gap-2">
-            <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">Insurance</span>
-            <select v-model="extras[item.id]!.insTier" class="input-dark !w-32">
+        <!-- Vehicle extras on one line: insurance & drivers follow the vehicle's period, km is km × rate -->
+        <div v-if="item.itemType === 'vehicle' && extras[item.id]" class="mt-3 flex flex-col gap-x-6 gap-y-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-y-3 sm:pl-[3.75rem]">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="admin-eyebrow max-sm:w-24">Insurance</span>
+            <select v-model="extras[item.id]!.insTier" class="input-dark !py-2" :class="extras[item.id]!.insTier ? '!w-60' : '!w-28'" :aria-label="`Insurance for ${item.name.en}`">
               <option value="">None</option>
               <option v-for="t in INSURANCE_TIERS" :key="t" :value="t">{{ TIER_LABEL[t] }}</option>
             </select>
-            <input
-              v-if="extras[item.id]!.insTier"
-              v-model.number="extras[item.id]!.insPrice"
-              type="number"
-              min="0"
-              step="any"
-              class="input-dark !w-32 text-right"
-              :placeholder="extraPlaceholder(item.id)"
-              :title="item.qty > 1 ? `Per vehicle, multiplied by qty ${item.qty}` : undefined"
-            >
-            <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(insuranceTotal(item)) }}</span>
+            <template v-if="extras[item.id]!.insTier">
+            <span class="relative block w-32">
+              <input
+                v-model.number="extras[item.id]!.insPrice"
+                type="number"
+                min="0"
+                step="any"
+                class="input-dark !py-2 !pr-9 text-right"
+                :placeholder="extraPlaceholder(item.id)"
+                :aria-label="`Insurance: ${extraPlaceholder(item.id)}`"
+                :title="item.qty > 1 ? `Per vehicle, multiplied by qty ${item.qty}` : undefined"
+              >
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}</span>
+            </span>
+            </template>
           </div>
-          <div class="flex flex-wrap items-center justify-end gap-2">
-            <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">Drivers</span>
-            <select v-model="extras[item.id]!.driverMode" class="input-dark !w-32">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="admin-eyebrow max-sm:w-24">Drivers</span>
+            <select v-model="extras[item.id]!.driverMode" class="input-dark !w-36 !py-2" :aria-label="`Extra drivers for ${item.name.en}`">
               <option value="">None</option>
               <option value="count">Additional</option>
               <option value="unlimited">Unlimited</option>
@@ -108,61 +125,76 @@
               min="1"
               max="99"
               step="1"
-              class="input-dark !w-20 text-right"
+              class="input-dark !w-16 !px-2 !py-2 text-right"
               placeholder="1"
+              aria-label="Number of additional drivers"
               title="Number of additional drivers"
             >
-            <input
-              v-if="extras[item.id]!.driverMode"
-              v-model.number="extras[item.id]!.driverPrice"
-              type="number"
-              min="0"
-              step="any"
-              class="input-dark !w-32 text-right"
-              :placeholder="unlimitedDrivers(item.id) ? extraPlaceholder(item.id) : `${extraPlaceholder(item.id)} / driver`"
-              :title="unlimitedDrivers(item.id)
-                ? (item.qty > 1 ? `Unlimited drivers per vehicle, multiplied by qty ${item.qty}` : 'Price for unlimited authorised drivers')
-                : undefined"
-            >
-            <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(driverTotal(item)) }}</span>
+            <template v-if="extras[item.id]!.driverMode">
+            <span class="relative block w-32">
+              <input
+                v-model.number="extras[item.id]!.driverPrice"
+                type="number"
+                min="0"
+                step="any"
+                class="input-dark !py-2 !pr-9 text-right"
+                :placeholder="unlimitedDrivers(item.id) ? extraPlaceholder(item.id) : 'Per driver'"
+                :aria-label="unlimitedDrivers(item.id) ? 'Price for unlimited drivers' : 'Price per driver'"
+                :title="unlimitedDrivers(item.id)
+                  ? (item.qty > 1 ? `Unlimited drivers per vehicle, multiplied by qty ${item.qty}` : 'Price for unlimited authorised drivers')
+                  : `${extraPlaceholder(item.id)} per driver`"
+              >
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}</span>
+            </span>
+            </template>
           </div>
-          <div class="flex flex-wrap items-center justify-end gap-2">
-            <span class="mr-auto text-xs uppercase tracking-widest text-bone-400">KM</span>
-            <input
-              v-model.number="extras[item.id]!.km"
-              type="number"
-              min="0"
-              step="any"
-              class="input-dark !w-24 text-right"
-              placeholder="km"
-              title="Number of kilometres"
-            >
-            <input
-              v-if="(extras[item.id]!.km ?? 0) > 0"
-              v-model.number="extras[item.id]!.kmPrice"
-              type="number"
-              min="0"
-              step="any"
-              class="input-dark !w-32 text-right"
-              placeholder="Price / km"
-            >
-            <span class="text-xs text-bone-400 w-24 text-right">{{ extraLabel(kmTotal(item)) }}</span>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="admin-eyebrow max-sm:w-24">Kilometres</span>
+            <span class="relative block w-28">
+              <input
+                v-model.number="extras[item.id]!.km"
+                type="number"
+                min="0"
+                step="any"
+                class="input-dark !py-2 !pr-10 text-right"
+                placeholder="0"
+                aria-label="Number of kilometres"
+              >
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">km</span>
+            </span>
+            <template v-if="(extras[item.id]!.km ?? 0) > 0">
+            <span class="text-xs text-bone-400" aria-hidden="true">×</span>
+            <span class="relative block w-32">
+              <input
+                v-model.number="extras[item.id]!.kmPrice"
+                type="number"
+                min="0"
+                step="any"
+                class="input-dark !py-2 !pr-9 text-right"
+                placeholder="Per km"
+                aria-label="Price per kilometre"
+              >
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}</span>
+            </span>
+            </template>
           </div>
+          <p v-if="extrasTotal(item) > 0" class="ml-auto text-xs tabular-nums text-bone-400">incl. {{ fmt(extrasTotal(item)) }} extras</p>
         </div>
       </div>
     </div>
 
     <!-- Discount / currency / note -->
-    <div class="mt-5 grid gap-5 sm:grid-cols-3">
+    <h3 class="admin-card-title mt-2 border-t border-ink-800 pt-5">Terms</h3>
+    <div class="mt-4 grid gap-5 sm:grid-cols-3">
       <div>
-        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Currency</label>
+        <label class="admin-label">Currency</label>
         <select v-model="currency" class="input-dark">
           <option value="ISK">ISK (kr.)</option>
           <option value="EUR">EUR (€)</option>
         </select>
       </div>
       <div>
-        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Exchange rate (1 EUR in ISK)</label>
+        <label class="admin-label">Exchange rate (1 EUR in ISK)</label>
         <input
           v-model.number="fxRate"
           type="number"
@@ -171,19 +203,19 @@
           class="input-dark"
           title="Used to convert the entered prices when you switch currency"
         >
-        <p class="mt-1 text-[11px] text-bone-400">
+        <p class="mt-1 text-xs text-ink-400">
           {{ fxInfo }}
         </p>
       </div>
       <div>
-        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">VAT</label>
+        <label class="admin-label">VAT</label>
         <label class="flex items-center gap-2 py-2.5 text-sm text-bone-100 cursor-pointer select-none">
           <input v-model="includeVat" type="checkbox" class="accent-gold-400">
           Add {{ VAT_RATE }}% VAT
         </label>
       </div>
       <div>
-        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Discount</label>
+        <label class="admin-label">Discount</label>
         <select v-model="discountType" class="input-dark">
           <option value="">No discount</option>
           <option value="percent">Percent (%)</option>
@@ -191,17 +223,17 @@
         </select>
       </div>
       <div v-if="discountType">
-        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">
+        <label class="admin-label">
           {{ discountType === 'percent' ? 'Discount %' : `Discount (${currency})` }}
         </label>
         <input v-model.number="discountValue" type="number" min="0" :max="discountType === 'percent' ? 100 : undefined" step="any" class="input-dark">
       </div>
       <div class="sm:col-span-2">
-        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Note on the PDF (optional)</label>
-        <input v-model.trim="note" type="text" class="input-dark" placeholder="e.g. Includes delivery within the capital area.">
+        <label class="admin-label">Note on the PDF (optional)</label>
+        <input v-model.trim="note" type="text" class="input-dark" placeholder="e.g. Delivery included">
       </div>
       <div>
-        <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Valid until (optional)</label>
+        <label class="admin-label">Valid until (optional)</label>
         <input v-model.trim="validUntil" type="text" class="input-dark" placeholder="e.g. 1 August 2026">
       </div>
     </div>
@@ -214,28 +246,26 @@
         <span class="text-gold-400 tabular-nums">−{{ fmt(discountAmount) }}</span>
       </p>
       <p v-if="includeVat" class="text-bone-400">VAT ({{ VAT_RATE }}%): <span class="text-bone-100 tabular-nums">{{ fmt(vatAmount) }}</span></p>
-      <p class="text-lg font-semibold text-bone-100">{{ includeVat ? 'Total incl. VAT' : 'Total (no VAT)' }}: <span class="tabular-nums">{{ fmt(total) }}</span></p>
     </div>
 
-    <p v-if="error" class="mt-4 text-sm text-signal-500">{{ error }}</p>
-    <p v-if="notice" class="mt-4 text-sm text-emerald-400">{{ notice }}</p>
+    <p v-if="error" class="mt-4 text-sm text-signal-400" role="alert">{{ error }}</p>
+    <p v-if="notice" class="mt-4 text-sm text-emerald-400" role="status">{{ notice }}</p>
 
-    <div class="mt-6 flex flex-wrap gap-3 justify-end">
-      <button
-        type="button"
-        class="btn-ghost !text-xs disabled:opacity-50"
-        :disabled="!complete || busy !== ''"
-        @click="preview"
-      >
+    <!-- Same sticky bar as every other editable page: the total and the two actions stay in view -->
+    <div class="admin-savebar -mx-5 -mb-5 mt-5 !border-x-0 !border-b-0 sm:-mx-6 sm:-mb-6 sm:px-6">
+      <button type="button" class="btn-gold" :disabled="!complete || busy !== ''" @click="send">
+        {{ busy === 'send' ? 'Sending…' : 'Send offer' }}
+      </button>
+      <button type="button" class="btn-outline" :disabled="!complete || busy !== ''" @click="preview">
         {{ busy === 'preview' ? 'Generating…' : 'Preview PDF' }}
       </button>
-      <button
-        type="button"
-        class="btn-gold !px-5 !py-2.5 disabled:opacity-50"
-        :disabled="!complete || busy !== ''"
-        @click="send"
-      >
-        {{ busy === 'send' ? 'Sending…' : `Send offer to ${quote.email}` }}
+      <span class="min-w-0 truncate text-xs text-ink-400">{{ complete ? `Goes to ${quote.email}` : 'Fill in a price for every item first' }}</span>
+      <p class="text-sm text-bone-400 sm:ml-auto sm:text-right">
+        {{ includeVat ? 'Total incl. VAT' : 'Total, no VAT' }}
+        <span class="ml-2 font-heading text-xl font-semibold tabular-nums text-bone-100">{{ fmt(total) }}</span>
+      </p>
+      <button type="button" class="admin-link ml-auto sm:ml-4 inline-flex items-center gap-2 !text-signal-400 !decoration-signal-500/40 hover:!text-signal-500" @click="emit('delete')">
+        <AdminIcon name="trash" :size="16" /> Delete quote
       </button>
     </div>
   </div>
@@ -247,7 +277,10 @@ import { INSURANCE_EXCESS } from '~/data/insurance'
 const { confirmDialog } = useAppDialog()
 
 const props = defineProps<{ quote: QuoteDetail }>()
-const emit = defineEmits<{ saved: [] }>()
+
+// Item · price controls · line total. The header strip and every item row share it.
+const cols = 'lg:grid-cols-[minmax(0,1fr)_26rem_8rem]'
+const emit = defineEmits<{ saved: [], delete: [] }>()
 
 // Prefill from the latest offer revision so "revise & resend" starts from
 // what the customer last saw.
@@ -302,6 +335,9 @@ props.quote.items.forEach(seedItem)
 watch(() => props.quote.items, (items) => {
   for (const item of items) if (!(item.id in modes)) seedItem(item)
 })
+
+// "1 week", "2 weeks", "1 day"
+const unit = (mode: PricingMode | undefined, n: number | null | undefined) => `${mode === 'week' ? 'week' : 'day'}${n === 1 ? '' : 's'}`
 
 const bulkMode = ref<PricingMode>('week')
 const bulkPeriod = ref<number | null>(1)
@@ -450,7 +486,7 @@ const extrasComplete = (item: QuoteItem) => item.itemType !== 'vehicle'
     && (!hasDrivers(item.id) || unlimitedDrivers(item.id) || Number.isInteger(extras[item.id]!.drivers)))
 const extraPlaceholder = (id: number) =>
   modes[id] === 'day' ? 'Price / day' : modes[id] === 'week' ? 'Price / week' : 'Price'
-const extraLabel = (n: number | null) => n == null ? currencySuffix.value : n > 0 ? `+ ${fmt(n)}` : ''
+const extraLabel = (n: number | null) => n != null && n > 0 ? `+ ${fmt(n)}` : ''
 
 const complete = computed(() => props.quote.items.every(i => isPriced(i.id) && hasPeriod(i.id) && extrasComplete(i)))
 

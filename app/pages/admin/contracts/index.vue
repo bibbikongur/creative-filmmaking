@@ -1,87 +1,113 @@
 <template>
   <div>
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <p class="kicker">Contracts</p>
-        <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">Rental agreements</h1>
-      </div>
-      <button type="button" class="btn-ghost !px-4 !py-2 !text-xs disabled:opacity-50" :disabled="creating" @click="createBlank">
-        {{ creating === 'blank' ? 'Creating…' : '+ Blank agreement' }}
-      </button>
-    </div>
+    <AdminPageHeader
+      title="Contracts"
+      description="Printable rental agreements, filled in from a quote or by hand."
+      :crumbs="[{ label: 'Sales' }, { label: 'Contracts' }]"
+    >
+      <template #actions>
+        <button type="button" class="btn-sm" :class="showForm ? 'btn-outline' : 'btn-gold'" :aria-expanded="showForm" aria-controls="new-agreement" @click="showForm = !showForm">
+          <AdminIcon :name="showForm ? 'close' : 'plus'" :size="16" /> {{ showForm ? 'Close' : 'New agreement' }}
+        </button>
+      </template>
+    </AdminPageHeader>
 
-    <!-- New from a quote -->
-    <div class="mt-8 border border-ink-800 bg-ink-900/50 p-5">
-      <h2 class="text-xs uppercase tracking-widest text-bone-400">New agreement from a quote</h2>
-      <p class="mt-1 text-xs text-bone-400 leading-relaxed">
-        The renter, the vehicles (one line per unit, with the registration number when the listing has one) and the
-        charges are filled in from the quote's confirmed offer, or its latest offer. Everything can be edited before printing.
-      </p>
-      <div class="mt-4 flex flex-wrap gap-3 items-end">
-        <div class="flex-1 min-w-[16rem]">
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Quote</label>
-          <select v-model="selectedQuote" class="input-dark">
+    <!-- New agreement: from a quote, or blank -->
+    <section v-if="showForm" id="new-agreement" class="admin-card rail-top mt-6 p-5 sm:p-6" aria-labelledby="new-from-quote">
+      <h2 id="new-from-quote" class="admin-card-title">New agreement</h2>
+      <div class="mt-4 flex flex-wrap items-end gap-3">
+        <div class="min-w-[16rem] flex-1">
+          <label for="contract-quote" class="admin-label">Fill it in from a quote</label>
+          <select id="contract-quote" v-model="selectedQuote" class="input-dark">
             <option value="" disabled>Choose a quote…</option>
             <option v-for="q in quoteOptions" :key="q.id" :value="q.id">{{ q.label }}</option>
           </select>
         </div>
         <button
           type="button"
-          class="btn-gold !px-5 !py-2.5 disabled:opacity-50"
+          class="btn-gold"
           :disabled="!selectedQuote || !!creating"
           @click="createFromQuote"
         >
           {{ creating === 'quote' ? 'Creating…' : 'Create agreement' }}
         </button>
-      </div>
-      <p v-if="createError" class="mt-3 text-sm text-signal-500">{{ createError }}</p>
-    </div>
-
-    <p v-if="loadError" class="mt-8 text-sm text-signal-500">{{ loadError }}</p>
-    <p v-else-if="!loaded" class="mt-8 text-sm text-bone-400">Loading agreements…</p>
-
-    <div v-else class="mt-8 border border-ink-800 divide-y divide-ink-800">
-      <NuxtLink
-        v-for="c in contracts"
-        :key="c.id"
-        :to="`/admin/contracts/${c.id}`"
-        class="flex items-center gap-4 p-4 bg-ink-900/50 hover:bg-ink-900 transition-colors"
-      >
-        <div class="min-w-0 flex-1">
-          <p class="font-semibold text-bone-100 truncate">
-            <span class="font-mono text-gold-400">{{ c.number }}</span>
-            <span class="mx-1.5 text-ink-500">·</span>
-            {{ c.renterName || 'No renter yet' }}
-          </p>
-          <p class="mt-0.5 text-xs text-bone-400 truncate">
-            {{ formatDate(c.agreementDate) }}
-            · {{ c.vehicleCount }} {{ c.vehicleCount === 1 ? 'vehicle' : 'vehicles' }}
-            <span v-if="c.regNos.length"> · {{ c.regNos.join(', ') }}</span>
-            <span v-if="c.total != null"> · {{ formatMoney(c.total, c.currency) }}</span>
-            <span v-if="c.quoteId"> · quote {{ c.quoteId }}</span>
-          </p>
-        </div>
-        <button type="button" class="btn-ghost !px-4 !py-2 !text-xs" @click.prevent.stop="view(c)">View PDF</button>
-        <a
-          :href="`/api/admin/contracts/${c.id}/pdf`"
-          target="_blank"
-          class="btn-ghost !px-4 !py-2 !text-xs"
-          @click.stop
-        >Print ↗</a>
-        <button
-          type="button"
-          class="text-xs uppercase tracking-widest text-signal-500/80 hover:text-signal-500 transition-colors disabled:opacity-50"
-          :disabled="deleting === c.id"
-          @click.prevent.stop="remove(c)"
-        >
-          {{ deleting === c.id ? '…' : 'Delete' }}
+        <button type="button" class="btn-outline" :disabled="!!creating" @click="createBlank">
+          {{ creating === 'blank' ? 'Creating…' : 'Start blank' }}
         </button>
-      </NuxtLink>
-
-      <p v-if="!contracts.length" class="p-8 text-center text-sm text-bone-400">
-        No agreements yet. Pick a quote above, or open a quote and use “Rental agreement” next to its offer.
+      </div>
+      <p class="mt-3 max-w-3xl text-xs leading-relaxed text-ink-400">
+        From a quote, the renter, the vehicles and the charges come from its confirmed offer, or its latest one: one line per
+        vehicle unit, with the registration number when the listing has one. Everything can be edited before printing.
       </p>
-    </div>
+      <p v-if="createError" class="mt-3 text-sm text-signal-400" role="alert">{{ createError }}</p>
+    </section>
+
+    <AdminStateMessage v-if="loadError" kind="error" class="mt-6">{{ loadError }}</AdminStateMessage>
+    <AdminStateMessage v-else-if="!loaded" kind="loading" class="mt-6">Loading agreements…</AdminStateMessage>
+
+    <AdminStateMessage v-else-if="!contracts.length" title="No agreements yet" class="mt-6">
+      Start one here, or open a quote and use “Write agreement” next to its offer.
+      <template v-if="!showForm" #action>
+        <button type="button" class="btn-outline btn-sm" @click="showForm = true">New agreement</button>
+      </template>
+    </AdminStateMessage>
+
+    <template v-else>
+      <AdminToolbar v-model:search="search" class="mt-6" placeholder="Search renter, number, plate…" :count="countLabel" />
+
+      <div class="admin-list mt-4">
+        <div class="admin-list-head hidden md:grid" :class="cols">
+          <span>Renter</span>
+          <span>Date</span>
+          <span>Vehicles</span>
+          <span class="text-right">Total</span>
+          <span class="text-right">Actions</span>
+        </div>
+
+        <div v-for="c in visible" :key="c.id" class="admin-row md:grid" :class="cols">
+          <div class="min-w-0 flex-1">
+            <p class="truncate">
+              <NuxtLink :to="`/admin/contracts/${c.id}`" class="admin-row-link">{{ c.renterName || `Agreement ${c.number}` }}</NuxtLink>
+              <span v-if="!c.renterName" class="admin-chip ml-2 border-ink-500 text-bone-400">Draft</span>
+            </p>
+            <p class="mt-0.5 text-xs text-ink-400 md:truncate">
+              <template v-if="c.renterName">Agreement {{ c.number }}</template><template v-else>No renter filled in yet</template>
+              <span class="md:hidden"> · {{ formatDate(c.agreementDate) }}<template v-if="c.total != null"> · {{ formatMoney(c.total, c.currency) }}</template></span>
+            </p>
+          </div>
+          <p class="hidden md:block whitespace-nowrap text-sm tabular-nums text-bone-400">{{ formatDate(c.agreementDate) }}</p>
+          <p class="hidden md:block truncate text-sm text-bone-400" :title="c.regNos.join(', ')">
+            <template v-if="c.vehicleCount">{{ c.vehicleCount }}<span v-if="c.regNos.length" class="text-ink-400"> · {{ c.regNos.join(', ') }}</span></template>
+            <span v-else class="text-ink-500">–</span>
+          </p>
+          <p class="hidden md:block whitespace-nowrap text-right text-sm tabular-nums text-bone-100">
+            <template v-if="c.total != null">{{ formatMoney(c.total, c.currency) }}</template>
+            <span v-else class="text-ink-500">–</span>
+          </p>
+          <div class="admin-row-actions">
+            <button type="button" class="btn-outline btn-sm hidden sm:inline-flex" :aria-label="`View the PDF of agreement ${c.number}`" @click="view(c)">
+              PDF
+            </button>
+            <button
+              type="button"
+              class="admin-icon-action-danger max-sm:!hidden"
+              :disabled="deleting === c.id"
+              :aria-label="`Delete agreement ${c.number}`"
+              title="Delete"
+              @click="remove(c)"
+            >
+              <AdminIcon name="trash" />
+            </button>
+            <AdminIcon name="right" :size="16" class="ml-1 text-ink-500" />
+          </div>
+        </div>
+
+        <p v-if="!visible.length" class="px-4 py-10 text-center text-sm text-bone-400">
+          No agreements match.
+          <button type="button" class="text-gold-400 hover:text-gold-500" @click="search = ''">Clear search</button>
+        </p>
+      </div>
+    </template>
 
     <ContractPdfViewer :src="viewerSrc" :title="viewerTitle" @close="viewerSrc = null" />
   </div>
@@ -101,6 +127,7 @@ const deleting = ref<number | null>(null)
 const creating = ref<'' | 'quote' | 'blank'>('')
 const createError = ref('')
 const selectedQuote = ref('')
+const showForm = ref(false)
 
 const load = async () => {
   loadError.value = ''
@@ -119,6 +146,20 @@ const load = async () => {
 }
 
 onMounted(load)
+
+// ---------- List ----------
+const cols = 'md:grid-cols-[minmax(0,1fr)_6.5rem_minmax(0,9rem)_7.5rem_9.5rem]'
+const search = ref('')
+const visible = computed(() => {
+  const q = search.value.trim().toLowerCase()
+  if (!q) return contracts.value
+  return contracts.value.filter(c =>
+    [c.renterName, c.number, c.quoteId, ...c.regNos].some(s => s?.toLowerCase().includes(q)))
+})
+const countLabel = computed(() =>
+  visible.value.length === contracts.value.length
+    ? `${contracts.value.length} ${contracts.value.length === 1 ? 'agreement' : 'agreements'}`
+    : `${visible.value.length} of ${contracts.value.length}`)
 
 // Quotes with an offer first (confirmed ones on top), then the rest.
 const quoteOptions = computed(() =>

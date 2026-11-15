@@ -1,8 +1,7 @@
 <template>
   <div>
-    <NuxtLink to="/admin" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors">← Fleet</NuxtLink>
-    <h1 class="mt-3 text-3xl font-semibold uppercase tracking-wide text-bone-100">Add vehicle</h1>
-    <div class="mt-8">
+    <AdminPageHeader title="Add vehicle" description="It appears on the website as soon as you create it." :crumbs="[{ label: 'Catalogue' }, { label: 'Vehicles', to: '/admin/vehicles' }, { label: 'Add' }]" />
+    <div class="mt-6">
       <AdminVehicleForm :saving="saving" :error="error" @save="save" />
     </div>
   </div>
@@ -20,7 +19,7 @@ const save = async (payload: Record<string, unknown>) => {
   try {
     await $fetch('/api/admin/vehicles', { method: 'POST', body: payload })
     clearNuxtData('fleet')
-    await navigateTo('/admin')
+    await navigateTo('/admin/vehicles')
   }
   catch (e: any) {
     error.value = e?.data?.data?.errors || e?.data?.statusMessage || 'Save failed. Please try again.'
@@ -30,5 +29,5 @@ const save = async (payload: Record<string, unknown>) => {
   }
 }
 
-useHead({ title: 'Add vehicle · Admin' })
+useHead({ title: 'Add vehicle · Admin · Creative Filmmaking' })
 </script>

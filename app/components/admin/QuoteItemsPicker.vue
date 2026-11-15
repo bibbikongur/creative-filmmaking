@@ -1,15 +1,14 @@
 <template>
   <div>
     <div class="flex flex-wrap items-center justify-between gap-4">
-      <h2 class="text-xs uppercase tracking-widest text-bone-400">
-        Items <span class="text-gold-400">({{ modelValue.length }} selected)</span>
+      <h2 class="admin-card-title">
+        Items <span class="font-sans text-[11px] font-medium normal-case tracking-normal text-ink-400">{{ modelValue.length }} selected</span>
       </h2>
-      <input
-        v-model.trim="search"
-        type="search"
-        class="input-dark !w-64"
-        placeholder="Search vehicles, equipment & services…"
-      >
+      <label class="relative w-full sm:w-72">
+        <span class="sr-only">Search the catalogue</span>
+        <AdminIcon name="search" :size="16" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
+        <input v-model.trim="search" type="search" class="admin-field w-full !pl-9" placeholder="Search the catalogue…">
+      </label>
     </div>
 
     <p v-if="catalogueError" class="mt-4 text-sm text-signal-500">{{ catalogueError }}</p>
@@ -19,17 +18,10 @@
       <!-- Selected -->
       <div v-if="modelValue.length" class="mt-4 border border-gold-500/30 divide-y divide-ink-800">
         <div v-for="entry in modelValue" :key="`${entry.type}:${entry.id}`" class="flex items-center gap-4 p-3">
-          <img
-            v-if="entry.image"
-            :src="entry.image"
-            :alt="entry.name"
-            class="w-16 h-11 object-cover bg-ink-800 shrink-0"
-            loading="lazy"
-          >
-          <div v-else class="w-16 h-11 bg-ink-800 shrink-0" />
+          <AdminThumb :src="entry.image" :alt="entry.name" :icon="entry.type === 'vehicle' ? 'vehicles' : 'equipment'" />
           <div class="min-w-0 flex-1">
             <p class="font-semibold text-bone-100 truncate">{{ entry.name }}</p>
-            <p class="mt-0.5 text-xs uppercase tracking-widest text-bone-400">{{ entry.type }}</p>
+            <p class="mt-0.5 text-xs capitalize text-ink-400">{{ entry.type }}</p>
             <!-- Services need saying what they are for; the text is printed under the line on the offer. -->
             <input
               v-if="entry.type === 'service'"
@@ -41,7 +33,7 @@
             >
           </div>
           <div class="flex items-center gap-2">
-            <label class="text-xs uppercase tracking-widest text-bone-400">Qty</label>
+            <label class="admin-eyebrow">Qty</label>
             <input
               v-model.number="entry.qty"
               type="number"
@@ -52,10 +44,12 @@
           </div>
           <button
             type="button"
-            class="text-xs uppercase tracking-widest text-signal-500/80 hover:text-signal-500 transition-colors"
+            class="admin-icon-action-danger"
+            :aria-label="`Remove ${entry.name}`"
+            title="Remove"
             @click="remove(entry.type, entry.id)"
           >
-            Remove
+            <AdminIcon name="close" />
           </button>
         </div>
       </div>
@@ -63,30 +57,28 @@
       <!-- Catalogue -->
       <div class="mt-4 grid gap-x-8 gap-y-6 lg:grid-cols-3">
         <div v-for="group in groups" :key="group.label">
-          <h3 class="text-xs uppercase tracking-widest text-bone-400">{{ group.label }}</h3>
-          <div class="mt-2 border border-ink-800 divide-y divide-ink-800 max-h-96 overflow-y-auto">
+          <h3 class="admin-eyebrow">{{ group.label }} <span class="font-normal tabular-nums">· {{ group.rows.length }}</span></h3>
+          <div class="relative mt-2 border border-ink-800">
+          <div class="max-h-[26rem] divide-y divide-ink-800 overflow-y-auto">
             <button
               v-for="row in group.rows"
               :key="row.item.id"
               type="button"
               class="w-full flex items-center gap-3 p-2.5 text-left transition-colors"
-              :class="isSelected(row.type, row.item.id) ? 'bg-gold-500/10' : 'hover:bg-ink-900'"
+              :aria-pressed="isSelected(row.type, row.item.id)"
+              :class="isSelected(row.type, row.item.id) ? 'bg-gold-500/10' : 'hover:bg-ink-800/60'"
               @click="toggle(row.type, row.item)"
             >
-              <img
-                v-if="row.item.images[0]"
-                :src="row.item.images[0]"
-                :alt="row.item.name.en"
-                class="w-14 h-10 object-cover bg-ink-800 shrink-0"
-                loading="lazy"
-              >
-              <div v-else class="w-14 h-10 bg-ink-800 shrink-0" />
-              <span class="min-w-0 flex-1 text-sm text-bone-100 truncate">{{ row.item.name.en }}</span>
-              <span class="text-xs uppercase tracking-widest shrink-0" :class="isSelected(row.type, row.item.id) ? 'text-gold-400' : 'text-bone-400'">
-                {{ isSelected(row.type, row.item.id) ? '✓ Added' : '+ Add' }}
+              <AdminThumb :src="row.item.images[0]" :alt="row.item.name.en" size="sm" :icon="row.type === 'vehicle' ? 'vehicles' : 'equipment'" />
+              <span class="min-w-0 flex-1 text-sm leading-snug text-bone-100 line-clamp-2">{{ row.item.name.en }}</span>
+              <span class="inline-flex shrink-0 items-center gap-1 text-xs font-medium" :class="isSelected(row.type, row.item.id) ? 'text-gold-400' : 'text-bone-400'">
+                <AdminIcon :name="isSelected(row.type, row.item.id) ? 'check' : 'plus'" :size="14" />
+                {{ isSelected(row.type, row.item.id) ? 'Added' : 'Add' }}
               </span>
             </button>
             <p v-if="!group.rows.length" class="p-4 text-xs text-bone-400">No matches.</p>
+          </div>
+          <p v-if="group.rows.length > 7" class="border-t border-ink-800 bg-ink-900 px-3 py-1.5 text-center text-[11px] text-ink-400">{{ group.rows.length }} in this list. Scroll or search to see more.</p>
           </div>
         </div>
       </div>

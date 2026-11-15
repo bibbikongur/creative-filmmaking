@@ -1,42 +1,37 @@
 <template>
   <div>
-    <div>
-      <p class="kicker">
-        <NuxtLink to="/admin/quotes" class="hover:text-gold-400 transition-colors">Quotes</NuxtLink>
-        <span class="text-ink-500 mx-1">/</span> New
-      </p>
-      <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">New quote</h1>
-      <p class="mt-2 text-sm text-bone-400">
-        Pick the items and the recipient here. Everything stays editable on the next step, right up until you send the offer.
-      </p>
-    </div>
+    <AdminPageHeader
+      title="New quote"
+      description="Pick the recipient and the items. You set the prices on the next step."
+      :crumbs="[{ label: 'Sales' }, { label: 'Quotes', to: '/admin/quotes' }, { label: 'New' }]"
+    />
 
     <!-- Recipient -->
-    <div class="mt-8 border border-ink-800 bg-ink-900/50 p-5">
-      <h2 class="text-xs uppercase tracking-widest text-bone-400">Recipient</h2>
+    <div class="mt-6 admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Recipient</h2>
       <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Email *</label>
+          <label class="admin-label">Email *</label>
           <input v-model.trim="email" type="email" class="input-dark" placeholder="customer@example.com">
         </div>
         <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Name</label>
+          <label class="admin-label">Name</label>
           <input v-model.trim="name" type="text" class="input-dark" placeholder="Contact name (optional)">
         </div>
         <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Company</label>
+          <label class="admin-label">Company</label>
           <input v-model.trim="company" type="text" class="input-dark" placeholder="Optional">
         </div>
         <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Kennitala</label>
+          <label class="admin-label">Kennitala</label>
           <input v-model.trim="kennitala" type="text" class="input-dark" placeholder="Optional">
         </div>
         <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Phone</label>
+          <label class="admin-label">Phone</label>
           <input v-model.trim="phone" type="text" class="input-dark" placeholder="Optional">
         </div>
         <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Language</label>
+          <label class="admin-label">Language</label>
           <select v-model="locale" class="input-dark">
             <option value="en">English</option>
             <option value="is">Icelandic</option>
@@ -44,28 +39,32 @@
           <p class="mt-1 text-[11px] text-bone-400">Controls the offer email + PDF language.</p>
         </div>
         <div>
-          <label class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Rental period</label>
+          <label class="admin-label">Rental period</label>
           <input v-model.trim="dates" type="text" class="input-dark" placeholder="e.g. 12–18 August 2026 (optional)">
         </div>
       </div>
     </div>
 
     <!-- Item picker -->
-    <div class="mt-8 border border-ink-800 bg-ink-900/50 p-5">
+    <div class="mt-5 admin-card p-5 sm:p-6">
       <AdminQuoteItemsPicker v-model="selected" />
     </div>
 
-    <p v-if="error" class="mt-4 text-sm text-signal-500">{{ error }}</p>
+    <p v-if="error" class="mt-4 text-sm text-signal-400" role="alert">{{ error }}</p>
 
-    <div class="mt-6 flex justify-end">
+    <div class="admin-savebar mt-5">
       <button
         type="button"
-        class="btn-gold !px-5 !py-2.5 disabled:opacity-50"
+        class="btn-gold"
         :disabled="!canCreate || busy"
         @click="create"
       >
-        {{ busy ? 'Creating…' : 'Create quote & set prices' }}
+        {{ busy ? 'Creating…' : 'Create quote and set prices' }}
       </button>
+      <NuxtLink to="/admin/quotes" class="btn-outline">Cancel</NuxtLink>
+      <span class="text-xs" :class="canCreate ? 'text-bone-400' : 'text-ink-400'" role="status">
+        {{ canCreate ? `${selected.length} ${selected.length === 1 ? 'item' : 'items'} selected` : !selected.length ? 'Enter the recipient’s email and add at least one item' : 'Enter the recipient’s email to continue' }}
+      </span>
     </div>
   </div>
 </template>

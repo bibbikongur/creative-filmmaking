@@ -1,90 +1,120 @@
 <template>
   <div>
-    <NuxtLink to="/admin/equipment" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors">← Equipment</NuxtLink>
+    <AdminPageHeader
+      title="Categories"
+      description="The order here is the order of the categories on the website."
+      :crumbs="[{ label: 'Catalogue' }, { label: 'Equipment', to: '/admin/equipment' }, { label: 'Categories' }]"
+    >
+      <template #actions>
+        <NuxtLink to="/admin/equipment/categories/new" class="btn-gold btn-sm"><AdminIcon name="plus" :size="16" /> Add category</NuxtLink>
+      </template>
+    </AdminPageHeader>
 
-    <div class="mt-3 flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <p class="kicker">Equipment</p>
-        <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">Categories</h1>
-        <p class="mt-2 max-w-2xl text-sm text-bone-400">
-          Each category has its own page on the site (/equipment/&lt;slug&gt;). The order here is the order of the
-          filter pills and the rows on the equipment page.
-        </p>
-      </div>
-      <NuxtLink to="/admin/equipment/categories/new" class="btn-gold !px-5 !py-2.5">+ Add category</NuxtLink>
-    </div>
+    <AdminStateMessage v-if="loadError" kind="error" class="mt-6">{{ loadError }}</AdminStateMessage>
+    <AdminStateMessage v-else-if="!loaded" kind="loading" class="mt-6">Loading categories…</AdminStateMessage>
 
-    <p v-if="loadError" class="mt-8 text-sm text-signal-500">{{ loadError }}</p>
-    <p v-else-if="!loaded" class="mt-8 text-sm text-bone-400">Loading categories…</p>
+    <AdminStateMessage v-else-if="!categories.length" title="No categories yet" class="mt-6">
+      Equipment is grouped by category on the website. Add the first one.
+      <template #action>
+        <NuxtLink to="/admin/equipment/categories/new" class="btn-gold btn-sm">Add category</NuxtLink>
+      </template>
+    </AdminStateMessage>
 
     <template v-else>
-      <div class="mt-8 border border-ink-800 divide-y divide-ink-800">
-        <div v-for="(c, i) in active" :key="c.id" class="bg-ink-900/50 hover:bg-ink-900 transition-colors">
-          <div class="flex items-center gap-4 p-4">
-            <div class="flex flex-col shrink-0">
+      <AdminToolbar class="mt-6" :count="`${active.length} active${archived.length ? `, ${archived.length} archived` : ''}`" />
+
+      <div class="admin-list mt-4">
+        <div class="admin-list-head hidden md:grid !pl-2" :class="cols">
+          <span>Order</span>
+          <span>Category</span>
+          <span>Items</span>
+          <span class="text-right">Actions</span>
+        </div>
+        <div v-for="(c, i) in active" :key="c.id">
+          <div class="admin-row sm:!pl-2 md:grid" :class="cols">
+            <div class="hidden shrink-0 items-center gap-1 sm:flex">
+              <div class="relative z-10 hidden shrink-0 flex-col sm:flex">
               <button
                 type="button"
-                class="px-1.5 py-0.5 text-bone-400 hover:text-bone-100 transition-colors disabled:opacity-25 disabled:hover:text-bone-400"
+                class="admin-icon-action !h-7 !w-8"
                 :disabled="i === 0 || reordering"
-                aria-label="Move up"
+                :aria-label="`Move ${c.name.en} up`"
+                title="Move up"
                 @click="move(i, -1)"
-              >▲</button>
+              >
+                <AdminIcon name="up" :size="14" />
+              </button>
               <button
                 type="button"
-                class="px-1.5 py-0.5 text-bone-400 hover:text-bone-100 transition-colors disabled:opacity-25 disabled:hover:text-bone-400"
+                class="admin-icon-action !h-7 !w-8"
                 :disabled="i === active.length - 1 || reordering"
-                aria-label="Move down"
+                :aria-label="`Move ${c.name.en} down`"
+                title="Move down"
                 @click="move(i, 1)"
-              >▼</button>
+              >
+                <AdminIcon name="down" :size="14" />
+              </button>
+            </div>
+              <span class="hidden w-5 text-center text-xs tabular-nums text-ink-400 md:block">{{ i + 1 }}</span>
             </div>
             <div class="min-w-0 flex-1">
-              <p class="font-semibold text-bone-100 truncate">
-                {{ c.name.is }} <span class="text-bone-400 font-normal">· {{ c.name.en }}</span>
+              <p class="sm:truncate">
+                <NuxtLink :to="`/admin/equipment/categories/${c.id}`" class="admin-row-link">{{ c.name.en || c.name.is }}</NuxtLink>
+                <span v-if="c.name.is && c.name.en && c.name.en !== c.name.is" class="text-bone-400"> · {{ c.name.is }}</span>
               </p>
-              <p class="mt-0.5 text-xs text-bone-400 font-mono truncate">/equipment/{{ c.slug.is }} · /en/equipment/{{ c.slug.en }}</p>
+              <p class="mt-0.5 text-xs text-ink-400 md:hidden">{{ count(c.id) ? `${count(c.id)} ${count(c.id) === 1 ? 'item' : 'items'}` : 'No items' }}</p>
             </div>
-            <button
-              type="button"
-              class="text-xs uppercase tracking-widest shrink-0 inline-flex items-center gap-1.5 transition-colors"
-              :class="open.has(c.id) ? 'text-gold-400' : 'text-bone-400 hover:text-bone-100'"
-              :aria-expanded="open.has(c.id)"
-              :disabled="!count(c.id)"
-              @click="toggle(c.id)"
-            >
-              {{ count(c.id) }} item{{ count(c.id) === 1 ? '' : 's' }}
-              <span v-if="count(c.id)" aria-hidden="true">{{ open.has(c.id) ? '▴' : '▾' }}</span>
-            </button>
-            <NuxtLink :to="`/admin/equipment/categories/${c.id}`" class="btn-ghost !px-4 !py-2 !text-xs">Edit</NuxtLink>
+            <div class="relative z-10 hidden md:block">
+              <button
+                v-if="count(c.id)"
+                type="button"
+                class="admin-link"
+                :aria-expanded="open.has(c.id)"
+                @click="toggle(c.id)"
+              >
+                {{ open.has(c.id) ? 'Hide' : 'Show' }} {{ count(c.id) }} {{ count(c.id) === 1 ? 'item' : 'items' }}
+              </button>
+              <span v-else class="text-sm text-ink-400">No items</span>
+            </div>
+            <div class="admin-row-actions">
+              <a :href="`/equipment/${c.slug.is}`" target="_blank" rel="noopener" class="admin-icon-action hidden sm:inline-flex" :aria-label="`View ${c.name.en} on the website`" title="View on the website">
+                <AdminIcon name="external" />
+              </a>
+              <AdminIcon name="right" :size="16" class="ml-1 text-ink-500" />
+            </div>
           </div>
 
           <!-- Items in this category -->
           <ul v-if="open.has(c.id)" class="border-t border-ink-800 bg-ink-950/40 divide-y divide-ink-800/60">
-            <li v-for="e in itemsIn(c.id)" :key="e.id" class="flex items-center gap-3 py-2 pl-14 pr-4">
-              <img v-if="e.images[0]" :src="e.images[0]" :alt="e.name.en" class="w-12 h-9 object-cover bg-ink-800 shrink-0" loading="lazy">
-              <div v-else class="w-12 h-9 bg-ink-800 shrink-0" />
-              <p class="min-w-0 flex-1 text-sm text-bone-100 truncate">
-                {{ e.name.is || e.name.en }}
-                <span v-if="e.name.is && e.name.en" class="text-bone-400">· {{ e.name.en }}</span>
-                <span v-if="e.featured" class="ml-2 text-[10px] uppercase tracking-widest text-gold-500 border border-gold-500/40 px-1.5 py-0.5">Featured</span>
+            <li v-for="e in itemsIn(c.id)" :key="e.id" class="relative flex items-center gap-3 py-2 pl-[4.5rem] pr-4 transition-colors hover:bg-ink-800/60">
+              <AdminThumb :src="e.images[0]" :alt="e.name.en" size="sm" />
+              <p class="min-w-0 flex-1 truncate text-sm">
+                <NuxtLink :to="`/admin/equipment/${e.id}`" class="admin-row-link !font-normal">{{ e.name.en || e.name.is }}</NuxtLink>
+                <span v-if="e.featured" class="admin-chip ml-2 border-gold-500/40 text-gold-400">Featured</span>
               </p>
-              <NuxtLink :to="`/admin/equipment/${e.id}`" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors">Edit item</NuxtLink>
+              <AdminIcon name="right" :size="16" class="text-ink-500" />
             </li>
           </ul>
         </div>
-        <p v-if="!active.length" class="p-8 text-center text-sm text-bone-400">
-          No categories yet. Add the first one.
+        <p v-if="!active.length" class="px-4 py-10 text-center text-sm text-bone-400">
+          No active categories. Restore an archived one below, or add a new one.
         </p>
       </div>
 
       <template v-if="archived.length">
-        <h2 class="mt-10 text-sm font-heading font-semibold uppercase tracking-widest text-bone-400">Archived</h2>
-        <div class="mt-3 border border-ink-800 divide-y divide-ink-800 opacity-70">
-          <div v-for="c in archived" :key="c.id" class="flex items-center gap-4 p-4">
+        <h2 class="mt-10 font-heading text-lg font-semibold uppercase tracking-wide text-bone-100">Archived</h2>
+        <p class="mt-1 text-sm text-bone-400">Hidden from the website.</p>
+        <div class="admin-list mt-3">
+          <div v-for="c in archived" :key="c.id" class="admin-row">
             <div class="min-w-0 flex-1">
-              <p class="font-semibold text-bone-100 truncate">{{ c.name.is }} <span class="text-bone-400 font-normal">· {{ c.name.en }}</span></p>
-              <p class="mt-0.5 text-xs text-bone-400 font-mono truncate">/equipment/{{ c.slug.is }}</p>
+              <p class="sm:truncate">
+                <NuxtLink :to="`/admin/equipment/categories/${c.id}`" class="admin-row-link !text-bone-400">{{ c.name.en || c.name.is }}</NuxtLink>
+                <span v-if="c.name.is && c.name.en && c.name.en !== c.name.is" class="text-ink-400"> · {{ c.name.is }}</span>
+              </p>
             </div>
-            <NuxtLink :to="`/admin/equipment/categories/${c.id}`" class="btn-ghost !px-4 !py-2 !text-xs">Edit</NuxtLink>
+            <div class="admin-row-actions">
+              <AdminIcon name="right" :size="16" class="ml-1 text-ink-500" />
+            </div>
           </div>
         </div>
       </template>
@@ -97,6 +127,8 @@ import type { EquipmentCategoryDef, EquipmentItem } from '~/types'
 
 definePageMeta({ layout: 'admin' })
 const { alertDialog } = useAppDialog()
+
+const cols = 'md:grid-cols-[3.75rem_minmax(0,1fr)_8rem_5rem]'
 
 const categories = ref<EquipmentCategoryDef[]>([])
 const items = ref<EquipmentItem[]>([])
@@ -155,5 +187,5 @@ const move = async (index: number, delta: number) => {
   }
 }
 
-useHead({ title: 'Equipment categories · Admin' })
+useHead({ title: 'Equipment categories · Admin · Creative Filmmaking' })
 </script>

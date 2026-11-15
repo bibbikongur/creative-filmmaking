@@ -1,16 +1,22 @@
 <template>
   <div>
-    <NuxtLink to="/admin/equipment/categories" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors">← Categories</NuxtLink>
-
-    <p v-if="!loaded" class="mt-8 text-sm text-bone-400">Loading…</p>
-    <div v-else-if="!category" class="mt-8 text-sm text-signal-500">
-      Category not found.
-    </div>
+    <AdminStateMessage v-if="!loaded" kind="loading">Loading…</AdminStateMessage>
+    <AdminStateMessage v-else-if="!category" kind="error" title="Category not found">
+      It may have been deleted.
+      <template #action>
+        <NuxtLink to="/admin/equipment/categories" class="btn-outline btn-sm">Back to categories</NuxtLink>
+      </template>
+    </AdminStateMessage>
     <template v-else>
-      <h1 class="mt-3 text-3xl font-semibold uppercase tracking-wide text-bone-100">
-        Edit · {{ category.name.is || category.name.en }}
-      </h1>
-      <div class="mt-8">
+      <AdminPageHeader
+        :title="category.name.en || category.name.is"
+        :crumbs="[{ label: 'Catalogue' }, { label: 'Equipment', to: '/admin/equipment' }, { label: 'Categories', to: '/admin/equipment/categories' }, { label: 'Edit' }]"
+      >
+        <template #actions>
+          <a v-if="category.status === 'active'" :href="`/equipment/${category.slug.is}`" target="_blank" rel="noopener" class="btn-outline btn-sm">View on website <AdminIcon name="external" :size="16" /></a>
+        </template>
+      </AdminPageHeader>
+      <div class="mt-6 space-y-5">
         <AdminEquipmentCategoryForm :category="category" :saving="saving" :error="error" @save="save" />
       </div>
     </template>
@@ -55,5 +61,5 @@ const save = async (payload: Record<string, unknown>) => {
   }
 }
 
-useHead({ title: 'Edit category · Admin' })
+useHead({ title: 'Edit category · Admin · Creative Filmmaking' })
 </script>

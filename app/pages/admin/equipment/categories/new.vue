@@ -1,8 +1,7 @@
 <template>
   <div>
-    <NuxtLink to="/admin/equipment/categories" class="text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400 transition-colors">← Categories</NuxtLink>
-    <h1 class="mt-3 text-3xl font-semibold uppercase tracking-wide text-bone-100">New category</h1>
-    <div class="mt-8">
+    <AdminPageHeader title="Add category" description="A new category gets its own page on the website." :crumbs="[{ label: 'Catalogue' }, { label: 'Equipment', to: '/admin/equipment' }, { label: 'Categories', to: '/admin/equipment/categories' }, { label: 'Add' }]" />
+    <div class="mt-6">
       <AdminEquipmentCategoryForm :saving="saving" :error="error" @save="save" />
     </div>
   </div>
@@ -30,5 +29,5 @@ const save = async (payload: Record<string, unknown>) => {
   }
 }
 
-useHead({ title: 'New category · Admin' })
+useHead({ title: 'New category · Admin · Creative Filmmaking' })
 </script>

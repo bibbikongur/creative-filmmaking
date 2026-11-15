@@ -156,6 +156,120 @@
 
   /* ---------- Motifs ---------- */
   /* The one gold accent rail (dialog, highlighted panels) */
+  /* ---------- Admin panel ---------- */
+  /* One surface, one list, one row: every admin page is built from these. */
+  .admin-card {
+    @apply border border-ink-800 bg-ink-900/60;
+  }
+
+  .admin-list {
+    @apply border border-ink-800 bg-ink-900/60 divide-y divide-ink-800;
+  }
+
+  /* A row and the column-heading strip share gap and padding, so a page only
+     has to give both the same grid template for the columns to line up. */
+  .admin-row {
+    @apply relative flex items-center gap-4 px-4 py-3 transition-colors hover:bg-ink-800/60;
+  }
+
+  .admin-list-head {
+    @apply items-center gap-4 px-4 py-2.5 bg-ink-900 text-[11px] font-semibold uppercase tracking-widest text-ink-400;
+  }
+
+  /* The record's name: the link stretches over the whole row, so clicking
+     anywhere opens it. Controls inside the row sit above it (.admin-row-actions). */
+  .admin-row-link {
+    @apply font-semibold text-bone-100 after:absolute after:inset-0 after:content-[''];
+  }
+
+  .admin-row-actions {
+    @apply relative z-10 flex shrink-0 items-center justify-end gap-1;
+  }
+
+  /* Page section heading (outside cards) */
+  .admin-section-title {
+    @apply font-heading text-lg font-semibold uppercase tracking-wide text-bone-100;
+  }
+
+  /* Heading of a card: the one style for every card on every admin page */
+  .admin-card-title {
+    @apply font-heading text-sm font-semibold uppercase tracking-widest text-gold-500;
+  }
+
+  /* Small grey label: column heads, stat-tile captions, field captions */
+  .admin-eyebrow {
+    @apply font-sans text-[11px] font-semibold uppercase tracking-widest text-ink-400;
+  }
+
+  .admin-label {
+    @apply block text-xs uppercase tracking-widest text-bone-400 mb-1.5;
+  }
+
+  /* Square icon-only action (view, delete, reorder). Always carries an
+     aria-label and a title. 44px on touch screens, 36px with a mouse. */
+  .admin-icon-action {
+    @apply inline-flex h-11 w-11 md:h-9 md:w-9 shrink-0 items-center justify-center border border-transparent
+      text-bone-400 transition-colors hover:border-ink-700 hover:bg-ink-800 hover:text-bone-100
+      disabled:opacity-30 disabled:hover:border-transparent disabled:hover:bg-transparent disabled:hover:text-bone-400;
+  }
+
+  /* Delete or remove: set apart from the harmless actions before it, grey at rest
+     and red on hover or focus. The loud, labelled delete lives on the record's page. */
+  .admin-icon-action-danger {
+    @apply admin-icon-action ml-2 hover:border-signal-500/40 hover:bg-signal-500/10 hover:text-signal-400
+      focus-visible:text-signal-400;
+  }
+
+  /* Quiet text link inside rows and cards */
+  .admin-link {
+    @apply text-xs font-medium text-bone-400 underline decoration-ink-500 underline-offset-4 transition-colors
+      hover:text-gold-400 hover:decoration-gold-500;
+  }
+
+  .admin-chip {
+    @apply inline-flex items-center whitespace-nowrap border px-1.5 py-0.5 align-middle font-sans
+      text-[10px] font-semibold uppercase tracking-widest;
+  }
+
+  /* Filter pill (status tabs, type filters) */
+  .admin-pill {
+    @apply inline-flex min-h-[2.75rem] md:min-h-[2.25rem] items-center gap-2 whitespace-nowrap border border-ink-700 px-3
+      text-xs font-medium text-bone-400 transition-colors hover:border-ink-500 hover:text-bone-100;
+  }
+
+  .admin-pill-active {
+    @apply border-gold-500/60 bg-gold-500/10 text-gold-400 hover:border-gold-500/60 hover:text-gold-400;
+  }
+
+  /* Compact field for toolbars */
+  .admin-field {
+    @apply bg-ink-900 border border-ink-700 text-bone-100 placeholder-ink-400 px-3 h-11 md:h-9 text-sm
+      focus:border-gold-500 transition-colors;
+  }
+
+  /* Short text that may run to a few lines (taglines): the box grows with it, nothing is clipped */
+  .admin-autogrow {
+    field-sizing: content;
+    @apply min-h-[4.5rem] resize-y;
+  }
+
+  /* Sticky save bar at the foot of every editable page */
+  .admin-savebar {
+    @apply sticky bottom-0 z-20 flex flex-wrap items-center gap-3 border border-ink-700 bg-ink-900 px-4 py-3
+      shadow-[0_-12px_24px_-12px_rgba(0,0,0,0.6)];
+  }
+
+  /* A disabled button in the panel is plainly off, never a dimmed gold one */
+  .admin-ui .btn:disabled {
+    @apply border border-ink-700 bg-ink-800 text-ink-400 opacity-100 hover:border-ink-700 hover:bg-ink-800 hover:text-ink-400;
+  }
+
+  /* Selects need room for the native arrow; never clip the chosen value */
+  .admin-ui select.input-dark,
+  .admin-ui select.admin-field {
+    @apply pr-9;
+  }
+
   .rail-top {
     @apply border-t-2 border-gold-500;
   }

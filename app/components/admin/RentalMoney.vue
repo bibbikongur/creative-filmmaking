@@ -1,5 +1,5 @@
 <template>
-  <span v-if="!amounts.ISK && !amounts.EUR" class="text-bone-400/60">–</span>
+  <span v-if="!amounts.ISK && !amounts.EUR" class="text-ink-400">0 kr.</span>
   <span v-else class="inline-flex flex-col items-end leading-tight">
     <span v-if="amounts.ISK">{{ amounts.ISK.toLocaleString('is-IS') }} kr.</span>
     <span v-if="amounts.EUR">€{{ amounts.EUR.toLocaleString('en-US') }}</span>

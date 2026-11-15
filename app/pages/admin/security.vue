@@ -1,19 +1,18 @@
 <template>
-  <div class="max-w-2xl">
-    <p class="kicker">Security</p>
-    <h1 class="mt-2 text-3xl font-semibold uppercase tracking-wide text-bone-100">Two-factor login</h1>
-    <p class="mt-3 text-sm leading-relaxed text-bone-400">
-      With two-factor on, logging in to the admin panel takes the password and a 6-digit code from an
-      authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password, Authy).
-      A leaked or guessed password is then not enough on its own.
-    </p>
+  <div>
+    <AdminPageHeader
+      title="Login security"
+      description="Add a second step to the admin login: a 6-digit code from an authenticator app on your phone, such as Google Authenticator, 1Password or Authy."
+      :crumbs="[{ label: 'Access' }, { label: 'Login security' }]"
+    />
+    <div class="max-w-2xl">
 
-    <p v-if="loadError" class="mt-8 text-sm text-signal-500">{{ loadError }}</p>
-    <p v-else-if="!status" class="mt-8 text-sm text-bone-400">Loading…</p>
+    <AdminStateMessage v-if="loadError" kind="error" class="mt-6">{{ loadError }}</AdminStateMessage>
+    <AdminStateMessage v-else-if="!status" kind="loading" class="mt-6">Loading…</AdminStateMessage>
 
     <!-- Recovery codes: shown once, right after switching on -->
-    <section v-else-if="recoveryCodes" class="mt-8 border border-gold-500/50 bg-gold-500/5 p-6">
-      <h2 class="text-lg font-semibold uppercase tracking-wide text-gold-400">Two-factor is on. Save these recovery codes</h2>
+    <section v-else-if="recoveryCodes" class="mt-6 border border-gold-500/50 bg-gold-500/5 p-6">
+      <h2 class="admin-card-title">Two-factor is on. Save these recovery codes</h2>
       <p class="mt-2 text-sm leading-relaxed text-bone-400">
         Each code logs you in once if you lose your phone. They are shown only this one time:
         keep them in a password manager or print them. Other browsers have been logged out.
@@ -22,16 +21,16 @@
         <li v-for="c in recoveryCodes" :key="c">{{ c }}</li>
       </ul>
       <div class="mt-6 flex flex-wrap gap-3">
-        <button type="button" class="btn-outline !px-4 !py-2 !text-xs" @click="copyCodes">{{ copied ? 'Copied' : 'Copy' }}</button>
-        <button type="button" class="btn-outline !px-4 !py-2 !text-xs" @click="downloadCodes">Download .txt</button>
-        <button type="button" class="btn-gold !px-4 !py-2 !text-xs" @click="recoveryCodes = null">I have saved them</button>
+        <button type="button" class="btn-outline btn-sm" @click="copyCodes">{{ copied ? 'Copied' : 'Copy' }}</button>
+        <button type="button" class="btn-outline btn-sm" @click="downloadCodes">Download .txt</button>
+        <button type="button" class="btn-gold btn-sm" @click="recoveryCodes = null">I have saved them</button>
       </div>
     </section>
 
     <!-- On -->
-    <section v-else-if="status.enabled" class="mt-8 space-y-8">
-      <div class="border border-ink-800 bg-ink-900/70 p-6">
-        <p class="text-sm font-semibold uppercase tracking-widest text-gold-400">Two-factor is on</p>
+    <section v-else-if="status.enabled" class="mt-6 space-y-5">
+      <div class="admin-card p-5 sm:p-6">
+        <h2 class="admin-card-title flex items-center gap-3">Two-factor login <span class="admin-chip border-emerald-500/50 text-emerald-400">On</span></h2>
         <dl class="mt-4 space-y-2 text-sm">
           <div v-if="status.enabledAt" class="flex justify-between gap-4">
             <dt class="text-bone-400">Switched on</dt>
@@ -47,31 +46,31 @@
         </p>
       </div>
 
-      <form class="space-y-4" @submit.prevent="disable">
-        <h2 class="text-lg font-semibold uppercase tracking-wide text-bone-100">Turn off, or move to a new phone</h2>
+      <form class="admin-card p-5 sm:p-6 space-y-4" @submit.prevent="disable">
+        <h2 class="admin-card-title">Turn off, or move to a new phone</h2>
         <p class="text-sm leading-relaxed text-bone-400">
           Turning it off needs the password and a current code (or a recovery code).
           To move to a new phone, turn it off and set it up again.
         </p>
         <div>
-          <label for="tf-off-password" class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Password</label>
+          <label for="tf-off-password" class="admin-label">Password</label>
           <input id="tf-off-password" v-model="password" type="password" autocomplete="current-password" class="input-dark">
         </div>
         <div>
-          <label for="tf-off-code" class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Authenticator or recovery code</label>
+          <label for="tf-off-code" class="admin-label">Authenticator or recovery code</label>
           <input id="tf-off-code" v-model="code" type="text" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" class="input-dark tracking-widest">
         </div>
         <p v-if="error" class="text-sm text-signal-500">{{ error }}</p>
-        <button type="submit" class="btn-outline disabled:opacity-60" :disabled="pending || !password || !code.trim()">
+        <button type="submit" class="btn-outline" :disabled="pending || !password || !code.trim()">
           {{ pending ? 'Turning off…' : 'Turn off two-factor' }}
         </button>
       </form>
     </section>
 
     <!-- Off, setup in progress -->
-    <section v-else-if="setup" class="mt-8 space-y-6">
+    <section v-else-if="setup" class="admin-card mt-6 p-5 sm:p-6 space-y-6">
       <div>
-        <h2 class="text-lg font-semibold uppercase tracking-wide text-bone-100">1. Scan this with your authenticator app</h2>
+        <h2 class="admin-card-title">1. Scan this with your authenticator app</h2>
         <div class="mt-4 inline-block bg-white p-3">
           <img :src="qrSrc" alt="QR code for the authenticator app" width="220" height="220" class="block">
         </div>
@@ -80,7 +79,7 @@
       </div>
 
       <form class="space-y-4" @submit.prevent="enable">
-        <h2 class="text-lg font-semibold uppercase tracking-wide text-bone-100">2. Enter the code the app shows</h2>
+        <h2 class="admin-card-title">2. Enter the code the app shows</h2>
         <input
           v-model="code"
           type="text"
@@ -92,7 +91,7 @@
         >
         <p v-if="error" class="text-sm text-signal-500">{{ error }}</p>
         <div class="flex flex-wrap gap-3">
-          <button type="submit" class="btn-gold disabled:opacity-60" :disabled="pending || code.replace(/\s/g, '').length !== 6">
+          <button type="submit" class="btn-gold" :disabled="pending || code.replace(/\s/g, '').length !== 6">
             {{ pending ? 'Checking…' : 'Turn on two-factor' }}
           </button>
           <button type="button" class="btn-outline" @click="cancelSetup">Cancel</button>
@@ -101,7 +100,7 @@
     </section>
 
     <!-- Off -->
-    <section v-else class="mt-8">
+    <section v-else class="mt-6">
       <div v-if="status.resetRequested" class="border border-signal-500/50 bg-signal-500/10 p-6 text-sm leading-relaxed">
         <p class="font-semibold text-signal-500">Two-factor reset is active</p>
         <p class="mt-2 text-bone-400">
@@ -109,18 +108,19 @@
           two-factor is off and cannot be switched on. Remove the variable and restart, then come back here.
         </p>
       </div>
-      <form v-else class="space-y-4" @submit.prevent="startSetup">
-        <p class="text-sm font-semibold uppercase tracking-widest text-signal-500">Two-factor is off</p>
+      <form v-else class="admin-card p-5 sm:p-6 space-y-4" @submit.prevent="startSetup">
+        <h2 class="admin-card-title flex items-center gap-3">Two-factor login <span class="admin-chip border-signal-500/50 text-signal-400">Off</span></h2>
         <div>
-          <label for="tf-on-password" class="block text-xs uppercase tracking-widest text-bone-400 mb-1.5">Confirm your password to begin</label>
+          <label for="tf-on-password" class="admin-label">Confirm your password to begin</label>
           <input id="tf-on-password" v-model="password" type="password" autocomplete="current-password" class="input-dark max-w-sm">
         </div>
         <p v-if="error" class="text-sm text-signal-500">{{ error }}</p>
-        <button type="submit" class="btn-gold disabled:opacity-60" :disabled="pending || !password">
+        <button type="submit" class="btn-gold" :disabled="pending || !password">
           {{ pending ? 'Starting…' : 'Set up two-factor' }}
         </button>
       </form>
     </section>
+    </div>
   </div>
 </template>
 
@@ -224,5 +224,5 @@ const downloadCodes = () => {
   URL.revokeObjectURL(url)
 }
 
-useHead({ title: 'Security · Admin · Creative Filmmaking' })
+useHead({ title: 'Login security · Admin · Creative Filmmaking' })
 </script>

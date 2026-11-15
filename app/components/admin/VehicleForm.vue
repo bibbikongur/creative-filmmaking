@@ -1,8 +1,8 @@
 <template>
-  <form class="space-y-10" @submit.prevent="submit">
+  <form class="space-y-5" @submit.prevent="submit">
     <!-- Basics -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Basics</h2>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Basics</h2>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
         <div>
           <label class="admin-label">Name (English) *</label>
@@ -13,27 +13,35 @@
           <input v-model.trim="form.name.is" type="text" class="input-dark">
         </div>
         <div>
-          <label class="admin-label">URL slug *</label>
-          <input v-model.trim="form.slug" type="text" class="input-dark font-mono" placeholder="arctic-base-4x4-camper" @input="slugTouched = true">
-          <p class="mt-1 text-xs text-bone-400">
-            Page address: /vehicles/{{ form.slug || '…' }}
-            <span v-if="isEdit" class="text-signal-500/80"> (changing it breaks links already shared).</span>
+          <label class="admin-label">Category *</label>
+          <select v-model="form.category" class="input-dark" required>
+            <option value="" disabled>Choose a category…</option>
+            <option v-for="c in CATEGORIES" :key="c" :value="c">{{ CATEGORY_LABELS[c] }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="admin-label">Type</label>
+          <select v-model="form.kind" class="input-dark">
+            <option value="">No type page</option>
+            <option v-for="k in vehicleKinds" :key="k" :value="k">{{ KIND_LABELS[k] }}</option>
+          </select>
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">
+            Also lists the vehicle on the website page for its type, such as Kassabílar or Kerrur. Pickups do not have a type page.
           </p>
         </div>
         <div>
-          <label class="admin-label">Category *</label>
-          <select v-model="form.category" class="input-dark">
-            <option v-for="c in CATEGORIES" :key="c" :value="c">{{ c }}</option>
-          </select>
+        <label class="admin-label">Registration numbers</label>
+        <input v-model.trim="form.plates" type="text" class="input-dark" placeholder="e.g. ABC12, DEF34">
+        <p class="mt-1 max-w-3xl text-xs text-bone-400">
+          One per unit, separated by commas. Never shown on the website; used to prefill rental agreements under Contracts.
+        </p>
         </div>
         <div>
-          <label class="admin-label">Type (landing page)</label>
-          <select v-model="form.kind" class="input-dark">
-            <option value="">– none –</option>
-            <option v-for="k in vehicleKinds" :key="k" :value="k">{{ k }}</option>
-          </select>
-          <p class="mt-1 text-xs text-bone-400">
-            Puts the vehicle on its keyword page (kassabílar, sendibílar, hjólhýsi, kerrur, sexhjól). Pickups have no page yet.
+          <label class="admin-label">Web address *</label>
+          <input v-model.trim="form.slug" type="text" class="input-dark font-mono" placeholder="ford-transit-cargo-van" @input="slugTouched = true">
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">
+            Page address: /vehicles/{{ form.slug || '…' }}
+            <span v-if="isEdit" class="text-signal-500/80"> (changing it breaks links already shared).</span>
           </p>
         </div>
       </div>
@@ -41,27 +49,20 @@
         <input v-model="form.featured" type="checkbox" class="accent-gold-500 w-4 h-4">
         Featured: show on the home page
       </label>
-      <div class="mt-5 max-w-lg">
-        <label class="admin-label">Registration numbers</label>
-        <input v-model.trim="form.plates" type="text" class="input-dark font-mono uppercase" placeholder="e.g. ABC12, DEF34">
-        <p class="mt-1 text-xs text-bone-400">
-          One per unit, separated by commas. Never shown on the website; used to prefill rental agreements under Contracts.
-        </p>
-      </div>
     </section>
 
     <!-- Text -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Text</h2>
-      <p class="mt-1 text-xs text-bone-400">Icelandic fields are optional; the site falls back to English when empty.</p>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Text</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">Icelandic fields are optional; the site falls back to English when empty.</p>
       <div class="mt-4 grid gap-5 sm:grid-cols-2">
-        <div>
+        <div class="flex flex-col">
           <label class="admin-label">Tagline (English) *</label>
-          <input v-model.trim="form.tagline.en" type="text" class="input-dark">
+          <textarea v-model.trim="form.tagline.en" rows="2" class="input-dark admin-autogrow flex-1" />
         </div>
-        <div>
+        <div class="flex flex-col">
           <label class="admin-label">Tagline (Icelandic)</label>
-          <input v-model.trim="form.tagline.is" type="text" class="input-dark">
+          <textarea v-model.trim="form.tagline.is" rows="2" class="input-dark admin-autogrow flex-1" />
         </div>
         <div>
           <label class="admin-label">Description (English)</label>
@@ -75,56 +76,56 @@
     </section>
 
     <!-- Highlights -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Highlights</h2>
-      <p class="mt-1 text-xs text-bone-400">3–5 film-relevant bullets shown on the detail page.</p>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Highlights</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">3–5 film-relevant bullets shown on the detail page.</p>
       <div class="mt-4 space-y-3">
         <div v-for="(h, i) in form.highlights" :key="i" class="flex gap-3 items-start">
           <div class="grid gap-3 sm:grid-cols-2 flex-1">
             <input v-model.trim="h.en" type="text" class="input-dark" placeholder="English">
             <input v-model.trim="h.is" type="text" class="input-dark" placeholder="Icelandic">
           </div>
-          <button type="button" class="admin-icon-btn mt-2" title="Remove" @click="form.highlights.splice(i, 1)">✕</button>
+          <button type="button" class="admin-icon-action-danger !ml-0 mt-1" aria-label="Remove highlight" title="Remove highlight" @click="form.highlights.splice(i, 1)"><AdminIcon name="close" :size="16" /></button>
         </div>
       </div>
-      <button type="button" class="btn-ghost !px-4 !py-2 !text-xs mt-3" @click="form.highlights.push({ en: '', is: '' })">
-        + Add highlight
+      <button type="button" class="btn-outline btn-sm mt-3" @click="form.highlights.push({ en: '', is: '' })">
+        <AdminIcon name="plus" :size="16" /> Add highlight
       </button>
     </section>
 
     <!-- Photos -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Photos</h2>
-      <p class="mt-1 text-xs text-bone-400">The first photo is the card and social-share image. Order matters, so use the arrows.</p>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Photos</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">The first photo is the card and social-share image. Order matters, so use the arrows.</p>
 
       <div v-if="form.images.length" class="mt-4 grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         <div v-for="(src, i) in form.images" :key="src" class="relative group border border-ink-700">
           <img :src="src" alt="" class="w-full aspect-[3/2] object-cover bg-ink-800">
           <span v-if="i === 0" class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-ink-950/80 text-gold-400 text-[10px] uppercase tracking-widest">Cover</span>
           <div class="absolute bottom-1.5 right-1.5 flex gap-1.5">
-            <button v-if="i > 0" type="button" class="admin-icon-btn" title="Move left" @click="move(i, -1)">←</button>
-            <button v-if="i < form.images.length - 1" type="button" class="admin-icon-btn" title="Move right" @click="move(i, 1)">→</button>
-            <button type="button" class="admin-icon-btn !text-signal-500" title="Remove" @click="form.images.splice(i, 1)">✕</button>
+            <button v-if="i > 0" type="button" class="admin-icon-btn" title="Move left" aria-label="Move photo left" @click="move(i, -1)"><AdminIcon name="back" :size="14" /></button>
+            <button v-if="i < form.images.length - 1" type="button" class="admin-icon-btn" title="Move right" aria-label="Move photo right" @click="move(i, 1)"><AdminIcon name="forward" :size="14" /></button>
+            <button type="button" class="admin-icon-btn ml-1.5 hover:!text-signal-400" title="Remove photo" aria-label="Remove photo" @click="form.images.splice(i, 1)"><AdminIcon name="close" :size="14" /></button>
           </div>
         </div>
       </div>
 
       <div class="mt-4 flex flex-wrap items-center gap-3">
-        <label class="btn-ghost !px-4 !py-2 !text-xs cursor-pointer">
-          {{ uploading ? 'Uploading…' : '⬆ Upload photos' }}
+        <label class="btn-outline btn-sm cursor-pointer">
+          <AdminIcon name="upload" :size="16" /> {{ uploading ? 'Uploading…' : 'Upload photos' }}
           <input type="file" accept="image/*" multiple class="hidden" :disabled="uploading" @change="upload">
         </label>
         <span class="text-xs text-bone-400">or</span>
         <input v-model.trim="imageUrl" type="url" class="input-dark !w-72 !py-2 text-xs" placeholder="https:// paste an image URL">
-        <button type="button" class="btn-ghost !px-4 !py-2 !text-xs" :disabled="!imageUrl" @click="addUrl">Add URL</button>
+        <button type="button" class="btn-outline btn-sm" :disabled="!imageUrl" @click="addUrl">Add URL</button>
       </div>
       <p v-if="uploadError" class="mt-2 text-xs text-signal-500">{{ uploadError }}</p>
     </section>
 
     <!-- Specs -->
-    <section>
-      <h2 class="text-sm font-heading font-semibold uppercase tracking-widest text-gold-500">Specs</h2>
-      <p class="mt-1 text-xs text-bone-400">Leave anything that doesn't apply empty; empty rows are hidden on the site.</p>
+    <section class="admin-card p-5 sm:p-6">
+      <h2 class="admin-card-title">Specs</h2>
+      <p class="mt-1 max-w-3xl text-xs text-bone-400">Leave anything that doesn't apply empty; empty rows are hidden on the site.</p>
       <div class="mt-4 grid gap-5 grid-cols-2 lg:grid-cols-4">
         <div>
           <label class="admin-label">Units in fleet</label>
@@ -220,19 +221,20 @@
     </section>
 
     <!-- Save -->
-    <div class="border-t border-ink-800 pt-6">
-      <div v-if="error" class="mb-5 border border-signal-500/50 bg-signal-500/10 p-4 text-sm">
-        <p class="font-semibold text-signal-500">Could not save</p>
-        <ul class="mt-1 text-bone-400 list-disc list-inside">
-          <li v-for="(msg, i) in errorList" :key="i">{{ msg }}</li>
-        </ul>
-      </div>
-      <div class="flex items-center gap-4">
-        <button type="submit" class="btn-gold disabled:opacity-60" :disabled="saving">
-          {{ saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create vehicle' }}
-        </button>
-        <NuxtLink to="/admin" class="btn-ghost !px-5 !py-2.5">Cancel</NuxtLink>
-      </div>
+    <div v-if="error" role="alert" class="border border-signal-500/50 bg-signal-500/10 p-4 text-sm">
+      <p class="font-semibold text-signal-500">Could not save</p>
+      <ul class="mt-1 text-bone-400 list-disc list-inside">
+        <li v-for="(msg, i) in errorList" :key="i">{{ msg }}</li>
+      </ul>
+    </div>
+    <div class="admin-savebar">
+      <button type="submit" class="btn-gold" :disabled="saving">
+        {{ saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create vehicle' }}
+      </button>
+      <NuxtLink to="/admin/vehicles" class="btn-outline">Cancel</NuxtLink>
+      <button v-if="isEdit" type="button" class="admin-link ml-auto inline-flex items-center gap-2 !text-signal-400 !decoration-signal-500/40 hover:!text-signal-500" @click="emit('delete')">
+        <AdminIcon name="trash" :size="16" /> Delete vehicle
+      </button>
     </div>
   </form>
 </template>
@@ -248,9 +250,23 @@ const props = defineProps<{
   error?: string | string[]
 }>()
 
-const emit = defineEmits<{ save: [payload: Record<string, unknown>] }>()
+const emit = defineEmits<{ save: [payload: Record<string, unknown>], delete: [] }>()
 
 const CATEGORIES: VehicleCategory[] = ['campers', 'equipment-cars', 'support-vehicles', 'trailers']
+const CATEGORY_LABELS: Record<VehicleCategory, string> = {
+  'campers': 'Campers',
+  'equipment-cars': 'Equipment cars',
+  'support-vehicles': 'Support vehicles',
+  'trailers': 'Trailers',
+}
+const KIND_LABELS: Record<string, string> = {
+  'box-truck': 'Box truck (kassabíll)',
+  'cargo-van': 'Cargo van (sendibíll)',
+  'caravan': 'Caravan (hjólhýsi)',
+  'trailer': 'Trailer (kerra)',
+  'atv': 'ATV (sexhjól)',
+  'pickup': 'Pickup',
+}
 const FLAGS = [
   { key: 'generator', label: 'Generator' },
   { key: 'heating', label: 'Standing heat' },
@@ -265,7 +281,7 @@ const isEdit = computed(() => Boolean(props.vehicle))
 const v = props.vehicle
 const form = reactive({
   slug: v?.slug ?? '',
-  category: v?.category ?? 'campers',
+  category: v?.category ?? ('' as VehicleCategory), // a new vehicle starts with no category picked
   kind: v?.kind ?? '',
   featured: v?.featured ?? false,
   name: { en: v?.name.en ?? '', is: v?.name.is ?? '' },
@@ -397,7 +413,7 @@ const submit = () => {
   @apply block text-xs uppercase tracking-widest text-bone-400 mb-1.5;
 }
 .admin-icon-btn {
-  @apply w-7 h-7 flex items-center justify-center bg-ink-950/80 text-bone-100 text-xs
+  @apply w-8 h-8 flex items-center justify-center bg-ink-950/80 text-bone-100 text-xs
     hover:text-gold-400 transition-colors;
 }
 </style>
