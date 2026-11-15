@@ -81,12 +81,14 @@
   /* ---------- Type scale ---------- */
   .display {
     @apply font-heading font-semibold uppercase tracking-wide text-bone-100
-      text-4xl/[1.1] sm:text-5xl/[1.08] lg:text-6xl/[1.05];
+      text-4xl/[1.2] sm:text-5xl/[1.2] lg:text-6xl/[1.2];
   }
 
+  /* Line height stays at 1.2 or more on the big sizes: the accents on Á, Í, Ó, Ú
+     sit above cap height and collide with the line above when it is tighter. */
   .h1 {
     @apply font-heading font-semibold uppercase tracking-wide text-bone-100
-      text-3xl sm:text-4xl lg:text-5xl;
+      text-3xl/[1.2] sm:text-4xl/[1.2] lg:text-5xl/[1.2];
   }
 
   .h2 {
@@ -154,8 +156,6 @@
       px-4 py-3 text-sm focus:border-gold-500 transition-colors;
   }
 
-  /* ---------- Motifs ---------- */
-  /* The one gold accent rail (dialog, highlighted panels) */
   /* ---------- Admin panel ---------- */
   /* One surface, one list, one row: every admin page is built from these. */
   .admin-card {
@@ -270,6 +270,8 @@
     @apply pr-9;
   }
 
+  /* ---------- Motifs ---------- */
+  /* The one gold accent rail (dialog, highlighted panels) */
   .rail-top {
     @apply border-t-2 border-gold-500;
   }

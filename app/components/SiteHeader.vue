@@ -7,7 +7,7 @@
           <img
             src="/logo-cf-rentals-dark.png"
             alt="CF Rentals · Creative Filmmaking"
-            class="h-8 xl:h-10 w-auto"
+            class="h-6 xl:h-8 w-auto"
             width="811"
             height="124"
             fetchpriority="high"
