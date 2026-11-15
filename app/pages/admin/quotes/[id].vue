@@ -165,7 +165,7 @@
             {{ confirming === o.id ? '…' : 'Undo confirmation' }}
           </button>
           <button
-            v-else-if="o.sentAt"
+            v-else
             type="button"
             class="btn-gold btn-sm"
             :disabled="confirming === o.id"
@@ -195,7 +195,7 @@
         </div>
       </div>
       <p class="mt-3 max-w-3xl text-xs text-ink-400 leading-relaxed">
-        Mark the offer the customer accepted as confirmed. Its lines are then counted in
+        Mark the offer the customer accepted as confirmed, whether it was emailed from here or exported as a PDF and sent by hand. Its lines are then counted in
         <NuxtLink to="/admin/rentals" class="text-gold-400 hover:text-gold-500 transition-colors">Rental stats</NuxtLink>
         (times rented and gross per item) and the quote is set to “won”. Only one offer per quote can be confirmed.
         “Write agreement” opens a printable contract prefilled from that offer (see

@@ -1,6 +1,8 @@
 // PATCH /api/admin/quotes/:id/offers/:offerId  { confirmed: boolean }
-// Marks a sent offer as accepted by the customer (or undoes that). Confirming
+// Marks an offer as accepted by the customer (or undoes that). Confirming
 // flips the quote to "won" and adds the offer's lines to the rental stats.
+// The offer does not have to be emailed from here first: a saved offer that
+// was exported as a PDF and sent by hand can be confirmed too.
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
   const quoteId = getRouterParam(event, 'id')!
@@ -12,10 +14,6 @@ export default defineEventHandler(async (event) => {
   }
   const offer = Number.isFinite(offerId) ? getOffer(quoteId, offerId) : null
   if (!offer) throw createError({ statusCode: 404, statusMessage: 'Offer not found' })
-  if (body.confirmed && !offer.sentAt) {
-    throw createError({ statusCode: 400, statusMessage: 'Only an offer that has been sent can be confirmed.' })
-  }
-
   const updated = body.confirmed ? confirmOffer(quoteId, offerId) : unconfirmOffer(quoteId, offerId)
   return { ok: true, offer: updated, quote: getQuote(quoteId) }
 })

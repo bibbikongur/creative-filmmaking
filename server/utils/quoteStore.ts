@@ -290,7 +290,10 @@ export function confirmOffer(quoteId: string, offerId: number): Offer | null {
   return getOffer(quoteId, offerId)
 }
 
-/** Undo a confirmation. The quote goes back to "offered" (its offer still went out). */
+/**
+ * Undo a confirmation. The quote goes back to "offered" if an offer was
+ * emailed from here, otherwise to "new" (the confirmed offer was only saved).
+ */
 export function unconfirmOffer(quoteId: string, offerId: number): Offer | null {
   const db = getDb()
   const offer = getOffer(quoteId, offerId)
@@ -300,7 +303,12 @@ export function unconfirmOffer(quoteId: string, offerId: number): Offer | null {
     const stillConfirmed = db.prepare('SELECT COUNT(*) AS n FROM offers WHERE quote_id = ? AND confirmed_at IS NOT NULL')
       .get(quoteId) as { n: number }
     if (!stillConfirmed.n) {
-      db.prepare("UPDATE quotes SET status = 'offered' WHERE id = ? AND status = 'won'").run(quoteId)
+      db.prepare(`
+        UPDATE quotes SET status = CASE
+          WHEN EXISTS (SELECT 1 FROM offers WHERE quote_id = quotes.id AND sent_at IS NOT NULL) THEN 'offered'
+          ELSE 'new' END
+        WHERE id = ? AND status = 'won'
+      `).run(quoteId)
     }
   })()
   return getOffer(quoteId, offerId)
