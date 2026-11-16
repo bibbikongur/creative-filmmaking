@@ -21,8 +21,8 @@
             :key="item.to"
             :to="localePath(item.to)"
             class="whitespace-nowrap text-[13px] 2xl:text-sm uppercase tracking-wide 2xl:tracking-wider font-medium text-bone-400 hover:text-bone-100 transition-colors"
-            active-class="!text-gold-400"
-            :class="inSection(item.to) ? '!text-gold-400' : ''"
+            active-class="!text-bone-100 underline decoration-gold-500 decoration-2 underline-offset-8"
+            :class="inSection(item.to) ? '!text-bone-100 underline decoration-gold-500 decoration-2 underline-offset-8' : ''"
           >
             {{ t(item.label) }}
           </NuxtLink>
@@ -37,14 +37,20 @@
           <LanguageSwitcher />
           <!-- Crew portal login: a private, noindexed app. Labelled as such and
                nofollowed so neither visitors nor crawlers read it as "Services". -->
-          <NuxtLink :to="localePath('/portal')" rel="nofollow" class="btn-outline btn-sm whitespace-nowrap">
+          <NuxtLink :to="localePath('/portal')" rel="nofollow" class="whitespace-nowrap text-[13px] text-bone-400 underline decoration-ink-500 underline-offset-4 hover:text-bone-100 transition-colors">
             {{ t('nav.crewLogin') }}
           </NuxtLink>
         </nav>
 
         <!-- Mobile controls -->
         <div class="flex xl:hidden items-center gap-1">
-          <CartLink @click="mobileOpen = false" />
+          <NuxtLink v-if="cart.count.value" :to="localePath('/cart')" class="hidden md:inline-flex btn-gold btn-sm whitespace-nowrap mr-2" @click="mobileOpen = false">
+            {{ t('equipmentCatalogue.browser.listWithCount', { n: cart.count.value }) }}
+          </NuxtLink>
+          <NuxtLink v-else :to="localePath('/contact')" class="hidden md:inline-flex btn-gold btn-sm whitespace-nowrap mr-2" @click="mobileOpen = false">
+            {{ t('nav.cta') }}
+          </NuxtLink>
+          <CartLink v-if="cart.count.value" class="md:hidden" @click="mobileOpen = false" />
           <LanguageSwitcher />
           <button
             type="button"
@@ -80,8 +86,8 @@
           :key="item.to"
           :to="localePath(item.to)"
           class="block px-3 py-3 text-sm uppercase tracking-wider font-medium text-bone-400 hover:text-bone-100 hover:bg-ink-900 transition-colors"
-          active-class="!text-gold-400"
-          :class="inSection(item.to) ? '!text-gold-400' : ''"
+          active-class="!text-bone-100 underline decoration-gold-500 decoration-2 underline-offset-8"
+          :class="inSection(item.to) ? '!text-bone-100 underline decoration-gold-500 decoration-2 underline-offset-8' : ''"
           @click="mobileOpen = false"
         >
           {{ t(item.label) }}

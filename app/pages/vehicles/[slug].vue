@@ -88,7 +88,7 @@
     <section v-if="related.length" class="mt-20">
       <SectionHeading :kicker="t(`categories.${vehicle.category}`)" :title="t('vehicle.moreInCategory')" />
       <div class="mt-8 card-grid">
-        <VehicleCard v-for="v in related" :key="v.id" :vehicle="v" />
+        <VehicleCard v-for="v in related" :key="v.id" :vehicle="v" class="sm:grid-rows-subgrid sm:row-span-4" />
       </div>
     </section>
 

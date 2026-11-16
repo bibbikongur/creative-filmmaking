@@ -45,12 +45,12 @@
     "featuredEquipmentAll": "Sjá allan búnað",
     "whyKicker": "Af hverju við",
     "whyTitle": "Gert fyrir vinnu á vettvangi",
-    "why1Title": "Tilbúið á sett",
-    "why1Text": "Sérðu ekki það sem þú ert að leita að? Sendu okkur línu og við getum séð hvað við getum gert. Við erum alltaf til í að redda hlutunum.",
-    "why2Title": "4x4 og vetrarfært",
-    "why2Text": "Öll okkar tæki og búnaður kemur útbúinn fyrir veturinn á þeim tíma árs.",
-    "why3Title": "Afhent á tökustað",
-    "why3Text": "Þarftu okkur til að koma hlutunum til þín? Við getum boðið upp á að koma tækjum og eða búnaði hvert á land sem er.",
+    "why1Title": "Tilbúið í vinnu",
+    "why1Text": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn í vinnu.",
+    "why2Title": "Vetrarfært",
+    "why2Text": "Bílar og búnaður koma útbúnir fyrir veturinn þegar sá tími árs er.",
+    "why3Title": "Aðstoð á tökudögum",
+    "why3Text": "Við svörum allan sólarhringinn á meðan á tökum stendur.",
     "statsLabel": "Í stuttu máli",
     "stats": {
       "fleet": "Bílar í flotanum",
@@ -60,15 +60,32 @@
       "response": "Svartími tilboða",
       "support": "Aðstoð á tökudögum"
     },
-    "howKicker": "Svona virkar þetta",
+    "howKicker": "Svona virkar leigan",
     "howTitle": "Frá fyrirspurn á tökustað",
     "howIntro": "Engin verð birt, enda er hvert verkefni einstakt. Þrjú skref og þú ert með bílana og búnaðinn á settinu.",
-    "how1Title": "Segðu okkur frá verkefninu",
-    "how1Text": "Dagsetningar, staðsetning og hvað vantar. Einföld fyrirspurn eða listi úr tilboðskörfunni.",
-    "how2Title": "Við setjum saman tilboð",
-    "how2Text": "Eitt sérsniðið tilboð fyrir allan pakkann, að jafnaði innan eins virks dags.",
-    "how3Title": "Afhent á tökustað",
-    "how3Text": "Við skilum bílum og búnaði þangað sem þú þarft þá, hvar sem er á landinu."
+    "how1Title": "Settu á listann",
+    "how1Text": "Bílar og búnaður á einn lista.",
+    "how2Title": "Sendu listann",
+    "how2Text": "Með dagsetningum og stað.",
+    "how3Title": "Fáðu eitt tilboð",
+    "how3Text": "Eitt verð fyrir allan pakkann.",
+    "why4Title": "Líka fyrir heimili og fyrirtæki",
+    "why4Text": "Kassabílar í búslóðaflutninga, hjólhýsi í sumarfríið og kerrur í helgarverkefnin.",
+    "contactTitle": "Viltu frekar tala við okkur?",
+    "howLink": "Skoða flotann",
+    "browseTypes": "Eftir tegund",
+    "browseCategories": "Eftir flokki",
+    "heroModel": "Engin verðskrá. Eitt tilboð innan eins virks dags.",
+    "contactText": "Hringdu eða sendu okkur línu og við förum yfir verkefnið með þér.",
+    "missingTitle": "Finnurðu ekki það sem þig vantar?",
+    "missingText": "Vefurinn sýnir ekki allt sem við getum útvegað. Segðu okkur hvað verkefnið þarf og við finnum lausn, hvort sem það er á síðunni eða ekki.",
+    "closeTitle": "Vantar þig bíl eða búnað?",
+    "closeText": "Segðu okkur hvað þú ert að gera og hvenær. Við setjum saman pakkann og svörum með einu tilboði, án skuldbindinga.",
+    "rowPosition": "{n} af {total}",
+    "photoAlt": "Pallbíll frá okkur með hjólhýsi í drætti í íslensku landslagi",
+    "heroKicker": "Reykjavík · Afhent um allt land",
+    "heroSubtitle": "Kassabílar, hjólhýsi, sexhjól, rafstöðvar, hitablásarar, tjöld og umferðarbúnaður fyrir kvikmyndatökur, viðburði, fyrirtæki og einstaklinga.",
+    "whyIntro": "Við byrjuðum sjálf á setti og höfum unnið við kvikmyndir, þáttaraðir, tónlistarmyndbönd og auglýsingar um land allt."
   },
   "categories": {
     "campers": "Húsbílar",
@@ -108,9 +125,18 @@
       "pickup": "Pallbíll"
     },
     "steps": [
-      { "title": "Veldu bíla", "text": "Og búnað með, ef þarf." },
-      { "title": "Sendu listann", "text": "Með dagsetningum og stað." },
-      { "title": "Fáðu tilboð", "text": "Eitt verð, engin skuldbinding." }
+      {
+        "title": "Veldu bíla",
+        "text": "Og búnað með, ef þarf."
+      },
+      {
+        "title": "Sendu listann",
+        "text": "Með dagsetningum og stað."
+      },
+      {
+        "title": "Fáðu tilboð",
+        "text": "Eitt verð, engin skuldbinding."
+      }
     ],
     "unitsAvailable": "{n} eins í flota",
     "noLicence": "Þarf ekki meirapróf",
@@ -119,7 +145,8 @@
     "priceOnQuote": "Verð í tilboði",
     "equipmentTitle": "Vantar búnað með bílunum?",
     "equipmentText": "Rafstöðvar, hitablásarar, tjöld og umferðarbúnaður fara á sama lista og sama tilboð.",
-    "listEmpty": "Listinn er tómur. Settu bíla á lista og sendu okkur hann til að fá tilboð."
+    "listEmpty": "Listinn er tómur. Settu bíla á lista og sendu okkur hann til að fá tilboð.",
+    "sleepsN": "{n} svefnpláss"
   },
   "equipmentCategories": {
     "heating": "Hiti",
@@ -153,15 +180,24 @@
       "viewCategory": "Skoða flokk",
       "stepsTitle": "Svona virkar leigan",
       "steps": [
-        { "title": "Veldu búnað", "text": "Eins mörg eintök og þú þarft." },
-        { "title": "Sendu listann", "text": "Með dagsetningum og stað." },
-        { "title": "Fáðu tilboð", "text": "Eitt verð, engin skuldbinding." }
+        {
+          "title": "Veldu búnað",
+          "text": "Eins mörg eintök og þú þarft."
+        },
+        {
+          "title": "Sendu listann",
+          "text": "Með dagsetningum og stað."
+        },
+        {
+          "title": "Fáðu tilboð",
+          "text": "Eitt verð, engin skuldbinding."
+        }
       ],
       "lead": "Eitt tilboð í allan pakkann innan eins virks dags.",
       "leadNote": "Við birtum ekki verð: settu saman lista og sendu okkur hann.",
       "priceNote": "Verð í tilboði",
-      "listCta": "Senda lista og fá tilboð",
-      "listCtaShort": "Senda lista",
+      "listCta": "Fá tilboð",
+      "listCtaShort": "Fá tilboð",
       "listWithCount": "Tilboðslisti ({n})",
       "listShow": "Sýna listann",
       "listHide": "Fela listann",
@@ -251,13 +287,13 @@
     "name": "Nafn",
     "email": "Netfang",
     "phone": "Sími",
-    "company": "Framleiðslufyrirtæki",
-    "dates": "Tökudagar",
-    "datesPlaceholder": "t.d. 12.–24. september, eða „3 vikur í október“",
-    "vehicle": "Bíll sem þú hefur áhuga á",
+    "company": "Fyrirtæki",
+    "dates": "Leigutímabil",
+    "datesPlaceholder": "t.d. 12.–24. september",
+    "vehicle": "Fyrirspurnin varðar",
     "generalInquiry": "Almenn fyrirspurn",
     "message": "Skilaboð",
-    "messagePlaceholder": "Segðu okkur frá verkefninu: tökustaðir, stærð tökuliðs og hvað vantar á settið.",
+    "messagePlaceholder": "Segðu okkur frá verkefninu: staður, dagsetningar og hvað vantar.",
     "submit": "Senda fyrirspurn",
     "sending": "Sendi…",
     "successTitle": "Fyrirspurn móttekin",
@@ -265,38 +301,74 @@
     "errorTitle": "Eitthvað fór úrskeiðis",
     "errorText": "Ekki tókst að senda skilaboðin. Sendu okkur tölvupóst beint á {email} og við tökum það þaðan.",
     "required": "Þennan reit þarf að fylla út",
-    "invalidEmail": "Sláðu inn gilt netfang"
+    "invalidEmail": "Sláðu inn gilt netfang",
+    "requiredNote": "Reitir merktir * þarf að fylla út.",
+    "optional": "valfrjálst",
+    "nextNote": "Við svörum með tilboði innan eins virks dags.",
+    "successReply": "Við svörum á {email} innan eins virks dags.",
+    "successUrgent": "Liggur á? Hringdu í",
+    "successAgain": "Senda aðra fyrirspurn"
   },
   "about": {
     "kicker": "Um okkur",
-    "title": "Teymið á bak við tjöldin",
-    "p1": "Creative Filmmaking leigir bíla, tæki og alls konar búnað til kvikmynda- og sjónvarpsverkefna á Íslandi. Við byrjuðum sjálf á setti og flotinn er því byggður í kringum það sem framleiðslur raunverulega þurfa.",
-    "p2": "Við höfum unnið í stórum sem smáum verkefnum og á það við um kvikmyndaverkefni, þáttaseríur, tónlistarmyndbönd og auglýsingar um land allt. Höfum við þar með mikla reynslu af því hvað hvert verkefni þarf og erum alltaf til í að hjálpa við alls konar skipulagningu. Sendu okkur línu og við sjáum hvernig við getum hjálpað.",
-    "rentals": "Til leigu hjá okkur eru kassabílar með lyftu, sendibílar, 4x4 pallbílar, hjólhýsi fyrir leikara, kerrur og sexhjól, ásamt rafstöðvum, hitablásurum, ljósum og öðrum tökubúnaði. Við erum í Reykjavík en afhendum hvert á land sem er, hvort sem tökurnar fara fram á hálendinu, úti á landi eða innanbæjar.",
-    "private": "Þó flotinn sé byggður fyrir kvikmyndagerð leigjum við líka til einstaklinga og fyrirtækja: kassabíla í búslóðaflutninga, hjólhýsi í sumarfríið og kerrur í helgarverkefnin.",
-    "p3": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn á sett.",
-    "statVehicles": "Bílar í flotanum",
-    "statSupport": "Aðstoð á tökudögum",
-    "statArea": "Þjónustusvæði"
+    "title": "Leiga sem varð til á setti",
+    "lead": "Creative Filmmaking leigir bíla, tæki og búnað til kvikmynda- og sjónvarpsverkefna, viðburða, fyrirtækja og einstaklinga um allt land.",
+    "factsLabel": "Í stuttu máli",
+    "factBaseValue": "Reykjavík",
+    "factDelivery": "Afhending",
+    "factDeliveryValue": "Um allt land",
+    "factQuote": "Tilboð",
+    "factQuoteValue": "Innan eins virks dags",
+    "factSupport": "Á tökudögum",
+    "factSupportValue": "Allan sólarhringinn",
+    "photoAlt": "Pallbíll með Hobby hjólhýsi í drætti á íslenskum þjóðvegi, fjöll í baksýn",
+    "photoCaption": "Eitt af fjórum hjólhýsum flotans á leið á tökustað.",
+    "storyKicker": "Hvernig við vinnum",
+    "storyTitle": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn á sett.",
+    "story1": "Við byrjuðum sjálf á setti og höfum unnið við stór og smá verkefni: kvikmyndir, þáttaraðir, tónlistarmyndbönd og auglýsingar um land allt. Flotinn er byggður í kringum það sem framleiðslur þurfa í raun.",
+    "whoKicker": "Fyrir hverja",
+    "whoTitle": "Byggt fyrir tökur, opið öllum",
+    "who1Title": "Framleiðslur",
+    "who1Text": "Kvikmyndir, þáttaraðir, auglýsingar og tónlistarmyndbönd. Kassabílar með lyftu, hjólhýsi fyrir leikara og rafmagn á tökustað.",
+    "who2Title": "Viðburðir og fyrirtæki",
+    "who2Text": "Tjöld, hitablásarar, rafstöðvar og umferðarbúnaður fyrir viðburði og verk úti við.",
+    "who3Title": "Einstaklingar",
+    "who3Text": "Kassabílar í búslóðaflutninga, hjólhýsi í sumarfríið og kerrur í helgarverkefnin.",
+    "howTitle": "Engin verðskrá. Eitt tilboð.",
+    "how1Text": "Þú safnar bílum og búnaði á einn tilboðslista hér á vefnum.",
+    "how2Text": "Þú sendir listann með dagsetningum og tökustað.",
+    "how3Text": "Við svörum með einu verði fyrir allan pakkann innan eins virks dags.",
+    "who1Link": "Skoða flotann",
+    "who2Link": "Skoða búnað",
+    "who3Link": "Hafa samband",
+    "callUs": "Eða hafðu beint samband"
   },
   "contact": {
     "kicker": "Hafa samband",
     "title": "Ræðum verkefnið þitt",
-    "intro": "Segðu okkur frá verkefninu og við svörum um hæl með sérsniðnu tilboði. Finnirðu ekki það sem vantar, láttu okkur vita: við erum með víðtæk tengsl. Það má líka alltaf hringja.",
+    "intro": "Segðu okkur frá verkefninu og við svörum með einu tilboði innan eins virks dags. Það má líka alltaf hringja.",
     "directTitle": "Beint samband",
     "mapTitle": "Kort af staðsetningu okkar",
     "openMap": "Opna í kortum",
     "emailLabel": "Netfang",
     "phoneLabel": "Sími",
     "addressLabel": "Staðsetning",
-    "responseNote": "Við svörum innan eins virks dags, hraðar á tökutímabilinu."
+    "responseNote": "Við svörum innan eins virks dags, hraðar á tökutímabilinu.",
+    "formTitle": "Senda fyrirspurn",
+    "formIntro": "Dagsetningar, staður og hvað vantar. Því meira sem við vitum, því nákvæmara verður tilboðið.",
+    "directText": "Liggur á? Hringdu, það er fljótlegast.",
+    "listNote": "Þú ert með {n} stk. á tilboðslistanum. Sendu listann og fáðu eitt tilboð í allt.",
+    "listLink": "Opna listann",
+    "listTitle": "Vantar þig marga hluti?",
+    "listText": "Safnaðu bílum og búnaði á einn tilboðslista og sendu allt í einu.",
+    "faqNote": "Fannstu ekki svarið? Hringdu í"
   },
   "cta": {
     "listTitle": "Listinn þinn er tilbúinn",
     "listText": "{n} stk. á tilboðslistanum. Sendu okkur hann með dagsetningum og við svörum með einu tilboði innan eins virks dags.",
     "title": "Ertu að skipuleggja tökur á Íslandi?",
     "text": "Segðu okkur hvað þú ert að taka upp og við setjum saman réttu bílana og tilboð, án skuldbindinga.",
-    "button": "Óska eftir tilboði"
+    "button": "Fá tilboð"
   },
   "consent": {
     "text": "Við notum vefkökur til að mæla umferð um vefinn svo við sjáum hvað virkar og getum gert síðuna betri. Engar auglýsingakökur.",
@@ -357,16 +429,16 @@
     "title": "Algengar spurningar",
     "home": [
       {
+        "q": "Hvað kostar að leigja?",
+        "a": "Við birtum ekki fasta verðskrá því hvert verkefni er ólíkt. Segðu okkur hvað þú þarft, hvenær og hvar, og við svörum með sérsniðnu tilboði, yfirleitt innan eins virks dags."
+      },
+      {
         "q": "Þarf meirapróf til að keyra kassabílana ykkar?",
         "a": "Nei. Ford Transit og VW Transporter kassabílarnir eru minnaprófsbílar og má keyra á venjulegu B-ökuskírteini. Sama gildir um sendibílinn og pallbílinn."
       },
       {
         "q": "Leigið þið bara til kvikmyndaverkefna?",
         "a": "Nei. Flotinn er byggður fyrir kvikmyndagerð en kassabílar, sendibílar, kerrur og hjólhýsi eru líka til leigu fyrir einstaklinga og fyrirtæki, til dæmis í búslóðaflutninga, sumarfríið eða helgarverkefnin."
-      },
-      {
-        "q": "Hvað kostar að leigja?",
-        "a": "Við birtum ekki fasta verðskrá því hvert verkefni er ólíkt. Segðu okkur hvað þú þarft, hvenær og hvar, og við svörum með sérsniðnu tilboði, yfirleitt innan eins virks dags."
       },
       {
         "q": "Hvar sæki ég og getið þið afhent?",
@@ -384,7 +456,7 @@
     "contact": [
       {
         "q": "Hvað þarf að koma fram í tilboðsbeiðni?",
-        "a": "Dagsetningar, tökustaður eða staðir, hvaða bíla og búnað vantar og hvort þið viljið afhendingu. Því meira sem við vitum, því nákvæmara verður tilboðið."
+        "a": "Dagsetningar, staður eða staðir, hvaða bíla og búnað vantar og hvort þið viljið afhendingu. Því meira sem við vitum, því nákvæmara verður tilboðið."
       },
       {
         "q": "Hversu fljótt svarið þið?",

@@ -135,6 +135,22 @@
     @apply btn border border-ink-500 text-bone-100 hover:border-gold-500 hover:text-gold-400;
   }
 
+  /* Outline with an amber plus that fills amber under the pointer or on focus: an add
+     button for rows where several sit side by side and solid amber would shout. */
+  .btn-accent {
+    @apply btn border border-ink-500 text-bone-100 hover:bg-gold-500 hover:border-gold-500 hover:text-ink-950
+      focus-visible:bg-gold-500 focus-visible:border-gold-500 focus-visible:text-ink-950;
+  }
+
+  .btn-accent .btn-accent-icon {
+    @apply text-gold-500;
+  }
+
+  .btn-accent:hover .btn-accent-icon,
+  .btn-accent:focus-visible .btn-accent-icon {
+    @apply text-ink-950;
+  }
+
   /* Alias kept for AppDialog and portal pages */
   .btn-ghost {
     @apply btn-outline;
@@ -164,7 +180,7 @@
   /* ---------- Inputs ---------- */
   .input-dark {
     @apply w-full bg-ink-900 border border-ink-700 text-bone-100 placeholder-ink-400
-      px-4 py-3 text-sm focus:border-gold-500 transition-colors;
+      px-4 py-3 text-base sm:text-sm focus:border-gold-500 transition-colors;
   }
 
   /* ---------- Admin panel ---------- */

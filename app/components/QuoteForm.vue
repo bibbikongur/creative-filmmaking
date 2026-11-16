@@ -9,10 +9,18 @@
     <h3 class="h3 mt-4">
       {{ t('form.successTitle') }}
     </h3>
-    <p class="mt-2 text-sm text-bone-400">{{ t('form.successText') }}</p>
+    <p class="mt-2 text-sm text-bone-100/85 [text-wrap:balance]">{{ t('form.successReply', { email: sentTo }) }}</p>
+    <p class="mt-4 text-sm text-bone-400">
+      {{ t('form.successUrgent') }}
+      <a :href="`tel:${contact.phone.replace(/\s/g, '')}`" class="inline-block py-2 -my-2 font-medium text-bone-100 underline decoration-ink-500 underline-offset-4 hover:decoration-bone-100 transition-colors whitespace-nowrap">{{ contact.phone }}</a>
+    </p>
+    <button type="button" class="mt-5 inline-flex items-center min-h-[2.75rem] text-sm font-medium text-bone-100 underline decoration-ink-500 underline-offset-4 hover:decoration-bone-100 transition-colors" @click="again">
+      {{ t('form.successAgain') }}
+    </button>
   </div>
 
   <form v-else class="space-y-5" novalidate @submit.prevent="submit">
+    <p v-if="legend" class="text-[13px] text-bone-400">{{ t('form.requiredNote') }}</p>
     <div class="grid gap-5 sm:grid-cols-2">
       <div>
         <label :for="`${uid}-name`" class="label">
@@ -25,12 +33,17 @@
           name="name"
           autocomplete="name"
           required
-          class="input-dark"
-          :class="fieldError('name') ? 'border-signal-500' : ''"
+          class="input-dark border-ink-500"
+          :class="fieldError('name') ? '!border-signal-500' : ''"
           :aria-invalid="fieldError('name') ? 'true' : undefined"
           :aria-describedby="fieldError('name') ? `${uid}-name-error` : undefined"
         >
-        <p v-if="fieldError('name')" :id="`${uid}-name-error`" class="mt-1 text-xs text-signal-400">{{ fieldError('name') }}</p>
+        <p v-if="fieldError('name')" :id="`${uid}-name-error`" class="mt-1.5 flex items-center gap-1.5 text-[13px] text-signal-400">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ fieldError('name') }}
+        </p>
       </div>
       <div>
         <label :for="`${uid}-email`" class="label">
@@ -43,41 +56,58 @@
           name="email"
           autocomplete="email"
           required
-          class="input-dark"
-          :class="fieldError('email') ? 'border-signal-500' : ''"
+          class="input-dark border-ink-500"
+          :class="fieldError('email') ? '!border-signal-500' : ''"
           :aria-invalid="fieldError('email') ? 'true' : undefined"
           :aria-describedby="fieldError('email') ? `${uid}-email-error` : undefined"
         >
-        <p v-if="fieldError('email')" :id="`${uid}-email-error`" class="mt-1 text-xs text-signal-400">{{ fieldError('email') }}</p>
+        <p v-if="fieldError('email')" :id="`${uid}-email-error`" class="mt-1.5 flex items-center gap-1.5 text-[13px] text-signal-400">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ fieldError('email') }}
+        </p>
       </div>
       <div>
         <label :for="`${uid}-phone`" class="label">
-          {{ t('form.phone') }}
+          {{ t('form.phone') }} <span class="normal-case tracking-normal text-bone-400">({{ t('form.optional') }})</span>
         </label>
-        <input :id="`${uid}-phone`" v-model.trim="form.phone" type="tel" name="phone" autocomplete="tel" class="input-dark">
+        <input :id="`${uid}-phone`" v-model.trim="form.phone" type="tel" name="phone" autocomplete="tel" class="input-dark border-ink-500">
       </div>
       <div>
         <label :for="`${uid}-company`" class="label">
-          {{ t('form.company') }}
+          {{ t('form.company') }} <span class="normal-case tracking-normal text-bone-400">({{ t('form.optional') }})</span>
         </label>
-        <input :id="`${uid}-company`" v-model.trim="form.company" type="text" name="company" autocomplete="organization" class="input-dark">
+        <input :id="`${uid}-company`" v-model.trim="form.company" type="text" name="company" autocomplete="organization" class="input-dark border-ink-500">
       </div>
       <div :class="showVehicleSelect ? '' : 'sm:col-span-2'">
         <label :for="`${uid}-dates`" class="label">
-          {{ t('form.dates') }}
+          {{ t('form.dates') }} <span class="normal-case tracking-normal text-bone-400">({{ t('form.optional') }})</span>
         </label>
-        <input :id="`${uid}-dates`" v-model.trim="form.dates" type="text" name="dates" :placeholder="t('form.datesPlaceholder')" class="input-dark">
+        <input :id="`${uid}-dates`" v-model.trim="form.dates" type="text" name="dates" :placeholder="t('form.datesPlaceholder')" class="input-dark border-ink-500">
       </div>
       <div v-if="showVehicleSelect">
         <label :for="`${uid}-vehicle`" class="label">
           {{ t('form.vehicle') }}
         </label>
-        <select :id="`${uid}-vehicle`" v-model="form.vehicle" name="vehicle" class="input-dark">
+        <div class="relative">
+        <select :id="`${uid}-vehicle`" v-model="form.vehicle" name="vehicle" class="input-dark border-ink-500 font-normal appearance-none pr-10 truncate">
           <option value="">{{ t('form.generalInquiry') }}</option>
-          <option v-for="v in allVehicles" :key="v.slug" :value="v.slug">
-            {{ lt(v.name) }}
-          </option>
+          <optgroup :label="t('nav.fleet')">
+            <option v-for="v in allVehicles" :key="v.slug" :value="v.slug">
+              {{ lt(v.name) }}
+            </option>
+          </optgroup>
+          <optgroup :label="t('nav.equipment')">
+            <option v-for="c in categories" :key="c.id" :value="`cat:${c.id}`">
+              {{ categoryText(c.name) }}
+            </option>
+          </optgroup>
         </select>
+        <svg class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+        </div>
       </div>
     </div>
 
@@ -92,12 +122,17 @@
         rows="5"
         :placeholder="t('form.messagePlaceholder')"
         :required="messageRequired"
-        class="input-dark resize-y"
-        :class="fieldError('message') ? 'border-signal-500' : ''"
+        class="input-dark border-ink-500 resize-y"
+        :class="fieldError('message') ? '!border-signal-500' : ''"
         :aria-invalid="fieldError('message') ? 'true' : undefined"
         :aria-describedby="fieldError('message') ? `${uid}-message-error` : undefined"
       />
-      <p v-if="fieldError('message')" :id="`${uid}-message-error`" class="mt-1 text-xs text-signal-400">{{ fieldError('message') }}</p>
+      <p v-if="fieldError('message')" :id="`${uid}-message-error`" class="mt-1.5 flex items-center gap-1.5 text-[13px] text-signal-400">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ fieldError('message') }}
+        </p>
     </div>
 
     <HoneypotField v-model="form.website" />
@@ -111,9 +146,12 @@
       </i18n-t>
     </div>
 
-    <button type="submit" class="btn-gold w-full sm:w-auto" :disabled="pending">
-      {{ pending ? t('form.sending') : (submitLabel || t('form.submit')) }}
-    </button>
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1">
+      <button type="submit" class="btn-gold w-full sm:w-auto" :disabled="pending">
+        {{ pending ? t('form.sending') : (submitLabel || t('form.submit')) }}
+      </button>
+      <p class="text-[13px] text-bone-100/85">{{ t('form.nextNote') }}</p>
+    </div>
   </form>
 </template>
 
@@ -132,7 +170,10 @@ const props = withDefaults(defineProps<{
   interest?: string
   /** Extra fields merged into the request body (cart: locale + items) */
   extraBody?: Record<string, unknown>
+  /** The "fields marked * are required" line above the fields; a page that shows it elsewhere turns it off */
+  legend?: boolean
 }>(), {
+  legend: true,
   endpoint: '/api/contact',
   submitLabel: '',
   messageRequired: false,
@@ -142,12 +183,16 @@ const props = withDefaults(defineProps<{
   extraBody: undefined,
 })
 
-const emit = defineEmits<{ sent: [] }>()
+const emit = defineEmits<{ sent: [], reset: [] }>()
 
 const { t } = useI18n()
 const { lt } = useLocalized()
 const contact = useRuntimeConfig().public.contact
 const allVehicles = (await useVehicles()).all()
+const { all: allCategories, text: categoryText } = await useEquipmentCategories()
+const allEquipment = (await useEquipment()).all()
+// Equipment categories that have something in them (the "what do you need" select)
+const categories = allCategories().filter(c => allEquipment.some(e => e.category === c.id))
 const uid = useId()
 const successEl = ref<HTMLElement | null>(null)
 
@@ -164,6 +209,15 @@ const form = reactive({
 
 const pending = ref(false)
 const sent = ref(false)
+// The address the confirmation names (kept apart from the form, which is cleared for another go)
+const sentTo = ref('')
+const again = () => {
+  form.message = ''
+  form.dates = ''
+  touchedSubmit.value = false
+  sent.value = false
+  emit('reset')
+}
 const failed = ref(false)
 const errors = reactive<Record<string, string>>({})
 const touchedSubmit = ref(false)
@@ -178,6 +232,12 @@ const validate = () => {
 }
 
 const fieldError = (field: string) => (touchedSubmit.value ? errors[field] : '')
+
+// Once the form has been submitted with mistakes, each message clears (or
+// changes) as soon as its field is put right.
+watch(() => [form.name, form.email, form.message], () => {
+  if (touchedSubmit.value) validate()
+})
 
 const submit = async () => {
   touchedSubmit.value = true
@@ -194,7 +254,9 @@ const submit = async () => {
   if (props.endpoint === '/api/contact') {
     // Send a display name, not a slug — it lands in the email subject
     body.vehicle = props.interest
-      ?? (form.vehicle ? lt(allVehicles.find(v => v.slug === form.vehicle)?.name) : '')
+      ?? (form.vehicle.startsWith('cat:')
+        ? categoryText(categories.find(c => `cat:${c.id}` === form.vehicle)?.name)
+        : form.vehicle ? lt(allVehicles.find(v => v.slug === form.vehicle)?.name) : '')
   }
   else {
     delete body.vehicle
@@ -203,6 +265,7 @@ const submit = async () => {
   pending.value = true
   try {
     await $fetch(props.endpoint, { method: 'POST', body })
+    sentTo.value = form.email
     sent.value = true
     emit('sent')
     await nextTick()

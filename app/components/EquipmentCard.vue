@@ -3,6 +3,7 @@
        Reads like a rental list for people who already know what they are after. -->
   <article
     v-if="row"
+    v-bind="$attrs"
     class="group relative flex items-center gap-3 sm:gap-5 py-2.5 pl-2.5 pr-2.5 sm:pr-3 transition-colors hover:bg-ink-800/70"
     :class="[focusRing, inCart ? 'bg-gold-500/[0.07] shadow-[inset_2px_0_0_0_theme(colors.gold.500)]' : '']"
   >
@@ -25,7 +26,7 @@
       <h3 class="font-heading font-medium uppercase tracking-wide text-sm sm:text-[15px] leading-snug text-bone-100 hyphens-manual [overflow-wrap:break-word]">
         <NuxtLink
           :to="to"
-          class="after:absolute after:inset-0 after:content-[''] group-hover:text-gold-400 transition-colors focus-visible:outline-none"
+          class="after:absolute after:inset-0 after:content-[''] underline-offset-4 decoration-ink-400 decoration-1 [@media(hover:hover)]:group-hover:underline focus-visible:outline-none"
         >
           {{ softHyphenate(keepUnits(name.main)) }}
         </NuxtLink>
@@ -56,22 +57,26 @@
   </article>
 
   <!-- Card. Same shell as VehicleCard: stretched title link, interactive children at z-10.
-       `dense` is the catalogue size: four to a row on a desktop, two on a phone. -->
+       `dense` is the catalogue size: four to a row on a desktop, two on a phone. Its
+       parts are four rows (photo, name, spec, action); a parent grid can make cards
+       share them by passing "grid-rows-subgrid row-span-4", so a row of cards lines
+       up without any reserved empty space. -->
   <article
     v-else
-    class="group relative flex flex-col bg-ink-800 transition-shadow duration-200"
+    v-bind="$attrs"
+    class="group relative bg-ink-800 transition-shadow duration-200"
     @touchstart.passive="swipeStart"
     @touchend.passive="swipeEnd"
     :class="dense
-      ? [focusRing, 'ring-1', inCart ? 'ring-gold-500' : 'ring-ink-700/70 hover:ring-gold-500/70']
-      : 'border-t-2 border-transparent hover:border-gold-500 focus-within:border-gold-500 transition-colors'"
+      ? ['grid grid-rows-[auto_auto_1fr_auto] gap-y-0 min-w-0', focusRing, 'ring-1', inCart ? 'ring-2 ring-gold-500' : 'ring-ink-700/70 [@media(hover:hover)]:hover:ring-ink-400']
+      : 'flex flex-col border-t-2 border-transparent hover:border-gold-500 focus-within:border-gold-500 transition-colors'"
   >
     <!-- Image. Equipment photos are opaque white manufacturer cutouts, so they live in a
          deliberate white "product well" (shared with the detail gallery) rather than fighting
          the dark stage. -->
     <div
       class="relative overflow-hidden"
-      :class="[item.images.length ? (dense ? 'bg-bone-100' : 'bg-product-well') : 'bg-ink-900', dense ? 'aspect-[4/3]' : 'aspect-card']"
+      :class="[item.images.length ? (dense ? 'bg-bone-100' : 'bg-product-well') : 'bg-ink-900', dense ? 'aspect-[3/2]' : 'aspect-card']"
     >
       <NuxtImg
         v-if="item.images.length"
@@ -101,7 +106,7 @@
            on touch screens (no hover there) and appear on hover/focus elsewhere. The dense
            card gets slim ones at the very edge so they do not sit on the product, and a
            sideways swipe anywhere on the card does the same. -->
-      <template v-if="item.images.length > 1">
+      <template v-if="gallery && item.images.length > 1">
         <button
           type="button"
           class="absolute z-10 top-1/2 -translate-y-1/2 bg-ink-950/60 backdrop-blur text-bone-100 hover:text-gold-400 hover:bg-ink-950/80 transition md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
@@ -157,23 +162,28 @@
     </div>
 
     <!-- Body -->
-    <div class="flex-1 flex flex-col" :class="dense ? 'p-3 sm:p-4' : 'p-5'">
+    <div :class="dense ? 'contents' : 'flex-1 flex flex-col p-5'">
       <template v-if="dense">
-        <p v-if="categoryLabel" class="mb-1.5 text-[11px] uppercase tracking-widest text-bone-400 truncate">{{ categoryLabel }}</p>
-        <h3 class="font-heading font-medium uppercase tracking-wide text-sm sm:text-base leading-snug text-bone-100 line-clamp-2 hyphens-manual [overflow-wrap:break-word]">
-          <NuxtLink
-            :to="to"
-            class="after:absolute after:inset-0 after:content-[''] group-hover:text-gold-400 transition-colors focus-visible:outline-none"
-          >
-            {{ softHyphenate(keepUnits(name.main)) }}
-          </NuxtLink>
-        </h3>
-        <p v-if="name.detail" class="mt-1 text-xs text-bone-400 truncate">{{ name.detail }}</p>
-        <p v-if="specs[0]" class="mt-2 text-[13px] leading-snug text-bone-400 line-clamp-2">{{ specs[0] }}</p>
+        <div class="px-3 pt-3 sm:px-4 sm:pt-4">
+          <p v-if="categoryLabel" class="mb-1.5 text-[11px] uppercase tracking-widest text-bone-400 truncate">{{ categoryLabel }}</p>
+          <h3 class="font-heading font-medium uppercase tracking-wide text-sm sm:text-base leading-snug text-bone-100 line-clamp-2 hyphens-manual [overflow-wrap:break-word]">
+            <NuxtLink
+              :to="to"
+              class="after:absolute after:inset-0 after:content-[''] underline-offset-4 decoration-ink-400 decoration-1 [@media(hover:hover)]:group-hover:underline focus-visible:outline-none"
+            >
+              {{ softHyphenate(keepUnits(name.main)) }}
+            </NuxtLink>
+          </h3>
+          <p v-if="name.detail" class="mt-1 text-xs text-bone-400 truncate">{{ name.detail }}</p>
+        </div>
+        <!-- The row may be taller than the text (shared rows), so the clamp sits on an inner element -->
+        <div class="px-3 sm:px-4 pt-2">
+          <p class="text-[13px] leading-snug text-bone-400 line-clamp-2">{{ specs[0] }}</p>
+        </div>
 
-        <div class="mt-auto pt-3 sm:pt-4">
+        <div class="px-3 pb-3 sm:px-4 sm:pb-4 pt-3">
           <p class="mb-2 text-[11px] uppercase tracking-widest text-bone-400">{{ t('equipmentCatalogue.browser.priceNote') }}</p>
-          <AddToCartButton type="equipment" :id="item.id" compact block class="relative z-10" />
+          <AddToCartButton type="equipment" :id="item.id" compact block :primary="primary" :accent="accent" class="relative z-10" />
         </div>
       </template>
       <template v-else>
@@ -204,6 +214,10 @@
 </template>
 
 <script setup lang="ts">
+// Two root branches with comments between them: the caller's classes (grid row
+// sharing, widths in a sideways row) are bound to whichever article renders.
+defineOptions({ inheritAttrs: false })
+
 import type { EquipmentItem } from '~/types'
 
 const props = withDefaults(defineProps<{
@@ -216,11 +230,18 @@ const props = withDefaults(defineProps<{
   layout?: 'grid' | 'row'
   /** Catalogue density: smaller type, 4:3 photo, full-width add button */
   dense?: boolean
+  /** Filled gold add button (a short featured row); the catalogue grid keeps the outline */
+  primary?: boolean
+  /** Outline add button with an amber plus that fills on hover (teaser rows) */
+  accent?: boolean
+  /** Photo browsing on the card (arrows, dots, swipe). Off on teaser rows. */
+  gallery?: boolean
 }>(), {
   categoryLabel: '',
   sizes: 'xs:100vw sm:50vw md:33vw',
   layout: 'grid',
   dense: false,
+  gallery: true,
 })
 
 const row = computed(() => props.layout === 'row')
@@ -264,7 +285,7 @@ const swipeStart = (e: TouchEvent) => {
   swipeY = e.touches[0]?.clientY ?? 0
 }
 const swipeEnd = (e: TouchEvent) => {
-  if (row.value || props.item.images.length < 2) return
+  if (row.value || !props.gallery || props.item.images.length < 2) return
   const dx = (e.changedTouches[0]?.clientX ?? 0) - swipeX
   const dy = (e.changedTouches[0]?.clientY ?? 0) - swipeY
   if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1)

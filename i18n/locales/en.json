@@ -45,12 +45,12 @@
     "featuredEquipmentAll": "See all equipment",
     "whyKicker": "Why us",
     "whyTitle": "Made for work on location",
-    "why1Title": "Set-ready",
-    "why1Text": "Don't see what you're looking for? Drop us a line and we'll see what we can do. We're always happy to make things happen.",
-    "why2Title": "4x4 & winter capable",
-    "why2Text": "All our vehicles and equipment come winter-ready at that time of year.",
-    "why3Title": "Delivered to location",
-    "why3Text": "Need us to bring things to you? We can deliver vehicles and equipment anywhere in Iceland.",
+    "why1Title": "Ready to work",
+    "why1Text": "Every vehicle is serviced, cleaned and delivered ready to work.",
+    "why2Title": "Winter-ready",
+    "why2Text": "Vehicles and equipment come winter-equipped when the season calls for it.",
+    "why3Title": "Support on shoot days",
+    "why3Text": "We answer around the clock while you are shooting.",
     "statsLabel": "At a glance",
     "stats": {
       "fleet": "Vehicles in the fleet",
@@ -60,15 +60,32 @@
       "response": "Offer turnaround",
       "support": "Support on shoot days"
     },
-    "howKicker": "How it works",
+    "howKicker": "How renting works",
     "howTitle": "From enquiry to location",
     "howIntro": "No listed prices, because every job is different. Three steps and the vehicles and gear are where you need them.",
-    "how1Title": "Tell us about the job",
-    "how1Text": "Dates, location and what you need. A quick enquiry or a list from the quote basket.",
-    "how2Title": "We put together an offer",
-    "how2Text": "One tailored offer for the whole package, usually within one business day.",
-    "how3Title": "Delivered to location",
-    "how3Text": "We bring the vehicles and equipment to wherever you need them, anywhere in Iceland."
+    "how1Title": "Add to the list",
+    "how1Text": "Vehicles and equipment on one list.",
+    "how2Title": "Send the list",
+    "how2Text": "With your dates and location.",
+    "how3Title": "Get one quote",
+    "how3Text": "One price for the whole package.",
+    "why4Title": "For homes and businesses too",
+    "why4Text": "Box trucks for moving day, caravans for the summer holiday and trailers for weekend projects.",
+    "contactTitle": "Rather talk to us?",
+    "howLink": "View the fleet",
+    "browseTypes": "By type",
+    "browseCategories": "By category",
+    "heroModel": "No price list. One quote within one business day.",
+    "contactText": "Call or send us a line and we will go through the project with you.",
+    "missingTitle": "Can't find what you're looking for?",
+    "missingText": "Not everything we can supply is on the website. Tell us what your production needs and we will sort it out, whether it is listed here or not.",
+    "closeTitle": "Need a vehicle or equipment?",
+    "closeText": "Tell us what you are doing and when. We put the package together and reply with one quote, no commitment.",
+    "rowPosition": "{n} of {total}",
+    "photoAlt": "One of our pickups towing a caravan through the Icelandic countryside",
+    "heroKicker": "Reykjavík · Delivery nationwide",
+    "heroSubtitle": "Box trucks, caravans, six-wheelers, generators, heaters, tents and traffic kit for film productions, events, businesses and private renters.",
+    "whyIntro": "We started out on set ourselves and have worked on films, series, music videos and commercials all over Iceland."
   },
   "categories": {
     "campers": "Campers",
@@ -108,9 +125,18 @@
       "pickup": "Pickup"
     },
     "steps": [
-      { "title": "Pick your vehicles", "text": "And equipment, if you need it." },
-      { "title": "Send the list", "text": "With dates and location." },
-      { "title": "Get a quote", "text": "One price, no commitment." }
+      {
+        "title": "Pick your vehicles",
+        "text": "And equipment, if you need it."
+      },
+      {
+        "title": "Send the list",
+        "text": "With dates and location."
+      },
+      {
+        "title": "Get a quote",
+        "text": "One price, no commitment."
+      }
     ],
     "unitsAvailable": "{n} identical in the fleet",
     "noLicence": "No special licence",
@@ -119,7 +145,8 @@
     "priceOnQuote": "Price on quote",
     "equipmentTitle": "Need equipment with the vehicles?",
     "equipmentText": "Generators, heaters, tents and traffic kit go on the same list and the same quote.",
-    "listEmpty": "The list is empty. Add vehicles to it and send it to us for a quote."
+    "listEmpty": "The list is empty. Add vehicles to it and send it to us for a quote.",
+    "sleepsN": "Sleeps {n}"
   },
   "equipmentCategories": {
     "heating": "Heating",
@@ -156,15 +183,24 @@
       "viewCategory": "View category",
       "stepsTitle": "How renting works",
       "steps": [
-        { "title": "Pick your kit", "text": "In the quantities you need." },
-        { "title": "Send the list", "text": "With dates and location." },
-        { "title": "Get a quote", "text": "One price, no commitment." }
+        {
+          "title": "Pick your kit",
+          "text": "In the quantities you need."
+        },
+        {
+          "title": "Send the list",
+          "text": "With dates and location."
+        },
+        {
+          "title": "Get a quote",
+          "text": "One price, no commitment."
+        }
       ],
       "lead": "One quote for the whole package within one business day.",
       "leadNote": "We don't publish prices: build a list and send it to us.",
       "priceNote": "Price on quote",
-      "listCta": "Send list, get a quote",
-      "listCtaShort": "Send list",
+      "listCta": "Get a quote",
+      "listCtaShort": "Get a quote",
       "listWithCount": "Quote list ({n})",
       "listShow": "Show the list",
       "listHide": "Hide the list",
@@ -251,13 +287,13 @@
     "name": "Name",
     "email": "Email",
     "phone": "Phone",
-    "company": "Production company",
-    "dates": "Shooting dates",
-    "datesPlaceholder": "e.g. 12–24 September, or \"3 weeks in October\"",
-    "vehicle": "Vehicle of interest",
-    "generalInquiry": "General inquiry",
+    "company": "Company",
+    "dates": "Rental dates",
+    "datesPlaceholder": "e.g. 12–24 September",
+    "vehicle": "Regarding",
+    "generalInquiry": "General enquiry",
     "message": "Message",
-    "messagePlaceholder": "Tell us about the production: locations, crew size, what you need on set.",
+    "messagePlaceholder": "Tell us about the project: location, dates and what you need.",
     "submit": "Send request",
     "sending": "Sending…",
     "successTitle": "Request received",
@@ -265,38 +301,74 @@
     "errorTitle": "Something went wrong",
     "errorText": "The message couldn't be sent. Email us directly at {email} and we'll take it from there.",
     "required": "This field is required",
-    "invalidEmail": "Enter a valid email address"
+    "invalidEmail": "Enter a valid email address",
+    "requiredNote": "Fields marked * are required.",
+    "optional": "optional",
+    "nextNote": "We reply with a quote within one business day.",
+    "successReply": "We will reply to {email} within one business day.",
+    "successUrgent": "In a hurry? Call",
+    "successAgain": "Send another enquiry"
   },
   "about": {
     "kicker": "About us",
-    "title": "The team behind the scenes",
-    "p1": "Creative Filmmaking rents vehicles, machinery and all kinds of equipment to film and TV productions in Iceland. We started on set ourselves, so the fleet is built around what productions actually need.",
-    "p2": "We've worked on projects big and small — features, series, music videos and commercials all across the country. That's given us plenty of experience in what each production needs, and we're always happy to help with planning of any kind. Drop us a line and we'll see how we can help.",
-    "rentals": "For rent with us are box trucks with tail lifts, cargo vans, 4x4 pickups, actor caravans, trailers and six-wheelers, along with generators, heaters, lights and other production gear. We're based in Reykjavík and deliver anywhere in Iceland, whether the shoot is in the highlands, out in the countryside or in town.",
-    "private": "While the fleet is built for filmmaking, we also rent to private and business customers: box trucks for moving days, caravans for summer holidays, trailers for weekend projects.",
-    "p3": "Every vehicle is serviced, cleaned and delivered set-ready.",
-    "statVehicles": "Vehicles in the fleet",
-    "statSupport": "Support on shoot days",
-    "statArea": "Service area"
+    "title": "A rental company that started on set",
+    "lead": "Creative Filmmaking rents vehicles, machinery and equipment to film and television productions, events, companies and private customers all over Iceland.",
+    "factsLabel": "In short",
+    "factBaseValue": "Reykjavík",
+    "factDelivery": "Delivery",
+    "factDeliveryValue": "Anywhere in Iceland",
+    "factQuote": "Quotes",
+    "factQuoteValue": "Within one business day",
+    "factSupport": "On shoot days",
+    "factSupportValue": "Around the clock",
+    "photoAlt": "Pickup truck towing a Hobby caravan on an Icelandic road with mountains behind",
+    "photoCaption": "One of the four caravans in the fleet, on its way to location.",
+    "storyKicker": "How we work",
+    "storyTitle": "Every vehicle is serviced, cleaned and delivered ready for set.",
+    "story1": "We started out on set ourselves and have worked on productions large and small: films, series, music videos and commercials all over Iceland. The fleet is built around what productions actually need.",
+    "whoKicker": "Who we rent to",
+    "whoTitle": "Built for shoots, open to everyone",
+    "who1Title": "Productions",
+    "who1Text": "Films, series, commercials and music videos. Box trucks with tail lifts, caravans for cast and power on location.",
+    "who2Title": "Events and companies",
+    "who2Text": "Tents, heaters, generators and traffic equipment for events and outdoor work.",
+    "who3Title": "Private rentals",
+    "who3Text": "Box trucks for moving house, caravans for the summer holiday and trailers for weekend projects.",
+    "howTitle": "No price list. One quote.",
+    "how1Text": "You collect vehicles and equipment on one quote list here on the site.",
+    "how2Text": "You send the list with your dates and location.",
+    "how3Text": "We reply with one price for the whole package within one business day.",
+    "who1Link": "See the fleet",
+    "who2Link": "See the equipment",
+    "who3Link": "Get in touch",
+    "callUs": "Or contact us directly"
   },
   "contact": {
     "kicker": "Contact",
-    "title": "Let's talk about your production",
-    "intro": "Tell us about your project and we'll reply with a tailored offer. If you can't find what you need, let us know: we have an extensive network. And you can always just call.",
+    "title": "Let's talk about your project",
+    "intro": "Tell us about your project and we will reply with one quote within one business day. You can always just call, too.",
     "directTitle": "Reach us directly",
     "mapTitle": "Map of our location",
     "openMap": "Open in Maps",
     "emailLabel": "Email",
     "phoneLabel": "Phone",
     "addressLabel": "Location",
-    "responseNote": "We reply within one business day, faster during production season."
+    "responseNote": "We reply within one business day, faster during production season.",
+    "formTitle": "Send an enquiry",
+    "formIntro": "Dates, location and what you need. The more we know, the more accurate the quote.",
+    "directText": "In a hurry? Call us, it is the fastest way.",
+    "listNote": "You have {n} items on your quote list. Send the list and get one quote for everything.",
+    "listLink": "Open the list",
+    "listTitle": "Need several things?",
+    "listText": "Collect vehicles and equipment on one quote list and send it all at once.",
+    "faqNote": "Did not find the answer? Call"
   },
   "cta": {
     "listTitle": "Your list is ready",
     "listText": "{n} on the quote list. Send it to us with your dates and we reply with one quote within one business day.",
     "title": "Planning a production in Iceland?",
     "text": "Tell us what you're shooting and we'll put together the right vehicles and an offer, no obligation.",
-    "button": "Request an offer"
+    "button": "Get a quote"
   },
   "consent": {
     "text": "We use cookies to measure site traffic, so we can see what works and keep improving the site. No advertising cookies.",
@@ -357,16 +429,16 @@
     "title": "Frequently asked questions",
     "home": [
       {
+        "q": "What does it cost?",
+        "a": "We don't publish a price list because every job is different. Tell us what you need, when and where, and we reply with a tailored offer, usually within one business day."
+      },
+      {
         "q": "Do I need a special licence to drive your box trucks?",
         "a": "No. The Ford Transit and VW Transporter box trucks drive on a standard B car licence, and so do the cargo van and the pickup."
       },
       {
         "q": "Do you only rent to film productions?",
         "a": "No. The fleet is built for filmmaking, but box trucks, cargo vans, trailers and caravans are also available to private and business renters: moving days, summer holidays, weekend projects."
-      },
-      {
-        "q": "What does it cost?",
-        "a": "We don't publish a price list because every job is different. Tell us what you need, when and where, and we reply with a tailored offer, usually within one business day."
       },
       {
         "q": "Where do I pick up, and do you deliver?",

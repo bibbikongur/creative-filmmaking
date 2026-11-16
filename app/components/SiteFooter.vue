@@ -70,10 +70,7 @@
 
       <div class="mt-12 pt-6 border-t border-ink-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-400">
         <p>© {{ year }} Creative Filmmaking. {{ t('footer.rights') }}</p>
-        <p class="flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-signal-500 motion-safe:animate-pulse" aria-hidden="true" />
-          {{ t('hero.availability') }}
-        </p>
+        <p>{{ t('hero.kicker') }}</p>
       </div>
     </div>
   </footer>

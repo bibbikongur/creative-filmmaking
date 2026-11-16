@@ -1,8 +1,11 @@
 <template>
-  <section v-if="items.length" :aria-labelledby="headingId">
-    <p v-if="kicker" class="kicker">{{ kicker }}</p>
-    <h2 :id="headingId" class="h2 mt-3">{{ title }}</h2>
-    <div class="mt-8 max-w-3xl divide-y divide-ink-700 border-y border-ink-700">
+  <section v-if="items.length" :aria-labelledby="headingId" :class="split ? 'lg:grid lg:grid-cols-12 lg:gap-x-14' : ''">
+    <div :class="split ? 'lg:col-span-4' : ''">
+      <p v-if="kicker" class="kicker">{{ kicker }}</p>
+      <h2 :id="headingId" class="h2 mt-3 [text-wrap:balance]">{{ title }}</h2>
+      <slot />
+    </div>
+    <div class="mt-8 divide-y divide-ink-700 border-y border-ink-700" :class="split ? 'lg:mt-0 lg:col-span-8' : ''">
       <details
         v-for="(item, i) in items"
         :key="i"
@@ -21,7 +24,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
         </summary>
-        <p class="pb-5 pr-10 text-sm text-bone-400 leading-relaxed">{{ item.a }}</p>
+        <p class="pb-5 pr-10 max-w-[70ch] text-sm text-bone-400 leading-relaxed">{{ item.a }}</p>
       </details>
     </div>
   </section>
@@ -40,9 +43,12 @@ const props = withDefaults(defineProps<{
   kicker?: string
   items: FaqItem[]
   openFirst?: boolean
+  /** Heading in a column beside the list on wide screens */
+  split?: boolean
 }>(), {
   kicker: '',
   openFirst: false,
+  split: false,
 })
 
 const headingId = useId()

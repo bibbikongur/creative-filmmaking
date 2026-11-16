@@ -37,7 +37,7 @@
     v-else
     type="button"
     class="group/add"
-    :class="[inCart ? 'btn-selected' : (primary ? 'btn-gold' : 'btn-outline'), compact ? 'btn-sm max-sm:min-h-[2.75rem]' : '', block ? 'w-full !px-2' : '', iconOnlyMobile ? 'max-sm:w-11 max-sm:!px-0' : '']"
+    :class="[inCart ? 'btn-selected' : (primary ? 'btn-gold' : (accent ? 'btn-accent' : 'btn-outline')), compact ? 'btn-sm max-sm:min-h-[2.75rem]' : '', block ? 'w-full !px-2' : '', iconOnlyMobile ? 'max-sm:w-11 max-sm:!px-0' : '']"
     :aria-label="inCart ? `${t('cart.added')}. ${t('cart.remove')}` : t('cart.add')"
     :aria-pressed="inCart"
     @click.stop="inCart ? cart.remove(type, id) : cart.add(type, id)"
@@ -57,7 +57,7 @@
       </span>
     </template>
     <template v-else>
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <svg class="w-3.5 h-3.5" :class="accent && !primary ? 'btn-accent-icon' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
       </svg>
       <span :class="iconOnlyMobile ? 'max-sm:hidden' : ''">{{ t('cart.add') }}</span>
@@ -79,6 +79,8 @@ const props = defineProps<{
   iconOnlyMobile?: boolean
   /** Filled gold "add" (the main action of a catalogue row) instead of the outline */
   primary?: boolean
+  /** Outline at rest with an amber plus; fills amber on hover or focus (teaser rows) */
+  accent?: boolean
   /** How many can be asked for: a vehicle's unit count. Equipment has no cap. */
   max?: number
 }>()
