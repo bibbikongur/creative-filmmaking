@@ -35,7 +35,8 @@ export interface VehicleSpecs {
   transmission?: 'automatic' | 'manual'
   fuel?: 'diesel' | 'petrol' | 'hybrid'
   /** e.g. "230V / 3 kW generator" */
-  powerOutput?: string
+  /** Free text; per language on rows saved since 2026-11, a plain string before that */
+  powerOutput?: string | LocalizedText
   generator?: boolean
   /** Diesel heater / standing heat — usable as a warm base on location */
   heating?: boolean
@@ -52,10 +53,16 @@ export interface VehicleSpecs {
 export interface Vehicle {
   /** Stable internal key, e.g. 'v-001' */
   id: string
-  /** URL segment — never localized */
+  /** URL segment (Icelandic pages, and English ones when there is no slugEn) */
   slug: string
+  /** Optional English URL segment: /en/vehicles/<slugEn>. The Icelandic address 301s to it under /en. */
+  slugEn?: string
   category: VehicleCategory
   kind?: VehicleKind
+  /** Manufacturer, model and model year, for the page's structured data */
+  make?: string
+  model?: string
+  modelYear?: number
   name: LocalizedText
   /** One-liner shown on cards and as the detail-page subhead */
   tagline: LocalizedText
@@ -75,6 +82,9 @@ export interface Vehicle {
    */
   plates?: string[]
 }
+
+/** A vehicle as the public list serves it (/api/vehicles?view=card): everything but the long description. */
+export type VehicleSummary = Omit<Vehicle, 'description'>
 
 /**
  * Equipment category id. Categories live in the database (editable in
@@ -111,6 +121,9 @@ export interface EquipmentCategoryDef {
   updatedAt?: string
 }
 
+/** A category as the public list serves it (/api/equipment-categories?view=card): no landing-page copy. */
+export type EquipmentCategorySummary = Omit<EquipmentCategoryDef, 'title' | 'metaTitle' | 'metaDescription' | 'intro' | 'faq'>
+
 export interface EquipmentItem {
   /** Stable internal key, e.g. 'e-001' */
   id: string
@@ -120,11 +133,13 @@ export interface EquipmentItem {
    * worked. Set explicitly so a rename in admin can't move the page's URL.
    */
   slug?: string
+  /** Optional English URL segment: /en/equipment/<slugEn>. The Icelandic address 301s to it under /en. */
+  slugEn?: string
   category: EquipmentCategory
   name: LocalizedText
   /** One-liner shown under the name on the card */
   tagline: LocalizedText
-  /** Longer copy for the detail page: paragraphs separated by \n\n */
+  /** Longer copy for the detail page: paragraphs separated by \n\n. Not in the public list (/api/equipment?view=card). */
   description?: LocalizedText
   /** 3–5 bullets shown on the detail page */
   highlights?: LocalizedText[]

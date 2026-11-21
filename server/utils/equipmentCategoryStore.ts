@@ -157,8 +157,8 @@ export function assertUniqueCategorySlugs(
     }
   }
   for (const item of items) {
-    const s = equipmentSlug(item)
-    if (mine.has(s)) errors.push(`The address /equipment/${s} is already used by the item "${item.name.en}". Pick a different slug.`)
+    const s = [equipmentSlug(item), item.slugEn].find(x => x && mine.has(x))
+    if (s) errors.push(`The address /equipment/${s} is already used by the item "${item.name.en}". Pick a different slug.`)
   }
   if (errors.length) {
     throw createError({ statusCode: 400, statusMessage: 'Validation failed', data: { errors } })

@@ -5,7 +5,10 @@
  * Nuxt renders /vehicles and /vehicles/ alike, so without this every page had
  * up to four addresses. Canonical tags paper over that for Google, but links
  * and crawl budget still split. A single 301 to the apex host without a
- * trailing slash keeps everything on one URL per page.
+ * trailing slash keeps everything on one URL per page. When the path also
+ * carries the other language's slug (/en/vehicles/kassabilar/), the same 301
+ * goes straight to the final address instead of leaving a second hop to the
+ * slug redirect.
  *
  * Scope: GET/HEAD page requests only. Assets, the API, image routes and the
  * sitemap are left alone, and hosts other than "www.<apex>" (Railway preview
@@ -13,7 +16,7 @@
  */
 const SKIP_PREFIXES = ['/api/', '/_nuxt/', '/_ipx/', '/_fonts/', '/uploads/', '/__sitemap__/', '/__nuxt']
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   if (import.meta.dev) return
   const method = event.method
   if (method !== 'GET' && method !== 'HEAD') return
@@ -35,5 +38,7 @@ export default defineEventHandler((event) => {
 
   // Only ever redirect onto the canonical origin; anything else is left as is.
   if (host !== canonical.hostname) return
-  return sendRedirect(event, `${canonical.origin}${pathname}${url.search}`, 301)
+  // Already redirecting: land on the right language slug in the same hop.
+  const final = await resolveLocalisedPath(pathname).catch(() => undefined) ?? pathname
+  return sendRedirect(event, `${canonical.origin}${final}${url.search}`, 301)
 })

@@ -21,7 +21,7 @@
 
         <!-- Site nav -->
         <div>
-          <h3 class="kicker mb-4">{{ t('footer.navTitle') }}</h3>
+          <h2 class="kicker mb-4">{{ t('footer.navTitle') }}</h2>
           <ul class="space-y-2.5">
             <li v-for="item in navItems" :key="item.to">
               <NuxtLink
@@ -36,7 +36,7 @@
 
         <!-- Popular rentals — keyword-rich internal links on every page -->
         <div>
-          <h3 class="kicker mb-4">{{ t('footer.rentalsTitle') }}</h3>
+          <h2 class="kicker mb-4">{{ t('footer.rentalsTitle') }}</h2>
           <ul class="space-y-2.5">
             <li v-for="link in rentalLinks" :key="link.label">
               <NuxtLink
@@ -51,7 +51,7 @@
 
         <!-- Contact -->
         <div>
-          <h3 class="kicker mb-4">{{ t('footer.contactTitle') }}</h3>
+          <h2 class="kicker mb-4">{{ t('footer.contactTitle') }}</h2>
           <ul class="space-y-2.5 text-sm text-bone-400">
             <li>
               <a :href="`mailto:${contact.email}`" class="hover:text-gold-400 transition-colors">
@@ -94,15 +94,26 @@ const navItems = [
 // categories live in the database, so their links resolve by category id and
 // simply drop out if the category is archived.
 const { byId: equipmentCategory, path: categoryPath } = await useEquipmentCategories()
+// Category id -> the phrase people search for (the bare category name, as on
+// the hub, gives the page no anchor text for it).
+const CATEGORY_LABELS = {
+  power: 'footer.rentals.generators',
+  heating: 'footer.rentals.heaters',
+  safety: 'footer.rentals.cones',
+  furniture: 'footer.rentals.tables',
+  shelter: 'footer.rentals.tents',
+  lighting: 'footer.rentals.lights',
+} as const
 const rentalLinks = computed(() => [
   { to: localePath({ name: 'vehicles-kassabilar' }), label: 'footer.rentals.boxTrucks' },
   { to: localePath({ name: 'vehicles-sendibilar' }), label: 'footer.rentals.van' },
   { to: localePath({ name: 'vehicles-hjolhysi' }), label: 'footer.rentals.caravans' },
   { to: localePath({ name: 'vehicles-kerrur' }), label: 'footer.rentals.trailer' },
+  { to: localePath({ name: 'vehicles-pallbilar' }), label: 'footer.rentals.pickup' },
   { to: localePath({ name: 'vehicles-sexhjol' }), label: 'footer.rentals.sixWheeler' },
-  ...(['power', 'heating'] as const).flatMap((id) => {
+  ...(Object.keys(CATEGORY_LABELS) as (keyof typeof CATEGORY_LABELS)[]).flatMap((id) => {
     const c = equipmentCategory(id)
-    return c ? [{ to: categoryPath(c), label: id === 'power' ? 'footer.rentals.generators' : 'footer.rentals.heaters' }] : []
+    return c ? [{ to: categoryPath(c), label: CATEGORY_LABELS[id] }] : []
   }),
 ])
 

@@ -1,0 +1,2655 @@
+{
+  "vehicles": {
+    "v-mr6s6va62bc8": {
+      "make": "Chevrolet",
+      "model": "Silverado",
+      "slugEn": "chevrolet-silverado-4x4-pickup",
+      "name": {
+        "is": "Chevrolet Silverado 4x4 pallbíll",
+        "en": "Chevrolet Silverado 4x4 Pickup"
+      },
+      "tagline": {
+        "is": "Fjórhjóladrifinn pallbíll til leigu á 33\" dekkjum, með dráttarkrók og fimm sætum. Þarf ekki meirapróf.",
+        "en": "A 4x4 pickup for rent, with 33\" tyres, a tow bar and five seats. Drives on a standard B car licence."
+      },
+      "description": {
+        "is": "Fjórhjóladrifinn Chevrolet Silverado pallbíll, sjálfskiptur og með sæti fyrir fimm. Hann er á 33\" grófum dekkjum á sumrin og negldum dekkjum yfir veturinn, svo hann heldur áfram þegar malbikið endar og við tekur möl, snjór eða eitthvað þaðan af verra.\n\nMeð dráttarkróknum dregur hann kerruna og hjólhýsin okkar og pallurinn tekur búnað, timbur og allt þar á milli. Á tökustað er hann vinnubíll tökustaðadeildarinnar. Utan kvikmyndavinnu nýtist hann í framkvæmdir, efnisflutninga og drátt.\n\nPallbíllinn leigist stakur eða með kerru, hjólhýsi eða sexhjóli og fæst afhentur hvert á land sem er.",
+        "en": "A four-wheel-drive Chevrolet Silverado pickup with an automatic gearbox and seats for five. It runs on 33\" mud-terrain tyres in summer and studded tyres through the winter, so it keeps going when the tarmac ends and the road turns to gravel, snow or worse.\n\nIt has a tow bar for our trailer and caravans, and the bed takes gear, timber and everything in between. On a shoot it is the location department’s workhorse. Away from film work it earns its keep on building sites, material runs and towing jobs.\n\nThe pickup rents on its own or with a trailer, a caravan or the six-wheeler. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Fjórhjóladrif og 33\" gróf dekk, negld á veturna",
+          "en": "Four-wheel drive on 33\" mud-terrain tyres, studded in winter"
+        },
+        {
+          "is": "Þarf ekki meirapróf: venjulegt B-ökuskírteini nægir",
+          "en": "Drives on a standard B car licence"
+        },
+        {
+          "is": "Dráttarkrókur fyrir kerrur og hjólhýsi",
+          "en": "Tow bar for trailers and caravans"
+        },
+        {
+          "is": "Sjálfskiptur, sæti fyrir fimm",
+          "en": "Automatic, seats five"
+        },
+        {
+          "is": "Leigist líka einstaklingum og fyrirtækjum",
+          "en": "Also available to private and business customers"
+        }
+      ]
+    },
+    "v-mre1v2ud010c": {
+      "make": "Ford",
+      "model": "Transit",
+      "slugEn": "ford-transit-box-truck-tail-lift",
+      "name": {
+        "is": "Ford Transit kassabíll með lyftu",
+        "en": "Ford Transit Box Truck with Tail Lift"
+      },
+      "tagline": {
+        "is": "Kassabíll til leigu með rafmagnslyftu og hliðarhurð. Minnaprófsbíll: venjulegt B-ökuskírteini nægir.",
+        "en": "A box truck for rent with an electric tail lift and a side door. Drives on a standard B car licence."
+      },
+      "description": {
+        "is": "Ford Transit kassabíll með rafmagnslyftu að aftan og hliðarhurð inn í kassann. Hann er sjálfskiptur minnaprófsbíll og þægilegur í akstri, svo hver sem er með venjulegt B-ökuskírteini getur sótt hann og keyrt af stað.\n\nÁ tökustað hentar hann myndavéla-, leikmynda- og tökustaðadeildum og er vinsæll sem splinter unit bíll. Hillur fást í kassann ef óskað er. Bíllinn kemur á nýjum sumardekkjum og fer á negld dekk yfir veturinn.\n\nKassabíllinn er líka til leigu fyrir einstaklinga og fyrirtæki. Lyftan léttir búslóðaflutninga, húsgagnaflutninga og lagerferðir og lokaður kassinn heldur öllu þurru, sama hvernig viðrar. Við afhendum hvert á land sem er.",
+        "en": "A Ford Transit box truck with an electric tail lift at the rear and a side door into the box. It is an automatic, is easy to drive and needs no truck licence: anyone with a standard B car licence can collect it and go.\n\nOn a shoot it suits the camera, art and location departments and is a favourite as a splinter unit truck. Shelving can be fitted in the box on request. It comes on new summer tyres and switches to studded tyres for the winter.\n\nThe box truck is also available to private and business customers. The tail lift takes the strain out of house moves, furniture deliveries and warehouse runs, and the closed box keeps everything dry whatever the weather. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Rafmagnslyfta að aftan og hliðarhurð inn í kassann",
+          "en": "Electric tail lift and a side door into the box"
+        },
+        {
+          "is": "Minnaprófsbíll: B-ökuskírteini nægir",
+          "en": "No truck licence needed: a B car licence is enough"
+        },
+        {
+          "is": "Hillur í kassann ef óskað er",
+          "en": "Shelving available on request"
+        },
+        {
+          "is": "Sjálfskiptur, á negldum dekkjum á veturna",
+          "en": "Automatic, on studded tyres in winter"
+        },
+        {
+          "is": "Vinsæll sem splinter unit bíll",
+          "en": "A favourite splinter unit truck"
+        },
+        {
+          "is": "Leigist líka einstaklingum og fyrirtækjum, t.d. í búslóðaflutninga",
+          "en": "Also for private and business customers, e.g. house moves"
+        }
+      ]
+    },
+    "v-mre45ytvabcb": {
+      "make": "Volkswagen",
+      "model": "Transporter",
+      "slugEn": "vw-transporter-box-truck-tail-lift",
+      "name": {
+        "is": "VW Transporter kassabíll með lyftu",
+        "en": "VW Transporter Box Truck with Tail Lift"
+      },
+      "tagline": {
+        "is": "Kassabíll til leigu með rafmagnslyftu, hliðarhurð og dráttarkrók. Minnaprófsbíll: venjulegt B-ökuskírteini nægir.",
+        "en": "A box truck for rent with an electric tail lift, a side door and a tow bar. Drives on a standard B car licence."
+      },
+      "description": {
+        "is": "VW Transporter kassabíll með rafmagnslyftu, hliðarhurð inn í kassann og dráttarkrók, svo kerran okkar kemst með í sömu ferð. Hann er sjálfskiptur minnaprófsbíll sem keyra má á venjulegu B-ökuskírteini.\n\nKassinn heldur myndavélabúnaði, leikmunum og tækjum þurrum og læstum inni milli tökustaða og hillur fást í hann ef óskað er. Bíllinn kemur á nýjum sumardekkjum og negldum dekkjum á veturna.\n\nHann leigist líka einstaklingum og fyrirtækjum í búslóðaflutninga, húsgagnaflutninga og lagerferðir, með eða án kerru frá okkur. Við afhendum hvert á land sem er.",
+        "en": "A VW Transporter box truck with an electric tail lift, a side door into the box and a tow bar, so our trailer can come along on the same trip. It is an automatic that drives on a standard B car licence, with no truck licence needed.\n\nThe box keeps camera kit, props and equipment dry and locked away between locations, and shelving can be fitted on request. It comes on new summer tyres, with studded tyres in winter.\n\nIt is also available to private and business customers for house moves, furniture deliveries and warehouse runs, with or without our trailer. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Rafmagnslyfta að aftan og hliðarhurð inn í kassann",
+          "en": "Electric tail lift and a side door into the box"
+        },
+        {
+          "is": "Dráttarkrókur fyrir kerru",
+          "en": "Tow bar for a trailer"
+        },
+        {
+          "is": "Minnaprófsbíll: B-ökuskírteini nægir",
+          "en": "No truck licence needed: a B car licence is enough"
+        },
+        {
+          "is": "Hillur í kassann ef óskað er",
+          "en": "Shelving available on request"
+        },
+        {
+          "is": "Sjálfskiptur, á negldum dekkjum á veturna",
+          "en": "Automatic, on studded tyres in winter"
+        },
+        {
+          "is": "Leigist líka einstaklingum og fyrirtækjum, t.d. í búslóðaflutninga",
+          "en": "Also for private and business customers, e.g. house moves"
+        }
+      ]
+    },
+    "v-011": {
+      "make": "Can-Am",
+      "model": "Outlander MAX 6x6 850",
+      "modelYear": 2026,
+      "specs": {
+        "extra": {
+          "is": "Árgerð 2026 · 275 l innbyggð geymsla · 19,5 l tankur · heil botnplata · 2\" dráttarkúla að aftan",
+          "en": "Model year 2026 · 275 L built-in storage · 19.5 L fuel tank · full skid plate · 2\" rear tow ball"
+        }
+      },
+      "name": {
+        "is": "Can-Am Outlander MAX 6x6 850 sexhjól",
+        "en": "Can-Am Outlander MAX 6x6 850 Six-Wheeler"
+      },
+      "tagline": {
+        "is": "Sexhjól til leigu: Can-Am árgerð 2026 sem flytur búnað og fólk þangað sem bílar komast ekki. Tekur tvo í sæti, dregur 830 kg og er götuskráð.",
+        "en": "A six-wheeler ATV for rent: a 2026 Can-Am that carries gear and crew where no car can go. Seats two, tows 830 kg and is road-registered."
+      },
+      "description": {
+        "is": "Can-Am Outlander MAX 6x6 850, árgerð 2026: 82 hestafla Rotax V2-mótor (999 cc), stiglaus sjálfskipting með lágu drifi og val um fjór- eða sexhjóladrif með sjálflæsandi Visco-Lok QE framdrifi. Rafmagnsstýri með þremur stillingum, akstursstillingar og mótorbremsa halda hjólinu stöðugu, hvort sem farið er með myndavélabúnað upp bratta skriðu eða rólega niður árbakka.\n\nÞað dregur 830 kg, ber 454 kg á palli og rúmar 275 lítra í innbyggðum geymsluhólfum, þar af 30 lítra að framan. Dekkin eru 28\" XPS Trail King á 14\" álfelgum og veghæðin er 30,5 cm. Hjólið er götuskráð (T3, 65 km/klst.), svo aka má því á þjóðvegi milli grunnbúða og tökustaðar. Farþegasætið er losanlegt: það tekur aðstoðarmann eða fer af fyrir meiri farm.\n\nSexhjólið er líka til leigu fyrir einstaklinga og fyrirtæki, til dæmis í smalamennsku, veiðiferðir og vinnu á landareign. Utanvegaakstur er bannaður á Íslandi og hjólið er ætlað á vegi, slóða og svæði þar sem leyfi liggur fyrir. Við afhendum hvert á land sem er.",
+        "en": "The 2026 Can-Am Outlander MAX 6x6 850: an 82 hp, 999 cc Rotax V-twin, a CVT with an extra-low work gear, and selectable four- or six-wheel drive with a Visco-Lok QE auto-locking front differential. Three-mode power steering, selectable engine modes and engine braking keep it composed carrying camera gear up a scree slope or easing back down a riverbank.\n\nIt tows 830 kg, carries 454 kg on the rear cargo bed and holds 275 litres in built-in storage, including a 30-litre front compartment. It rides on 28\" XPS Trail King tyres on 14\" aluminium wheels, with 30.5 cm of ground clearance. It is road-registered (T3, 65 km/h), so it can legally travel on public roads between basecamp and set. The passenger seat is removable: it carries a spotter or comes off to make room for more cargo.\n\nThe six-wheeler is also available to private and business customers, for sheep round-ups, hunting trips and work on the land. Off-road driving is prohibited in Iceland, so it is for roads, tracks and areas where you have permission to drive. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "82 hestafla Rotax V2-mótor, val um fjór- eða sexhjóladrif",
+          "en": "82 hp Rotax V-twin with selectable four- or six-wheel drive"
+        },
+        {
+          "is": "830 kg dráttargeta og 454 kg burðargeta á palli",
+          "en": "830 kg towing capacity, 454 kg on the cargo bed"
+        },
+        {
+          "is": "275 lítra innbyggð geymsla",
+          "en": "275 litres of built-in storage"
+        },
+        {
+          "is": "28\" dekk á 14\" álfelgum, 30,5 cm veghæð",
+          "en": "28\" tyres on 14\" aluminium wheels, 30.5 cm ground clearance"
+        },
+        {
+          "is": "Götuskráð (T3, 65 km/klst.) með ljósum og speglum",
+          "en": "Road-registered (T3, 65 km/h) with lights and mirrors"
+        },
+        {
+          "is": "Sæti fyrir tvo, losanlegt farþegasæti",
+          "en": "Seats two, with a removable passenger seat"
+        }
+      ]
+    },
+    "v-010": {
+      "make": "Hobby",
+      "model": "Prestige 560 WFU",
+      "modelYear": 2026,
+      "specs": {
+        "powerOutput": {
+          "is": "Landtenging (CEE) / sólarsella og rafgeymir",
+          "en": "Mains hook-up (CEE) / solar panel and battery"
+        },
+        "extra": {
+          "is": "Árgerð 2026 · staðsett í Reykjavík · breidd 2,50 m",
+          "en": "Model year 2026 · based in Reykjavík · width 2.50 m"
+        }
+      },
+      "name": {
+        "is": "Hobby Prestige 560 WFU lúxushjólhýsi",
+        "en": "Hobby Prestige 560 WFU Luxury Caravan"
+      },
+      "tagline": {
+        "is": "Lúxushjólhýsi til leigu: fjögur eins, árgerð 2026, með baðherbergi og sturtu, eldhúsi og gas- og rafmagnshitun.",
+        "en": "Luxury caravans for rent: four identical 2026 units, each with a bathroom and shower, a kitchen, and gas or electric heating."
+      },
+      "description": {
+        "is": "Ný Hobby Prestige 560 WFU hjólhýsi, árgerð 2026, staðsett í Reykjavík. Þau eru kynt með gasi eða rafmagni og haldast því hlý hvar sem er, og í hverju þeirra er sérbaðherbergi með klósetti og sturtu. Við eigum fjögur nákvæmlega eins hýsi, svo enginn leikari fær lakari aðstöðu en annar. Á tökustað eru þau aðstaða fyrir leikara, förðun og búninga og nýtast líka sem gisting ef á þarf að halda.\n\nHverju hýsi fylgir fullur búnaður: sólarsella og rafgeymir, breytistykki úr CEE í Schuko ásamt 25 m CEE-rafmagnssnúru, gasgrill með grilláhöldum, tjaldstólar og útileguborð. Inni er gasmiðstöð og rafmagnshitablásari, ofn og gaseldavél, pottar og pönnur, borðbúnaður, ísskápur með frystihólfi, kaffivél, hraðsuðuketill og handklæði.\n\nHjólhýsin eru líka til leigu fyrir einstaklinga: fullbúið hjólhýsi með svefnplássi fyrir fjóra í sumarfríið, útileguna eða ættarmótið, eða sem gistiaðstaða fyrir gesti. Allt fylgir, frá gasgrilli til handklæða, svo þú tengir bara og leggur af stað. Til að draga hýsið þarf yfirleitt eftirvagnaréttindi (BE). Við getum líka komið hýsinu á staðinn fyrir þig.",
+        "en": "New 2026 Hobby Prestige 560 WFU caravans, based in Reykjavík. They are heated by gas or electricity, so they stay warm wherever they are parked, and each has its own bathroom with a toilet and shower. We have four identical units, so no actor gets a lesser trailer than another. On location they serve as cast trailers and as makeup and costume rooms, and they double as overnight accommodation when needed.\n\nEvery caravan comes fully equipped: a solar panel and battery, a CEE-to-Schuko adapter with a 25 m CEE power cable, a gas barbecue with utensils, camping chairs and an outdoor table. Inside there is gas central heating and an electric fan heater, an oven and gas hob, pots and pans, crockery and cutlery, a fridge with a freezer compartment, a coffee maker, a kettle and towels.\n\nThe caravans are also available to private customers: a fully equipped caravan that sleeps four for a summer holiday, a camping weekend or a family reunion, or as guest accommodation. Everything is included, from the barbecue to the towels, so you just hitch up and go. Towing it usually requires a BE trailer licence. We can also deliver the caravan to your site for you."
+      },
+      "highlights": [
+        {
+          "is": "Gasmiðstöð og rafmagnshitablásari: hlýtt hvar sem er",
+          "en": "Gas central heating plus an electric fan heater: warm anywhere"
+        },
+        {
+          "is": "Sérbaðherbergi með klósetti og heitri sturtu",
+          "en": "Private bathroom with toilet and hot shower"
+        },
+        {
+          "is": "Svefnpláss fyrir fjóra",
+          "en": "Sleeps four"
+        },
+        {
+          "is": "Fjögur eins hýsi: sama aðstaða fyrir alla leikara",
+          "en": "Four identical units: the same standard for every actor"
+        },
+        {
+          "is": "Sólarsella og rafgeymir, 25 m CEE-snúra og Schuko-breytistykki",
+          "en": "Solar panel and battery, 25 m CEE cable and Schuko adapter"
+        },
+        {
+          "is": "Fullbúið eldhús: ofn, gaseldavél, ísskápur með frysti og kaffivél",
+          "en": "Full kitchen: oven, gas hob, fridge with freezer, coffee maker"
+        },
+        {
+          "is": "Gasgrill, tjaldstólar og útileguborð fylgja",
+          "en": "Gas barbecue, camping chairs and outdoor table included"
+        },
+        {
+          "is": "Leigist líka einstaklingum í sumarfrí og útilegur",
+          "en": "Also for private customers, for holidays and camping trips"
+        }
+      ]
+    },
+    "v-013": {
+      "make": "Ford",
+      "model": "Transit",
+      "tagline": {
+        "is": "Sendibíll til leigu með hillum, toppgrind og dráttarkrók. Jafn góður í tækjaflutninga og búslóðaflutninga.",
+        "en": "A cargo van for rent with shelving, a roof rack and a tow bar. As good for gear runs as for moving house."
+      },
+      "description": {
+        "is": "Vinnuþjarkurinn í daglegum ferðum milli lagers, grunnbúða og tökustaðar. Heilt skilrúm skilur ökumannshúsið frá flutningsrýminu, þar sem krossviðarhillur halda töskum, rekstrarvörum og smáhlutum á sínum stað svo að ekkert renni til á gólfinu. Lýsing í flutningsrýminu og gúmmímotta á gólfi auðvelda hleðslu í myrkri.\n\nÁ þakinu er toppgrind í fullri lengd fyrir rör, timbur og stiga, og að aftan er stigi upp á hana. Um rennihurðina á hliðinni má hlaða bílinn beint frá gangstétt og með dráttarkróknum bætist kerra við þegar farmurinn kemst ekki allur inn.\n\nSendibíllinn hentar einstaklingum og fyrirtækjum jafn vel: í búslóðaflutninga, húsgagnakaup, efnisflutninga og sendiferðir innanbæjar. Venjulegt B-ökuskírteini nægir. Við afhendum hvert á land sem er.",
+        "en": "The everyday workhorse for runs between the warehouse, basecamp and set. A full-height bulkhead separates the cab from the load bay, where plywood shelving keeps cases, consumables and small items in place rather than letting them slide around the floor. Load-bay lighting and a rubber floor mat make loading in the dark easier.\n\nOn the roof, a full-length rack carries poles, timber and ladders, and a ladder at the rear gives access to it. A sliding side door gives kerbside access, and the tow bar lets you add a trailer when the load won’t all fit inside.\n\nThe van suits private and business customers just as well: house moves, furniture collections, building materials and deliveries around town. A standard B car licence is all you need. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Krossviðarhillur halda töskum og smáhlutum á sínum stað",
+          "en": "Plywood shelving keeps cases and small items in place"
+        },
+        {
+          "is": "Toppgrind í fullri lengd með stiga að aftan",
+          "en": "Full-length roof rack with rear ladder"
+        },
+        {
+          "is": "Heilt skilrúm milli ökumannshúss og flutningsrýmis",
+          "en": "Full-height bulkhead between cab and load bay"
+        },
+        {
+          "is": "Lýsing í flutningsrými og gúmmímotta á gólfi",
+          "en": "Load-bay lighting and rubber floor mat"
+        },
+        {
+          "is": "Dráttarkrókur fyrir kerru",
+          "en": "Tow bar for a trailer"
+        },
+        {
+          "is": "Venjulegt B-ökuskírteini nægir",
+          "en": "Drives on a standard B car licence"
+        },
+        {
+          "is": "Leigist líka einstaklingum og fyrirtækjum, t.d. í búslóðaflutninga",
+          "en": "Also for private and business customers, e.g. house moves"
+        }
+      ]
+    },
+    "v-mszu795f21be": {
+      "make": "Bilxtra",
+      "model": "Tractus Multi",
+      "specs": {
+        "extra": {
+          "is": "Leyfð heildarþyngd 750 kg · utanmál 435 × 195 cm · dekk 155/70 R13",
+          "en": "Gross weight 750 kg · external dimensions 435 × 195 cm · tyres 155/70 R13"
+        }
+      },
+      "slugEn": "tipping-trailer-750-kg",
+      "name": {
+        "is": "Sturtukerra 750 kg (Bilxtra Tractus Multi)",
+        "en": "Tipping Trailer 750 kg (Bilxtra Tractus Multi)"
+      },
+      "tagline": {
+        "is": "Kerra til leigu: 750 kg sturtukerra með hlerum sem opnast að framan og aftan. Segl og nefhjól fylgja og B-ökuskírteini nægir.",
+        "en": "A trailer for rent: a 750 kg tipping trailer with gates that drop front and rear. Cover and jockey wheel included, and it tows on a B licence."
+      },
+      "description": {
+        "is": "Bilxtra Tractus Multi kerra, örugg og einstaklega góð í drætti. Hlerarnir opnast bæði að framan og aftan, innfelld festiaugu halda farminum á sínum stað og sturtan léttir affermingu á möl, mold og garðaúrgangi. Segl og nefhjól fylgja og hægt er að fá hækkun á hliðarnar með yfirbreiðslu.\n\nLeyfð heildarþyngd er 750 kg, svo kerruna má draga á venjulegu B-ökuskírteini. Hún hentar jafnt tökuliðum sem einstaklingum: í efniskaup, garðvinnu, húsgagnaflutninga eða ferð á endurvinnslustöðina. Við afhendum hvert á land sem er.",
+        "en": "A Bilxtra Tractus Multi trailer, stable and exceptionally smooth to tow. The gates drop at both front and rear, recessed tie-down points keep the load secure, and the tipping bed makes unloading gravel, soil or garden waste easy. A cover and jockey wheel are included, and side extensions with a tarpaulin can be added.\n\nThe gross weight is 750 kg, so it can be towed on a standard B car licence. It suits film units and private customers alike: building materials, garden work, furniture moves or a trip to the recycling centre. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Sturta sem léttir affermingu",
+          "en": "Tipping bed for easy unloading"
+        },
+        {
+          "is": "Hlerar opnast bæði að framan og aftan",
+          "en": "Gates drop at both front and rear"
+        },
+        {
+          "is": "Segl og nefhjól fylgja",
+          "en": "Cover and jockey wheel included"
+        },
+        {
+          "is": "750 kg heildarþyngd: B-ökuskírteini nægir",
+          "en": "750 kg gross weight: tows on a B licence"
+        },
+        {
+          "is": "Burðargeta um 530 kg, innanmál 300 × 150 cm",
+          "en": "About 530 kg payload, 300 × 150 cm load bed"
+        }
+      ]
+    }
+  },
+  "equipment": {
+    "e-mr754bhada10": {
+      "slugEn": "diesel-heater-21-kw-master-bv-77-e",
+      "name": {
+        "is": "Olíuhitablásari 21 kW (Master BV 77 E)",
+        "en": "Diesel Heater 21 kW (Master BV 77 E)"
+      },
+      "tagline": {
+        "is": "Óbeinn 21 kW olíuhitablásari sem blæs hreinu, þurru og lyktarlausu lofti inn í tjöld og önnur rými. Gengur um 19 klst. á tankfylli. Barki og strompur fylgja.",
+        "en": "Indirect-fired 21 kW diesel heater that blows clean, dry, odourless warm air into tents and other spaces. Runs for about 19 hours per tank. Duct and chimney included."
+      },
+      "description": {
+        "is": "Í vetrartökum á Íslandi þarf að hita tjöld tökuliðs, biðsvæði og grunnbúðir án þess að útblástur berist inn. Þar er olíuhitablásarinn Master BV 77 E staðalbúnaður, því bruninn er óbeinn: útblásturinn fer út um sérstakan stromp og aðeins hreint, þurrt og lyktarlaust heitt loft kemur inn í rýmið.\n\nHann gengur um 19 klukkustundir á tankfylli og honum fylgja barki og strompur, svo blásarinn stendur úti og heita loftið er leitt inn. Blásarinn þarf rafmagn fyrir viftu og brennara. Leigist stakur eða með tjöldum, rafstöðvum og bílum. Við afhendum hvert á land sem er.",
+        "en": "A winter shoot in Iceland means heating crew tents, holding areas and basecamp without letting exhaust fumes in. The Master BV 77 E diesel heater is the standard choice for the job because it is indirect-fired: the burner exhaust goes out through its own chimney, so only clean, dry, odourless warm air reaches the space.\n\nIt runs for around 19 hours on a full tank and comes with a flexible duct and a chimney, so the heater stands outside and the warm air is ducted in. It needs electricity for the fan and burner. Rent it on its own or with our tents, generators and vehicles. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Óbeinn bruni: hreint, þurrt og lyktarlaust loft",
+          "en": "Indirect-fired: clean, dry, odourless air"
+        },
+        {
+          "is": "21 kW, um 19 klst. á tankfylli",
+          "en": "21 kW output, about 19 hours per tank"
+        },
+        {
+          "is": "Barki og strompur fylgja",
+          "en": "Flexible duct and chimney included"
+        },
+        {
+          "is": "Tilvalinn í tjöld, biðsvæði og grunnbúðir",
+          "en": "Ideal for crew tents, holding areas and basecamp"
+        }
+      ]
+    },
+    "e-mr754bmhf449": {
+      "slugEn": "diesel-heater-81-kw-master-bv-290-e",
+      "name": {
+        "is": "Olíuhitablásari 81 kW (Master BV 290 E)",
+        "en": "Diesel Heater 81 kW (Master BV 290 E)"
+      },
+      "tagline": {
+        "is": "Aflmikill óbeinn 81 kW olíuhitablásari sem skilar 3.300 m³/klst. og hitar stór tjöld, sali og tökustaði hratt. Tveir barkar, splitter og strompur fylgja.",
+        "en": "High-output indirect-fired 81 kW diesel heater that moves 3,300 m³/h and heats large tents, halls and big sets fast. Two ducts, a splitter and a chimney included."
+      },
+      "description": {
+        "is": "Master BV 290 E er stóri bróðir BV 77 E. Útblásturinn fer út um strompinn og loftið sem kemur inn er hreint, þurrt og lyktarlaust.\n\nHonum fylgja tveir barkar, splitter og strompur, svo einn blásari getur hitað tvö rými eða báða enda á löngu tjaldi. Með rafstöð eða þriggja fasa rafmagnstöflu frá okkur er hann tilbúinn til notkunar við afhendingu, hvert á land sem er.",
+        "en": "The Master BV 290 E is the big brother of the BV 77 E. Combustion gases leave through the chimney, so the air the heater delivers is clean, dry and odourless.\n\nIt comes with two ducts, a splitter and a chimney, so one heater can feed two spaces or both ends of a long tent. Pair it with a generator or a three-phase distribution board from us and it arrives ready to run, anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "81 kW, 3.300 m³/klst. af hreinu heitu lofti",
+          "en": "81 kW, 3,300 m³/h of clean warm air"
+        },
+        {
+          "is": "Tveir barkar, splitter og strompur fylgja",
+          "en": "Two ducts, splitter and chimney included"
+        },
+        {
+          "is": "Hitar stór tjöld, sali og stærri tökustaði hratt",
+          "en": "Heats large tents, halls and big sets fast"
+        },
+        {
+          "is": "Leigist með rafstöðvum og rafmagnstöflum",
+          "en": "Rent it with generators and distribution boards"
+        }
+      ]
+    },
+    "e-mur4li283b3a": {
+      "slugEn": "foldable-gas-heater-4-2-kw",
+      "name": {
+        "is": "Samanfellanlegur gashitari 4,2 kW",
+        "en": "Foldable Gas Heater 4.2 kW"
+      },
+      "tagline": {
+        "is": "Samanfellanlegur gashitari á hjólum með þremur hitastillingum upp í 4,2 kW, logavörn og veltivörn.",
+        "en": "Foldable gas heater on wheels with three heat settings up to 4.2 kW, a flame failure device and tip-over protection."
+      },
+      "description": {
+        "is": "Þar sem olíuhitablásari væri of mikið, í tjaldi, á setti í bílskúr, á biðsvæði eða á verkstæði, dugar þessi gashitari. Hann er samanfellanlegur, á hjólum og vegur 8,3 kg, svo auðvelt er að færa hann þangað sem kuldinn er.\n\nÞrjár keramikplötur gefa hitastillingarnar 1,5, 2,8 og 4,2 kW og gasnotkunin er 110 til 305 g/klst. eftir stillingu. Hann tekur allt að 10 lítra gaskút og er með piezo-kveikju, logavörn, súrefnisskynjara og veltivörn. Leigist stakur eða með tjöldunum okkar. Við afhendum hvert á land sem er.",
+        "en": "Where a diesel heater is overkill, in a tent, on a garage set, in a holding area or in a workshop, this gas heater does the job. It folds, rolls on wheels and weighs 8.3 kg, so it moves wherever the cold is.\n\nThree ceramic plates give heat settings of 1.5, 2.8 and 4.2 kW, and gas use is 110 to 305 g/h depending on the setting. It takes a gas bottle of up to 10 litres and has piezo ignition, a flame failure device, an oxygen depletion sensor and tip-over protection. Rent it on its own or with our tents. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "1,5 / 2,8 / 4,2 kW hitastillingar",
+          "en": "1.5 / 2.8 / 4.2 kW heat settings"
+        },
+        {
+          "is": "Logavörn, súrefnisskynjari og veltivörn",
+          "en": "Flame failure device, oxygen depletion sensor and tip-over protection"
+        },
+        {
+          "is": "Samanfellanlegur, á hjólum, 8,3 kg, 42 × 38 × 73 cm",
+          "en": "Folds, on wheels, 8.3 kg, 42 × 38 × 73 cm"
+        },
+        {
+          "is": "Tekur allt að 10 l gaskút",
+          "en": "Takes a gas bottle of up to 10 L"
+        }
+      ]
+    },
+    "e-muub65yha82a": {
+      "slugEn": "electric-fan-heater-2000-w",
+      "name": {
+        "is": "Rafmagnshitablásari 2.000 W",
+        "en": "Electric Fan Heater 2,000 W"
+      },
+      "tagline": {
+        "is": "EnsoNordic 2.000 W rafmagnshitablásari, svartur, fyrir lítil rými með húsrafmagni.",
+        "en": "EnsoNordic 2,000 W electric fan heater, black, for small rooms with mains power."
+      },
+      "description": {
+        "is": "Til að hita lítið herbergi, hjólhýsi, förðunarhorn eða skrifstofugám hratt, án eldsneytis og útblásturs, þarf ekki annað en venjulega innstungu. Þetta er 2.000 W rafmagnshitablásari frá EnsoNordic, svartur að lit.\n\nFyrir tjöld og stærri rými eru olíu- og gashitararnir okkar betri kostur. Leigist stakur eða með rafmagnskeflum og fjöltengjum. Við afhendum hvert á land sem er.",
+        "en": "Warming a small room, a caravan, a makeup corner or an office container quickly, with no fuel and no exhaust, takes nothing more than an ordinary socket. This is a 2,000 W electric fan heater from EnsoNordic, in black.\n\nFor tents and larger spaces see our diesel and gas heaters. Rent it on its own or with our cable reels and multiplugs. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "2.000 W, fer í venjulega innstungu",
+          "en": "2,000 W, plugs into a standard socket"
+        },
+        {
+          "is": "Ekkert eldsneyti, enginn útblástur",
+          "en": "No fuel, no exhaust"
+        },
+        {
+          "is": "Fyrir lítil rými, hjólhýsi og gáma",
+          "en": "For small rooms, caravans and containers"
+        }
+      ]
+    },
+    "e-mrzl0c5k7565": {
+      "slugEn": "ecoflow-delta-3-pro-power-station",
+      "name": {
+        "is": "EcoFlow Delta 3 Pro rafhlöðustöð",
+        "en": "EcoFlow Delta 3 Pro Power Station"
+      },
+      "tagline": {
+        "is": "Hljóðlát 4.000 W rafhlöðustöð, um 30 dB, hleðst í 80 % á klukkustund.",
+        "en": "Near-silent 4,000 W battery power station, about 30 dB, charges to 80% in an hour."
+      },
+      "description": {
+        "is": "Á setti skilar EcoFlow Delta 3 Pro rafmagni fyrir skjái, hleðslutæki, hitara eða veitingabúnað alveg við tökuna, án þess að rafstöð heyrist í hljóðupptökunni. Jafn hentug á viðburði, markaðsbás eða í bústað án rafmagns.\n\nHún hraðhleðst úr 0 í 80 % á um einni klukkustund, svo hægt er að fylla á hana frá rafstöð eða húsrafmagni í pásu. Leigist stök eða með rafstöðvunum okkar sem hljóðláti hluti rafmagnsbúnaðarins. Við afhendum hvert á land sem er.",
+        "en": "On set the EcoFlow Delta 3 Pro powers monitors, chargers, a heater or catering gear right next to the action, with no generator on the sound recording. Just as handy at an event, on a market stall or in a cabin without mains power.\n\nIt fast-charges from empty to 80% in about an hour, so it can be topped up from a generator or the mains during a break. Rent it on its own or alongside our generators as the quiet half of the power kit. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "4.000 W samfellt afl",
+          "en": "4,000 W continuous output"
+        },
+        {
+          "is": "Um 30 dB: nánast hljóðlaus við settið",
+          "en": "About 30 dB: near-silent next to set"
+        },
+        {
+          "is": "Úr 0 í 80 % hleðslu á um klukkustund",
+          "en": "0 to 80% charge in about an hour"
+        }
+      ]
+    },
+    "e-muuatqyc5071": {
+      "slugEn": "ecoflow-delta-3-power-station",
+      "name": {
+        "is": "EcoFlow Delta 3 rafhlöðustöð",
+        "en": "EcoFlow Delta 3 Power Station"
+      },
+      "tagline": {
+        "is": "Hljóðlát 1.800 W rafhlöðustöð, 1.024 Wh, fullhleðst á um klukkustund.",
+        "en": "Quiet 1,800 W battery power station, 1,024 Wh, charges from empty in about an hour."
+      },
+      "description": {
+        "is": "EcoFlow Delta 3 er hljóðlát 1.024 Wh rafhlöðustöð sem skilar 1.800 W með hreinni sínusbylgju, svo hún keyrir LED-ljós, hleðslutæki, DIT-stöð eða skjá alveg við settið án þess að heyrast í hljóðupptökunni og án útblásturs innandyra. Hún fullhleðst á um 56 mínútum úr venjulegri innstungu og má einnig hlaða hana með sólarsellu eða úr 12 V bíltengi. LiFePO4-rafhlöður þola kulda og hita og innbyggt varaafl tekur við á innan við 10 ms ef rafmagnið dettur út.\n\nTengi: 230 V innstungur, USB-C allt að 100 W fyrir fartölvur, USB-A og 12 V DC. Keyrir 300 til 600 W LED-ljós í 1,5 til 3 klukkustundir á fullu afli og hleður myndavéla-, dróna- og gimbal-rafhlöður allan daginn. Jafn gagnleg á viðburði, markaðsbás eða í bústað án rafmagns. Fyrir meira afl er Delta 3 Pro rétti kosturinn. Við afhendum hvert á land sem er.",
+        "en": "The EcoFlow Delta 3 is a quiet 1,024 Wh power station with 1,800 W of pure sine wave output, so it runs LED lights, chargers, a DIT station or a monitor right next to set without being heard on the sound recording and with no exhaust fumes indoors. It charges from empty to full in about 56 minutes from a wall socket, and can also be charged from a solar panel or a 12 V car socket. LiFePO4 cells handle cold and heat, and the built-in UPS switches over in under 10 ms if the mains drops.\n\nPorts: 230 V AC sockets, USB-C at up to 100 W for laptops, USB-A and 12 V DC. Runs a 300 to 600 W LED light for 1.5 to 3 hours at full power and charges camera, drone and gimbal batteries all day. Just as useful at an event, on a market stall or in a cabin without mains power. For more power see the Delta 3 Pro. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "1.800 W, hrein sínusbylgja, 1.024 Wh",
+          "en": "1,800 W pure sine wave, 1,024 Wh"
+        },
+        {
+          "is": "Fullhlaðin á um 56 mínútum",
+          "en": "Empty to full in about 56 minutes"
+        },
+        {
+          "is": "Hljóðlát, enginn útblástur: hentar við sett og innandyra",
+          "en": "Quiet, no exhaust: safe next to set and indoors"
+        },
+        {
+          "is": "USB-C 100 W, USB-A, 12 V DC, varaafl á innan við 10 ms",
+          "en": "USB-C 100 W, USB-A, 12 V DC, UPS under 10 ms"
+        }
+      ]
+    },
+    "e-mr754bxk8aeb": {
+      "slugEn": "inverter-generator-3-3-kva-cgm-cg3300ie",
+      "name": {
+        "is": "Rafstöð 3,3 kVA 230 V (CGM CG3300IE)",
+        "en": "Inverter Generator 3.3 kVA 230 V (CGM CG3300IE)"
+      },
+      "tagline": {
+        "is": "Hljóðlát 3,3 kVA inverter-rafstöð (58 dB) með rafstarti, spennujafnara og USB-tengjum. Hentar flestum raftækjum.",
+        "en": "Quiet 3.3 kVA inverter generator (58 dB) with electric start, AVR and USB ports. Suits most electrical equipment."
+      },
+      "description": {
+        "is": "Myndavélar, tölvur, hleðslutæki og ljós þurfa hreinan straum, líka þar sem enga innstungu er að finna. Inverter-straumurinn úr þessari 3,3 kVA rafstöð frá CGM er nógu hreinn fyrir þau öll, og hún er aðeins um 58 dB og því nógu hljóðlát til að ganga nálægt setti án þess að heyrast í hljóðupptökunni. Hún er með rafstarti, spennujafnara (AVR) og USB-tengjum.\n\nHún keyrir hitablásara, nokkur ljós og hleðsluborðið í grunnbúðum, eða lítið sett ein og sér. Leigist með rafmagnskeflum, fjöltengjum og stingerum. Við afhendum hvert á land sem er.",
+        "en": "Cameras, laptops, chargers and lighting need clean power, even where there is no socket to plug into. The inverter output from this 3.3 kVA CGM generator is clean enough for all of them, and at about 58 dB the generator is quiet enough to run near set without being heard on the sound recording. It has electric start, a voltage regulator (AVR) and USB ports.\n\nIt powers a heater, a few lights and the charging table at basecamp, or a small set on its own. Rent it with our cable reels, multiplugs and stingers. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "3,3 kVA, 230 V inverter-straumur, öruggur fyrir rafeindatæki",
+          "en": "3.3 kVA, 230 V inverter output, safe for electronics"
+        },
+        {
+          "is": "Rafstart, spennujafnari og USB-tengi",
+          "en": "Electric start, AVR and USB ports"
+        },
+        {
+          "is": "Hljóðlát: um 58 dB",
+          "en": "Quiet: about 58 dB"
+        }
+      ]
+    },
+    "e-mr754c3jf5e5": {
+      "slugEn": "inverter-generator-2-2-kva-cgm-cg2200i",
+      "name": {
+        "is": "Rafstöð 2,2 kVA 230 V (CGM CG2200I)",
+        "en": "Inverter Generator 2.2 kVA 230 V (CGM CG2200I)"
+      },
+      "tagline": {
+        "is": "Nett 22 kg inverter-rafstöð, hljóðlát og létt að bera hvert sem rafmagn vantar.",
+        "en": "Compact 22 kg inverter generator, quiet and easy to carry anywhere power is needed."
+      },
+      "description": {
+        "is": "CGM CG2200I er litla, hljóðláta inverter-rafstöðin: 2,2 kVA af hreinum 230 V straumi í 22 kg tösku sem einn maður ber. Hún fer með þegar tökustaðurinn er alveg rafmagnslaus og keyra þarf hleðslutæki, eitt eða tvö ljós, skjá eða lítinn hitara.\n\nInverter-straumur þýðir engar spennusveiflur fyrir viðkvæman myndavéla- og hljóðbúnað. Leigist stök eða með öðrum rafmagnsbúnaði. Við afhendum hvert á land sem er.",
+        "en": "The CGM CG2200I is our small, quiet inverter generator: 2.2 kVA of clean 230 V power in a 22 kg suitcase-style unit that one person can carry. It is the one to bring when a location has no power at all and you need to run chargers, a light or two, a monitor or a small heater.\n\nInverter output means no voltage spikes for sensitive camera and sound gear. Rent it on its own or with the rest of the power kit. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Aðeins 22 kg, einn maður ber hana",
+          "en": "Only 22 kg, carried by one person"
+        },
+        {
+          "is": "2,2 kVA, 230 V inverter-straumur",
+          "en": "2.2 kVA, 230 V inverter output"
+        },
+        {
+          "is": "Nógu hljóðlát til að ganga nálægt setti",
+          "en": "Quiet enough to run near set"
+        }
+      ]
+    },
+    "e-mr754brqcd2c": {
+      "slugEn": "schuko-extension-cable-stinger-20-m",
+      "name": {
+        "is": "Framlengingarsnúra / stinger 20 m",
+        "en": "Schuko Extension Cable / Stinger 20 m"
+      },
+      "tagline": {
+        "is": "Öflug 20 m Schuko-framlengingarsnúra (stinger) úr veðurþolnu gúmmíi. IP44, H07RN-F.",
+        "en": "Heavy-duty 20 m Schuko extension cable (stinger) in weatherproof rubber. IP44, H07RN-F."
+      },
+      "description": {
+        "is": "Rafmagn þarf að komast alla leið þangað sem unnið er, hvort sem það er á tökustað, vinnusvæði eða viðburði. Klassíski stingerinn sér um það: öflug 20 m Schuko-framlengingarsnúra úr veðurþolnu gúmmíi (H07RN-F, IP44) sem þolir bleytu, möl og umferð tökuliðs dag eftir dag.\n\nLeigist í magni með rafmagnskeflum, fjöltengjum, rafmagnstöflum og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "Power has to reach the spot where the work happens, whether that is a set, a work site or an event. The classic stinger does that job: a heavy-duty 20 m Schuko extension cable in weatherproof rubber (H07RN-F, IP44) that stands up to wet ground, gravel and crew traffic day after day.\n\nAvailable in quantity with our cable reels, multiplugs, distribution boards and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "20 m, H07RN-F gúmmí, IP44",
+          "en": "20 m, H07RN-F rubber, IP44"
+        },
+        {
+          "is": "Schuko-kló og -hulsa",
+          "en": "Schuko plug and socket"
+        },
+        {
+          "is": "Leigist í magni með rafmagnsbúnaði",
+          "en": "Available in quantity with the power kit"
+        }
+      ]
+    },
+    "e-mre0iyjs764f": {
+      "slugEn": "cable-reel-25-m",
+      "name": {
+        "is": "Rafmagnskefli 25 m",
+        "en": "Cable Reel 25 m"
+      },
+      "tagline": {
+        "is": "Útikefli með 25 m snúru (IP44) og þremur tenglum, olíu- og UV-þolið, nothæft niður í −35 °C.",
+        "en": "Outdoor-rated 25 m extension reel (IP44) with three sockets, oil- and UV-resistant, usable down to −35 °C."
+      },
+      "description": {
+        "is": "Íslenskur vetur reynir á rafmagnsbúnað utandyra, hvort sem er á tökustað, vinnusvæði eða viðburði. Þetta útikefli þolir hann: nothæft niður í −35 °C, olíu- og UV-þolið, með 25 m snúru og þremur tenglum (IP44).\n\nLeigist með stingerum, fjöltengjum og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "An Icelandic winter is hard on outdoor power kit, whether on set, on site or at an event. This outdoor cable reel stands up to it: usable down to −35 °C, oil- and UV-resistant, with 25 m of cable and three sockets (IP44).\n\nRent it with our stingers, multiplugs and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "25 m, þrír tenglar, IP44",
+          "en": "25 m, three sockets, IP44"
+        },
+        {
+          "is": "Nothæft niður í −35 °C",
+          "en": "Rated to −35 °C"
+        },
+        {
+          "is": "Olíu- og UV-þolið",
+          "en": "Oil- and UV-resistant"
+        }
+      ]
+    },
+    "e-mrpl7l4td85e": {
+      "slugEn": "outdoor-multiplug-4-sockets",
+      "name": {
+        "is": "Útifjöltengi, 4 innstungur",
+        "en": "Outdoor Multiplug, 4 Sockets"
+      },
+      "tagline": {
+        "is": "Fjöltengi fyrir útinotkun með 4 innstungum, 2 m snúru og loki yfir hverri innstungu. IP44.",
+        "en": "Outdoor multiplug with 4 sockets, a 2 m cable and protective lids. IP44."
+      },
+      "description": {
+        "is": "Síðasti metrinn í rafmagninu liggur að hleðsluborðinu, skjánum og stýringunni á hitaranum, og þar tekur þetta fjöltengi við. Það er gert fyrir útinotkun, með fjórum Schuko-innstungum, 2 m snúru og loki yfir hverri innstungu (IP44).\n\nLeigist með stingerum, rafmagnskeflum og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "The last metre of the power run leads to the charging table, the monitor and the heater controller, and that is where this multiplug comes in. It is built for outdoor use, with four Schuko sockets, a 2 m cable and lids over the sockets (IP44).\n\nRent it with our stingers, cable reels and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Fjórar innstungur, 2 m snúra",
+          "en": "Four sockets, 2 m cable"
+        },
+        {
+          "is": "IP44 með loki yfir hverri innstungu",
+          "en": "IP44 with socket lids"
+        }
+      ]
+    },
+    "e-mrpl9cphbc39": {
+      "slugEn": "outdoor-multiplug-3-sockets-switch",
+      "name": {
+        "is": "Útifjöltengi, 3 innstungur með rofa",
+        "en": "Outdoor Multiplug, 3 Sockets with Switch"
+      },
+      "tagline": {
+        "is": "Fjöltengi fyrir útinotkun með 3 innstungum, rofa, 3 m snúru og loki yfir hverri innstungu. IP44.",
+        "en": "Outdoor multiplug with 3 sockets, a power switch, a 3 m cable and protective lids. IP44."
+      },
+      "description": {
+        "is": "Rofinn á þessu fjöltengi slekkur á heilli röð af ljósum eða hleðslutækjum í einu, svo enginn þarf að taka neitt úr sambandi í bleytu. Fjöltengið er gert fyrir útinotkun, með þremur Schuko-innstungum, 3 m snúru og loki yfir hverri innstungu (IP44).\n\nLeigist með stingerum, rafmagnskeflum og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "The switch on this multiplug turns a whole bank of lights or chargers off at once, so nobody has to pull plugs in the wet. The multiplug is built for outdoor use, with three Schuko sockets, a 3 m cable and lids over the sockets (IP44).\n\nRent it with our stingers, cable reels and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Þrjár innstungur, rofi, 3 m snúra",
+          "en": "Three sockets, power switch, 3 m cable"
+        },
+        {
+          "is": "IP44 með loki yfir hverri innstungu",
+          "en": "IP44 with socket lids"
+        }
+      ]
+    },
+    "e-019": {
+      "slugEn": "steel-fuel-can-20-l",
+      "name": {
+        "is": "Bensín- og dísilbrúsi úr stáli 20 l",
+        "en": "Steel Fuel Can 20 L (petrol and diesel)"
+      },
+      "tagline": {
+        "is": "Klassískur 20 lítra stálbrúsi fyrir bensín eða dísil sem heldur rafstöðvum og hitablásurum gangandi á tökustað.",
+        "en": "Classic 20-litre steel jerry can for petrol or diesel, to keep generators and heaters fuelled on location."
+      },
+      "description": {
+        "is": "Þar sem langt er í næstu bensínstöð þarf að taka eldsneytið með sér, hvort sem það á að fara á rafstöðina, hitablásarann eða bílinn.\n\nLeigist með rafstöðvunum og olíuhitablásurunum okkar. Við afhendum hvert á land sem er.",
+        "en": "Where the nearest filling station is a long way off, the fuel has to come with you, whether it is for the generator, the heater or the vehicle.\n\nRent it with our generators and diesel heaters. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "20 l, úr stáli, fyrir bensín eða dísil",
+          "en": "20 L steel, petrol or diesel"
+        },
+        {
+          "is": "Leigist með rafstöðvum og hitablásurum",
+          "en": "Rent it with generators and heaters"
+        }
+      ]
+    },
+    "e-mrpjovke1eda": {
+      "slugEn": "32-a-3-phase-extension-cable-10-m",
+      "name": {
+        "is": "32 A þriggja fasa framlengingarsnúra 10 m",
+        "en": "32 A 3-Phase Extension Cable 10 m"
+      },
+      "tagline": {
+        "is": "10 m gúmmísnúra 5G4,0, IP44, 400 V/32 A, með kló og hulsu.",
+        "en": "10 m rubber cable 5G4.0, IP44, 400 V/32 A, plug and socket."
+      },
+      "description": {
+        "is": "Stór rafstöð eða húsrafmagn tengist 32 A rafmagnstöflunni með þessari framlengingarsnúru, og þaðan fer rafmagnið áfram í hitablásara og ljós. Snúran er 10 m löng, þriggja fasa og gerð fyrir 32 A, úr gúmmíi (5G4,0, IP44) með kló og hulsu.\n\nLeigist með 32 A rafmagnstöflunni, 16 A snúrum og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "A big generator or a mains supply connects to the 32 A distribution board through this extension cable, and from there power goes on to heaters and lights. The cable is 10 m long, three-phase and rated at 32 A, in rubber (5G4.0, IP44) with plug and socket.\n\nRent it with our 32 A distribution board, 16 A cables and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "32 A, 400 V, 10 m",
+          "en": "32 A, 400 V, 10 m"
+        },
+        {
+          "is": "Gúmmí 5G4,0, IP44",
+          "en": "Rubber 5G4.0, IP44"
+        },
+        {
+          "is": "Leigist með 32 A töflunni",
+          "en": "Rent it with the 32 A board"
+        }
+      ]
+    },
+    "e-mrpk2yn45a70": {
+      "slugEn": "16-a-3-phase-extension-cable-25-m",
+      "name": {
+        "is": "16 A þriggja fasa framlengingarsnúra 25 m",
+        "en": "16 A 3-Phase Extension Cable 25 m"
+      },
+      "tagline": {
+        "is": "25 m gúmmísnúra 5G2,5, IP44, 400 V/16 A, með kló og hulsu.",
+        "en": "25 m rubber cable 5G2.5, IP44, 400 V/16 A, plug and socket."
+      },
+      "description": {
+        "is": "Þriggja fasa rafmagn þarf að komast frá rafmagnstöflunni út í stóra olíuhitablásarann, ljósabúnað eða aðra töflu í hinum enda tjaldsins. Þessi 25 m framlengingarsnúra flytur það þangað: 16 A, úr gúmmíi (5G2,5, IP44), með kló og hulsu.\n\nLeigist með 16 A rafmagnstöflunni, 32 A snúrunni og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "Three-phase power has to get from the distribution board out to the big diesel heater, a lighting rig or a second board at the far end of a tent. This 25 m extension cable takes it there: 16 A, in rubber (5G2.5, IP44), with plug and socket.\n\nRent it with our 16 A distribution board, the 32 A cable and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "16 A, 400 V, 25 m",
+          "en": "16 A, 400 V, 25 m"
+        },
+        {
+          "is": "Gúmmí 5G2,5, IP44",
+          "en": "Rubber 5G2.5, IP44"
+        },
+        {
+          "is": "Leigist með 16 A töflunni",
+          "en": "Rent it with the 16 A board"
+        }
+      ]
+    },
+    "e-mrwb9v1v7ef1": {
+      "slugEn": "3-phase-distribution-board-16-a",
+      "name": {
+        "is": "Þriggja fasa rafmagnstafla 16 A",
+        "en": "3-Phase Distribution Board 16 A"
+      },
+      "tagline": {
+        "is": "Mini U16 rafmagnstafla með lekaliða, tveimur 16 A þriggja fasa tenglum og fjórum Schuko-tenglum.",
+        "en": "Mini U16 distribution board with an RCD, two 16 A three-phase outlets and four Schuko sockets."
+      },
+      "description": {
+        "is": "Áður en þriggja fasa rafmagn frá rafstöð eða húsi nýtist ljósum, hiturum og hleðsluborðinu þarf að skipta því örugglega niður. Það gerir þessi netta Mini U16 rafmagnstafla, með lekaliða, tveimur 16 A þriggja fasa tenglum og fjórum Schuko-tenglum.\n\nLeigist með 16 A þriggja fasa framlengingarsnúrum, stingerum og rafmagnskeflum. Við afhendum hvert á land sem er.",
+        "en": "Before three-phase power from a generator or a building is any use to lights, heaters and the charging table, it has to be split up safely. That is the job of this compact Mini U16 distribution board, with a residual-current device, two 16 A three-phase outlets and four Schuko sockets.\n\nRent it with our 16 A three-phase extension cables, stingers and cable reels. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Með lekaliða",
+          "en": "RCD protected"
+        },
+        {
+          "is": "2 × 16 A þriggja fasa tenglar, 4 × Schuko-tenglar",
+          "en": "2 × 16 A three-phase outlets, 4 × Schuko sockets"
+        },
+        {
+          "is": "Leigist með 16 A þriggja fasa snúrum",
+          "en": "Rent it with 16 A three-phase cables"
+        }
+      ]
+    },
+    "e-msoi1sx7148c": {
+      "slugEn": "3-phase-distribution-board-32-a",
+      "name": {
+        "is": "Þriggja fasa rafmagnstafla 32 A",
+        "en": "3-Phase Distribution Board 32 A"
+      },
+      "tagline": {
+        "is": "Nett 32 A rafmagnstafla fyrir þriggja fasa rafmagn á tökustað eða vinnusvæði.",
+        "en": "Compact 32 A distribution board for three-phase power on set or on site."
+      },
+      "description": {
+        "is": "Milli stórrar rafstöðvar eða húsrafmagns og hitaranna, ljósanna og taflnanna sem á eftir koma þarf einn millilið. Þessi netta 32 A rafmagnstafla er sá milliliður, gerð fyrir þriggja fasa rafmagn á tökustað.\n\nLeigist með 32 A þriggja fasa framlengingarsnúrunni, 16 A töflunni og öðrum rafmagnsbúnaði. Við afhendum hvert á land sem er.",
+        "en": "There has to be one step between a big generator or a mains supply and the heaters, lights and boards further down the line. This compact 32 A distribution board is that step, built for three-phase power on set.\n\nRent it with our 32 A three-phase extension cable, the 16 A board and the rest of the power kit. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "32 A þriggja fasa inntak",
+          "en": "32 A three-phase input"
+        },
+        {
+          "is": "Fæðir hitara, ljós og minni töflur",
+          "en": "Feeds heaters, lights and smaller boards"
+        },
+        {
+          "is": "Leigist með 32 A þriggja fasa snúrunni",
+          "en": "Rent it with the 32 A three-phase cable"
+        }
+      ]
+    },
+    "e-muk5i5vm92bc": {
+      "slugEn": "power-distribution-box",
+      "name": {
+        "is": "Rafmagnskassi",
+        "en": "Power Distribution Box"
+      },
+      "tagline": {
+        "is": "Rafmagnskassi til að dreifa rafmagni örugglega um tökustað eða vinnusvæði.",
+        "en": "Distribution box for splitting power safely across a set or work site."
+      },
+      "description": {
+        "is": "Með einu inntaki og nokkrum tenglum fá tökustaður, grunnbúðir eða vinnusvæði rafmagn um eina taug í stað flækju af framlengingarsnúrum.\n\nLeigist með stingerum, rafmagnskeflum og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "With one supply in and several outlets, a set, basecamp or work site runs from one feed instead of a tangle of extension cables.\n\nRent it with our stingers, cable reels and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Eitt inntak, nokkrir tenglar",
+          "en": "One feed in, several outlets"
+        },
+        {
+          "is": "Fyrir tökustaði, grunnbúðir og vinnusvæði",
+          "en": "For sets, basecamp and work sites"
+        },
+        {
+          "is": "Leigist með snúrum og rafstöðvum",
+          "en": "Rent it with cables and generators"
+        }
+      ]
+    },
+    "e-mr754c8n9357": {
+      "slugEn": "led-floodlight-6000-lm-tripod-nova-6k",
+      "name": {
+        "is": "LED-kastari 6.000 lm á þrífæti (NOVA 6K)",
+        "en": "LED Floodlight 6,000 lm on Tripod (NOVA 6K)"
+      },
+      "tagline": {
+        "is": "Rafhlöðuknúinn 6.000 lúmena COB-kastari (IP67), deyfanlegur, á 1,35–3 m þrífæti. Engin snúra og hann fer upp á mínútu: góður í næturtökur og þegar fer að rökkva.",
+        "en": "Battery-powered 6,000-lumen dimmable COB floodlight (IP67) on a 1.35–3 m tripod. No cable and up in a minute: ideal for night work and failing light."
+      },
+      "description": {
+        "is": "Þegar birtan fer þarf ljós þar sem engin innstunga er: á göngustíg í grunnbúðum, á bílastæði, í næturtöku eða á dimmum vetrarmorgni. NOVA 6K gengur á rafhlöðu, svo þrífóturinn fer upp á mínútu og engin snúra liggur yfir svæðið.\n\nHausinn er IP67-vottaður, svo rigning og snjór skipta engu máli. Leigist stakur eða með rafstöðvum og Scangrip-ljósum. Við afhendum hvert á land sem er.",
+        "en": "When the light goes you need lamps where there is no socket: a basecamp walkway, a parking area, a night exterior or a dark winter morning. The NOVA 6K runs on its battery, so the tripod goes up in a minute and no cable crosses the site.\n\nThe head is IP67 rated, so rain and snow are not a problem. Rent it on its own or with our generators and Scangrip lights. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "6.000 lúmen, deyfanlegt COB LED",
+          "en": "6,000 lumens, dimmable COB LED"
+        },
+        {
+          "is": "Gengur á rafhlöðu, engin snúra",
+          "en": "Battery powered, no cable to run"
+        },
+        {
+          "is": "Þrífótur 1,35 til 3 m, IP67-haus",
+          "en": "Tripod from 1.35 to 3 m, IP67 head"
+        },
+        {
+          "is": "Hleðslutæki fylgir",
+          "en": "Charger included"
+        }
+      ]
+    },
+    "e-mur645nn404b": {
+      "slugEn": "scangrip-mini-work-lights-set-of-9",
+      "name": {
+        "is": "Scangrip Mini vinnuljós, 9 stk. í tösku",
+        "en": "Scangrip Mini Work Lights, Set of 9"
+      },
+      "tagline": {
+        "is": "Níu endurhlaðanleg 1.000 lm LED-vinnuljós í Peli-tösku, með eða án snúru, IP67.",
+        "en": "Nine rechargeable 1,000 lm LED work lights in a Peli case, corded or cordless, IP67."
+      },
+      "description": {
+        "is": "Hvert Scangrip Mini ljós er 278 g endurhlaðanlegt LED-vinnuljós með 26 ljósdíóðum sem gefa allt að 1.000 lúmen við 5700 K (CRI yfir 80), gengur með eða án snúru og er IP67 vatnshelt og IK07 höggþolið. OPTILight-stillingin finnur jafnvægi milli birtu og endingartíma.\n\nDreifðu þeim á tökuliðið þegar verið er að lesta bíla, leggja snúrur eða vinna í dimmum hornum á tökustað, eða stilltu nokkrum upp á vinnuborði. Leigjast með NOVA 6K-kastaranum og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "Each Scangrip Mini is a 278 g rechargeable LED work light with 26 LEDs giving up to 1,000 lumens at 5700 K (CRI over 80), runs corded or cordless and is IP67 waterproof and IK07 impact rated. The OPTILight setting balances brightness and run time.\n\nHand them out to the crew for load-ins, cable runs and dark corners of a location, or stand a few on a workbench. Rent them with our NOVA 6K floodlight and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Allt að 1.000 lm hvert, 5700 K, CRI > 80",
+          "en": "Up to 1,000 lm each, 5700 K, CRI > 80"
+        },
+        {
+          "is": "Með eða án snúru, IP67 / IK07",
+          "en": "Corded or cordless, IP67 / IK07"
+        },
+        {
+          "is": "Níu ljós í Peli-tösku",
+          "en": "Nine lights in a Peli case"
+        },
+        {
+          "is": "278 g, 102 × 39 × 94 mm",
+          "en": "278 g, 102 × 39 × 94 mm"
+        },
+        {
+          "is": "Hleðslutæki fylgir",
+          "en": "Charger included"
+        }
+      ]
+    },
+    "e-mur67h7t57f2": {
+      "slugEn": "scangrip-nova-r-work-light-2000-lm",
+      "name": {
+        "is": "Scangrip NOVA R vinnuljós 2.000 lm",
+        "en": "Scangrip NOVA R Work Light 2,000 lm"
+      },
+      "tagline": {
+        "is": "Endurhlaðanlegt 2.000 lúmena Scangrip COB LED-vinnuljós sem stendur eða hangir þar sem ljós vantar, án snúru.",
+        "en": "Rechargeable 2,000-lumen Scangrip COB LED work light that stands or hangs wherever light is needed, with no cable to run."
+      },
+      "description": {
+        "is": "Meðalstóra Scangrip-ljósið okkar: endurhlaðanlegt NOVA R með COB LED-tækni sem gefur 2.000 lúmen. Notaðu það í förðunarhorni, í tjaldi eða á vörubílspalli við frágang.\n\nLeigist með Mini-settinu, NOVA 6K-kastaranum og rafstöðvum. Við afhendum hvert á land sem er.",
+        "en": "The mid-sized light in our Scangrip range: a rechargeable NOVA R with COB LED technology that puts out 2,000 lumens. Use it in a makeup corner, in a tent or on the back of a truck at load-out.\n\nRent it with the Mini set, the NOVA 6K floodlight and generators. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "2.000 lúmen, COB LED",
+          "en": "2,000 lumens, COB LED"
+        },
+        {
+          "is": "Endurhlaðanlegt, engin snúra",
+          "en": "Rechargeable, no cable to run"
+        },
+        {
+          "is": "Leigist með Mini-settinu og NOVA 6K",
+          "en": "Rent it with the Mini set and NOVA 6K"
+        },
+        {
+          "is": "Hleðslutæki fylgir",
+          "en": "Charger included"
+        }
+      ]
+    },
+    "e-021": {
+      "slugEn": "insulated-pop-up-tent-eskimo-outbreak-450xdp",
+      "name": {
+        "is": "Einangrað skjóltjald (Eskimo Outbreak 450XDP)",
+        "en": "Insulated Pop-Up Tent (Eskimo Outbreak 450XDP)"
+      },
+      "tagline": {
+        "is": "Einangrað popup-tjald fyrir 4–5 manns (um 7 m² gólf) úr StormShield-dúk, með 7 gluggum og opum fyrir hitara. Hlýtt skjól fyrir tökulið, gesti eða starfsfólk.",
+        "en": "Insulated pop-up tent for 4–5 people (about 7 m² of floor space) in StormShield fabric, with 7 windows and heater ports. A warm refuge for crew, guests or staff."
+      },
+      "description": {
+        "is": "Eskimo Outbreak 450XDP fer upp á nokkrum mínútum án verkfæra. Með olíuhitablásara við tjaldið færðu hlýtt skjól fyrir leikara og tökulið milli taka, förðunarhorn eða þurran stað fyrir skjáinn.\n\nÞað leigist stakt eða með hitablásurum, yfirbreiðslum og sandpokum og kemst í hvaða bíl sem er hjá okkur. Við afhendum hvert á land sem er.",
+        "en": "The Eskimo Outbreak 450XDP goes up in minutes with no tools. Add a diesel heater and you have a warm refuge for cast and crew between takes, a makeup corner or a dry spot for the monitor.\n\nRent it on its own or with our heaters, tarpaulins and sandbags; it travels in any of our vehicles. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Einangrað, 4 til 5 manns, um 7 m² gólf",
+          "en": "Insulated, 4 to 5 people, about 7 m² of floor space"
+        },
+        {
+          "is": "Sjö gluggar og op fyrir hitara",
+          "en": "Seven windows and heater ports"
+        },
+        {
+          "is": "Fer upp á nokkrum mínútum, án verkfæra",
+          "en": "Pops up in minutes, no tools"
+        },
+        {
+          "is": "Hentar með olíuhitablásurunum okkar",
+          "en": "Rent it with our diesel heaters"
+        }
+      ]
+    },
+    "e-mur5wgvi73e2": {
+      "slugEn": "sandbags-10-kg",
+      "name": {
+        "is": "Sandpokar 10 kg",
+        "en": "Sandbags 10 kg"
+      },
+      "tagline": {
+        "is": "Gulir 10 kg sandpokar sem halda tjöldum, þrífótum, skiltum og yfirbreiðslum niðri í vindi.",
+        "en": "Yellow 10 kg sandbags that hold tents, tripods, signs and tarpaulins down in the wind."
+      },
+      "description": {
+        "is": "Í íslenskum vindi þarf farg á allt sem getur fokið: tjaldfætur, ljósastanda, skiltafætur, yfirbreiðslur og snúrur. Sandpokarnir eru gulir og 10 kg hver.\n\nLeigjast í magni, gjarnan með tjöldum, yfirbreiðslum og vinnuljósum. Við afhendum hvert á land sem er.",
+        "en": "Icelandic wind calls for weight on anything that can blow away: tent legs, light stands, sign bases, tarpaulin edges and cable runs. The sandbags are yellow and weigh 10 kg each. Available in quantity.\n\nRent them with our tents, tarpaulins and work lights. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "10 kg hver, gulir",
+          "en": "10 kg each, yellow"
+        },
+        {
+          "is": "Leigjast í magni",
+          "en": "Available in quantity"
+        }
+      ]
+    },
+    "e-muubqyjq4e7f": {
+      "slugEn": "storm-umbrellas",
+      "name": {
+        "is": "Regnhlífar (stormheldar)",
+        "en": "Storm Umbrellas"
+      },
+      "tagline": {
+        "is": "Svartar tvöfaldar regnhlífar sem hleypa roki í gegn, snúast við án þess að skemmast og rúma tvo.",
+        "en": "Black double-canopy umbrellas that let the wind through and invert without damage, with room for two."
+      },
+      "description": {
+        "is": "Vandaðar svartar tvöfaldar regnhlífar gerðar fyrir íslenskt veður: rokið fer í gegnum loftaða hlífina og regnhlífin getur snúist við í roki án þess að brotna. Skaftið er úr léttu trefjagleri, haldfangið er mjúkt og regnhlífin opnast þegar ýtt er á hnapp. Hún er nógu stór til að halda tveimur manneskjum eða leikara og myndavél þurrum.\n\nLeigjast í magni fyrir tökulið, leikara og viðburði, gjarnan með tjöldum og yfirbreiðslum. Við afhendum hvert á land sem er.",
+        "en": "Sturdy black double-canopy umbrellas made for Icelandic weather: the wind passes through the vented canopy and the umbrella can invert without breaking. Each one has a lightweight fibreglass shaft and a soft-grip handle, opens at the push of a button and is roomy enough to keep two people, or an actor and a camera, dry.\n\nAvailable in quantity for cast, crew and events. Rent them with our tents and tarpaulins. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Loftuð tvöföld hlíf, snýst við án skemmda",
+          "en": "Vented double canopy, inverts without damage"
+        },
+        {
+          "is": "Pláss fyrir tvo",
+          "en": "Room for two"
+        },
+        {
+          "is": "Trefjaglerskaft, opnast sjálfkrafa",
+          "en": "Fibreglass shaft, automatic opening"
+        }
+      ]
+    },
+    "e-017": {
+      "slugEn": "tarpaulin-3-6-x-4-8-m",
+      "name": {
+        "is": "Yfirbreiðsla 3,6 × 4,8 m (2 stk.)",
+        "en": "Tarpaulin 3.6 × 4.8 m (2-pack)"
+      },
+      "tagline": {
+        "is": "Vatnsheldar yfirbreiðslur með styrktum hornum og festingaraugum sem verja búnað og ökutæki eða veita skjól á tökustað.",
+        "en": "Waterproof tarpaulins with reinforced corners and eyelets, for covering gear and vehicles or rigging quick weather protection on set."
+      },
+      "description": {
+        "is": "Búnaður, bílar og efni haldast þurr undir yfirbreiðslu, og strekkt upp verður hún að regnskjóli yfir vinnusvæði, veitingum eða við tjaldið. Hvor um sig er 3,6 × 4,8 m, vatnsheld og með styrktum hornum og festingaraugum allan hringinn. Tvær í pakka.\n\nLeigjast með strekkiborðum, klemmum og sandpokum. Við afhendum hvert á land sem er.",
+        "en": "Gear, vehicles and materials stay dry under a tarpaulin, and rigged overhead it becomes a rain shelter over a work area, catering or the tent entrance. Each one measures 3.6 × 4.8 m and is waterproof, with reinforced corners and eyelets all round. Two per pack.\n\nRent them with our lashing straps, clamps and sandbags. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "3,6 × 4,8 m, vatnsheldar",
+          "en": "3.6 × 4.8 m, waterproof"
+        },
+        {
+          "is": "Styrkt horn, festingaraugu",
+          "en": "Reinforced corners, eyelets"
+        },
+        {
+          "is": "Tvær í pakka",
+          "en": "Two per pack"
+        }
+      ]
+    },
+    "e-023": {
+      "slugEn": "lashing-strap-0-25-t",
+      "name": {
+        "is": "Strekkiborði 0,25 t",
+        "en": "Lashing Strap 0.25 t"
+      },
+      "tagline": {
+        "is": "1–3 m strekkiborði sem festir búnað og farm á kerrum, í bílum og á toppgrindum.",
+        "en": "1–3 m lashing strap for securing gear and cargo on trailers, in vans and on roof racks."
+      },
+      "description": {
+        "is": "Þegar festa þarf léttari búnað og farm á kerru, í bíl eða á toppgrind er þessi strekkiborði fljótlegur í notkun, og á honum eru engir krókar sem rispa. Hann er 1 til 3 m langur og gerður fyrir 0,25 tonn.\n\nFyrir þyngri farm eru strekkjararnir með krók rétti kosturinn. Leigist með kerrunni og bílunum okkar. Við afhendum hvert á land sem er.",
+        "en": "When lighter gear and cargo need securing on a trailer, in a van or on a roof rack, this lashing strap is quick to use and has no hooks to cause scratches. It is 1 to 3 m long and rated at 0.25 t.\n\nFor heavier loads see the ratchet straps with hooks. Rent it with our trailer and vehicles. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "1 til 3 m, 0,25 t",
+          "en": "1 to 3 m, 0.25 t"
+        },
+        {
+          "is": "Engir krókar, engar rispur",
+          "en": "No hooks, no scratches"
+        },
+        {
+          "is": "Fyrir kerrur, sendibíla og toppgrindur",
+          "en": "For trailers, vans and roof racks"
+        }
+      ]
+    },
+    "e-024": {
+      "slugEn": "ratchet-strap-with-hook",
+      "name": {
+        "is": "Strekkjari með krók (appelsínugulur)",
+        "en": "Ratchet Strap with Hooks (orange)"
+      },
+      "tagline": {
+        "is": "Tvískiptur strekkjari með borða og krók, lengdir allt að 10 m, til að festa þyngri farm og búnað á kerrum og vörubílum.",
+        "en": "Two-part ratchet strap with hooks, lengths up to 10 m, for securing heavy cargo and gear on trailers and trucks."
+      },
+      "description": {
+        "is": "Fyrir þyngri farm og búnað á kerrum og vörubílum þarf strekkjara sem heldur: skrallið strekkir borðann fastan og krókarnir ganga í festiaugu kerrunnar. Strekkjarinn er tvískiptur, með borða og krók, og fæst í lengdum allt að 10 m.\n\nLeigist með kerrunni og bílunum okkar. Við afhendum hvert á land sem er.",
+        "en": "Heavier cargo and gear on trailers and trucks call for a strap that holds: the ratchet pulls the strap tight and the hooks go into the trailer’s tie-down points. It is a two-part ratchet strap with hooks and comes in lengths up to 10 m.\n\nRent it with our trailer and vehicles. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Lengdir allt að 10 m",
+          "en": "Lengths up to 10 m"
+        },
+        {
+          "is": "Skrall og krókar",
+          "en": "Ratchet tensioner and hooks"
+        },
+        {
+          "is": "Fyrir kerrur og vörubíla",
+          "en": "For trailers and trucks"
+        }
+      ]
+    },
+    "e-murd47u51b0d": {
+      "slugEn": "spring-clamps",
+      "name": {
+        "is": "Klemmur",
+        "en": "Spring Clamps"
+      },
+      "tagline": {
+        "is": "Klemmur til að festa yfirbreiðslur, dúka og skilti á stangir og grindur.",
+        "en": "Spring clamps for fixing tarpaulins, fabric and signs to poles and frames."
+      },
+      "description": {
+        "is": "Með klemmum haldast yfirbreiðslur, dúkar, skilti og snúrur föst á stöngum, grindum og tjaldköntum.\n\nLeigjast í magni, gjarnan með yfirbreiðslum, sandpokum og tjöldum. Við afhendum hvert á land sem er.",
+        "en": "Tarpaulins, fabric, signs and cables stay put once they are clamped to poles, frames and tent edges. The clamps are available in quantity.\n\nRent them with our tarpaulins, sandbags and tents. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Festa yfirbreiðslur, dúka og skilti",
+          "en": "Hold tarpaulins, fabric and signs in place"
+        },
+        {
+          "is": "Leigjast í magni",
+          "en": "Available in quantity"
+        }
+      ]
+    },
+    "e-muubwpj7e4b1": {
+      "slugEn": "rubber-mats",
+      "name": {
+        "is": "Gúmmímottur",
+        "en": "Rubber Mats"
+      },
+      "tagline": {
+        "is": "Gúmmímottur sem verja gólf og draga úr hálku í tjöldum, bílum og á göngustígum á tökustað.",
+        "en": "Rubber mats that protect floors and prevent slips in tents, in vehicles and on walkways on location."
+      },
+      "description": {
+        "is": "Gúmmímottur á gólf í tjaldi, við inngang hjólhýsis, á vörubílspall eða á drullugan göngustíg í grunnbúðum. Þær verja undirlagið, draga úr hálku og gera kalda jörð aðeins hlýrri að standa á.\n\nLeigjast í magni, gjarnan með tjöldum, yfirbreiðslum og sandpokum. Við afhendum hvert á land sem er.",
+        "en": "Rubber mats for the floor of a tent, a caravan entrance, the back of a truck or a muddy walkway at basecamp. They protect the surface underneath, keep feet from slipping and make cold ground a little warmer to stand on. Available in quantity.\n\nRent them with our tents, tarpaulins and sandbags. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Verja gólf og draga úr hálku",
+          "en": "Protect floors and prevent slips"
+        },
+        {
+          "is": "Fyrir tjöld, bíla og göngustíga",
+          "en": "For tents, vehicles and walkways"
+        },
+        {
+          "is": "Leigjast í magni",
+          "en": "Available in quantity"
+        }
+      ]
+    },
+    "e-mrzktoe5d0c9": {
+      "slugEn": "traffic-cones-100-cm",
+      "name": {
+        "is": "Umferðarkeilur 100 cm",
+        "en": "Traffic Cones 100 cm"
+      },
+      "tagline": {
+        "is": "Stórar og stöðugar 100 cm umferðarkeilur fyrir vegalokanir og áberandi merkingar.",
+        "en": "Large, stable 100 cm traffic cones for road closures and highly visible marking."
+      },
+      "description": {
+        "is": "Við vegalokanir, á vegöxlum og alls staðar þar sem 50 cm keila sæist ekki eða fyki þarf stærri keilur. Þessar eru 100 cm háar, stöðugar í vindi og sjást langt að, hvort sem er við kvikmyndatökur, vegavinnu eða stóra viðburði.\n\nLeigjast í magni með hjáleiðarskiltum, tökuskiltum og LED-keiluljósum fyrir næturvinnu. Við afhendum hvert á land sem er.",
+        "en": "Road closures, roadsides and anywhere a 50 cm cone would be missed or blown over call for bigger cones. These cones are 100 cm tall, stable in wind and visible from far away, whether on a film shoot, at roadworks or at a large event.\n\nAvailable in quantity together with our diversion signs, filming signs and LED cone lights for night work. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "100 cm, stöðugar í íslenskum vindi",
+          "en": "100 cm, stable in Icelandic wind"
+        },
+        {
+          "is": "Fyrir vegalokanir og vegaxlir",
+          "en": "For road closures and roadsides"
+        },
+        {
+          "is": "LED-keiluljós passa ofan á þær í næturvinnu",
+          "en": "Compatible with LED cone lights for night work"
+        }
+      ]
+    },
+    "e-025": {
+      "slugEn": "traffic-cones-75-cm",
+      "name": {
+        "is": "Umferðarkeilur 75 cm með endurskini",
+        "en": "Traffic Cones 75 cm with Reflective Bands"
+      },
+      "tagline": {
+        "is": "75 cm appelsínugular umferðarkeilur með tveimur endurskinsböndum í flokki 2 og þungum gúmmífæti, fyrir vegavinnu og næturtökur.",
+        "en": "75 cm orange traffic cones with two class 2 reflective bands and a heavy rubber base, for roadworks and night shoots."
+      },
+      "description": {
+        "is": "Skærappelsínugular 75 cm umferðarkeilur með tveimur endurskinsböndum í flokki 2 (RA2) sem lýsast upp í bílljósum, svo þær sjást vel við veg löngu eftir að birtan fer. Þungur svartur gúmmífótur heldur þeim uppréttum í vindi og umferð og þær staflast vel í flutningi. Framleiddar samkvæmt EN 13422.\n\nMillistærðin, á milli 50 cm og 100 cm keilnanna okkar: nógu háar fyrir vegi og vegaxlir en samt auðvelt að bera þær í stafla. Henta jafnt í kvikmyndatökur, vegavinnu, viðburði og framkvæmdir. Leigjast í magni með hjáleiðarskiltum, tökuskiltum og LED-keiluljósum. Við afhendum hvert á land sem er.",
+        "en": "Bright orange 75 cm traffic cones with two class 2 (RA2) reflective bands that light up in headlights, so they stay visible on a road long after the light goes. The heavy black rubber base keeps them standing in wind and passing traffic, and they stack neatly for transport. Built to EN 13422.\n\nThe middle size between our 50 cm and 100 cm cones: tall enough for roads and roadsides, yet easy to carry in a stack. For film shoots, roadworks, events and construction sites alike. Available in quantity with diversion signs, filming signs and LED cone lights. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "75 cm, tvö endurskinsbönd í flokki 2 (RA2)",
+          "en": "75 cm, two class 2 (RA2) reflective bands"
+        },
+        {
+          "is": "Þungur gúmmífótur, stöðugar í vindi",
+          "en": "Heavy rubber base, stable in wind"
+        },
+        {
+          "is": "Framleiddar samkvæmt EN 13422, staflanlegar",
+          "en": "Built to EN 13422, stackable"
+        },
+        {
+          "is": "Hluti af heilum umferðarpakka með skiltum og ljósum",
+          "en": "Part of a full traffic kit with signs and lights"
+        }
+      ]
+    },
+    "e-mrl0eqb86480": {
+      "slugEn": "traffic-cones-50-cm",
+      "name": {
+        "is": "Umferðarkeilur 50 cm",
+        "en": "Traffic Cones 50 cm"
+      },
+      "tagline": {
+        "is": "50 cm umferðarkeilur til að loka af tökustaði, bílastæði og vinnusvæði.",
+        "en": "50 cm traffic cones for closing off sets, parking and work areas."
+      },
+      "description": {
+        "is": "Þegar merkja þarf heila götu eða grunnbúðir dugar ein afhending, því við leigjum þessar keilur í magni. Þetta eru venjulegar 50 cm umferðarkeilur, nógu léttar til að bera megi heilan stafla í einu og nógu áberandi til að enginn keyri inn í rammann. Notaðu þær til að loka af tökustað, taka frá bílastæði eða merkja vinnusvæði.\n\nJafn gagnlegar fyrir viðburði, framkvæmdir, húsfélög og flutninga og fyrir kvikmyndatökur. Með 75 og 100 cm keilunum, hjáleiðarskiltum, tökuskiltum og keiluljósum verður þetta heill umferðarpakki. Við afhendum hvert á land sem er.",
+        "en": "When a whole street or basecamp needs marking, one delivery is enough, because we rent these cones in quantity. They are standard 50 cm traffic cones, light enough that you can carry a whole stack at once and visible enough that nobody drives into shot. Use them to close off a set, reserve parking or mark a work area.\n\nJust as useful for events, construction sites, residents’ associations and moving days as for film shoots. Combine them with our 75 and 100 cm cones, diversion signs, filming signs and cone lights for a complete traffic kit. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "50 cm, léttar og staflanlegar",
+          "en": "50 cm, light and stackable"
+        },
+        {
+          "is": "Leigjast í magni fyrir götur og grunnbúðir",
+          "en": "Available in quantity for streets and basecamp"
+        },
+        {
+          "is": "Hluti af heilum umferðarpakka með skiltum og ljósum",
+          "en": "Part of a full traffic kit with signs and lights"
+        }
+      ]
+    },
+    "e-mrl0gz0p4b08": {
+      "slugEn": "no-parking-traffic-cones",
+      "name": {
+        "is": "Umferðarkeilur með merkinu „Bannað að leggja“",
+        "en": "No Parking Traffic Cones"
+      },
+      "tagline": {
+        "is": "Gular umferðarkeilur með merkinu „Bannað að leggja“ sem halda stæðum lausum fyrir tökubíla, viðburði og flutninga.",
+        "en": "Yellow traffic cones with the no-parking symbol that keep spaces clear for unit vehicles, events and moving days."
+      },
+      "description": {
+        "is": "Þegar bílastæði þurfa að vera laus fyrir tökubíla, viðburð, framkvæmdir eða flutningsdag segir merkið á keilunni sitt áður en nokkur leggur í stæðið. Keilurnar eru gular og á hverri þeirra er umferðarmerkið „Bannað að leggja“.\n\nLeigjast í magni með 50, 75 og 100 cm keilunum okkar, hjáleiðarskiltum og tökuskiltum. Við afhendum hvert á land sem er.",
+        "en": "When parking has to stay clear for unit vehicles, an event, construction work or a moving day, the symbol on the cone makes the point before anyone parks. The cones are yellow and each one carries the no-parking symbol.\n\nAvailable in quantity with our 50, 75 and 100 cm cones, diversion signs and filming signs. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Keila og merkið „Bannað að leggja“ í einu",
+          "en": "Cone and no-parking symbol in one"
+        },
+        {
+          "is": "Halda stæðum og losunarsvæðum lausum",
+          "en": "Keep unit parking and loading areas clear"
+        },
+        {
+          "is": "Leigjast í magni með umferðarpakkanum",
+          "en": "Available in quantity with the traffic kit"
+        }
+      ]
+    },
+    "e-026": {
+      "slugEn": "skipper-cone-top-barrier-9-m-tape",
+      "name": {
+        "is": "Skipper-keiluhaus með 9 m borða",
+        "en": "Skipper Cone-Top Barrier, 9 m Tape"
+      },
+      "tagline": {
+        "is": "Keiluhaus með 9 m inndraganlegum rauðum og hvítum hættuborða, til að loka af tökustaði og vinnusvæði á augabragði.",
+        "en": "Cone-top barrier with 9 m of retractable red and white hazard tape, for closing off sets and work areas in seconds."
+      },
+      "description": {
+        "is": "Skipper situr ofan á umferðarkeilu og geymir 9 metra af rauðum og hvítum hættuborða á inndraganlegri rúllu. Dragðu borðann út, kræktu honum í næsta Skipper og keilurnar verða að almennilegri lokunarlínu um tökustað, myndavélastöðu, vinnusvæði eða inngang á viðburð. Bremsuhnappur á hliðinni læsir borðanum í hvaða lengd sem er, svo hann helst strekktur og keilurnar standa jafnvel í hvassviðri, og í lok dags rúllast hann aftur inn í húsið, hreinn og varinn fram að næsta verkefni.\n\nÞá þarf ekki lengur að hnýta borða um keilur eða klippa hann af rúllu. Passar á 75 cm umferðarkeilurnar okkar og leigist í magni, svo hægt er að loka heilli götu, grunnbúðum eða viðburðasvæði með einni afhendingu. Við afhendum hvert á land sem er.",
+        "en": "The Skipper sits on top of a traffic cone and holds 9 metres of red and white hazard tape on a retractor. Pull the tape out, clip it to the next Skipper, and the cones become a proper barrier line around a set, a camera position, a work area or an event entrance. A brake button on the side locks the tape at any length, so it stays taut and the cones stay standing even in strong wind, and at the end of the day it rolls back into the housing, clean and protected for the next job.\n\nNo more knotting barrier tape round cones or cutting it off a roll. Fits our 75 cm traffic cones and is available in quantity, so a whole street, a basecamp or an event site can be taped off with a single delivery. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "9 m inndraganlegur rauður/hvítur hættuborði",
+          "en": "9 m retractable red/white hazard tape"
+        },
+        {
+          "is": "Situr ofan á umferðarkeilu",
+          "en": "Fits on top of a traffic cone"
+        },
+        {
+          "is": "Krækist frá keilu til keilu og myndar lokunarlínu",
+          "en": "Clips cone to cone into a barrier line"
+        },
+        {
+          "is": "Bremsuhnappur heldur borðanum strekktum í vindi",
+          "en": "Brake button keeps the tape taut in wind"
+        }
+      ]
+    },
+    "e-027": {
+      "slugEn": "telescopic-cone-bar",
+      "name": {
+        "is": "Útdraganleg slá á umferðarkeilur",
+        "en": "Telescopic Cone Bar"
+      },
+      "tagline": {
+        "is": "Rauð og hvít útdraganleg slá með endurskini sem krækist á milli tveggja umferðarkeilna og myndar áberandi lokun á augabragði.",
+        "en": "Reflective red and white telescopic bar that hooks between two traffic cones for a quick, highly visible cordon."
+      },
+      "description": {
+        "is": "Rauð og hvít útdraganleg slá með lykkju á hvorum enda sem smellur yfir topp umferðarkeilu. Dragðu hana út í þá lengd sem þarf, kræktu henni á milli tveggja keilna og þú ert með trausta lokun með endurskini á nokkrum sekúndum: yfir akrein, bílastæði, inngang í grunnbúðir, hlið á viðburði eða bannsvæði í kringum myndavélina.\n\nHún er augljós lokun þar sem fólk og bílar færu annars á milli keilnanna, og endurskinsrendurnar endurkasta bílljósum í myrkri. Fyrir kvikmyndatökur, viðburði, bílastæði og vinnusvæði. Leigist í magni með 50, 75 og 100 cm keilunum okkar, hjáleiðarskiltum og LED-keiluljósum. Við afhendum hvert á land sem er.",
+        "en": "A red and white telescopic bar with a loop at each end that drops over the top of a traffic cone. Extend it to the length you need, hook it between two cones and you have a solid, reflective barrier in seconds: across a lane, a parking space, a basecamp entrance, an event gate or a no-go zone around the camera.\n\nIt reads as a proper closure where a row of cones alone gets driven or walked through, and the reflective striping picks up headlights at night. For film shoots, events, car parks and work sites. Available in quantity with our 50, 75 and 100 cm cones, diversion signs and LED cone lights. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Útdraganleg, stillist að bilinu á milli keilna",
+          "en": "Telescopic, adjusts to the gap between cones"
+        },
+        {
+          "is": "Rauð/hvít með endurskinsröndum",
+          "en": "Red/white with reflective striping"
+        },
+        {
+          "is": "Lykkjur á endum passa á venjulegar keilur",
+          "en": "Loop ends drop over any standard cone"
+        },
+        {
+          "is": "Hluti af heilum umferðarpakka með keilum, skiltum og ljósum",
+          "en": "Part of a full traffic kit with cones, signs and lights"
+        }
+      ]
+    },
+    "e-mw1dznnq20e9": {
+      "slugEn": "clip-on-cone-sign",
+      "name": {
+        "is": "Upplýsingaskilti á umferðarkeilu",
+        "en": "Clip-On Cone Sign"
+      },
+      "tagline": {
+        "is": "Hvítt skilti sem rennt er ofan á topp umferðarkeilu, fyrir bílastæði, leiðbeiningar og tilkynningar í augnhæð.",
+        "en": "White signboard that slides onto the top of a traffic cone, for parking, directions and set notices at eye level."
+      },
+      "description": {
+        "is": "Ekkert límband, engin bensli og engir standar: skiltið er með rauf og rennur beint niður yfir topp umferðarkeilu, sem heldur því uppi. Það situr hátt og beint, einmitt þar sem ökumenn og gangandi vegfarendur horfa.\n\nNotaðu það eftir þörfum dagsins: frátekin bílastæði, „tökur í gangi“, vísun á grunnbúðir, veitingar eða salerni, inngangur á viðburð eða lokuð akrein á vinnusvæði. Skrifaðu á það eða settu á það prentaða tilkynningu. Leigist í magni með 50, 75 og 100 cm keilunum okkar, hjáleiðarskiltum og LED-keiluljósum. Við afhendum hvert á land sem er.",
+        "en": "No tape, cable ties or stands: the signboard has a slot and slides straight down over the top of a traffic cone, which holds it up. It sits high and level where drivers and pedestrians actually look.\n\nUse it for whatever the day needs: reserved parking, “filming in progress”, directions to basecamp, catering or the toilets, an event entrance or a closed lane at a work site. Write on it or put a printed notice on it. Available in quantity with our 50, 75 and 100 cm cones, diversion signs and LED cone lights. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Rennt ofan á topp venjulegrar umferðarkeilu",
+          "en": "Slides onto the top of a standard traffic cone"
+        },
+        {
+          "is": "Hvítt skilti fyrir bílastæði, leiðbeiningar og tilkynningar",
+          "en": "White signboard for parking, directions and set notices"
+        },
+        {
+          "is": "Ekkert límband, engin bensli og engir aukastandar",
+          "en": "No tape, ties or extra stands needed"
+        },
+        {
+          "is": "Hluti af heilum umferðarpakka með keilum og ljósum",
+          "en": "Part of a full traffic kit with cones and lights"
+        }
+      ]
+    },
+    "e-mrl0vha3a57a": {
+      "slugEn": "led-cone-lights-set-of-8",
+      "name": {
+        "is": "LED-keiluljós, 8 stk. í tösku",
+        "en": "LED Cone Lights, Set of 8"
+      },
+      "tagline": {
+        "is": "Appelsínugul LED-ljós sem smella ofan á umferðarkeilur og blikka í röð, 8 stykki í tösku.",
+        "en": "Orange LED lights that sit on top of traffic cones and flash in sequence, set of 8 in a carrying case."
+      },
+      "description": {
+        "is": "Til að lokun sjáist langt að í myrkri smellir þú þessum ljósum ofan á umferðarkeilurnar og lætur þau blikka í röð. Þetta eru appelsínugul LED-ljós, blikkið er stillanlegt og öll átta komast í eina tösku.\n\nFyrir næturtökur, vegavinnu, viðburði og vetrarmyrkur. Leigjast með keilum, hjáleiðarskiltum og tökuskiltum. Við afhendum hvert á land sem er.",
+        "en": "To make a closure visible from far away in the dark, sit these lights on top of your traffic cones and let them flash in sequence. They are orange LED lights, the flash pattern is adjustable and all eight travel in one carrying case.\n\nFor night shoots, roadworks, events and the winter dark. Rent them with our cones, diversion signs and filming signs. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Blikka í röð, stillanlegt blikk",
+          "en": "Sequential flashing, adjustable"
+        },
+        {
+          "is": "Átta ljós í einni tösku",
+          "en": "Eight lights in one carrying case"
+        },
+        {
+          "is": "Passa ofan á allar umferðarkeilur",
+          "en": "Fit on top of any traffic cone"
+        }
+      ]
+    },
+    "e-mu77oa2z8637": {
+      "slugEn": "magnetic-hazard-beacon",
+      "name": {
+        "is": "Öryggisblikkljós með segli",
+        "en": "Magnetic Hazard Beacon"
+      },
+      "tagline": {
+        "is": "Öryggisblikkljós í gúmmíhúsi með segli sem festist á bílþak eða stálflöt.",
+        "en": "Rubber-cased LED hazard beacon with a magnet that sticks to a car roof or a steel surface."
+      },
+      "description": {
+        "is": "Þetta blikkandi LED-öryggisljós merkir tökubíl á vegöxl, fremsta bíl í bílalest eða hættu á vinnusvæði. Húsið er úr gúmmíi og segull í botninum festir það á bílþak, kerru eða hvaða stálflöt sem er.\n\nLeigist með öryggisvestum, keilum og skiltum. Við afhendum hvert á land sem er.",
+        "en": "This flashing LED hazard beacon marks a unit vehicle at the roadside, the lead car in a convoy or a hazard on a work site. The housing is rubber and a magnet in the base sticks it to a car roof, a trailer or any steel surface.\n\nRent it with our hi-vis vests, cones and signs. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Segull í botni, þarf engar festingar",
+          "en": "Magnetic base, no mounting needed"
+        },
+        {
+          "is": "Gúmmíhús",
+          "en": "Rubber housing"
+        },
+        {
+          "is": "Fyrir bíla, kerrur og vinnusvæði",
+          "en": "For vehicles, trailers and work sites"
+        }
+      ]
+    },
+    "e-mr754cdu38ba": {
+      "slugEn": "high-visibility-safety-vest",
+      "name": {
+        "is": "Öryggisvesti",
+        "en": "High-Visibility Safety Vest"
+      },
+      "tagline": {
+        "is": "Endurskinsvesti fyrir alla sem vinna nálægt umferð, ökutækjum og vinnuvélum.",
+        "en": "Hi-vis vest for anyone working around traffic, vehicles and machinery."
+      },
+      "description": {
+        "is": "Tökulið á vegi, umferðarstjórar, starfsfólk viðburða og verktakar þurfa að sjást þegar unnið er nálægt umferð, ökutækjum og vinnuvélum. Vestið er í áberandi lit með endurskini og leigist í magni svo allur hópurinn sé sýnilegur.\n\nLeigist með umferðarkeilum, skiltum og blikkljósum. Við afhendum hvert á land sem er.",
+        "en": "Crew on a road shoot, traffic marshals, event staff and contractors need to be seen when working near traffic, vehicles and machinery. The vest is high-visibility with reflective strips and is available in quantity so the whole team is visible.\n\nRent it with our traffic cones, signs and hazard beacons. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Áberandi litur með endurskini",
+          "en": "Hi-vis with reflective strips"
+        },
+        {
+          "is": "Leigist í magni fyrir allt liðið",
+          "en": "Available in quantity for the whole crew"
+        },
+        {
+          "is": "Leigist með keilum og skiltum",
+          "en": "Rent it with cones and signs"
+        }
+      ]
+    },
+    "e-022": {
+      "slugEn": "portable-fence-post",
+      "name": {
+        "is": "Plaststaur með hrútshorni",
+        "en": "Portable Fence Post with Ram’s Horn"
+      },
+      "tagline": {
+        "is": "Léttur 99 cm plaststaur með málmoddi og hrútshorni, fljótleg bráðabirgðagirðing fyrir tökustað.",
+        "en": "Lightweight 99 cm plastic post with a metal ground spike and ram’s-horn hook, for quick temporary fencing on location."
+      },
+      "description": {
+        "is": "Málmoddinum er stungið í jörð og hrútshornið heldur borða eða snúru. Nokkrir staurar og borði mynda bráðabirgðagirðingu um tökustað, viðburðasvæði, bílastæði eða vinnusvæði á nokkrum mínútum.\n\nLeigist í magni með keilum, Skipper-keiluhausum og skiltum. Við afhendum hvert á land sem er.",
+        "en": "The metal spike pushes into the ground and the ram’s-horn hook holds tape or rope. A few posts and a roll of tape make a temporary fence around a set, an event area, a parking area or a work site in minutes.\n\nAvailable in quantity with our cones, Skipper cone-top barriers and signs. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "99 cm, málmoddur í jörð",
+          "en": "99 cm, metal ground spike"
+        },
+        {
+          "is": "Hrútshorn fyrir borða eða snúru",
+          "en": "Ram’s-horn hook for tape or rope"
+        },
+        {
+          "is": "Leigist í magni",
+          "en": "Available in quantity"
+        }
+      ]
+    },
+    "e-mrw8w5pqb2c8": {
+      "slugEn": "modular-motorcycle-helmet-nox",
+      "name": {
+        "is": "Kjálkahjálmur (NOX)",
+        "en": "Modular Motorcycle Helmet (NOX)"
+      },
+      "tagline": {
+        "is": "Kjálkahjálmur með innbyggðu sólgleri og plássi fyrir talkerfi, ECE 22.06-vottaður, fyrir sexhjólið og mótorhjólatökur.",
+        "en": "Modular helmet with a built-in sun visor and intercom space, ECE 22.06 certified, for motorcycle shoots and the six-wheeler."
+      },
+      "description": {
+        "is": "Þessi mótorhjólahjálmur er kjálkahjálmur úr pólýkarbónati og hitaplasti með innbyggðu sólgleri, vindhlíf við hökuna, góðri öndun og gleri fyrir Pinlock 30 móðuvörn. Vel hljóðeinangraður, með lausu fóðri, hraðsmellu og plássi fyrir talkerfi. Hjálmapoki fylgir. Vottaður samkvæmt ECE 22.06 með tvöfaldri P/J-vottun.\n\nLeigist með Can-Am-sexhjólinu okkar, eða stakur fyrir mótorhjóla- og fjórhjólasenur og einstaklinga. Við afhendum hvert á land sem er.",
+        "en": "A polycarbonate and thermoplastic modular helmet with a built-in sun visor, a chin wind deflector, good ventilation and a visor ready for a Pinlock 30 anti-fog insert. Well insulated against noise, with a removable lining, a quick-release buckle and space for an intercom. Helmet bag included. Certified to ECE 22.06 with P/J dual homologation.\n\nRent it with our Can-Am six-wheeler, or on its own for motorcycle and ATV scenes and for private riders. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "ECE 22.06-vottaður, tvöföld P/J-vottun",
+          "en": "ECE 22.06 certified, P/J dual homologation"
+        },
+        {
+          "is": "Innbyggt sólgler, gler fyrir Pinlock-móðuvörn",
+          "en": "Built-in sun visor, Pinlock-ready"
+        },
+        {
+          "is": "Laust fóður, pláss fyrir talkerfi",
+          "en": "Removable lining, intercom space"
+        },
+        {
+          "is": "Hjálmapoki fylgir",
+          "en": "Helmet bag included"
+        }
+      ]
+    },
+    "e-mrzl66ydd657": {
+      "slugEn": "diversion-signs",
+      "name": {
+        "is": "Hjáleiðarskilti",
+        "en": "Diversion Signs"
+      },
+      "tagline": {
+        "is": "Hjáleiðarskilti til hægri eða vinstri sem stýra umferð fram hjá lokuðum tökustað.",
+        "en": "Diversion signs pointing left or right, to route traffic smoothly around a closed set."
+      },
+      "description": {
+        "is": "Skýrar merkingar halda ökumönnum rólegum og tökustaðastjóranum af götunni. Hjáleiðarskiltin vísa til hægri eða vinstri og stýra umferð snurðulaust fram hjá lokuðum tökustað, lokaðri götu, vegavinnu eða viðburði.\n\nLeigjast með keilum, tökuskiltum og grunnbúðaskiltum. Við afhendum hvert á land sem er.",
+        "en": "Clear signage keeps drivers calm and the location manager out of the road. The diversion (detour) signs point left or right and route traffic smoothly around a closed set, a blocked street, roadworks or an event.\n\nRent them with our cones, filming signs and basecamp signs. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Örvar til hægri og vinstri",
+          "en": "Left and right arrows"
+        },
+        {
+          "is": "Stýra umferð fram hjá lokuðum tökustað",
+          "en": "Route traffic around a closed set"
+        },
+        {
+          "is": "Leigjast með keilum og tökuskiltum",
+          "en": "Rent them with cones and filming signs"
+        }
+      ]
+    },
+    "e-mseixxnp32fb": {
+      "slugEn": "filming-in-progress-sign",
+      "name": {
+        "is": "Tökuskilti „Filming in Progress“",
+        "en": "Filming in Progress Sign"
+      },
+      "tagline": {
+        "is": "Skilti á ensku („Filming in Progress“) sem lætur vegfarendur vita að kvikmyndatökur séu í gangi á svæðinu.",
+        "en": "Sign letting passers-by know that filming is in progress in the area."
+      },
+      "description": {
+        "is": "Þetta skilti svarar spurningunni áður en nokkur spyr: hér á svæðinu eru kvikmyndatökur í gangi. Textinn er á ensku: „Public Notice: Filming in Progress“. Það heldur vegfarendum frá því að ganga inn í töku og er kurteisleg kynning á tökunum fyrir hverfið.\n\nLeigist með hjáleiðarskiltum, keilum og grunnbúðaskiltum. Við afhendum hvert á land sem er.",
+        "en": "This sign answers the question before anyone asks it: filming is in progress in the area. The text is in English: “Public Notice: Filming in Progress”. It keeps passers-by from walking into a take and is the polite first contact between a production and a neighbourhood.\n\nRent it with our diversion signs, cones and basecamp signage. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Upplýsir almenning áður en hann kemur að setti",
+          "en": "Informs the public before they reach set"
+        },
+        {
+          "is": "Heldur vegfarendum utan tökunnar",
+          "en": "Keeps passers-by out of the take"
+        },
+        {
+          "is": "Leigist með hjáleiðar- og grunnbúðaskiltum",
+          "en": "Rent it with diversion and basecamp signs"
+        }
+      ]
+    },
+    "e-murd25ab187f": {
+      "slugEn": "basecamp-direction-signs",
+      "name": {
+        "is": "Grunnbúðaskilti úr áli",
+        "en": "Basecamp Direction Signs (aluminium)"
+      },
+      "tagline": {
+        "is": "Álskilti merkt Location, Basecamp, Techbase og Crew Parking, svo tökuliðið rati.",
+        "en": "Aluminium signs reading Location, Basecamp, Techbase and Crew Parking, so the unit finds its way."
+      },
+      "description": {
+        "is": "Fyrsta morguninn á allt tökuliðið að rata án þess að hringja. Settu álskiltin upp við afleggjarana: þau eru merkt Location, Basecamp, Techbase og Crew Parking. Álið þolir rigningu og rok og auðvelt er að þurrka af því milli verkefna.\n\nLeigjast með keilum, upplýsingaskiltum á keilur og tökuskiltum. Við afhendum hvert á land sem er.",
+        "en": "On the first morning the whole unit should find its way without a single phone call. Put the aluminium direction signs up at the turn-offs: they read Location, Basecamp, Techbase and Crew Parking. Aluminium stands up to rain and wind and wipes clean between jobs.\n\nRent them with our cones, clip-on cone signs and filming signs. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Location, Basecamp, Techbase, Crew Parking",
+          "en": "Location, Basecamp, Techbase, Crew Parking"
+        },
+        {
+          "is": "Úr áli, veðurþolin",
+          "en": "Aluminium, weatherproof"
+        },
+        {
+          "is": "Leigjast með keilum og keiluskiltum",
+          "en": "Rent them with cones and cone signs"
+        }
+      ]
+    },
+    "e-mr754cj10dbb": {
+      "slugEn": "folding-chair",
+      "name": {
+        "is": "Samanbrjótanlegur stóll",
+        "en": "Folding Chair"
+      },
+      "tagline": {
+        "is": "Svartur samanbrjótanlegur stóll fyrir veislur, viðburði, grunnbúðir og veitingatjöld.",
+        "en": "Black folding chair for parties, events, basecamp and catering tents."
+      },
+      "description": {
+        "is": "Þegar allir þurfa sæti, í grunnbúðum, veitingatjaldi eða video village, á biðsvæði eða á viðburði, leigjast þessir stólar í magni. Þeir staflast og komast í hvaða bíl sem er hjá okkur.\n\nLeigjast með samanbrjótanlegum borðum, tjöldum og hitablásurum fyrir fullbúnar grunnbúðir. Við afhendum hvert á land sem er.",
+        "en": "When everyone needs a seat, at basecamp, in the catering tent, at video village, in a holding area or at an event, these chairs are available in quantity. They stack and fit in any of our vehicles.\n\nRent them with our folding tables, tents and heaters for a complete basecamp. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Leggst saman, staflast í flutningi",
+          "en": "Folds flat, stacks for transport"
+        },
+        {
+          "is": "Leigist í magni",
+          "en": "Available in quantity"
+        },
+        {
+          "is": "Leigist með samanbrjótanlegum borðum og tjöldum",
+          "en": "Rent it with folding tables and tents"
+        }
+      ]
+    },
+    "e-mr754coccab2": {
+      "slugEn": "folding-table-183-cm",
+      "name": {
+        "is": "Samanbrjótanlegt borð 183 cm (2 stk.)",
+        "en": "Folding Table 183 cm (2-pack)"
+      },
+      "tagline": {
+        "is": "Sterkt 183 cm borð sem leggst saman í tvennt, hentar úti sem inni og er auðvelt í flutningi. Tvö í pakka.",
+        "en": "Sturdy 183 cm tables that fold in half, work indoors or out and are easy to carry. Two per pack."
+      },
+      "description": {
+        "is": "Hvort borð er borið eins og taska og nýtist undir veitingar, förðun, hleðslu eða skráningu á viðburði og sem vinnuborð á verkstað.\n\nLeigjast með stólum, tjöldum og hitablásurum. Við afhendum hvert á land sem er.",
+        "en": "Each table carries like a suitcase and serves for catering, makeup, charging or event registration, and as a work surface on site.\n\nRent them with our chairs, tents and heaters. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "183 cm, leggst saman í tvennt",
+          "en": "183 cm, folds in half"
+        },
+        {
+          "is": "Úti sem inni",
+          "en": "Indoor and outdoor"
+        },
+        {
+          "is": "Tvö borð í pakka",
+          "en": "Two tables per pack"
+        }
+      ]
+    },
+    "e-muvovrfn3da0": {
+      "slugEn": "thermal-jug-1-9-l",
+      "name": {
+        "is": "Hitakanna 1,9 l",
+        "en": "Thermal Jug 1.9 L"
+      },
+      "tagline": {
+        "is": "1,9 lítra hitakanna sem heldur kaffinu heitu á veitingaborðinu tímunum saman.",
+        "en": "1.9-litre thermal jug that keeps coffee hot on the catering table for hours."
+      },
+      "description": {
+        "is": "Kannan þarf enga innstungu, svo kaffi, te eða heitt vatn er til reiðu í tjaldi tökuliðsins, á fundi eða á viðburði.\n\nLeigist í magni, gjarnan með samanbrjótanlegum borðum, tjöldum og hitablásurum. Við afhendum hvert á land sem er.",
+        "en": "The jug needs no power socket, so coffee, tea or hot water is on hand in the crew tent, at a meeting or at an event.\n\nAvailable in quantity. Rent it with our folding tables, tents and heaters. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Heldur heitu tímunum saman, án rafmagns",
+          "en": "Keeps drinks hot for hours, no power needed"
+        },
+        {
+          "is": "Fyrir kaffi, te eða heitt vatn",
+          "en": "For coffee, tea or hot water"
+        },
+        {
+          "is": "Leigist í magni",
+          "en": "Available in quantity"
+        }
+      ]
+    },
+    "e-muuayhik0574": {
+      "slugEn": "folding-clothes-rail-100-cm",
+      "name": {
+        "is": "Fellanleg fataslá 100 cm",
+        "en": "Folding Clothes Rail 100 cm"
+      },
+      "tagline": {
+        "is": "Fellanleg fataslá úr stáli, 100 cm breið, fyrir búningadeild, fatahengi og viðburði.",
+        "en": "Folding steel clothes rail, 100 cm wide, for the costume department, cloakrooms and events."
+      },
+      "description": {
+        "is": "Sláin leggst flöt í flutningi og fer upp á nokkrum sekúndum. Hún kemur búningunum upp úr töskunum og á herðatré í tjaldi, hjólhýsi eða búningabíl, og nýtist jafn vel í fatahengi á viðburði eða í popup-verslun.\n\nLeigist með herðatrjám, samanbrjótanlegum borðum, tjöldum og Nestor-förðunarspeglinum fyrir fullbúna búninga- og förðunarstöð. Við afhendum hvert á land sem er.",
+        "en": "The rail folds flat for transport and sets up in seconds. It gets the costumes out of the cases and hanging in the tent, the caravan or the wardrobe truck, and works just as well for an event cloakroom or a pop-up shop.\n\nRent it with our hangers, folding tables, tents and the Nestor makeup mirror for a complete costume and makeup station. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "100 cm breið, stál",
+          "en": "100 cm wide, steel"
+        },
+        {
+          "is": "Leggst flöt, upp á sekúndum",
+          "en": "Folds flat, sets up in seconds"
+        },
+        {
+          "is": "Leigist með herðatrjám og förðunarspeglinum",
+          "en": "Rent it with hangers and the makeup mirror"
+        }
+      ]
+    },
+    "e-muuawds101e3": {
+      "slugEn": "non-slip-hangers-set-of-50",
+      "name": {
+        "is": "Herðatré með stömu gripi, 50 stk.",
+        "en": "Non-Slip Hangers, Set of 50"
+      },
+      "tagline": {
+        "is": "Fimmtíu stöm plastherðatré sem halda búningunum á slánni, líka á holóttum vegi.",
+        "en": "Fifty non-slip plastic hangers that keep costumes on the rail, even on a bumpy road."
+      },
+      "description": {
+        "is": "Gripið heldur skyrtum, kjólum og silki á slánni á leiðinni á tökustað og þar sem herðatrén eru þunn komast fleiri búningar á hverja slá.\n\nLeigjast með fataslánum og buxnaherðatrjánum okkar. Við afhendum hvert á land sem er.",
+        "en": "The grip keeps shirts, dresses and silks from sliding off the rail on the drive to location, and the slim shape fits more costumes on a rail.\n\nRent them with our clothes rails and trouser hangers. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Stamt grip heldur flíkunum á slánni",
+          "en": "Non-slip grip keeps garments on the rail"
+        },
+        {
+          "is": "Þunn: fleiri búningar á hverja slá",
+          "en": "Slim profile: more costumes per rail"
+        },
+        {
+          "is": "50 stykki í setti",
+          "en": "Set of 50"
+        }
+      ]
+    },
+    "e-muubj0xl996d": {
+      "slugEn": "trouser-hangers-set-of-20",
+      "name": {
+        "is": "Buxnaherðatré, 20 stk.",
+        "en": "Trouser Hangers, Set of 20"
+      },
+      "tagline": {
+        "is": "Tuttugu klemmuherðatré fyrir buxur og pils í búningadeildinni.",
+        "en": "Twenty clip hangers for trousers and skirts in the costume department."
+      },
+      "description": {
+        "is": "Með klemmunum hanga buxur og pils krumpulaus við hlið efri hlutans í stað þess að liggja samanbrotin í tösku.\n\nLeigjast með fataslánum og stömu herðatrjánum okkar. Við afhendum hvert á land sem er.",
+        "en": "The clips let trousers and skirts hang crease-free beside their tops instead of lying folded in a case.\n\nRent them with our clothes rails and non-slip hangers. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Klemmur fyrir buxur og pils",
+          "en": "Clips for trousers and skirts"
+        },
+        {
+          "is": "Leigjast með fataslánum okkar",
+          "en": "Rent them with our clothes rails"
+        },
+        {
+          "is": "20 stykki í setti",
+          "en": "Set of 20"
+        }
+      ]
+    },
+    "e-028": {
+      "slugEn": "nestor-led-makeup-mirror",
+      "name": {
+        "is": "Nestor-förðunarspegill með LED-ljósum",
+        "en": "Nestor LED Makeup Mirror"
+      },
+      "tagline": {
+        "is": "Færanlegur þrískiptur förðunarspegill með deyfanlegu LED-ljósi frá 2700 til 6100 K, fyrir förðun á tökustað, í leikhúsi og á viðburðum.",
+        "en": "Portable three-panel makeup mirror with dimmable LED light from 2700 to 6100 K, for makeup on location, in the theatre and at events."
+      },
+      "description": {
+        "is": "Förðunarspegill fyrir fagfólk frá Nestor í Frakklandi, hannaður fyrir kvikmyndatökur. LED-ljósræmur liggja í kringum miðspegilinn og niður innanverða hliðarflekana og lýsa andlitið upp jafnt frá öllum hliðum, án glampa eða skugga. Með stýringunni er birtan stillt frá 0 til 100 % og litahitinn frá 2700 K til 6100 K, svo förðunin passar við glóperuljós, dagsbirtu eða allt þar á milli áður en leikarinn gengur inn á sett.\n\nFjöltengi, USB-hleðslutæki og klukka eru innbyggð, svo förðunarfræðingurinn hefur allt við höndina á stöðinni. Spegillinn leggst saman í flatan 76 × 64 × 9 cm álkassa sem vegur um 16 kg og er með axlaról, og hann notar aðeins 110 W, svo lítil rafstöð eða eitt af hjólhýsunum okkar dugar vel. Leigist með samanbrjótanlegum borðum og stólum, fataslám, tjöldum og hiturum fyrir heila förðunarstöð á tökustað. Við afhendum hvert á land sem er.",
+        "en": "A professional makeup mirror built for film sets by Nestor in France. LED strips run around the central mirror and down the inside of both side panels, lighting the face evenly from every side with no hot spots or shadows. The controller sets brightness from 0 to 100% and colour temperature from 2700 K to 6100 K, so makeup can be matched to tungsten, daylight or anything in between before the actor walks on set.\n\nA multiplug, USB charger and clock are built in, so the makeup artist has everything they need at the station. Closed, it is a flat 76 × 64 × 9 cm aluminium case that weighs about 16 kg and has a shoulder strap. It draws only 110 W, so it runs happily off a small generator or one of our caravans. Rent it with folding tables and chairs, clothes rails, tents and heaters for a complete makeup station on location. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Deyfanlegt LED-ljós, 2700 til 6100 K",
+          "en": "Dimmable LED light, 2700 to 6100 K"
+        },
+        {
+          "is": "Þrír flekar lýsa andlitið upp jafnt frá öllum hliðum",
+          "en": "Three panels light the face evenly from every side"
+        },
+        {
+          "is": "Innbyggt fjöltengi, USB-hleðslutæki og klukka",
+          "en": "Built-in multiplug, USB charger and clock"
+        },
+        {
+          "is": "Leggst saman í flatan 16 kg kassa, aðeins 110 W",
+          "en": "Folds into a flat 16 kg case, only 110 W"
+        }
+      ]
+    },
+    "e-018": {
+      "slugEn": "jump-starter-24-v-noco-gb251",
+      "name": {
+        "is": "Starttæki fyrir vörubíla 24 V (NOCO GB251+)",
+        "en": "Jump Starter for Trucks 24 V (NOCO GB251+)"
+      },
+      "tagline": {
+        "is": "3.000 A starttæki fyrir 24 V dísil- og bensínvélar allt að 32 lítra í vörubílum, rútum og vinnuvélum. Með USB-hleðslu og LED-vinnuljósi.",
+        "en": "3,000 A lithium jump starter for 24 V diesel and petrol engines up to 32 litres: trucks, buses and heavy machinery. USB charging and an LED work light built in."
+      },
+      "description": {
+        "is": "Rafmagnslaus vörubíll, rúta eða vinnuvél fer í gang á staðnum með þessu tæki og ekkert annað ökutæki þarf til. NOCO GB251+ er 3.000 A litíum-starttæki sem ræður við 24 V dísil- og bensínvélar allt að 32 lítra, líka í rafstöðvum. Það er einnig með USB-hleðslu og LED-vinnuljósi. Fyrir 12 V bíla og sendibíla er NOCO GBX155 rétta tækið.\n\nLeigist með bílunum okkar eða eitt og sér. Við afhendum hvert á land sem er.",
+        "en": "A truck, bus or piece of heavy machinery with a flat battery starts on the spot with this unit, and no second vehicle is needed. The NOCO GB251+ is a 3,000 A lithium jump starter that handles 24 V diesel and petrol engines up to 32 litres, in generators too. It also has USB charging and an LED work light built in. For 12 V cars and vans see the NOCO GBX155.\n\nRent it with our vehicles or on its own. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "3.000 A, 24 V vélar allt að 32 l",
+          "en": "3,000 A, 24 V engines up to 32 L"
+        },
+        {
+          "is": "Þarf ekki annað ökutæki",
+          "en": "No second vehicle needed"
+        },
+        {
+          "is": "USB-hleðsla, LED-vinnuljós",
+          "en": "USB charging, LED work light"
+        }
+      ]
+    },
+    "e-020": {
+      "slugEn": "jump-starter-12-v-noco-gbx155",
+      "name": {
+        "is": "Starttæki 12 V (NOCO GBX155)",
+        "en": "Jump Starter 12 V (NOCO GBX155)"
+      },
+      "tagline": {
+        "is": "4.250 A starttæki fyrir 12 V bensínvélar allt að 10 lítra og dísilvélar allt að 8 lítra í fólksbílum, sendibílum og vinnuvélum. Með USB-C-hleðslu og 500 lúmena LED-ljósi.",
+        "en": "4,250 A lithium jump starter for 12 V petrol engines up to 10 litres and diesels up to 8 litres: cars, vans and machinery. USB-C charging and a 500-lumen LED light built in."
+      },
+      "description": {
+        "is": "Þetta tæki kemst í hanskahólfið en er samt nógu öflugt til að ræsa bíl á frostköldum morgni. NOCO GBX155 er 4.250 A litíum-starttæki fyrir 12 V bensínvélar allt að 10 lítra og dísilvélar allt að 8 lítra í fólksbílum, jeppum, sendibílum og vinnuvélum. Það er einnig með USB-C-hleðslu og 500 lúmena LED-ljósi. Fyrir 24 V vörubíla er NOCO GB251+ rétta tækið.\n\nLeigist með bílunum okkar eða eitt og sér. Við afhendum hvert á land sem er.",
+        "en": "This unit fits in the glovebox yet is powerful enough to start an engine on a freezing morning. The NOCO GBX155 is a 4,250 A lithium jump starter for 12 V petrol engines up to 10 litres and diesels up to 8 litres in cars, SUVs, vans and machinery. It also has USB-C charging and a 500-lumen LED light built in. For 24 V trucks see the NOCO GB251+.\n\nRent it with our vehicles or on its own. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "4.250 A, 12 V bensín að 10 l, dísil að 8 l",
+          "en": "4,250 A, 12 V petrol to 10 L, diesel to 8 L"
+        },
+        {
+          "is": "Kemst í hanskahólfið",
+          "en": "Fits in the glovebox"
+        },
+        {
+          "is": "USB-C-hleðsla, 500 lm ljós",
+          "en": "USB-C charging, 500 lm light"
+        }
+      ]
+    },
+    "e-msejvh5a659c": {
+      "slugEn": "air-pump",
+      "name": {
+        "is": "Loftdæla",
+        "en": "Air Pump"
+      },
+      "tagline": {
+        "is": "Loftdæla fyrir dekk og loftdýnur, létt og einföld í notkun.",
+        "en": "Air pump for tyres and air mattresses, light and simple to use."
+      },
+      "description": {
+        "is": "Vanti loft í kerrudekk við vegkantinn eða í dýnurnar í tjaldi tökuliðsins, sér þessi dæla um það.\n\nLeigist með bílunum og tjöldunum okkar. Við afhendum hvert á land sem er.",
+        "en": "When a trailer tyre at the roadside or the mattresses in the crew tent need air, this pump takes care of it.\n\nRent it with our vehicles and tents. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Fyrir dekk og loftdýnur",
+          "en": "For tyres and air mattresses"
+        },
+        {
+          "is": "Létt og einföld í notkun",
+          "en": "Light and simple to use"
+        }
+      ]
+    },
+    "e-016": {
+      "slugEn": "recovery-tow-rope-15-m",
+      "name": {
+        "is": "Dráttartóg 15 m × 24 mm",
+        "en": "Recovery Tow Rope 15 m × 24 mm"
+      },
+      "tagline": {
+        "is": "Teygjanlegt nælontóg með splæstri lykkju, til að draga og losa bíla sem sitja fastir.",
+        "en": "Elastic nylon recovery rope with a spliced loop, for towing and freeing stuck vehicles."
+      },
+      "description": {
+        "is": "Bíll sem situr fastur í snjó, sandi eða drullu losnar án þess að rifið sé í festingarnar, því teygjan í tóginu tekur höggið úr rykknum. Tógið er úr teygjanlegu næloni, 15 m langt og 24 mm svert, með splæstri lykkju.\n\nLeigist með pallbílnum og sexhjólinu eða eitt og sér. Við afhendum hvert á land sem er.",
+        "en": "A vehicle stuck in snow, sand or mud comes free without a jolt to its recovery points, because the stretch in the rope takes the shock out of the pull. The recovery rope is elastic nylon, 15 m long and 24 mm thick, with a spliced loop.\n\nRent it with our pickup and six-wheeler or on its own. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "15 m × 24 mm teygjanlegt nælon",
+          "en": "15 m × 24 mm elastic nylon"
+        },
+        {
+          "is": "Splæst lykkja",
+          "en": "Spliced loop"
+        },
+        {
+          "is": "Til að losa úr snjó, sandi og drullu",
+          "en": "For snow, sand and mud recoveries"
+        }
+      ]
+    },
+    "e-muubfa11444e": {
+      "slugEn": "4-step-ladder",
+      "name": {
+        "is": "Fjögurra þrepa stigi",
+        "en": "4-Step Ladder"
+      },
+      "tagline": {
+        "is": "Fjögurra þrepa fellistigi til að ná upp í ljós, skilti og tjaldþök á tökustað.",
+        "en": "Four-step folding ladder for reaching lights, signs and tent roofs on location."
+      },
+      "description": {
+        "is": "Á tökustað er alltaf eitthvað rétt utan seilingar: ljós, skilti, tjaldþak eða efsta hillan í sendibílnum. Þessi fjögurra þrepa fellistigi nær þangað upp, leggst flatur og kemst í hvaða bíl sem er hjá okkur.\n\nLeigist með vinnuljósum, tjöldum og skiltum. Við afhendum hvert á land sem er.",
+        "en": "Something is always just out of reach on location: a light, a sign, a tent roof or the top shelf of the van. This four-step folding ladder reaches it, folds flat and travels in any of our vehicles.\n\nRent it with our work lights, tents and signs. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Leggst flatur í flutningi",
+          "en": "Folds flat for transport"
+        },
+        {
+          "is": "Kemst í hvaða bíl sem er hjá okkur",
+          "en": "Travels in any of our vehicles"
+        }
+      ]
+    },
+    "e-mrpkv0o93613": {
+      "slugEn": "fiskars-ergonomic-spade",
+      "name": {
+        "is": "Stunguskófla Fiskars Ergonomic",
+        "en": "Fiskars Ergonomic Spade"
+      },
+      "tagline": {
+        "is": "Létt og sterk stunguskófla frá Fiskars fyrir jarðvinnu, snjó og frágang á tökustað.",
+        "en": "Light, strong Fiskars spade for groundwork, snow and clean-up on location."
+      },
+      "description": {
+        "is": "Þegar jafna þarf tjaldstæði, grafa stand í halla eða moka slóð í grunnbúðum kemur stunguskófla sér vel.\n\nLeigist með löngu skóflunni, kústinum og Makita-blásaranum. Við afhendum hvert á land sem er.",
+        "en": "A spade comes into its own when a tent site needs levelling, a stand has to be dug into a slope or a path cleared at basecamp.\n\nRent it with the long-handled shovel, the broom and the Makita blower. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Fyrir jarðvinnu, snjó og frágang",
+          "en": "For groundwork, snow and clean-up"
+        },
+        {
+          "is": "Fiskars Ergonomic, létt og sterk",
+          "en": "Fiskars Ergonomic, light and strong"
+        }
+      ]
+    },
+    "e-mrpkwla84949": {
+      "slugEn": "fiskars-ergonomic-shovel-132-cm",
+      "name": {
+        "is": "Skófla Fiskars Ergonomic 132 cm",
+        "en": "Fiskars Ergonomic Shovel 132 cm"
+      },
+      "tagline": {
+        "is": "Létt 132 cm Fiskars-skófla fyrir snjó, möl og almennan frágang.",
+        "en": "Light 132 cm Fiskars shovel for snow, gravel and general clean-up."
+      },
+      "description": {
+        "is": "Þegar moka þarf bílastæði eða slóð að setti hlífir langa skaftið bakinu.\n\nLeigist með stunguskóflunni, kústinum og Makita-blásaranum. Við afhendum hvert á land sem er.",
+        "en": "When a parking area or a path to set has to be cleared, the long handle spares your back.\n\nRent it with the spade, the broom and the Makita blower. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "132 cm, létt",
+          "en": "132 cm, light"
+        },
+        {
+          "is": "Fyrir snjó, möl og frágang",
+          "en": "For snow, gravel and clean-up"
+        }
+      ]
+    },
+    "e-mrpkxz90eec4": {
+      "slugEn": "freund-broom-40-cm",
+      "name": {
+        "is": "Kústur Freund 40 × 150 cm",
+        "en": "Freund Broom 40 cm"
+      },
+      "tagline": {
+        "is": "Breiður 40 cm Freund-kústur á 150 cm skafti fyrir þrif á setti og vinnusvæðum.",
+        "en": "Wide 40 cm Freund broom on a 150 cm handle for sweeping sets and work areas."
+      },
+      "description": {
+        "is": "Til að skila götu eða sal eins og komið var að þeim þarf að sópa eftir sig á settum, gangstéttum og vinnusvæðum. Kústurinn er frá Freund, 40 cm breiður og á 150 cm skafti.\n\nLeigist með skóflunum, Makita-blásaranum og ruslatunnum. Við afhendum hvert á land sem er.",
+        "en": "Leaving a street or a hall the way it was found means sweeping up after yourself on sets, pavements and work areas. The broom is a Freund, 40 cm wide, on a 150 cm handle.\n\nRent it with our shovels, the Makita blower and bins. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "40 cm breiður, 150 cm skaft",
+          "en": "40 cm wide, 150 cm handle"
+        },
+        {
+          "is": "Fyrir sett, gangstéttir og vinnusvæði",
+          "en": "For sets, pavements and work areas"
+        }
+      ]
+    },
+    "e-murcnlula6b1": {
+      "slugEn": "rubbish-bins",
+      "name": {
+        "is": "Ruslatunnur",
+        "en": "Rubbish Bins"
+      },
+      "tagline": {
+        "is": "Ruslatunnur fyrir grunnbúðir, veitingar og viðburði, svo ruslið lendi á einum stað.",
+        "en": "Bins for basecamp, catering and events, so the waste ends up in one place."
+      },
+      "description": {
+        "is": "Nokkrar ruslatunnur á réttum stöðum og þú skilar tökustaðnum eins og hann var. Þær eiga heima í grunnbúðum, á veitingasvæðinu og á viðburðum.\n\nLeigjast í magni, gjarnan með kústum, skóflum og borðum. Við afhendum hvert á land sem er.",
+        "en": "A few bins in the right places and the location is left the way it was found. They belong at basecamp, in the catering area and at events. Available in quantity.\n\nRent them with our brooms, shovels and tables. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "Fyrir grunnbúðir, veitingasvæði og viðburði",
+          "en": "For basecamp, catering areas and events"
+        },
+        {
+          "is": "Leigjast í magni",
+          "en": "Available in quantity"
+        }
+      ]
+    },
+    "e-mutqcluib7f1": {
+      "slugEn": "makita-dub186-18v-cordless-blower",
+      "name": {
+        "is": "Makita DUB186 18 V blásari",
+        "en": "Makita DUB186 18 V Cordless Blower"
+      },
+      "tagline": {
+        "is": "Þráðlaus 18 V LXT-blásari með stuttum og löngum stút, þremur hraðastillingum, tveimur rafhlöðum og hleðslutæki.",
+        "en": "Cordless 18 V LXT blower with three speeds, short and long nozzles, two batteries and a charger."
+      },
+      "description": {
+        "is": "Makita DUB186 er þráðlaus 18 V LXT-blásari með löngum stút, svo þú hreinsar jörðina án þess að beygja þig. Þrjár hraðastillingar á rofanum stilla loftflæðið eftir verkinu, frá léttum laufblöðum að blautri möl og sandi, og hann er nógu hljóðlátur fyrir íbúðagötur og húsfélög.\n\nHonum fylgja stuttur og langur stútur, tvær rafhlöður og hleðslutæki. Leigist með skóflunum, kústinum og ruslatunnunum okkar til að skila tökustaðnum eins og hann var. Við afhendum hvert á land sem er.",
+        "en": "The Makita DUB186 is a cordless 18 V LXT blower with a long nozzle, so you clear the ground without bending over. Three speed settings on the switch match the airflow to the job, from light leaves to wet gravel and sand, and it runs quietly enough for residential streets and blocks of flats.\n\nComes with a short and a long nozzle, two batteries and a charger. Rent it with our shovels, broom and bins to leave a location the way it was found. Delivered anywhere in Iceland."
+      },
+      "highlights": [
+        {
+          "is": "18 V LXT, þráðlaus",
+          "en": "18 V LXT, cordless"
+        },
+        {
+          "is": "Þrjár hraðastillingar, stuttur og langur stútur",
+          "en": "Three speeds, short and long nozzle"
+        },
+        {
+          "is": "Tvær rafhlöður og hleðslutæki fylgja",
+          "en": "Two batteries and charger included"
+        },
+        {
+          "is": "Nógu hljóðlátur fyrir íbúðahverfi",
+          "en": "Quiet enough for residential areas"
+        }
+      ]
+    }
+  },
+  "categories": {
+    "heating": {
+      "name": {
+        "is": "Hitablásarar",
+        "en": "Heaters"
+      },
+      "title": {
+        "is": "Hitablásarar til leigu",
+        "en": "Heaters for rent in Iceland"
+      },
+      "metaTitle": {
+        "is": "Hitablásari til leigu: olía, gas og rafmagn",
+        "en": "Heater Rental in Iceland: Diesel, Gas & Electric"
+      },
+      "metaDescription": {
+        "is": "Olíuhitablásarar (21 og 81 kW), gashitari og rafmagnshitablásari til leigu fyrir tjöld, viðburði, framkvæmdir og tökur. Barkar og strompar fylgja.",
+        "en": "Diesel (21 and 81 kW), gas and electric heaters for rent in Iceland, for tents, events, building sites and film shoots. Ducts and chimneys included."
+      },
+      "intro": [
+        {
+          "is": "Allir hitablásararnir okkar á einum stað: olíuhitablásarar, gashitari og rafmagnshitablásari til leigu fyrir tjöld, viðburði, framkvæmdir, kvikmyndatökur og hvar sem þarf hita í hvelli. Master-olíuhitablásararnir eru óbeinir: útblásturinn fer út um stromp og aðeins hreint, þurrt og lyktarlaust heitt loft kemur inn í rýmið.",
+          "en": "All our heaters in one place: diesel heaters, a gas heater and an electric fan heater for rent in Iceland, for tents, events, construction sites, film shoots and anywhere that needs warmth fast. The Master diesel heaters are indirect-fired: the exhaust leaves through a chimney and only clean, dry, odourless warm air enters the space."
+        },
+        {
+          "is": "BV 77 E (21 kW) hitar tjald tökuliðs eða biðsvæði og gengur um 19 klukkustundir á tankfylli. BV 290 E (81 kW) hitar stór tjöld, sali og stærri tökustaði hratt. Fyrir minni rými er samanfellanlegur gashitari á hjólum og 2.000 W rafmagnshitablásari sem fer í venjulega innstungu.",
+          "en": "The BV 77 E (21 kW) heats a crew tent or holding area and runs for about 19 hours on a full tank. The BV 290 E (81 kW) heats large tents, halls and big sets fast. For smaller spaces there is a foldable gas heater on wheels and a 2,000 W electric fan heater that runs off a normal socket."
+        },
+        {
+          "is": "Hitablásararnir leigjast stakir eða með tjöldum, rafstöðvum og rafmagnstöflum. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+          "en": "Heaters rent on their own or with tents, generators and distribution boards. Delivered anywhere in Iceland. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Hver er munurinn á beinum og óbeinum hitablásara?",
+            "en": "What is the difference between a direct and an indirect heater?"
+          },
+          "a": {
+            "is": "Óbeinn hitablásari leiðir útblásturinn út um stromp og blæs aðeins hreinu, þurru lofti inn. Þess vegna má nota Master BV-blásarana okkar við tjöld og rými þar sem fólk dvelur.",
+            "en": "An indirect heater sends its exhaust out through a chimney and blows only clean, dry air inside. That is why our Master BV heaters can be used to heat tents and other occupied spaces."
+          }
+        },
+        {
+          "q": {
+            "is": "Hversu lengi gengur hitablásarinn á tankfylli?",
+            "en": "How long does the heater run on a tank?"
+          },
+          "a": {
+            "is": "BV 77 E gengur um 19 klukkustundir á fullum tanki.",
+            "en": "The BV 77 E runs for about 19 hours on a full tank."
+          }
+        },
+        {
+          "q": {
+            "is": "Þarf rafmagn fyrir olíuhitablásarann?",
+            "en": "Does the diesel heater need electricity?"
+          },
+          "a": {
+            "is": "Já, blásarinn þarf rafmagn fyrir viftu og brennara. Við leigjum rafstöðvar og rafmagnstöflur með.",
+            "en": "Yes, for the fan and burner. We rent out generators and distribution boards to go with it."
+          }
+        }
+      ]
+    },
+    "power": {
+      "name": {
+        "is": "Rafmagn",
+        "en": "Power"
+      },
+      "title": {
+        "is": "Rafstöðvar og rafmagn til leigu",
+        "en": "Generators and power for rent in Iceland"
+      },
+      "metaTitle": {
+        "is": "Rafstöð til leigu: inverter- og rafhlöðustöðvar",
+        "en": "Generator Rental in Iceland: Inverter & Battery"
+      },
+      "metaDescription": {
+        "is": "Rafstöðvar, EcoFlow-rafhlöðustöðvar, rafmagnstöflur, framlengingarsnúrur og fjöltengi til leigu. Hljóðlátar inverter-stöðvar. Afhending um land allt.",
+        "en": "Inverter generators, EcoFlow power stations, distribution boards, extension cables and multiplugs for rent in Iceland. Quiet, clean power, delivered anywhere."
+      },
+      "intro": [
+        {
+          "is": "Rafstöðvar til leigu ásamt öllu sem þarf til að koma rafmagninu þangað sem það á að fara: inverter-rafstöðvar 2,2 og 3,3 kVA, EcoFlow Delta 3 og Delta 3 Pro rafhlöðustöðvar með allt að 4.000 W afli, 16 A og 32 A þriggja fasa rafmagnstöflur, rafmagnskassi, framlengingarsnúrur, rafmagnskefli, stingerar og fjöltengi fyrir útinotkun.",
+          "en": "Generators for rent along with everything needed to get the power where it has to go: 2.2 and 3.3 kVA inverter generators, EcoFlow Delta 3 and Delta 3 Pro power stations with up to 4,000 W of output, 16 A and 32 A three-phase distribution boards, a power distribution box, extension cables, cable reels, stingers and outdoor multiplugs."
+        },
+        {
+          "is": "Inverter-straumur er öruggur fyrir myndavélar, tölvur og hljóðbúnað, og hljóðlátu stöðvarnar mega ganga nálægt setti. Rafhlöðustöðvarnar eru nánast hljóðlausar og henta þar sem engin vél má heyrast. Stálbrúsar fyrir bensín og dísil fást líka leigðir, svo rafstöðin gangi allan tökudaginn.",
+          "en": "Inverter output is safe for cameras, computers and sound gear, and the quiet units can run near set. The power stations are near-silent, for places where no engine may be heard. Steel fuel cans for petrol and diesel are available to rent too, to keep the generator running all day."
+        },
+        {
+          "is": "Allt leigist stakt eða sem heill rafmagnspakki með hitablásurum, ljósum og tjöldum. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+          "en": "Everything rents on its own or as a complete power package with heaters, lights and tents. Delivered anywhere in Iceland. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Hvaða rafstöð hentar fyrir myndavélar og tölvur?",
+            "en": "Which generator is right for cameras and computers?"
+          },
+          "a": {
+            "is": "Inverter-rafstöðvarnar okkar gefa hreinan straum sem er öruggur fyrir rafeindatæki. Þar sem allt þarf að vera nánast hljóðlaust við settið hentar EcoFlow Delta 3 Pro rafhlöðustöðin, sem skilar 4.000 W afli.",
+            "en": "Our inverter generators deliver clean power that is safe for electronics. For near-silent use next to set, the EcoFlow Delta 3 Pro power station gives 4,000 W of output."
+          }
+        },
+        {
+          "q": {
+            "is": "Eruð þið með þriggja fasa rafmagn?",
+            "en": "Do you have three-phase power?"
+          },
+          "a": {
+            "is": "Já: 16 A og 32 A þriggja fasa rafmagnstöflur og framlengingarsnúrur sem dreifa þriggja fasa rafmagni frá húsi eða stórri rafstöð í stærri hitablásara og ljós. Inverter-rafstöðvarnar okkar (2,2 og 3,3 kVA) gefa 230 V.",
+            "en": "Yes: 16 A and 32 A three-phase distribution boards and extension cables, which carry three-phase power from a mains supply or a large generator to the bigger heaters and lights. Our 2.2 and 3.3 kVA inverter generators deliver 230 V."
+          }
+        }
+      ]
+    },
+    "lighting": {
+      "name": {
+        "is": "Lýsing",
+        "en": "Lighting"
+      },
+      "title": {
+        "is": "Vinnuljós og kastarar til leigu",
+        "en": "Work lights and floodlights for rent"
+      },
+      "metaTitle": {
+        "is": "Vinnuljós og kastarar til leigu",
+        "en": "Work Light and Floodlight Rental in Iceland"
+      },
+      "metaDescription": {
+        "is": "6.000 lm LED-kastari á þrífæti og Scangrip-vinnuljós til leigu fyrir vinnusvæði, viðburði og tökustaði. Ganga á rafhlöðum, engin snúra. Afhending um land allt.",
+        "en": "A 6,000 lm LED floodlight on a tripod and Scangrip work lights for rent in Iceland. Battery powered, no cables, for work sites, events and film locations."
+      },
+      "intro": [
+        {
+          "is": "Vinnulýsing til leigu fyrir tökustaði, grunnbúðir og vinnusvæði. NOVA 6K-kastarinn gefur 6.000 lúmen frá deyfanlegri COB-plötu á þrífæti og lýsir upp heilt vinnusvæði eða tækjabækistöð. Scangrip-ljósin eru minni og handhæg: taska með níu litlum ljósum og meðalstórt rafhlöðuljós.",
+          "en": "Work lighting for rent, for locations, basecamp and work sites. The NOVA 6K floodlight gives 6,000 lumens from a dimmable COB panel on a tripod and lights a whole work area or techbase. The Scangrip lights are smaller and easy to carry: a case of nine small lights and a mid-sized battery light."
+        },
+        {
+          "is": "Öll ljósin ganga á rafhlöðum og fara upp án snúru, svo þau nýtast þar sem ekkert rafmagn er. Hleðslutæki fylgja. Rafstöðvar og rafhlöðustöðvar eru í flokknum Rafmagn. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+          "en": "All the lights are battery powered and go up without a cable, so they work where there is no mains power. Chargers are included. Generators and power stations are in the Power category. Delivered anywhere in Iceland. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Þarf rafmagn fyrir ljósin?",
+            "en": "Do the lights need mains power?"
+          },
+          "a": {
+            "is": "Nei, NOVA 6K-kastarinn og Scangrip-ljósin ganga á innbyggðum rafhlöðum. Þau eru hlaðin við afhendingu og hleðslutæki fylgja.",
+            "en": "No, the NOVA 6K floodlight and the Scangrip lights run on built-in batteries. They arrive charged and chargers are included."
+          }
+        },
+        {
+          "q": {
+            "is": "Þola ljósin rigningu og snjó?",
+            "en": "Can the lights be used in rain and snow?"
+          },
+          "a": {
+            "is": "Já. Hausinn á NOVA 6K-kastaranum og Scangrip Mini ljósin eru IP67-vottuð, svo rigning og snjór skipta engu máli.",
+            "en": "Yes. The head of the NOVA 6K floodlight and the Scangrip Mini lights are rated IP67, so rain and snow are not a problem."
+          }
+        }
+      ]
+    },
+    "shelter": {
+      "name": {
+        "is": "Tjöld, regnvarnir og festingar",
+        "en": "Tents, Rain Cover & Rigging"
+      },
+      "title": {
+        "is": "Tjöld, regnvarnir og festingar til leigu",
+        "en": "Tents, rain cover and rigging for rent"
+      },
+      "metaTitle": {
+        "is": "Skjóltjöld og yfirbreiðslur til leigu",
+        "en": "Shelter Tent and Tarpaulin Rental in Iceland"
+      },
+      "metaDescription": {
+        "is": "Einangrað skjóltjald, yfirbreiðslur, regnhlífar, gúmmímottur, sandpokar, klemmur og strekkiborðar til leigu fyrir viðburði, vinnusvæði og tökustaði.",
+        "en": "An insulated pop-up tent, tarpaulins, storm umbrellas, rubber mats, sandbags, clamps and lashing straps for rent in Iceland, for events, work sites and shoots."
+      },
+      "intro": [
+        {
+          "is": "Skjól fyrir fólk og búnað, á tökustað, viðburði eða vinnusvæði. Eskimo Outbreak 450XDP er einangrað popup-tjald fyrir fjóra til fimm sem fer upp á nokkrum mínútum og er með op fyrir hitara: hlýtt skjól fyrir leikara og tökulið milli taka.",
+          "en": "Shelter for people and gear, on location, at an event or on a work site. The Eskimo Outbreak 450XDP is an insulated pop-up tent for four to five people that goes up in minutes and has ports for a heater: a warm refuge for cast and crew between takes."
+        },
+        {
+          "is": "Regnvarnirnar eru vatnsheldar yfirbreiðslur, 3,6 × 4,8 m, fyrir búnað og bíla, stormheldar regnhlífar fyrir fólk og myndavélar og gúmmímottur sem halda gólfinu þurru og stömu. Festingarnar halda öllu á sínum stað í íslenskum vindi: 10 kg sandpokar, klemmur, strekkiborðar og strekkjarar með krók.",
+          "en": "For rain cover there are waterproof 3.6 × 4.8 m tarpaulins for gear and vehicles, storm umbrellas for people and cameras, and rubber mats that keep the floor dry and grippy. The rigging keeps everything in place in Icelandic winds: 10 kg sandbags, clamps, lashing straps and ratchet straps with hooks."
+        },
+        {
+          "is": "Tjöldin leigjast stök eða með hitablásurum, rafstöðvum og húsgögnum. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+          "en": "Tents rent on their own or with heaters, generators and furniture. Delivered anywhere in Iceland. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Hvað rúmar skjóltjaldið marga?",
+            "en": "How many people does the shelter tent hold?"
+          },
+          "a": {
+            "is": "Eskimo Outbreak 450XDP rúmar fjóra til fimm og er með um 7 m² gólfflöt.",
+            "en": "The Eskimo Outbreak 450XDP holds four to five people and has about 7 m² of floor space."
+          }
+        },
+        {
+          "q": {
+            "is": "Má hita tjaldið með hitablásara?",
+            "en": "Can the tent be heated?"
+          },
+          "a": {
+            "is": "Já. Á tjaldinu eru op fyrir hitara, svo olíuhitablásari getur staðið úti og blásið hreinu, heitu lofti inn um barka.",
+            "en": "Yes. The tent has heater ports, so a diesel heater can stand outside and duct clean warm air in."
+          }
+        }
+      ]
+    },
+    "safety": {
+      "name": {
+        "is": "Öryggi og umferð",
+        "en": "Safety & Traffic"
+      },
+      "title": {
+        "is": "Umferðarkeilur, skilti og öryggisbúnaður til leigu",
+        "en": "Traffic cones, signs and safety equipment for rent"
+      },
+      "metaTitle": {
+        "is": "Umferðarkeilur og skilti til leigu",
+        "en": "Traffic Cone and Sign Rental in Iceland"
+      },
+      "metaDescription": {
+        "is": "Umferðarkeilur 50, 75 og 100 cm, hjáleiðarskilti, keiluljós, blikkljós og öryggisvesti til leigu fyrir vegavinnu, viðburði og kvikmyndatökur.",
+        "en": "Traffic cones (50, 75 and 100 cm), diversion signs, cone lights, hazard beacons and hi-vis vests for rent in Iceland, for roadworks, events and film shoots."
+      },
+      "intro": [
+        {
+          "is": "Umferðarkeilur, skilti og öryggisbúnaður til leigu fyrir vegavinnu, viðburði, framkvæmdir og kvikmyndatökur. Keilur í þremur stærðum (50, 75 og 100 cm), keilur með merkinu „Bannað að leggja“, LED-keiluljós, öryggisblikkljós, hjáleiðarskilti og skilti sem segja vegfarendum að tökur standi yfir.",
+          "en": "Traffic cones, signs and safety kit for rent in Iceland, for roadworks, events, construction sites and film shoots. Cones 50, 75 and 100 cm tall, no-parking cones, LED cone lights, hazard beacons, diversion signs and signs telling passers-by that filming is in progress."
+        },
+        {
+          "is": "Skilti fyrir tökustað, grunnbúðir, tækjabækistöð og bílastæði tökuliðs vísa fólki rétta leið. Skipper-keiluhausar með 9 m hættuborða, útdraganlegar slár og upplýsingaskilti sem rennt er ofan á keilurnar breyta keiluröð í merkta lokun. Fyrir tökuliðið eru öryggisvesti, NOX-mótorhjólahjálmar og plaststaurar til að girða af svæði. Allt leigist í magni, svo hægt er að merkja heila götu eða grunnbúðir með einni afhendingu.",
+          "en": "Location, basecamp, techbase and crew parking signs point everyone the right way. Skipper cone-top barriers with 9 m of hazard tape, telescopic cone bars and clip-on cone signs turn a row of cones into a signed closure. For the crew there are hi-vis vests, NOX motorcycle helmets and fence posts for closing off an area. Everything is available in quantity, so a whole street or basecamp can be marked out with a single delivery."
+        },
+        {
+          "is": "Við afhendum hvert á land sem er og setjum saman umferðarpakka fyrir tökuna, viðburðinn eða vinnusvæðið þitt. Óskaðu eftir tilboði.",
+          "en": "We deliver anywhere in Iceland and put together a traffic management kit for your shoot, event or work site. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Hvaða stærðir af umferðarkeilum eru til leigu?",
+            "en": "What sizes of traffic cone do you rent?"
+          },
+          "a": {
+            "is": "50, 75 og 100 cm. 75 cm keilurnar eru með tveimur endurskinsböndum og 100 cm keilurnar henta í vegalokanir og þar sem vindur er mikill.",
+            "en": "50, 75 and 100 cm. The 75 cm cones have two reflective bands, and the 100 cm cones are the ones for road closures and windy sites."
+          }
+        },
+        {
+          "q": {
+            "is": "Leigið þið keilur og skilti í magni?",
+            "en": "Do you rent cones and signs in quantity?"
+          },
+          "a": {
+            "is": "Já. Keilur, skilti og keiluljós leigjast í magni, hvort sem merkja þarf eitt bílastæði eða heila götu. Segðu okkur hvað þarf og við staðfestum hvað er laust.",
+            "en": "Yes. Cones, signs and cone lights are available in quantity, whether you need to mark one parking space or a whole street. Tell us what you need and we’ll confirm availability."
+          }
+        },
+        {
+          "q": {
+            "is": "Þarf leyfi til að loka götu?",
+            "en": "Do I need a permit to close a street?"
+          },
+          "a": {
+            "is": "Já, til að loka götu eða vegi þarf leyfi frá viðkomandi sveitarfélagi eða Vegagerðinni. Við útvegum búnaðinn en sá sem stendur að lokuninni sækir um leyfið.",
+            "en": "Yes, closing a street or road needs a permit from the local municipality or the Icelandic Road and Coastal Administration (Vegagerðin). We supply the equipment; whoever is responsible for the closure applies for the permit."
+          }
+        }
+      ]
+    },
+    "furniture": {
+      "name": {
+        "is": "Húsgögn",
+        "en": "Furniture"
+      },
+      "title": {
+        "is": "Borð og stólar til leigu",
+        "en": "Folding tables and chairs for rent"
+      },
+      "metaTitle": {
+        "is": "Borð og stólar til leigu",
+        "en": "Folding Table and Chair Rental in Iceland"
+      },
+      "metaDescription": {
+        "is": "Samanbrjótanleg borð (183 cm) og stólar til leigu fyrir veislur, viðburði, grunnbúðir og tökustaði. Leigjast með tjöldum og hitablásurum. Fáðu tilboð.",
+        "en": "Folding tables (183 cm) and chairs for rent in Iceland, for parties, events, basecamp and film locations. Rent them with tents and heaters. Get a quote."
+      },
+      "intro": [
+        {
+          "is": "Samanbrjótanleg borð og stólar til leigu fyrir veislur, viðburði, markaði, grunnbúðir og veitingatjöld. Borðin eru 183 cm löng og leggjast saman í tvennt, stólarnir staflast og hvort tveggja er létt, fljótlegt að setja upp og kemst í hvaða bíl sem er hjá okkur.",
+          "en": "Folding tables and chairs for rent, for parties, events, markets, basecamp and catering tents. The tables are 183 cm long and fold in half, and the chairs stack. Both are light and quick to set up, and both fit in any of our vehicles."
+        },
+        {
+          "is": "Húsgögnin leigjast stök eða með tjöldum og hitablásurum, svo aðstaðan kemur tilbúin í einni afhendingu, hvert á land sem er. Óskaðu eftir tilboði.",
+          "en": "Furniture rents on its own or with tents and heaters, so the whole set-up arrives in one delivery, anywhere in Iceland. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Hvað eru borðin stór?",
+            "en": "How big are the tables?"
+          },
+          "a": {
+            "is": "183 cm löng. Þau leggjast saman í tvennt og eru borin eins og taska. Tvö borð eru í hverjum pakka.",
+            "en": "183 cm long. They fold in half and carry like a suitcase. There are two tables in each pack."
+          }
+        },
+        {
+          "q": {
+            "is": "Leigið þið borð og stóla í veislur og á viðburði?",
+            "en": "Do you rent tables and chairs for parties and events?"
+          },
+          "a": {
+            "is": "Já, borð og stólar leigjast einstaklingum og fyrirtækjum jafnt sem kvikmyndaverkefnum. Hafðu samband og við segjum þér hvað er laust þann dag sem þig vantar.",
+            "en": "Yes, tables and chairs are available to private and business customers as well as film productions. Get in touch and we’ll tell you what is available on your date."
+          }
+        }
+      ]
+    },
+    "catering": {
+      "name": {
+        "is": "Veitingabúnaður",
+        "en": "Catering"
+      },
+      "title": {
+        "is": "Veitingabúnaður til leigu",
+        "en": "Catering equipment for rent"
+      },
+      "metaTitle": {
+        "is": "Hitakönnur og veitingabúnaður til leigu",
+        "en": "Catering Equipment Rental in Iceland"
+      },
+      "metaDescription": {
+        "is": "Hitakönnur og búnaður fyrir kaffi og veitingar til leigu, fyrir viðburði, fundi og tökustaði. Leigist með borðum, stólum og tjöldum. Afhending um land allt.",
+        "en": "Thermal jugs and catering kit for rent in Iceland, for events, meetings and film locations. Rent them with tables, chairs and tents."
+      },
+      "intro": [
+        {
+          "is": "Búnaður fyrir kaffi og veitingar (catering) á tökustað, viðburði eða fundi. Hitakönnurnar halda kaffi og vatni heitu tímunum saman, hvort sem er í grunnbúðum eða úti á tökustað.",
+          "en": "Kit for coffee and catering on location, at an event or at a meeting. The thermal jugs keep coffee and water hot for hours, at basecamp or out on set."
+        },
+        {
+          "is": "Veitingabúnaðurinn leigist með samanbrjótanlegum borðum og stólum, tjöldum og hitablásurum, svo veitingasvæðið kemur tilbúið í einni afhendingu, hvert á land sem er. Vanti þig eitthvað sem er ekki á listanum skaltu hafa samband.",
+          "en": "The catering kit rents with folding tables and chairs, tents and heaters, so the catering area arrives ready in one delivery, anywhere in Iceland. If you need something that is not on the list, get in touch."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Hvað taka hitakönnurnar mikið?",
+            "en": "How much do the thermal jugs hold?"
+          },
+          "a": {
+            "is": "1,9 lítra hver. Þær halda drykkjum heitum tímunum saman án rafmagns og leigjast í magni.",
+            "en": "1.9 litres each. They keep drinks hot for hours without power and are available in quantity."
+          }
+        },
+        {
+          "q": {
+            "is": "Get ég leigt veitingabúnað með borðum og tjaldi?",
+            "en": "Can I rent the catering kit with tables and a tent?"
+          },
+          "a": {
+            "is": "Já. Hitakönnurnar leigjast með samanbrjótanlegum borðum, stólum, tjaldi og hitablásurum og allt kemur í einni afhendingu.",
+            "en": "Yes. The thermal jugs rent with folding tables, chairs, a tent and heaters, and everything arrives in one delivery."
+          }
+        }
+      ]
+    },
+    "costume": {
+      "name": {
+        "is": "Búningar og förðun",
+        "en": "Costume & Makeup"
+      },
+      "title": {
+        "is": "Búnaður fyrir búninga og förðun til leigu",
+        "en": "Costume and makeup equipment for rent"
+      },
+      "metaTitle": {
+        "is": "Fataslár, herðatré og förðunarspegill til leigu",
+        "en": "Clothes Rail & Makeup Mirror Rental in Iceland"
+      },
+      "metaDescription": {
+        "is": "Fellanlegar fataslár, herðatré og Nestor-förðunarspegill með LED-ljósum til leigu fyrir tökur, leikhús, tískusýningar og viðburði. Afhending um land allt.",
+        "en": "Folding clothes rails, hangers and a Nestor LED makeup mirror for rent in Iceland, for film shoots, theatre, fashion shows and events."
+      },
+      "intro": [
+        {
+          "is": "Búnaður fyrir búningadeild og förðun á tökustað. Fellanleg 100 cm fataslá kemur búningunum upp úr töskunum, stöm herðatré í 50 stykkja settum og buxnaherðatré í 20 stykkja settum halda þeim hreinum og krumpulausum milli taka og Nestor-förðunarspegillinn með LED-ljósum gefur jafna birtu við förðunina.",
+          "en": "Kit for the costume and makeup departments on location. A folding 100 cm clothes rail gets the costumes out of the bags, non-slip hangers in sets of 50 and trouser hangers in sets of 20 keep them clean and uncreased between takes, and the Nestor LED makeup mirror gives even light for makeup."
+        },
+        {
+          "is": "Leigist með samanbrjótanlegum borðum og stólum, tjöldum og hitablásurum, svo búninga- og förðunaraðstaðan kemur tilbúin í einni afhendingu, hvert á land sem er. Óskaðu eftir tilboði.",
+          "en": "Rent it with folding tables and chairs, tents and heaters, so the costume and makeup station arrives ready in one delivery, anywhere in Iceland. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Hvað er fatasláin breið?",
+            "en": "How wide is the clothes rail?"
+          },
+          "a": {
+            "is": "100 cm. Hún er úr stáli, leggst flöt í flutningi og fer upp á nokkrum sekúndum.",
+            "en": "100 cm. It is steel, folds flat for transport and sets up in seconds."
+          }
+        },
+        {
+          "q": {
+            "is": "Þarf förðunarspegillinn mikið rafmagn?",
+            "en": "Does the makeup mirror need much power?"
+          },
+          "a": {
+            "is": "Nei, hann notar aðeins 110 W, svo lítil rafstöð eða rafhlöðustöð dugar. Birtan er stillanleg frá 0 til 100 % og litahitinn frá 2700 til 6100 K.",
+            "en": "No, it draws only 110 W, so a small generator or a power station is enough. Brightness adjusts from 0 to 100% and colour temperature from 2700 to 6100 K."
+          }
+        }
+      ]
+    },
+    "tools": {
+      "name": {
+        "is": "Verkfæri",
+        "en": "Tools"
+      },
+      "title": {
+        "is": "Verkfæri til leigu",
+        "en": "Tools for rent"
+      },
+      "metaTitle": {
+        "is": "Starttæki, loftdæla og verkfæri til leigu",
+        "en": "Jump Starter and Tool Rental in Iceland"
+      },
+      "metaDescription": {
+        "is": "Starttæki fyrir 12 V og 24 V, loftdæla, stigi og dráttartóg til leigu fyrir vinnusvæði, tökustaði og einstaklinga. Leigist stakt eða með bílunum okkar.",
+        "en": "12 V and 24 V jump starters, an air pump, a stepladder and a tow rope for rent in Iceland, for work sites, film shoots and private use."
+      },
+      "intro": [
+        {
+          "is": "Verkfærin sem bjarga tökudeginum. NOCO GBX155 starttæki fyrir 12 V fólksbíla og jeppa og 24 V starttæki fyrir vörubíla koma rafmagnslausum bíl í gang á staðnum. Loftdælan sér um dekk og loftdýnur, fjögurra þrepa stiginn nær upp í ljós og skilti og 15 m dráttartógið losar bíl sem situr fastur.",
+          "en": "The tools that save a shoot day. A NOCO GBX155 jump starter for 12 V cars and SUVs and a 24 V starter for trucks get a vehicle with a flat battery going on the spot. The air pump handles tyres and air mattresses, the four-step ladder reaches lights and signs, and the 15 m tow rope frees a vehicle that is stuck."
+        },
+        {
+          "is": "Verkfærin leigjast stök eða með bílunum okkar og öðrum búnaði. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+          "en": "Tools rent on their own or with our vehicles and the rest of the kit. Delivered anywhere in Iceland. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Hvort starttækið þarf ég?",
+            "en": "Which jump starter do I need?"
+          },
+          "a": {
+            "is": "NOCO GBX155 er fyrir 12 V bíla: bensínvélar allt að 10 lítra og dísilvélar allt að 8 lítra. NOCO GB251+ er fyrir 24 V vélar allt að 32 lítra, til dæmis í vörubílum, rútum og vinnuvélum.",
+            "en": "The NOCO GBX155 is for 12 V vehicles: petrol engines up to 10 litres and diesels up to 8 litres. The NOCO GB251+ is for 24 V engines up to 32 litres, such as those in trucks, buses and heavy machinery."
+          }
+        },
+        {
+          "q": {
+            "is": "Get ég leigt verkfæri án þess að leigja bíl?",
+            "en": "Can I rent tools without renting a vehicle?"
+          },
+          "a": {
+            "is": "Já, verkfærin leigjast stök eða með bílunum okkar og öðrum búnaði.",
+            "en": "Yes, the tools rent on their own or with our vehicles and the rest of the kit."
+          }
+        }
+      ]
+    },
+    "cleaning": {
+      "name": {
+        "is": "Þrif og rusl",
+        "en": "Cleaning & Waste"
+      },
+      "title": {
+        "is": "Skóflur, kústar og ruslatunnur til leigu",
+        "en": "Shovels, brooms and bins for rent"
+      },
+      "metaTitle": {
+        "is": "Skóflur, kústar og ruslatunnur til leigu",
+        "en": "Shovel, Broom and Bin Rental in Iceland"
+      },
+      "metaDescription": {
+        "is": "Skóflur, kústar, Makita-blásari og ruslatunnur til leigu fyrir vinnusvæði, viðburði og tökustaði. Skilaðu svæðinu eins og það var.",
+        "en": "Shovels, brooms, a Makita cordless blower and bins for rent in Iceland, for work sites, events and film locations. Leave the site as you found it."
+      },
+      "intro": [
+        {
+          "is": "Allt sem þarf til að halda svæðinu hreinu og skila því eins og það var, hvort sem það er tökustaður, viðburðasvæði eða vinnusvæði. Stunguskófla og skófla frá Fiskars, breiður 40 cm kústur og Makita 18 V blásari með stuttum og löngum stút fyrir möl, snjó og laufblöð. Ruslatunnur fyrir grunnbúðir og veitingasvæði halda ruslinu á einum stað.",
+          "en": "Everything needed to keep a site clean and hand it back the way it was, whether it is a film location, an event or a work site. A Fiskars spade and a long-handled shovel, a wide 40 cm broom and a Makita 18 V blower with short and long nozzles for gravel, snow and leaves. Bins for basecamp and the catering area keep the waste in one place."
+        },
+        {
+          "is": "Leigist með öðrum búnaði og bílunum okkar. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+          "en": "Rent it with the rest of the equipment and our vehicles. Delivered anywhere in Iceland. Request a quote."
+        }
+      ],
+      "faq": [
+        {
+          "q": {
+            "is": "Fylgja rafhlöður með Makita-blásaranum?",
+            "en": "Does the Makita blower come with batteries?"
+          },
+          "a": {
+            "is": "Já, tvær rafhlöður og hleðslutæki fylgja, ásamt stuttum og löngum stút.",
+            "en": "Yes, two batteries and a charger are included, along with a short and a long nozzle."
+          }
+        },
+        {
+          "q": {
+            "is": "Leigið þið ruslatunnur fyrir viðburði?",
+            "en": "Do you rent bins for events?"
+          },
+          "a": {
+            "is": "Já, ruslatunnurnar leigjast í magni fyrir grunnbúðir, veitingasvæði og viðburði.",
+            "en": "Yes, the bins are available in quantity for basecamp, catering areas and events."
+          }
+        }
+      ]
+    }
+  }
+}

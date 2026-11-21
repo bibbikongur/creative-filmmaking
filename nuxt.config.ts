@@ -1,3 +1,5 @@
+import { execSync } from 'node:child_process'
+
 // Seed-catalogue vehicles that were live on the site July–August 2026 and then
 // removed from the catalogue. Google still holds their URLs; 301 them to the
 // fleet page so old links and index entries land somewhere useful.
@@ -17,6 +19,19 @@ const removedVehicleRedirects = Object.fromEntries(REMOVED_VEHICLE_SLUGS.flatMap
   [`/vehicles/${slug}`, { redirect: { to: '/vehicles', statusCode: 301 } }],
   [`/en/vehicles/${slug}`, { redirect: { to: '/en/vehicles', statusCode: 301 } }],
 ]))
+
+// lastmod for the pages that are not rows in the database (home, hubs, type
+// pages): the date of the last commit that touched their copy or templates,
+// or the build time where git is not available (the Docker build). Stamped
+// onto the sitemap by server/plugins/sitemap-lastmod.ts.
+const staticLastmod = (() => {
+  try {
+    const out = execSync('git log -1 --format=%cI -- i18n/locales app/pages app/components app/data', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+    if (out) return out
+  }
+  catch { /* no git here */ }
+  return new Date().toISOString()
+})()
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -43,7 +58,8 @@ export default defineNuxtConfig({
     vueI18n: 'i18n.config.ts',
     locales: [
       { code: 'is', language: 'is-IS', name: 'Íslenska', file: 'is.json' },
-      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
+      // British English: that is how the English copy is spelled (tyres, licence).
+      { code: 'en', language: 'en-GB', name: 'English', file: 'en.json' },
     ],
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://creativefilmmaking.is',
     // No browser-language redirect: everyone lands on the Icelandic root page.
@@ -105,8 +121,17 @@ export default defineNuxtConfig({
     // The tipping trailer's original admin slug was "trailer"; it now lives on
     // a keyword slug ("kerra til leigu" searches). 301 keeps old links alive.
     '/vehicles/trailer': { redirect: { to: '/vehicles/kerra-med-sturtu', statusCode: 301 } },
-    '/en/vehicles/trailer': { redirect: { to: '/en/vehicles/kerra-med-sturtu', statusCode: 301 } },
+    // Straight to the English address, not via the Icelandic segment (one hop).
+    '/en/vehicles/trailer': { redirect: { to: '/en/vehicles/tipping-trailer-750-kg', statusCode: 301 } },
     ...removedVehicleRedirects,
+    // (The other language's segment of a type page, /en/vehicles/kassabilar,
+    // is redirected in server/middleware/01.landing-redirects.ts.)
+    // The sitemap lives at /sitemap_index.xml; this stray address rendered an
+    // empty, indexable page.
+    '/en/sitemap.xml': { redirect: { to: '/sitemap_index.xml', statusCode: 301 } },
+    // The English sitemap was /__sitemap__/en-US.xml before the language tag became en-GB.
+    '/__sitemap__/en-US.xml': { redirect: { to: '/__sitemap__/en-GB.xml', statusCode: 301 } },
+    '/api/**': { headers: { 'X-Robots-Tag': 'noindex' } },
     '/cart': { robots: false },
     '/en/cart': { robots: false },
     '/admin': { ssr: false, robots: false },
@@ -136,6 +161,10 @@ export default defineNuxtConfig({
 
   image: {
     quality: 80,
+    // A phone-sized screen for the first entry of every `sizes` string
+    // ("xs:100vw md:384px"). A bare default would be filed under a 1px screen
+    // and put 1px and 2px files in the srcset.
+    screens: { xs: 480 },
     // Seeded /images/* photos go through IPX; its default is a 60-second
     // cache. The files never change under a given name, so cache them like
     // /uploads/* variants: a year, immutable.
@@ -187,6 +216,8 @@ export default defineNuxtConfig({
     // AES-256-GCM key for encrypted columns like day rates (NUXT_ENCRYPTION_KEY).
     // Keep a copy in a password manager — losing it makes those values unrecoverable.
     encryptionKey: '',
+    // lastmod of the static pages in the sitemap (see staticLastmod above).
+    sitemapLastmod: staticLastmod,
     // Where vehicles.json + uploaded photos live (NUXT_DATA_DIR). Defaults to
     // ./.data — point it at a persistent volume in production (e.g. /data).
     dataDir: '',

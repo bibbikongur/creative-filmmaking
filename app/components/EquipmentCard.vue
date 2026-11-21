@@ -12,7 +12,7 @@
         v-if="item.images.length"
         :src="item.images[0]!"
         :provider="imgProvider(item.images[0]!)"
-        alt=""
+        :alt="lt(item.name)"
         class="w-full h-full object-contain p-0.5 mix-blend-multiply"
         sizes="80px"
         format="webp"
@@ -250,7 +250,8 @@ const { t } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
 
-const to = computed(() => localePath(`/equipment/${equipmentSlug(props.item)}`))
+const { equipmentPath } = useItemPaths()
+const to = computed(() => equipmentPath(props.item))
 
 const cart = useCart()
 const inCart = computed(() => cart.has('equipment', props.item.id))

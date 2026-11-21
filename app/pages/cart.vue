@@ -29,7 +29,7 @@
         <!-- Items -->
         <ul class="mt-10 divide-y divide-ink-700 border border-ink-700 bg-ink-800">
           <li v-for="item in items" :key="`${item.entry.type}-${item.entry.id}`" class="flex items-center gap-4 p-4">
-            <NuxtLink :to="localePath(item.link)" class="shrink-0 w-24 h-16 overflow-hidden" :class="item.entry.type === 'equipment' ? 'bg-product-well' : 'bg-ink-900'">
+            <NuxtLink :to="item.link" class="shrink-0 w-24 h-16 overflow-hidden" :class="item.entry.type === 'equipment' ? 'bg-product-well' : 'bg-ink-900'">
               <NuxtImg
                 v-if="item.image"
                 :src="item.image"
@@ -45,7 +45,7 @@
             </NuxtLink>
             <div class="flex-1 min-w-0">
               <NuxtLink
-                :to="localePath(item.link)"
+                :to="item.link"
                 class="block font-heading font-semibold uppercase tracking-wide text-bone-100 truncate hover:text-gold-400 transition-colors"
               >
                 {{ item.name }}
@@ -95,6 +95,7 @@ const { lt } = useLocalized()
 const localePath = useLocalePath()
 const cart = useCart()
 
+const { vehiclePath, equipmentPath } = useItemPaths()
 const { all: allVehicles } = await useVehicles()
 const { all: allEquipment } = await useEquipment()
 
@@ -103,10 +104,10 @@ const { all: allEquipment } = await useEquipment()
 const items = computed(() => cart.entries.value.flatMap((entry) => {
   if (entry.type === 'vehicle') {
     const v = allVehicles().find(x => x.id === entry.id)
-    return v ? [{ entry, name: lt(v.name), tagline: lt(v.tagline), image: v.images[0], link: `/vehicles/${v.slug}`, units: v.specs.units ?? 1 }] : []
+    return v ? [{ entry, name: lt(v.name), tagline: lt(v.tagline), image: v.images[0], link: vehiclePath(v), units: v.specs.units ?? 1 }] : []
   }
   const e = allEquipment().find(x => x.id === entry.id)
-  return e ? [{ entry, name: lt(e.name), tagline: lt(e.tagline), image: e.images[0], link: `/equipment/${equipmentSlug(e)}`, units: 1 }] : []
+  return e ? [{ entry, name: lt(e.name), tagline: lt(e.tagline), image: e.images[0], link: equipmentPath(e), units: 1 }] : []
 }))
 
 onMounted(() => {

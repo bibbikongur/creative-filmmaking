@@ -13,12 +13,12 @@
           :key="active"
           :src="images[active]!"
           :provider="imgProvider(images[active]!)"
-          :alt="`${alt} (${active + 1}/${images.length})`"
+          :alt="images.length > 1 ? `${alt} (${active + 1}/${images.length})` : alt"
           class="w-full h-full"
           :class="fit === 'contain' ? 'object-contain p-4' : 'object-cover'"
           sizes="xs:100vw lg:60vw"
           format="webp"
-          :preload="active === 0"
+          :fetchpriority="active === 0 ? 'high' : undefined"
         />
       </button>
       <ImagePlaceholder v-else icon-class="w-10 h-10" />

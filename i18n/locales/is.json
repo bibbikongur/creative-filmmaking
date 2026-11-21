@@ -32,23 +32,23 @@
   "hero": {
     "kicker": "Bíla- og tækjaleiga á Íslandi",
     "title": "Bílar og búnaður til leigu á Íslandi",
-    "subtitle": "Kassabílar, hjólhýsi, sexhjól, rafstöðvar, hitablásarar, tjöld og umferðarbúnaður fyrir kvikmyndatökur, viðburði, fyrirtæki og einstaklinga. Afhent hvert á land sem er.",
+    "subtitle": "Kassabílar, hjólhýsi, sexhjól, rafstöðvar, hitablásarar, vinnuljós og umferðarbúnaður fyrir kvikmyndatökur, viðburði, fyrirtæki og einstaklinga. Afhent hvert á land sem er.",
     "availability": "Laust beint í verkefnið"
   },
   "home": {
     "featuredKicker": "Í sviðsljósinu",
-    "featuredTitle": "Vinsælustu tækin",
+    "featuredTitle": "Vinsælast í flotanum",
     "featuredAll": "Sjá allan flotann",
     "featuredEquipmentKicker": "Búnaður",
     "featuredEquipmentTitle": "Vinsælasti búnaðurinn",
-    "featuredEquipmentIntro": "Rafstöðvar, hitablásarar, LED kastarar, rafmagnstöflur, umferðarskilti, skjóltjöld og annar búnaður sem heldur tökum gangandi. Nýtist líka einstaklingum og fyrirtækjum.",
+    "featuredEquipmentIntro": "Rafstöðvar, hitablásarar, LED-kastarar, rafmagnstöflur, umferðarskilti, skjóltjöld og annar búnaður sem heldur tökum gangandi. Nýtist líka einstaklingum og fyrirtækjum.",
     "featuredEquipmentAll": "Sjá allan búnað",
     "whyKicker": "Af hverju við",
     "whyTitle": "Gert fyrir vinnu á vettvangi",
     "why1Title": "Tilbúið í vinnu",
     "why1Text": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn í vinnu.",
-    "why2Title": "Vetrarfært",
-    "why2Text": "Bílar og búnaður koma útbúnir fyrir veturinn þegar sá tími árs er.",
+    "why2Title": "Vetrarbúið",
+    "why2Text": "Á veturna koma bílar og búnaður vetrarbúnir.",
     "why3Title": "Aðstoð á tökudögum",
     "why3Text": "Við svörum allan sólarhringinn á meðan á tökum stendur.",
     "statsLabel": "Í stuttu máli",
@@ -70,7 +70,7 @@
     "how3Title": "Fáðu eitt tilboð",
     "how3Text": "Eitt verð fyrir allan pakkann.",
     "why4Title": "Líka fyrir heimili og fyrirtæki",
-    "why4Text": "Kassabílar í búslóðaflutninga, hjólhýsi í sumarfríið og kerrur í helgarverkefnin.",
+    "why4Text": "Kassabílar í búslóðaflutninga, hjólhýsi í sumarfríið og kerra í helgarverkefnin.",
     "contactTitle": "Viltu frekar tala við okkur?",
     "howLink": "Skoða flotann",
     "browseTypes": "Eftir tegund",
@@ -78,14 +78,16 @@
     "heroModel": "Engin verðskrá. Eitt tilboð innan eins virks dags.",
     "contactText": "Hringdu eða sendu okkur línu og við förum yfir verkefnið með þér.",
     "missingTitle": "Finnurðu ekki það sem þig vantar?",
-    "missingText": "Vefurinn sýnir ekki allt sem við getum útvegað. Segðu okkur hvað verkefnið þarf og við finnum lausn, hvort sem það er á síðunni eða ekki.",
+    "missingText": "Vefurinn sýnir ekki allt sem við getum útvegað. Segðu okkur hvað vantar í verkefnið og við finnum lausn, hvort sem það er á síðunni eða ekki.",
     "closeTitle": "Vantar þig bíl eða búnað?",
     "closeText": "Segðu okkur hvað þú ert að gera og hvenær. Við setjum saman pakkann og svörum með einu tilboði, án skuldbindinga.",
     "rowPosition": "{n} af {total}",
     "photoAlt": "Pallbíll frá okkur með hjólhýsi í drætti í íslensku landslagi",
-    "heroKicker": "Reykjavík · Afhent um allt land",
-    "heroSubtitle": "Kassabílar, hjólhýsi, sexhjól, rafstöðvar, hitablásarar, tjöld og umferðarbúnaður fyrir kvikmyndatökur, viðburði, fyrirtæki og einstaklinga.",
-    "whyIntro": "Við byrjuðum sjálf á setti og höfum unnið við kvikmyndir, þáttaraðir, tónlistarmyndbönd og auglýsingar um land allt."
+    "heroKicker": "Reykjavík · Afhent um land allt",
+    "heroSubtitle": "Kassabílar, hjólhýsi, sexhjól, rafstöðvar, hitablásarar, vinnuljós og umferðarbúnaður fyrir kvikmyndatökur, viðburði, fyrirtæki og einstaklinga.",
+    "whyIntro": "Creative Filmmaking er bíla- og tækjaleiga í Reykjavík. Við byrjuðum sjálf á setti og höfum unnið við kvikmyndir, þáttaraðir, tónlistarmyndbönd og auglýsingar um land allt.",
+    "closeAlt": "Hobby-hjólhýsi í drætti á sveitavegi á Íslandi, fjöll í baksýn",
+    "heroAlt": "Tökulið með myndavélar og ljós við malarveg á Íslandi, vörubílar og sendibíll bíða í rökkrinu"
   },
   "categories": {
     "campers": "Húsbílar",
@@ -95,8 +97,8 @@
   },
   "catalogue": {
     "kicker": "Flotinn",
-    "title": "Framleiðslubílar",
-    "intro": "Allir bílar eru þjónustaðir fyrir kvikmyndavinnu og fást afhentir hvert á land sem er. Kassabílar og sendibílar eru einnig til leigu fyrir einstaklinga og fyrirtæki, t.d. í búslóðaflutninga.",
+    "title": "Bílar, hjólhýsi og kerrur til leigu",
+    "intro": "Allir bílar koma þjónustaðir og þrifnir og fást afhentir hvert á land sem er. Flotinn er byggður upp fyrir kvikmyndatökur en leigist jafnt fyrirtækjum og einstaklingum, til dæmis í búslóðaflutninga, framkvæmdir og sumarfríið.",
     "all": "Allur flotinn",
     "empty": "Engir bílar í þessum flokki eins og er. Hafðu samband og við finnum lausn.",
     "emptyCta": "Hafa samband",
@@ -105,7 +107,7 @@
     "seeAll": "Sjá alla",
     "otherGroup": "Aðrir bílar",
     "viewLabel": "Útlit lista",
-    "viewGrid": "Rist",
+    "viewGrid": "Reitir",
     "viewList": "Listi",
     "types": "Tegundir",
     "kinds": {
@@ -142,9 +144,9 @@
     "noLicence": "Þarf ekki meirapróf",
     "aboutType": "Um {type}",
     "otherTitle": "Annað í flotanum",
-    "priceOnQuote": "Verð í tilboði",
+    "priceOnQuote": "Verð samkvæmt tilboði",
     "equipmentTitle": "Vantar búnað með bílunum?",
-    "equipmentText": "Rafstöðvar, hitablásarar, tjöld og umferðarbúnaður fara á sama lista og sama tilboð.",
+    "equipmentText": "Rafstöðvar, hitablásarar, skjóltjöld og umferðarbúnaður fara á sama lista og sama tilboð.",
     "listEmpty": "Listinn er tómur. Settu bíla á lista og sendu okkur hann til að fá tilboð.",
     "sleepsN": "{n} svefnpláss"
   },
@@ -163,7 +165,7 @@
   "equipmentCatalogue": {
     "kicker": "Búnaður",
     "title": "Búnaður til leigu",
-    "intro": "Rafstöðvar, hitablásarar, ljós, tjöld, umferðarkeilur og skilti, borð og stólar: fyrir kvikmyndatökur, viðburði, framkvæmdir og einstaklinga.",
+    "intro": "Rafstöðvar, hitablásarar, ljós, skjóltjöld, umferðarkeilur og skilti, borð og stólar. Fyrir kvikmyndatökur, viðburði, framkvæmdir og einstaklinga.",
     "all": "Allur búnaður",
     "empty": "Enginn búnaður í þessum flokki eins og er. Hafðu samband og við finnum lausn.",
     "emptyCta": "Hafa samband",
@@ -175,7 +177,7 @@
       "searchPlaceholder": "Leita í öllum búnaði",
       "clear": "Hreinsa leit",
       "resultsTitle": "Leitarniðurstöður",
-      "noResults": "Ekkert fannst fyrir „{q}“",
+      "noResults": "Ekkert fannst við leit að „{q}“",
       "noResultsHint": "Prófaðu annað leitarorð, eða hafðu samband og við finnum lausn.",
       "viewCategory": "Skoða flokk",
       "stepsTitle": "Svona virkar leigan",
@@ -195,7 +197,7 @@
       ],
       "lead": "Eitt tilboð í allan pakkann innan eins virks dags.",
       "leadNote": "Við birtum ekki verð: settu saman lista og sendu okkur hann.",
-      "priceNote": "Verð í tilboði",
+      "priceNote": "Verð samkvæmt tilboði",
       "listCta": "Fá tilboð",
       "listCtaShort": "Fá tilboð",
       "listWithCount": "Tilboðslisti ({n})",
@@ -214,29 +216,30 @@
       "helpText": "Segðu okkur hvað vantar og við finnum lausn."
     },
     "seoTitle": "Hvað er til leigu?",
-    "seoText": "Við leigjum út búnað á Íslandi: rafstöðvar, olíu- og gashitara, LED kastara, rafhlöðustöðvar, snúrur og rafmagnstöflur, umferðarkeilur og skilti, öryggisvesti, skjóltjöld, yfirbreiðslur, borð og stóla. Byggt upp fyrir kvikmynda- og sjónvarpsvinnu og nýtist jafn vel viðburðum, framkvæmdum, fyrirtækjum og einstaklingum.",
-    "seoText2": "Búnaðurinn leigist stakur eða með bílunum okkar og fæst afhentur hvert á land sem er. Segðu okkur hvað vantar og við setjum saman tilboð samdægurs.",
+    "seoText": "Creative Filmmaking er tækjaleiga í Reykjavík og leigir út búnað um allt land: rafstöðvar, olíu- og gashitara, LED-kastara, rafhlöðustöðvar, snúrur og rafmagnstöflur, umferðarkeilur og skilti, öryggisvesti, skjóltjöld, yfirbreiðslur, borð og stóla. Úrvalið er byggt upp fyrir kvikmynda- og sjónvarpsvinnu og nýtist jafn vel á viðburðum, í framkvæmdum og hjá fyrirtækjum og einstaklingum.",
+    "seoText2": "Búnaðurinn leigist stakur eða með bílunum okkar og fæst afhentur hvert á land sem er. Segðu okkur hvað vantar og við sendum þér tilboð innan eins virks dags.",
     "factsTitle": "Helstu atriði",
     "facts": {
       "category": "Flokkur",
       "quantityLabel": "Magn",
-      "quantity": "Fleiri eintök í boði",
+      "quantity": "Nokkur eintök í boði",
       "deliveryLabel": "Afhending",
       "delivery": "Hvert á land sem er",
       "rentalLabel": "Leiga",
       "rental": "Stakt eða með bílunum"
-    }
+    },
+    "rentalTitle": "Leiga og afhending"
   },
   "vehicle": {
     "highlightsTitle": "Helstu kostir",
     "specsTitle": "Tæknilýsing",
     "requestTitle": "Óska eftir tilboði",
-    "requestIntro": "Engin verð birt, enda er hvert verkefni einstakt. Segðu okkur frá tökunum og við svörum með sérsniðnu tilboði.",
+    "requestIntro": "Við birtum ekki verð, enda er hvert verkefni einstakt. Segðu okkur hvað þig vantar og hvenær.",
     "moreInCategory": "Fleiri í þessum flokki",
     "backToFleet": "Til baka í flotann",
     "pairsWithKicker": "Búnaður",
     "pairsWith": "Passar vel með",
-    "pairsWithIntro": "Rafstöð, hiti og öryggisbúnaður sem fylgir bílunum oftast á sett. Bættu við á sama tilboð.",
+    "pairsWithIntro": "Búnaður sem oftast fer með. Bættu honum við á sama tilboð.",
     "specs": {
       "units": "Fjöldi í flota",
       "unitsShort": "í flota",
@@ -259,15 +262,20 @@
       "winterEquipped": "Vetrarútbúnaður",
       "towHitch": "Dráttarkrókur",
       "wifi": "Wi-Fi",
-      "automatic": "Sjálfskiptur",
-      "manual": "Beinskiptur",
-      "diesel": "Dísel",
+      "automatic": "Sjálfskipting",
+      "manual": "Beinskipting",
+      "diesel": "Dísil",
       "petrol": "Bensín",
-      "hybrid": "Tvinnbíll"
+      "hybrid": "Tvinnbíll",
+      "kerbWeightKg": "Eiginþyngd",
+      "loadBed": "Innanmál (L × B × H)",
+      "grossWeightKg": "Leyfð heildarþyngd",
+      "loadBedShort": "Innanmál (L × B × H)",
+      "twoWheelDrive": "Eindrif"
     }
   },
   "cart": {
-    "kicker": "Þitt val",
+    "kicker": "Listinn þinn",
     "title": "Tilboðsbeiðni",
     "add": "Setja á lista",
     "added": "Á listanum",
@@ -277,8 +285,8 @@
     "decrease": "Fækka",
     "empty": "Tilboðslistinn er tómur. Bættu við bílum eða búnaði og við verðleggjum allan pakkann fyrir þig.",
     "emptyCta": "Skoða flotann",
-    "formTitle": "Þínar upplýsingar",
-    "formIntro": "Segðu okkur hver þú ert og hvenær tökurnar fara fram. Við svörum með einu sérsniðnu tilboði fyrir allt á listanum.",
+    "formTitle": "Upplýsingar um þig",
+    "formIntro": "Segðu okkur hver þú ert og hvenær þú þarft bílana og búnaðinn. Við svörum með einu tilboði í allt sem er á listanum.",
     "submit": "Óska eftir tilboði",
     "successTitle": "Beiðni móttekin",
     "successText": "Takk fyrir! Við setjum saman tilboð fyrir listann þinn og svörum innan eins virks dags."
@@ -299,44 +307,35 @@
     "successTitle": "Fyrirspurn móttekin",
     "successText": "Takk fyrir, við svörum innan eins virks dags.",
     "errorTitle": "Eitthvað fór úrskeiðis",
-    "errorText": "Ekki tókst að senda skilaboðin. Sendu okkur tölvupóst beint á {email} og við tökum það þaðan.",
+    "errorText": "Ekki tókst að senda skilaboðin. Sendu okkur tölvupóst beint á {email} og við sjáum um framhaldið.",
     "required": "Þennan reit þarf að fylla út",
     "invalidEmail": "Sláðu inn gilt netfang",
-    "requiredNote": "Reitir merktir * þarf að fylla út.",
+    "requiredNote": "Reiti merkta * þarf að fylla út.",
     "optional": "valfrjálst",
     "nextNote": "Við svörum með tilboði innan eins virks dags.",
     "successReply": "Við svörum á {email} innan eins virks dags.",
     "successUrgent": "Liggur á? Hringdu í",
-    "successAgain": "Senda aðra fyrirspurn"
+    "successAgain": "Senda aðra fyrirspurn",
+    "honeypot": "Skildu þennan reit eftir auðan"
   },
   "about": {
     "kicker": "Um okkur",
     "title": "Leiga sem varð til á setti",
-    "lead": "Creative Filmmaking leigir bíla, tæki og búnað til kvikmynda- og sjónvarpsverkefna, viðburða, fyrirtækja og einstaklinga um allt land.",
-    "factsLabel": "Í stuttu máli",
-    "factBaseValue": "Reykjavík",
-    "factDelivery": "Afhending",
-    "factDeliveryValue": "Um allt land",
-    "factQuote": "Tilboð",
-    "factQuoteValue": "Innan eins virks dags",
-    "factSupport": "Á tökudögum",
-    "factSupportValue": "Allan sólarhringinn",
-    "photoAlt": "Pallbíll með Hobby hjólhýsi í drætti á íslenskum þjóðvegi, fjöll í baksýn",
+    "lead": "Creative Filmmaking er bíla- og tækjaleiga í Reykjavík sem leigir til kvikmynda- og sjónvarpsverkefna, viðburða, fyrirtækja og einstaklinga um allt land.",
+    "photoAlt": "Pallbíll með Hobby-hjólhýsi í drætti á íslenskum þjóðvegi, fjöll í baksýn",
     "photoCaption": "Eitt af fjórum hjólhýsum flotans á leið á tökustað.",
-    "storyKicker": "Hvernig við vinnum",
-    "storyTitle": "Hver bíll er þjónustaður, þrifinn og afhentur tilbúinn á sett.",
-    "story1": "Við byrjuðum sjálf á setti og höfum unnið við stór og smá verkefni: kvikmyndir, þáttaraðir, tónlistarmyndbönd og auglýsingar um land allt. Flotinn er byggður í kringum það sem framleiðslur þurfa í raun.",
+    "story1": "Við byrjuðum sjálf á setti og höfum unnið við stór og smá verkefni: kvikmyndir, þáttaraðir, tónlistarmyndbönd og auglýsingar um land allt. Flotinn er byggður upp út frá því sem framleiðslur þurfa í raun.",
     "whoKicker": "Fyrir hverja",
     "whoTitle": "Byggt fyrir tökur, opið öllum",
     "who1Title": "Framleiðslur",
     "who1Text": "Kvikmyndir, þáttaraðir, auglýsingar og tónlistarmyndbönd. Kassabílar með lyftu, hjólhýsi fyrir leikara og rafmagn á tökustað.",
     "who2Title": "Viðburðir og fyrirtæki",
-    "who2Text": "Tjöld, hitablásarar, rafstöðvar og umferðarbúnaður fyrir viðburði og verk úti við.",
+    "who2Text": "Skjóltjöld, hitablásarar, rafstöðvar og umferðarbúnaður fyrir viðburði og verk úti við.",
     "who3Title": "Einstaklingar",
-    "who3Text": "Kassabílar í búslóðaflutninga, hjólhýsi í sumarfríið og kerrur í helgarverkefnin.",
+    "who3Text": "Kassabílar í búslóðaflutninga, hjólhýsi í sumarfríið og kerra í helgarverkefnin.",
     "howTitle": "Engin verðskrá. Eitt tilboð.",
     "how1Text": "Þú safnar bílum og búnaði á einn tilboðslista hér á vefnum.",
-    "how2Text": "Þú sendir listann með dagsetningum og tökustað.",
+    "how2Text": "Þú sendir listann með dagsetningum og stað.",
     "how3Text": "Við svörum með einu verði fyrir allan pakkann innan eins virks dags.",
     "who1Link": "Skoða flotann",
     "who2Link": "Skoða búnað",
@@ -349,10 +348,10 @@
     "intro": "Segðu okkur frá verkefninu og við svörum með einu tilboði innan eins virks dags. Það má líka alltaf hringja.",
     "directTitle": "Beint samband",
     "mapTitle": "Kort af staðsetningu okkar",
-    "openMap": "Opna í kortum",
+    "openMap": "Sjá á korti",
     "emailLabel": "Netfang",
     "phoneLabel": "Sími",
-    "addressLabel": "Staðsetning",
+    "addressLabel": "Heimilisfang",
     "responseNote": "Við svörum innan eins virks dags, hraðar á tökutímabilinu.",
     "formTitle": "Senda fyrirspurn",
     "formIntro": "Dagsetningar, staður og hvað vantar. Því meira sem við vitum, því nákvæmara verður tilboðið.",
@@ -361,13 +360,14 @@
     "listLink": "Opna listann",
     "listTitle": "Vantar þig marga hluti?",
     "listText": "Safnaðu bílum og búnaði á einn tilboðslista og sendu allt í einu.",
-    "faqNote": "Fannstu ekki svarið? Hringdu í"
+    "faqNote": "Fannstu ekki svarið? Hringdu í",
+    "mapAttribution": "© Þátttakendur í OpenStreetMap"
   },
   "cta": {
     "listTitle": "Listinn þinn er tilbúinn",
     "listText": "{n} stk. á tilboðslistanum. Sendu okkur hann með dagsetningum og við svörum með einu tilboði innan eins virks dags.",
-    "title": "Ertu að skipuleggja tökur á Íslandi?",
-    "text": "Segðu okkur hvað þú ert að taka upp og við setjum saman réttu bílana og tilboð, án skuldbindinga.",
+    "title": "Ertu að skipuleggja tökur, viðburð eða flutninga?",
+    "text": "Segðu okkur hvað stendur til og hvenær. Við veljum réttu bílana og búnaðinn og sendum þér tilboð, án skuldbindinga.",
     "button": "Fá tilboð"
   },
   "consent": {
@@ -378,7 +378,7 @@
   "footer": {
     "tagline": "Bíla- og tækjaleiga á Íslandi fyrir kvikmynda- og sjónvarpsverkefni, viðburði, fyrirtæki og einstaklinga.",
     "navTitle": "Vefurinn",
-    "contactTitle": "Samband",
+    "contactTitle": "Hafa samband",
     "rentalsTitle": "Til leigu",
     "rentals": {
       "boxTrucks": "Kassabílar til leigu",
@@ -387,7 +387,12 @@
       "trailer": "Kerra til leigu",
       "sixWheeler": "Sexhjól til leigu",
       "generators": "Rafstöðvar til leigu",
-      "heaters": "Hitablásarar til leigu"
+      "heaters": "Hitablásarar til leigu",
+      "pickup": "Pallbíll til leigu",
+      "cones": "Umferðarkeilur til leigu",
+      "tables": "Borð og stólar til leigu",
+      "tents": "Skjóltjöld til leigu",
+      "lights": "Vinnuljós til leigu"
     },
     "rights": "Allur réttur áskilinn."
   },
@@ -402,27 +407,30 @@
   "meta": {
     "home": {
       "title": "Bíla- og tækjaleiga á Íslandi",
-      "description": "Kassabílar, sendibílar, hjólhýsi, kerrur, rafstöðvar, hitablásarar, tjöld og umferðarbúnaður til leigu á Íslandi. Fyrir kvikmyndaverkefni, viðburði, fyrirtæki og einstaklinga. Hafðu samband fyrir tilboð."
+      "description": "Kassabílar, sendibíll, hjólhýsi, kerra, rafstöðvar og hitablásarar til leigu. Fyrir kvikmyndatökur, viðburði, fyrirtæki og einstaklinga. Fáðu tilboð."
     },
     "vehicles": {
-      "title": "Bílar til leigu",
-      "description": "Bílar og tæki til leigu á Íslandi: kassabílar með lyftu, sendibílar, 4x4 pallbílar, hjólhýsi, kerrur og sexhjól. Hjólhýsaleiga, sendibílaleiga og kerruleiga fyrir kvikmyndaverkefni jafnt sem einstaklinga og fyrirtæki. Óskaðu eftir tilboði."
+      "title": "Bílar, hjólhýsi og kerrur til leigu",
+      "description": "Kassabílar með lyftu, sendibíll, 4x4 pallbíll, hjólhýsi, sturtukerra og sexhjól til leigu í Reykjavík. Afhending um land allt. Tilboð innan eins virks dags."
     },
     "equipment": {
-      "title": "Búnaður til leigu",
-      "description": "Búnaður til leigu á Íslandi: rafstöðvar, hitablásarar, ljós, tjöld, umferðarkeilur og skilti, borð og stólar. Fyrir viðburði, framkvæmdir, kvikmyndatökur og einstaklinga. Óskaðu eftir tilboði."
+      "title": "Tækjaleiga og búnaður til leigu",
+      "description": "Rafstöðvar, hitablásarar, vinnuljós, skjóltjöld, umferðarkeilur, skilti, borð og stólar til leigu. Fyrir viðburði, framkvæmdir, kvikmyndatökur og einstaklinga."
     },
     "vehicleTitle": "{name} til leigu",
     "rentInIceland": "{name} til leigu á Íslandi",
-    "businessDescription": "Bíla- og tækjaleiga á Íslandi: rafstöðvar, hitablásarar, tjöld, umferðarbúnaður, kassabílar, sendibílar, hjólhýsi, kerrur og sexhjól. Fyrir kvikmyndaverkefni, viðburði, fyrirtæki og einstaklinga.",
+    "businessDescription": "Bíla- og tækjaleiga á Íslandi: rafstöðvar, hitablásarar, skjóltjöld, umferðarbúnaður, kassabílar, sendibíll, pallbíll, hjólhýsi, kerra og sexhjól. Fyrir kvikmyndaverkefni, viðburði, fyrirtæki og einstaklinga.",
     "about": {
       "title": "Um okkur",
-      "description": "Creative Filmmaking leigir bíla og búnað á Íslandi: kassabíla, sendibíla, hjólhýsi, kerrur, sexhjól, rafstöðvar, hitablásara og tjöld. Byggt upp fyrir kvikmynda- og sjónvarpsverkefni og opið viðburðum, fyrirtækjum og einstaklingum."
+      "description": "Creative Filmmaking er bíla- og tækjaleiga í Reykjavík sem varð til á tökustað. Við leigjum til kvikmyndaverkefna, viðburða, fyrirtækja og einstaklinga."
     },
     "contact": {
-      "title": "Hafa samband",
-      "description": "Segðu okkur frá verkefninu þínu á Íslandi og við svörum með lausum bílum og sérsniðnu tilboði innan eins virks dags."
-    }
+      "title": "Hafa samband og fá tilboð",
+      "description": "Segðu okkur hvað þig vantar, hvar og hvenær. Við erum að Grensásvegi 1 í Reykjavík og svörum með tilboði innan eins virks dags."
+    },
+    "ogImageAlt": "Hobby Prestige hjólhýsi úr flota Creative Filmmaking standa í röð á grasi við sjóinn",
+    "deliveryLine": "Afhending um land allt.",
+    "forRentInIceland": "Til leigu á Íslandi."
   },
   "faq": {
     "kicker": "Spurt og svarað",
@@ -430,44 +438,48 @@
     "home": [
       {
         "q": "Hvað kostar að leigja?",
-        "a": "Við birtum ekki fasta verðskrá því hvert verkefni er ólíkt. Segðu okkur hvað þú þarft, hvenær og hvar, og við svörum með sérsniðnu tilboði, yfirleitt innan eins virks dags."
+        "a": "Við birtum ekki fasta verðskrá því að engin tvö verkefni eru eins. Segðu okkur hvað þú þarft, hvenær og hvar, og við svörum með sérsniðnu tilboði innan eins virks dags."
       },
       {
         "q": "Þarf meirapróf til að keyra kassabílana ykkar?",
-        "a": "Nei. Ford Transit og VW Transporter kassabílarnir eru minnaprófsbílar og má keyra á venjulegu B-ökuskírteini. Sama gildir um sendibílinn og pallbílinn."
+        "a": "Nei. Ford Transit og VW Transporter kassabílarnir eru minnaprófsbílar og þá má keyra á venjulegu B-ökuskírteini. Sama gildir um sendibílinn og pallbílinn."
       },
       {
         "q": "Leigið þið bara til kvikmyndaverkefna?",
-        "a": "Nei. Flotinn er byggður fyrir kvikmyndagerð en kassabílar, sendibílar, kerrur og hjólhýsi eru líka til leigu fyrir einstaklinga og fyrirtæki, til dæmis í búslóðaflutninga, sumarfríið eða helgarverkefnin."
+        "a": "Nei. Flotinn er byggður upp fyrir kvikmyndagerð en allir bílarnir, kerran, hjólhýsin og sexhjólið eru líka til leigu fyrir einstaklinga og fyrirtæki, til dæmis í búslóðaflutninga, sumarfríið eða helgarverkefnin."
       },
       {
         "q": "Hvar sæki ég og getið þið afhent?",
-        "a": "Við erum að Grensásvegi 1 í Reykjavík. Við getum líka afhent bíla og búnað hvert á land sem er, hvort sem tökurnar eru á hálendinu, úti á landi eða innanbæjar. Afhending er verðlögð í tilboðinu."
+        "a": "Við erum að Grensásvegi 1 í Reykjavík. Við getum líka afhent bíla og búnað hvert á land sem er, hvort sem verkefnið er á hálendinu, úti á landi eða innanbæjar. Afhending er verðlögð í tilboðinu."
       },
       {
         "q": "Hversu langan fyrirvara þarf?",
-        "a": "Því fyrr því betra, sérstaklega yfir sumarið og á tökutímabilinu. Hafðu samband og við segjum þér strax hvað er laust á þínum dögum."
+        "a": "Því fyrr því betra, sérstaklega yfir sumarið og á tökutímabilinu. Hafðu samband og við segjum þér strax hvað er laust þá daga sem þig vantar."
       },
       {
-        "q": "Hvað með tryggingar og skilmála?",
+        "q": "Hvað um tryggingar og skilmála?",
         "a": "Við förum yfir tryggingar, sjálfsábyrgð og leiguskilmála með þér í tilboðinu svo allt sé á hreinu áður en lagt er af stað."
+      },
+      {
+        "q": "Get ég leigt búnað án þess að leigja bíl?",
+        "a": "Já. Allur búnaður, til dæmis rafstöðvar, hitablásarar, skjóltjöld og umferðarbúnaður, leigist stakur eða með bílunum og allt fer á sama tilboðið."
       }
     ],
     "contact": [
       {
         "q": "Hvað þarf að koma fram í tilboðsbeiðni?",
-        "a": "Dagsetningar, staður eða staðir, hvaða bíla og búnað vantar og hvort þið viljið afhendingu. Því meira sem við vitum, því nákvæmara verður tilboðið."
+        "a": "Dagsetningar, staður eða staðir, hvaða bíla og búnað vantar og hvort þú vilt fá afhent á staðinn. Því meira sem við vitum, því nákvæmara verður tilboðið."
       },
       {
         "q": "Hversu fljótt svarið þið?",
         "a": "Innan eins virks dags, oft samdægurs. Á tökutímabilinu svörum við hraðar. Það má alltaf hringja."
       },
       {
-        "q": "Hvar eruð þið staðsett?",
+        "q": "Hvar eruð þið til húsa?",
         "a": "Að Grensásvegi 1, 108 Reykjavík. Þaðan afhendum við líka hvert á land sem er."
       },
       {
-        "q": "Finn ég ekki það sem vantar á vefnum?",
+        "q": "Finnurðu ekki það sem þig vantar á vefnum?",
         "a": "Láttu okkur vita. Við erum með víðtæk tengsl í bransanum og reddum oft hlutum sem eru ekki á listanum."
       }
     ]
@@ -479,17 +491,21 @@
         "title": "Kassabílar til leigu",
         "intro1": "Kassabílar til leigu í Reykjavík fyrir kvikmynda- og sjónvarpsverkefni, fyrirtæki og einstaklinga. Ford Transit og VW Transporter kassabílarnir okkar eru minnaprófsbílar: þá má keyra á venjulegu B-ökuskírteini, svo hver sem er í tökuliðinu getur sótt tækin.",
         "intro2": "Rafmagnslyfta og lokaður kassi gera þá tilvalda fyrir myndavéla-, leikmynda- og tökustaðadeildir, en líka í búslóðaflutninga, húsgagnaflutninga og lagerferðir. Bílarnir koma þjónustaðir, á sumardekkjum á sumrin og negldum dekkjum á veturna.",
-        "intro3": "Við afhendum hvert á land sem er og setjum saman tilboð fyrir einn dag, viku eða heilt verkefni. Kerrur, hjólhýsi og búnaður leigjast með.",
+        "intro3": "Við afhendum hvert á land sem er og setjum saman tilboð fyrir einn dag, viku eða heilt verkefni. Kerran okkar, hjólhýsi og búnaður leigjast með.",
         "metaTitle": "Kassabíll til leigu í Reykjavík",
         "metaDescription": "Kassabílar til leigu með rafmagnslyftu, minnaprófsbílar fyrir kvikmyndatökur, fyrirtæki og búslóðaflutninga. Afhending um land allt. Óskaðu eftir tilboði.",
         "faq": [
           {
             "q": "Þarf meirapróf á kassabílana?",
-            "a": "Nei. Báðir kassabílarnir eru minnaprófsbílar og má keyra á venjulegu B-ökuskírteini."
+            "a": "Nei. Báðir kassabílarnir eru minnaprófsbílar og þá má keyra á venjulegu B-ökuskírteini."
           },
           {
             "q": "Er lyfta á bílunum?",
-            "a": "Já, rafmagnslyfta að aftan og hliðarhurð inn í kassann á Ford Transit, svo þungir hlutir fara inn án þess að lyfta þeim."
+            "a": "Já, á báðum bílunum er rafmagnslyfta að aftan og hliðarhurð inn í kassann, svo ekki þarf að lyfta þungum hlutum inn."
+          },
+          {
+            "q": "Má draga kerru með kassabílunum?",
+            "a": "Já, með VW Transporter kassabílnum: hann er með dráttarkrók og dregur kerruna okkar. Leyfð heildarþyngd hennar er 750 kg og því nægir B-ökuskírteini."
           },
           {
             "q": "Má leigja kassabíl í búslóðaflutninga?",
@@ -497,18 +513,19 @@
           },
           {
             "q": "Hvað kostar kassabíll á dag?",
-            "a": "Við birtum ekki fasta verðskrá. Segðu okkur dagana og við svörum með tilboði innan eins virks dags."
+            "a": "Við birtum ekki fasta verðskrá. Segðu okkur hvaða daga þig vantar bílinn og við svörum með tilboði innan eins virks dags."
           }
-        ]
+        ],
+        "aboutTitle": "Um kassabílana"
       },
       "cargoVans": {
         "kicker": "Flotinn",
-        "title": "Sendibílar til leigu",
-        "intro1": "Sendibíll til leigu í Reykjavík: Ford Transit sendibíll með dráttarkrók sem keyrir á venjulegu B-ökuskírteini. Hann er þægilegur í bæjarsnatti og rúmgóður fyrir tæki, kassa og búnað sem þarf að vera þurr og læstur.",
-        "intro2": "Sendibíllinn er jafn heppilegur fyrir myndavéladeild á leið á tökustað og fyrirtæki sem vantar bíl í viku, eða einstakling sem er að flytja. Með dráttarkróknum dregur hann kerrurnar okkar og hjólhýsin.",
-        "intro3": "Við afhendum hvert á land sem er og setjum saman tilboð fyrir þinn tíma, hvort sem það er dagur, helgi eða lengri leiga.",
+        "title": "Sendibíll til leigu",
+        "intro1": "Sendibíll til leigu í Reykjavík: Ford Transit með hillum, toppgrind og dráttarkrók. Hann má keyra á venjulegu B-ökuskírteini og hann er lipur í bæjarsnatti og rúmgóður fyrir tæki, kassa og búnað sem þurfa að vera þurr og læst inni.",
+        "intro2": "Sendibíllinn er jafn heppilegur fyrir myndavéladeild á leið á tökustað og fyrirtæki sem vantar bíl í viku eða einstakling sem er að flytja. Með dráttarkróknum dregur hann kerruna okkar.",
+        "intro3": "Við afhendum hvert á land sem er og setjum saman tilboð fyrir það tímabil sem þig vantar, hvort sem það er dagur, helgi eða lengri leiga.",
         "metaTitle": "Sendibíll til leigu í Reykjavík",
-        "metaDescription": "Sendibílaleiga fyrir kvikmyndatökur, fyrirtæki og einstaklinga. Ford Transit sendibíll með dráttarkrók, B-ökuskírteini nægir. Afhending um land allt. Óskaðu eftir tilboði.",
+        "metaDescription": "Sendibílaleiga í Reykjavík: Ford Transit sendibíll með hillum, toppgrind og dráttarkrók. B-ökuskírteini nægir. Fyrir tökur, fyrirtæki og búslóðaflutninga.",
         "faq": [
           {
             "q": "Þarf sérstök réttindi á sendibílinn?",
@@ -516,49 +533,55 @@
           },
           {
             "q": "Má draga kerru með sendibílnum?",
-            "a": "Já, hann er með dráttarkrók og dregur kerrurnar okkar. Með B-ökuskírteini má draga kerru allt að 750 kg."
+            "a": "Já, hann er með dráttarkrók og dregur kerruna okkar. Leyfð heildarþyngd hennar er 750 kg og því nægir B-ökuskírteini."
           },
           {
             "q": "Leigið þið sendibíl til einstaklinga?",
-            "a": "Já, í flutninga, helgarverkefni og hvað sem er. Hafðu samband og við finnum lausn."
+            "a": "Já, í flutninga, helgarverkefni eða hvað annað sem er. Hafðu samband og við finnum lausn."
           }
-        ]
+        ],
+        "aboutTitle": "Um sendibílinn"
       },
       "caravans": {
         "kicker": "Flotinn",
         "title": "Hjólhýsi til leigu",
-        "intro1": "Hjólhýsi til leigu fyrir kvikmyndatökur og sumarfríið. Hobby Prestige 560 WFU hjólhýsin okkar eru árgerð 2026, með hita, svefnplássi fyrir fjóra og rafmagni frá landtengingu eða sólarsellu og rafhlöðu, svo þau standa sjálfstæð á tökustað.",
-        "intro2": "Á setti eru þau aðstaða fyrir leikara milli taka, förðun og búninga, eða hlýr staður fyrir tökulið í íslensku veðri. Utan tökutímabils leigjast þau til einstaklinga og fjölskyldna í ferðalagið um landið.",
-        "intro3": "Við eigum nokkur hýsi, afhendum hvert á land sem er og getum komið þeim fyrir á tökustað fyrir þig. Óskaðu eftir tilboði með dagsetningum og staðsetningu.",
+        "intro1": "Hjólhýsi til leigu í Reykjavík fyrir kvikmyndatökur og sumarfríið. Hobby Prestige 560 WFU hjólhýsin okkar eru árgerð 2026, með svefnplássi fyrir fjóra, baðherbergi með sturtu, fullbúnu eldhúsi og hita. Rafmagnið kemur frá landtengingu eða sólarsellu og rafgeymi, svo þau eru sjálfum sér nóg hvort sem er á tökustað eða tjaldsvæði.",
+        "intro2": "Á setti eru þau aðstaða fyrir leikara milli taka, förðun og búninga, eða hlýr staður fyrir tökulið í íslensku veðri. Þegar þau eru ekki í tökum leigjast þau til einstaklinga og fjölskyldna í ferðalagið um landið.",
+        "intro3": "Við eigum fjögur eins hýsi, afhendum hvert á land sem er og getum komið þeim fyrir á tökustað fyrir þig. Óskaðu eftir tilboði með dagsetningum og staðsetningu.",
         "metaTitle": "Hjólhýsi til leigu í Reykjavík",
-        "metaDescription": "Hjólhýsaleiga: Hobby Prestige 560 WFU hjólhýsi árgerð 2026 til leigu fyrir kvikmyndatökur og sumarfríið. Hiti, svefnpláss fyrir 4. Afhending um land allt.",
+        "metaDescription": "Hjólhýsaleiga: Hobby Prestige 560 WFU, árgerð 2026, til leigu í tökur og sumarfríið. Svefnpláss fyrir 4, baðherbergi, eldhús og hiti. Afhent um land allt.",
         "faq": [
           {
             "q": "Þarf sérstök réttindi til að draga hjólhýsið?",
-            "a": "Hjólhýsin eru allt að 2.000 kg að heildarþyngd og því þarf yfirleitt eftirvagnaréttindi (BE) til að draga þau. Við förum yfir þetta með þér, og við getum líka komið hýsinu á staðinn fyrir þig."
+            "a": "Leyfð heildarþyngd hvers hjólhýsis er 1.800 kg og því þarf yfirleitt eftirvagnaréttindi (BE) til að draga það. Við förum yfir þetta með þér og getum líka komið hýsinu á staðinn fyrir þig."
           },
           {
             "q": "Er hiti og rafmagn í hjólhýsinu?",
-            "a": "Já. Hýsin eru með hita og rafmagn frá landtengingu (CEE) eða sólarsellu og rafhlöðu, svo þau nýtast líka þar sem ekkert rafmagn er."
+            "a": "Já. Í hýsunum er gasmiðstöð og rafmagnshitablásari og rafmagn fæst frá landtengingu (CEE) eða sólarsellu og rafgeymi, svo þau nýtast líka þar sem ekkert rafmagn er."
           },
           {
-            "q": "Hvað sofa margir í hjólhýsinu?",
+            "q": "Hvað geta margir sofið í hjólhýsinu?",
             "a": "Fjórir. Lengdin er um 7,5 metrar og breiddin 2,50 metrar."
           },
           {
             "q": "Má leigja hjólhýsi í sumarfríið?",
             "a": "Já, hjólhýsin leigjast til einstaklinga og fjölskyldna þegar þau eru ekki í tökum."
+          },
+          {
+            "q": "Er baðherbergi í hjólhýsinu?",
+            "a": "Já, í hverju hýsi er sérbaðherbergi með klósetti og sturtu, auk fullbúins eldhúss með ofni, gaseldavél og ísskáp."
           }
-        ]
+        ],
+        "aboutTitle": "Um hjólhýsin"
       },
       "trailers": {
         "kicker": "Flotinn",
-        "title": "Kerrur til leigu",
-        "intro1": "Kerra til leigu í Reykjavík: Bilxtra Tractus Multi kerra með sturtu, opnanlegum hlerum að framan og aftan og segli sem fylgir. Leyfð heildarþyngd er 750 kg, svo hana má draga á venjulegu B-ökuskírteini.",
-        "intro2": "Sturtan léttir affermingu á möl, mold og garðaúrgangi, innfelld augu halda festingum á sínum stað og hlerarnir opnast báðum megin. Hún hentar jafnt í tökustaðavinnu, byggingarefni, garðvinnu, húsgagnaflutninga og ferðina á endurvinnslustöðina.",
-        "intro3": "Kerran leigist stök eða með bílunum okkar, sem allir eru með dráttarkrók. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+        "title": "Kerra til leigu",
+        "intro1": "Kerra til leigu í Reykjavík: Bilxtra Tractus Multi sturtukerra með hlerum sem opnast að framan og aftan og segli sem fylgir. Leyfð heildarþyngd er 750 kg, svo kerruna má draga á venjulegu B-ökuskírteini.",
+        "intro2": "Sturtan léttir affermingu á möl, mold og garðaúrgangi og innfelld festiaugu halda farminum á sínum stað. Nefhjól fylgir og hægt er að fá hækkun á hliðarnar með yfirbreiðslu. Kerran hentar jafnt í tökustaðavinnu sem efnisflutninga, garðvinnu, húsgagnaflutninga og ferðina á endurvinnslustöðina.",
+        "intro3": "Kerran leigist stök eða með bílunum okkar: pallbíllinn, sendibíllinn og VW Transporter kassabíllinn eru með dráttarkrók. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
         "metaTitle": "Kerra til leigu í Reykjavík",
-        "metaDescription": "Kerruleiga: Bilxtra Tractus Multi kerra með sturtu og segli til leigu. 750 kg, B-ökuskírteini nægir. Fyrir kvikmyndatökur, fyrirtæki og einstaklinga. Óskaðu eftir tilboði.",
+        "metaDescription": "Kerruleiga í Reykjavík: 750 kg sturtukerra með segli og hlerum sem opnast að framan og aftan. B-ökuskírteini nægir. Fyrir einstaklinga, fyrirtæki og tökur.",
         "faq": [
           {
             "q": "Má ég draga kerruna á B-ökuskírteini?",
@@ -566,36 +589,70 @@
           },
           {
             "q": "Hvað ber kerran mikið?",
-            "a": "Eiginþyngd er 220 kg og leyfð heildarþyngd 750 kg, svo burðargetan er um 530 kg. Innanmál er 300 x 150 x 35 cm."
+            "a": "Eiginþyngd er 220 kg og leyfð heildarþyngd 750 kg, svo burðargetan er um 530 kg. Innanmál er 300 × 150 × 35 cm."
           },
           {
             "q": "Fylgir segl með kerrunni?",
-            "a": "Já, segl fylgir, og hlerarnir opnast bæði að framan og aftan."
+            "a": "Já, segl og nefhjól fylgja og hægt er að fá hækkun á hliðarnar með yfirbreiðslu."
           }
-        ]
+        ],
+        "aboutTitle": "Um kerruna"
       },
       "atv": {
         "kicker": "Flotinn",
         "title": "Sexhjól til leigu",
-        "intro1": "Sexhjól til leigu fyrir kvikmyndatökur: Can-Am Outlander MAX 6x6 850, árgerð 2026, með sæti fyrir tvo, 454 kg burðargetu, 830 kg dráttargetu og 275 lítra innbyggðri geymslu. Þetta er tækið sem kemur myndavél, ljósum og fólki þangað sem bíll kemst ekki.",
-        "intro2": "Sex drifhjól og heil botnplata gera það að verkum að það fer yfir sand, snjó, grjót og mýri, og dráttarkúlan að aftan tekur kerru. Það kemur vetrarútbúið á þeim tíma árs og tilbúið á tökustað.",
-        "intro3": "Við afhendum hvert á land sem er, með kerru ef þarf. Munið að utanvegaakstur er bannaður á Íslandi; sexhjólið er fyrir slóða, tökustaði með leyfi og vinnu innan afmarkaðra svæða.",
-        "metaTitle": "Sexhjól til leigu fyrir kvikmyndatökur",
-        "metaDescription": "Can-Am Outlander MAX 6x6 850 sexhjól til leigu fyrir kvikmyndatökur á Íslandi. 2 sæti, 454 kg burðargeta, 830 kg dráttargeta. Afhending um land allt. Óskaðu eftir tilboði.",
+        "intro1": "Sexhjól til leigu: Can-Am Outlander MAX 6x6 850, árgerð 2026, með sæti fyrir tvo, 454 kg burðargetu, 830 kg dráttargetu og 275 lítra innbyggðri geymslu. Þetta er tækið sem kemur myndavél, ljósum og fólki þangað sem bíll kemst ekki, og það nýtist jafn vel í smalamennsku og vinnu á landareign.",
+        "intro2": "Með sex drifhjólum og heilli botnplötu ræður það við sand, snjó og grjót á slóðum, og dráttarkúlan að aftan tekur kerru. Á veturna kemur það vetrarbúið og tilbúið á tökustað.",
+        "intro3": "Við afhendum hvert á land sem er, með kerru ef þarf. Athugaðu að utanvegaakstur er bannaður á Íslandi: sexhjólið er fyrir vegi, slóða, tökustaði með leyfi og vinnu innan afmarkaðra svæða.",
+        "metaTitle": "Sexhjól til leigu: Can-Am Outlander 6x6",
+        "metaDescription": "Can-Am Outlander MAX 6x6 850 sexhjól til leigu á Íslandi. Sæti fyrir tvo, 454 kg burðargeta, 830 kg dráttargeta, götuskráð. Afhending um land allt.",
         "faq": [
           {
-            "q": "Hvað ber sexhjólið?",
-            "a": "454 kg burðargetu, 830 kg dráttargetu og 275 lítra innbyggða geymslu, auk tveggja sæta."
+            "q": "Hvað ber sexhjólið mikið?",
+            "a": "Það ber 454 kg á palli, dregur 830 kg og er með 275 lítra innbyggða geymslu og sæti fyrir tvo."
           },
           {
             "q": "Má keyra sexhjólið hvar sem er?",
-            "a": "Nei. Utanvegaakstur er bannaður á Íslandi. Sexhjólið er fyrir merkta slóða, tökustaði með tilskildum leyfum og afmörkuð vinnusvæði. Við förum yfir reglur og réttindi með þér þegar þú bókar."
+            "a": "Nei. Utanvegaakstur er bannaður á Íslandi. Sexhjólið er götuskráð og því má aka á vegum og merktum slóðum, á tökustöðum með tilskildum leyfum og á afmörkuðum vinnusvæðum. Við förum yfir reglur og réttindi með þér þegar þú bókar."
           },
           {
             "q": "Getið þið komið með sexhjólið á tökustað?",
             "a": "Já, við afhendum hvert á land sem er, á kerru eða á palli."
+          },
+          {
+            "q": "Leigið þið hjálma með sexhjólinu?",
+            "a": "Já. NOX-kjálkahjálmar, vottaðir samkvæmt ECE 22.06, eru til leigu með sexhjólinu og fara á sama tilboð."
+          },
+          {
+            "q": "Er sexhjól það sama og fjórhjól?",
+            "a": "Sexhjól er eins og fjórhjól, nema með sex drifhjólum og palli að aftan, svo það ber meira og dregur meira. Can-Am Outlander MAX 6x6 850 ber 454 kg á palli og dregur 830 kg."
           }
-        ]
+        ],
+        "aboutTitle": "Um sexhjólið"
+      },
+      "pickups": {
+        "kicker": "Flotinn",
+        "title": "Pallbíll til leigu",
+        "aboutTitle": "Um pallbílinn",
+        "intro1": "Pallbíll til leigu í Reykjavík: fjórhjóladrifinn Chevrolet Silverado, sjálfskiptur, með sæti fyrir fimm, dráttarkrók og 33\" grófum dekkjum. Hann má keyra á venjulegu B-ökuskírteini.",
+        "intro2": "Á tökustað flytur hann búnað á pallinum og dregur kerru eða hjólhýsi þangað sem malbikið nær ekki. Utan kvikmyndavinnu nýtist hann í framkvæmdir, efnisflutninga og hvers kyns drátt. Á veturna er hann á negldum dekkjum.",
+        "intro3": "Pallbíllinn leigist stakur eða með kerru, hjólhýsi eða sexhjólinu okkar og við afhendum hvert á land sem er. Óskaðu eftir tilboði með dagsetningum.",
+        "metaTitle": "Pallbíll til leigu í Reykjavík",
+        "metaDescription": "Chevrolet Silverado 4x4 pallbíll til leigu: 33\" dekk, dráttarkrókur og fimm sæti. Fyrir tökustaði, framkvæmdir og drátt á kerrum og hjólhýsum. Fáðu tilboð.",
+        "faq": {
+          "0": {
+            "q": "Þarf meirapróf á pallbílinn?",
+            "a": "Nei, venjulegt B-ökuskírteini nægir."
+          },
+          "1": {
+            "q": "Má draga kerru eða hjólhýsi með pallbílnum?",
+            "a": "Já, hann er með dráttarkrók og dregur bæði kerruna og hjólhýsin okkar. Til að draga hjólhýsi þarf ökumaður yfirleitt eftirvagnaréttindi (BE)."
+          },
+          "2": {
+            "q": "Er pallbíllinn á vetrardekkjum?",
+            "a": "Já, hann er á negldum dekkjum yfir veturinn og 33\" grófum dekkjum á sumrin."
+          }
+        }
       }
     },
     "equipment": {
@@ -629,7 +686,7 @@
         "intro2": "Í flokknum eru líka ljósin: LED Nova 6K kastari á þrífæti og Scangrip vinnuljós, batterísknúin svo þau fara upp án snúru. Inverter-straumur er öruggur fyrir myndavélar, tölvur og hljóðbúnað, og hljóðlátu stöðvarnar mega ganga nálægt setti.",
         "intro3": "Allt leigist stakt eða sem heill rafmagnspakki með hitablásurum og tjöldum, afhent hvert á land sem er. Óskaðu eftir tilboði.",
         "metaTitle": "Rafstöð til leigu",
-        "metaDescription": "Rafstöðvar, rafhlöðustöð, rafmagnstöflur, framlengingarsnúrur og LED ljós til leigu fyrir kvikmyndatökur og vinnusvæði. Hljóðlátar inverter-stöðvar. Afhending um land allt.",
+        "metaDescription": "Rafstöðvar, rafhlöðustöð, rafmagnstöflur, framlengingarsnúrur og LED-ljós til leigu fyrir kvikmyndatökur og vinnusvæði. Hljóðlátar inverter-stöðvar. Afhending um land allt.",
         "faq": [
           {
             "q": "Hvaða rafstöð hentar fyrir myndavélar og tölvur?",
@@ -653,7 +710,7 @@
       "safety": {
         "kicker": "Búnaður",
         "title": "Öryggis- og umferðarbúnaður til leigu",
-        "intro1": "Umferðarkeilur, skilti og öryggisbúnaður til leigu fyrir kvikmyndatökur, vegalokanir og vinnusvæði. Keilur í 50 og 100 cm, bannað-að-leggja keilur, LED keiluljós, hjáleiðarskilti og skilti sem segja vegfarendum að tökur séu í gangi.",
+        "intro1": "Umferðarkeilur, skilti og öryggisbúnaður til leigu fyrir kvikmyndatökur, vegalokanir og vinnusvæði. Keilur í 50 og 100 cm, bannað-að-leggja keilur, LED-keiluljós, hjáleiðarskilti og skilti sem segja vegfarendum að tökur séu í gangi.",
         "intro2": "Fyrir tökuliðið eru öryggisvesti, hjálmar, strekkibönd, dráttartóg og plaststaurar til að girða af svæði. Allt leigist í magni, svo heil gata eða grunnbúðir merkjast úr einni afhendingu.",
         "intro3": "Við afhendum hvert á land sem er og setjum saman umferðarpakka fyrir tökuna þína. Óskaðu eftir tilboði.",
         "metaTitle": "Umferðarkeilur og skilti til leigu",

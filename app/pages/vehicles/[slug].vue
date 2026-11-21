@@ -10,7 +10,7 @@
 
       <!-- Summary -->
       <div class="lg:col-span-2">
-        <p class="kicker">{{ t(`categories.${vehicle.category}`) }}</p>
+        <p class="kicker">{{ kindLabel }}</p>
         <!-- "til leigu" in the visible H1 — matches the search query directly. -->
         <h1 class="h1 lg:text-4xl mt-3">
           {{ t('meta.vehicleTitle', { name: lt(vehicle.name) }) }}
@@ -19,7 +19,8 @@
           {{ lt(vehicle.tagline) }}
         </p>
 
-        <div class="mt-6 space-y-4 text-sm text-bone-400 leading-relaxed">
+        <!-- pre-line: a paragraph may be a short list of "label: value" lines -->
+        <div class="mt-6 space-y-4 text-sm text-bone-400 leading-relaxed whitespace-pre-line">
           <p v-for="(paragraph, i) in paragraphs" :key="i">{{ paragraph }}</p>
         </div>
 
@@ -52,7 +53,7 @@
           {{ t('vehicle.specsTitle') }}
         </h2>
         <div class="mt-6">
-          <SpecTable :specs="vehicle.specs" />
+          <SpecTable :specs="vehicle.specs" :kind="vehicle.kind" />
         </div>
       </div>
 
@@ -86,7 +87,7 @@
 
     <!-- More in this category -->
     <section v-if="related.length" class="mt-20">
-      <SectionHeading :kicker="t(`categories.${vehicle.category}`)" :title="t('vehicle.moreInCategory')" />
+      <SectionHeading :kicker="t('nav.fleet')" :title="t('catalogue.otherTitle')" />
       <div class="mt-8 card-grid">
         <VehicleCard v-for="v in related" :key="v.id" :vehicle="v" class="sm:grid-rows-subgrid sm:row-span-4" />
       </div>
@@ -98,33 +99,62 @@
 
 <script setup lang="ts">
 import { landingForKind } from '~/data/vehicleLandings'
+import { VEHICLE_PAIRINGS } from '~/data/vehiclePairings'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
 const route = useRoute()
-const { bySlug, byCategory } = await useVehicles()
+const { all } = await useVehicles()
+const { vehiclePath } = useItemPaths()
 const { featured: featuredEquipment, all: allEquipment } = await useEquipment()
 const { label: categoryLabel } = await useEquipmentCategories()
 
-// Cross-sell: the equipment people most often add to a vehicle (featured
-// items first, otherwise the first three in the catalogue).
+// Cross-sell: the equipment that goes out with this type of vehicle (see
+// vehiclePairings.ts), topped up with the featured items so there are three.
 const pairsWith = computed(() => {
-  const picked = featuredEquipment()
-  return (picked.length ? picked : allEquipment()).slice(0, 3)
+  const wanted = (found?.kind ? VEHICLE_PAIRINGS[found.kind] : [])
+    .map(id => allEquipment().find(e => e.id === id))
+    .filter((e): e is NonNullable<typeof e> => Boolean(e))
+  const rest = [...featuredEquipment(), ...allEquipment()].filter(e => !wanted.includes(e))
+  return [...wanted, ...rest].slice(0, 3)
 })
 
-const found = bySlug(route.params.slug as string)
+// A vehicle answers to its slug and, when it has one, its English slug.
+const param = route.params.slug as string
+const found = all().find(v => v.slug === param) ?? all().find(v => v.slugEn === param)
 if (!found) {
   throw createError({ statusCode: 404, statusMessage: 'Vehicle not found', fatal: true })
 }
 const vehicle = found
 
-const paragraphs = computed(() => lt(vehicle.description).split('\n\n'))
+// One address per language: the other language's segment 301s to this one's.
+if (param !== vehicleSlugFor(vehicle, locale.value)) {
+  await navigateTo(vehiclePath(vehicle), { redirectCode: 301 })
+}
+// Tell @nuxtjs/i18n the segment differs per language, so the hreflang links
+// and the language switcher point at the translated address.
+useLocalisedSlugs({ is: vehicle.slug, en: vehicleSlugFor(vehicle, 'en') })
 
-const related = computed(() =>
-  byCategory(vehicle.category).filter(v => v.slug !== vehicle.slug).slice(0, 3),
-)
+const kindLabel = computed(() => (vehicle.kind ? t(`catalogue.kindOne.${vehicle.kind}`) : t(`categories.${vehicle.category}`)))
+
+// The list carries cards only: the description comes with the vehicle's own record.
+const fullVehicle = await useVehicle(vehicle.id)
+const paragraphs = computed(() => {
+  const description = fullVehicle.value?.description
+  return description ? lt(description).split('\n\n').map(p => p.trim()).filter(Boolean) : []
+})
+
+// The rest of the fleet, same type first: every vehicle page links on to others.
+const related = computed(() => {
+  // Same type first, then the fleet in order from this vehicle on (wrapping),
+  // so every vehicle is shown on some other vehicle's page.
+  const fleet = all()
+  const i = fleet.findIndex(v => v.id === vehicle.id)
+  const others = [...fleet.slice(i + 1), ...fleet.slice(0, Math.max(i, 0))]
+  const same = others.filter(v => vehicle.kind && v.kind === vehicle.kind)
+  return [...same, ...others.filter(v => !same.includes(v))].slice(0, 3)
+})
 
 // Breadcrumbs renders the trail and emits the matching BreadcrumbList JSON-LD.
 // The category level links to the vehicle's keyword landing page when it has one.
@@ -133,19 +163,16 @@ const crumbs = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
   { label: t('nav.fleet'), to: localePath('/vehicles') },
   ...(landing ? [{ label: t(`${landing.key}.title`), to: localePath({ name: landing.routeName }) }] : []),
-  { label: lt(vehicle.name), to: localePath(`/vehicles/${vehicle.slug}`) },
+  { label: lt(vehicle.name), to: vehiclePath(vehicle) },
 ])
 
 const siteUrl = useRuntimeConfig().public.siteUrl
 const absImage = (src: string) => (src.startsWith('http') ? src : `${siteUrl}${src}`)
 const { ogImageUrl } = useOgImage()
 
-// Tagline alone is too thin for a snippet; pad it with the opening of the
-// description and trim to Google's ~160-character display window.
-const metaDescription = computed(() => {
-  const full = `${lt(vehicle.tagline)} ${lt(vehicle.description).split('\n\n')[0] ?? ''}`.trim()
-  return trimMetaDescription(full)
-})
+// The tagline, then as much of the description's opening as fits Google's
+// ~160-character window in whole sentences.
+const metaDescription = computed(() => composeMetaDescription([lt(vehicle.tagline), t('meta.deliveryLine'), paragraphs.value[0]]))
 
 // "Til leigu" / "for rent" in the tab & SERP title — that's what people
 // actually type into Google, and the bare vehicle name doesn't say it.
@@ -153,27 +180,50 @@ useSeoMeta({
   title: () => t('meta.vehicleTitle', { name: lt(vehicle.name) }),
   description: () => metaDescription.value,
   ogTitle: () => `${t('meta.vehicleTitle', { name: lt(vehicle.name) })} · Creative Filmmaking`,
-  ogDescription: () => lt(vehicle.tagline),
+  ogDescription: () => metaDescription.value,
   // A real 1200×630 crop, so the site-wide og:image:width/height are true here too.
   ogImage: ogImageUrl(vehicle.images[0], 'cover'),
+  // Restated here: setting og:image on a page drops the site-wide dimensions.
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
   ogImageAlt: vehicle.images[0] ? () => lt(vehicle.name) : undefined,
 })
+
+// Schema.org values for the spec enums (its own enumeration where one exists).
+const DRIVE = {
+  '4x4': 'https://schema.org/FourWheelDriveConfiguration',
+  '2wd': '2WD',
+  '6x6': '6x6',
+} as const
+
+const vehicleNodeId = `${siteUrl}${vehiclePath(vehicle)}#vehicle`
 
 // No offers node on purpose — pricing is offer-on-request. Raw node because
 // schema-org ships no defineVehicle helper.
 useSchemaOrg([
   // Pins the SERP thumbnail to this vehicle's own photo.
-  ...(vehicle.images[0]
-    ? [defineWebPage({ primaryImageOfPage: absImage(vehicle.images[0]) })]
-    : []),
+  defineWebPage({
+    '@type': 'ItemPage',
+    // The page is about this vehicle.
+    'mainEntity': { '@id': vehicleNodeId },
+    ...(vehicle.images[0] ? { primaryImageOfPage: absImage(vehicle.images[0]) } : {}),
+  }),
   {
     '@type': 'Vehicle',
+    '@id': vehicleNodeId,
     name: lt(vehicle.name),
     description: lt(vehicle.tagline),
+    url: `${siteUrl}${vehiclePath(vehicle)}`,
     image: vehicle.images.map(absImage),
+    ...(vehicle.make ? { brand: { '@type': 'Brand', name: vehicle.make } } : {}),
+    ...(vehicle.model ? { model: vehicle.model } : {}),
+    ...(vehicle.modelYear ? { vehicleModelDate: String(vehicle.modelYear) } : {}),
+    ...(vehicle.specs.drivetrain ? { driveWheelConfiguration: DRIVE[vehicle.specs.drivetrain] } : {}),
     ...(vehicle.specs.seats ? { seatingCapacity: vehicle.specs.seats } : {}),
-    ...(vehicle.specs.fuel ? { fuelType: vehicle.specs.fuel } : {}),
-    ...(vehicle.specs.transmission ? { vehicleTransmission: vehicle.specs.transmission } : {}),
+    ...(vehicle.specs.fuel ? { fuelType: t(`vehicle.specs.${vehicle.specs.fuel}`) } : {}),
+    ...(vehicle.specs.transmission ? { vehicleTransmission: t(`vehicle.specs.${vehicle.specs.transmission}`) } : {}),
+    ...(vehicle.specs.payloadKg ? { payload: { '@type': 'QuantitativeValue', 'value': vehicle.specs.payloadKg, 'unitCode': 'KGM' } } : {}),
+    ...(vehicle.specs.towingCapacityKg ? { trailerWeight: { '@type': 'QuantitativeValue', 'value': vehicle.specs.towingCapacityKg, 'unitCode': 'KGM' } } : {}),
   },
 ])
 </script>

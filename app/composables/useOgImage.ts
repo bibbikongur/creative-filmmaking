@@ -18,7 +18,13 @@ export const useOgImage = () => {
     // @nuxt/image types the provider option from its built-in list only; the
     // custom "uploads" provider is registered in nuxt.config and valid at runtime.
     const provider = imgProvider(src) as Parameters<typeof img>[2] extends { provider?: infer P } ? P : never
-    const url = img(src, { width: 1200, height: 630, format: 'jpeg', quality: 80, fit }, { provider })
+    // enlarge: a small source is scaled up, so the image really is the declared
+    // 1200×630. contain: pad with white (IPX pads with black by default, and a
+    // transparent PNG flattened to JPEG turned black too).
+    const url = img(src, {
+      width: 1200, height: 630, format: 'jpeg', quality: 80, fit, enlarge: true,
+      ...(fit === 'contain' ? { background: 'ffffff', flatten: true } : {}),
+    }, { provider })
     return url.startsWith('http') ? url : `${siteUrl}${url}`
   }
 

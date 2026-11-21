@@ -38,7 +38,7 @@
               :provider="imgProvider(images[index]!)"
               :alt="`${alt} (${index + 1}/${images.length})`"
               class="block max-w-full max-h-[calc(100svh-6rem)] w-auto h-auto object-contain"
-              sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw"
+              sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw"
             />
           </div>
 

@@ -69,6 +69,28 @@
             <span v-if="isEdit" class="text-signal-500/80"> (changing it breaks links already shared).</span>
           </p>
         </div>
+        <div>
+          <label class="admin-label">English web address</label>
+          <input v-model.trim="form.slugEn" type="text" class="input-dark font-mono" placeholder="ford-transit-box-truck">
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">
+            English page address: /en/vehicles/{{ form.slugEn || form.slug || '…' }}. Leave empty to use the same address in both languages.
+          </p>
+        </div>
+        <div>
+          <label class="admin-label">Make</label>
+          <input v-model.trim="form.make" type="text" class="input-dark" placeholder="Ford">
+        </div>
+        <div>
+          <label class="admin-label">Model</label>
+          <input v-model.trim="form.model" type="text" class="input-dark" placeholder="Transit">
+        </div>
+        <div>
+          <label class="admin-label">Model year</label>
+          <input v-model.number="form.modelYear" type="number" min="1950" max="2100" class="input-dark" placeholder="2026">
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">
+            Make, model and year are not shown on the page; search engines read them.
+          </p>
+        </div>
       </div>
       <label class="mt-4 flex items-center gap-2.5 text-sm text-bone-100 cursor-pointer">
         <input v-model="form.featured" type="checkbox" class="accent-gold-500 w-4 h-4">
@@ -223,8 +245,9 @@
           </select>
         </div>
         <div>
-          <label class="admin-label">Power output</label>
-          <input v-model.trim="form.specs.powerOutput" type="text" class="input-dark" placeholder="230V / 3 kW generator">
+          <label class="admin-label">Power output (English / Icelandic)</label>
+          <input v-model.trim="form.specs.powerOutput.en" type="text" class="input-dark" placeholder="230 V / 3 kW generator">
+          <input v-model.trim="form.specs.powerOutput.is" type="text" class="input-dark mt-2" placeholder="230 V / 3 kW rafstöð">
         </div>
       </div>
       <div class="mt-5 grid gap-2.5 sm:grid-cols-3">
@@ -306,8 +329,12 @@ const isEdit = computed(() => Boolean(props.vehicle))
 const v = props.vehicle
 const form = reactive({
   slug: v?.slug ?? '',
+  slugEn: v?.slugEn ?? '',
   category: v?.category ?? ('' as VehicleCategory), // a new vehicle starts with no category picked
   kind: v?.kind ?? '',
+  make: v?.make ?? '',
+  model: v?.model ?? '',
+  modelYear: v?.modelYear ?? ('' as number | ''),
   featured: v?.featured ?? false,
   name: { en: v?.name.en ?? '', is: v?.name.is ?? '' },
   tagline: { en: v?.tagline.en ?? '', is: v?.tagline.is ?? '' },
@@ -330,7 +357,10 @@ const form = reactive({
     drivetrain: v?.specs.drivetrain ?? '',
     transmission: v?.specs.transmission ?? '',
     fuel: v?.specs.fuel ?? '',
-    powerOutput: v?.specs.powerOutput ?? '',
+    // Older rows hold one string for both languages.
+    powerOutput: typeof v?.specs.powerOutput === 'string'
+      ? { en: v.specs.powerOutput, is: '' }
+      : { en: v?.specs.powerOutput?.en ?? '', is: v?.specs.powerOutput?.is ?? '' },
     generator: v?.specs.generator ?? false,
     heating: v?.specs.heating ?? false,
     blackoutReady: v?.specs.blackoutReady ?? false,
@@ -412,8 +442,12 @@ const errorList = computed(() =>
 const submit = () => {
   emit('save', {
     slug: form.slug,
+    slugEn: form.slugEn || undefined,
     category: form.category,
     kind: form.kind || undefined,
+    make: form.make || undefined,
+    model: form.model || undefined,
+    modelYear: form.modelYear || undefined,
     featured: form.featured,
     name: form.name,
     tagline: form.tagline,

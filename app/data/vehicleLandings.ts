@@ -68,6 +68,14 @@ export const vehicleLandings: VehicleLanding[] = [
     paths: { is: '/vehicles/sexhjol', en: '/vehicles/atv' },
     key: 'landings.vehicles.atv',
   },
+  {
+    id: 'pickups',
+    kind: 'pickup',
+    category: 'support-vehicles',
+    routeName: 'vehicles-pallbilar',
+    paths: { is: '/vehicles/pallbilar', en: '/vehicles/pickup-trucks' },
+    key: 'landings.vehicles.pickups',
+  },
 ]
 
 export const vehicleKinds: VehicleKind[] = ['box-truck', 'cargo-van', 'caravan', 'trailer', 'atv', 'pickup']

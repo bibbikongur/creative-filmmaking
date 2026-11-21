@@ -190,7 +190,7 @@
       </div>
     </section>
 
-    <CtaBanner image="/images/home-road.jpg" :title="t('home.closeTitle')" :text="t('home.closeText')" />
+    <CtaBanner image="/images/home-road.jpg" :image-alt="t('home.closeAlt')" :title="t('home.closeTitle')" :text="t('home.closeText')" />
     <QuoteBar />
   </div>
 </template>
@@ -270,6 +270,10 @@ useSeoMeta({
 
 // FAQPage on the page node; FaqSection emits the Question nodes it holds.
 useSchemaOrg([
-  defineWebPage({ '@type': faqItems.length ? ['WebPage', 'FAQPage'] : 'WebPage' }),
+  defineWebPage({
+    '@type': faqItems.length ? ['WebPage', 'FAQPage'] : 'WebPage',
+    // The home page is about the business itself.
+    'about': { '@id': `${useRuntimeConfig().public.siteUrl}/#identity` },
+  }),
 ])
 </script>

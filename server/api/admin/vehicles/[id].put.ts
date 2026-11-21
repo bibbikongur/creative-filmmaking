@@ -11,15 +11,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const payload = parseVehiclePayload(await readBody(event))
-  if (vehicles.some(v => v.id !== id && v.slug === payload.slug)) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Validation failed',
-      data: { errors: [`Slug "${payload.slug}" is already used by another vehicle.`] },
-    })
-  }
-
   const vehicle: Vehicle = { id: vehicles[index]!.id, ...payload }
+  assertUniqueVehicleSlugs(vehicle, vehicles)
   const next = [...vehicles]
   next[index] = vehicle
   await saveVehicles(next)

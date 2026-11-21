@@ -7,8 +7,10 @@ const MAX_ITEMS = 40
 // {type, id, qty}; names/images are resolved against the catalogue on render
 // and snapshotted server-side on submit.
 export const useCart = () => {
-  const cookie = useCookie<CartEntry[]>('cf_cart', {
-    default: () => [],
+  // No default value: a default would be written back as an empty cookie on
+  // every first visit (crawlers included), which keeps the HTML from being
+  // cached. The cookie only exists once something is on the list.
+  const cookie = useCookie<CartEntry[] | null>('cf_cart', {
     maxAge: 60 * 60 * 24 * 30,
   })
   // Single reactive source shared across components; the cookie is the

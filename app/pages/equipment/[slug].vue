@@ -25,7 +25,7 @@
         </p>
 
         <!-- Detail copy (admin "Description"): what it is, what it is for, what comes with it. -->
-        <div v-if="paragraphs.length" class="mt-6 space-y-4 text-sm text-bone-400 leading-relaxed">
+        <div v-if="paragraphs.length" class="mt-6 space-y-4 text-sm text-bone-400 leading-relaxed whitespace-pre-line">
           <p v-for="(paragraph, i) in paragraphs" :key="i">{{ paragraph }}</p>
         </div>
 
@@ -44,17 +44,6 @@
           </ul>
         </template>
 
-        <!-- Key facts: what every equipment item shares -->
-        <h2 class="h4 mt-8">
-          {{ t('equipmentCatalogue.factsTitle') }}
-        </h2>
-        <dl class="mt-4 divide-y divide-ink-700 border-y border-ink-700">
-          <div v-for="fact in facts" :key="fact.label" class="flex items-center justify-between py-3 gap-6">
-            <dt class="text-sm text-bone-400">{{ fact.label }}</dt>
-            <dd class="text-sm font-medium text-bone-100 text-right">{{ fact.value }}</dd>
-          </div>
-        </dl>
-
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
           <a href="#request-offer" class="btn-gold flex-1">
             {{ t('common.requestOffer') }}
@@ -65,16 +54,8 @@
     </div>
 
     <!-- Offer form -->
-    <div class="mt-16 grid gap-12 lg:grid-cols-5">
-      <div class="lg:col-span-2">
-        <h2 class="h3">
-          {{ t('equipmentCatalogue.seoTitle') }}
-        </h2>
-        <p class="mt-4 text-sm text-bone-400 leading-relaxed">
-          {{ t('equipmentCatalogue.seoText2') }}
-        </p>
-      </div>
-      <div id="request-offer" class="lg:col-span-3 scroll-mt-28">
+    <div class="mt-16 max-w-3xl">
+      <div id="request-offer" class="scroll-mt-28">
         <div class="panel">
           <h2 class="h3">
             {{ t('vehicle.requestTitle') }}
@@ -89,11 +70,14 @@
       </div>
     </div>
 
-    <!-- More in this category -->
+    <!-- More in this category (a small category borrows from the ones that go out with it) -->
     <section v-if="related.length" class="mt-20">
-      <SectionHeading :kicker="categoryName" :title="t('vehicle.moreInCategory')" />
+      <SectionHeading
+        :kicker="relatedMixed ? t('vehicle.pairsWithKicker') : categoryName"
+        :title="relatedMixed ? t('vehicle.pairsWith') : t('vehicle.moreInCategory')"
+      />
       <div class="mt-8 card-grid">
-        <EquipmentCard v-for="e in related" :key="e.id" :item="e" :category-label="categoryName" />
+        <EquipmentCard v-for="e in related" :key="e.id" :item="e" :category-label="label(e.category)" />
       </div>
     </section>
 
@@ -103,13 +87,15 @@
 
 <script setup lang="ts">
 import type { EquipmentCategoryDef, EquipmentItem } from '~/types'
+import { RELATED_CATEGORIES } from '~/data/equipmentRelated'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
 const route = useRoute()
 const { all, byCategory } = await useEquipment()
-const { all: categories, byId, path, text } = await useEquipmentCategories()
+const { equipmentPath } = useItemPaths()
+const { all: categories, byId, label, path, text } = await useEquipmentCategories()
 
 const param = route.params.slug as string
 
@@ -122,48 +108,67 @@ const categoryHit = categories().find(c => c.slug.is === param || c.slug.en === 
 if (categoryHit && path(categoryHit) !== localePath(`/equipment/${param}`)) {
   await navigateTo(path(categoryHit), { redirectCode: 301 })
 }
-const category = ref<EquipmentCategoryDef | undefined>(categoryHit)
+// The list carries names and slugs only: the landing copy comes with the category's own record.
+const category = ref<EquipmentCategoryDef | undefined>(categoryHit ? (await useEquipmentCategory(categoryHit.id)).value ?? undefined : undefined)
+if (categoryHit && !category.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Category not found', fatal: true })
+}
 
 if (category.value) {
   // Different slug per language: tell @nuxtjs/i18n so the hreflang links and
   // the language switcher point at the translated address.
-  useSetI18nParams()({ is: { slug: category.value.slug.is }, en: { slug: category.value.slug.en } })
+  useLocalisedSlugs({ is: category.value.slug.is, en: category.value.slug.en })
 }
 
 // ── 2. Otherwise an item ─────────────────────────────────────────────────────
 const found: EquipmentItem | undefined = category.value
   ? undefined
-  : (all().find(e => equipmentSlug(e) === param) ?? all().find(e => e.id === param))
+  : (all().find(e => equipmentSlug(e) === param) ?? all().find(e => e.slugEn === param) ?? all().find(e => e.id === param))
 if (!category.value && !found) {
   throw createError({ statusCode: 404, statusMessage: 'Equipment not found', fatal: true })
 }
 const item = found!
 
-// Reached via raw id (or a stale slug that matches an id) — 301 to the
-// canonical slug URL so shared links and search engines converge on one URL.
-if (item && param !== equipmentSlug(item)) {
-  await navigateTo(localePath(`/equipment/${equipmentSlug(item)}`), { redirectCode: 301 })
+// Reached via raw id, or via the other language's segment — 301 to this
+// language's address so shared links and search engines converge on one URL.
+if (item && param !== equipmentSlugFor(item, locale.value)) {
+  await navigateTo(equipmentPath(item), { redirectCode: 301 })
+}
+if (item) {
+  // Different segment per language: tell @nuxtjs/i18n so the hreflang links
+  // and the language switcher point at the translated address.
+  useLocalisedSlugs({ is: equipmentSlug(item), en: equipmentSlugFor(item, 'en') })
 }
 
 const itemCategory = computed(() => (item ? byId(item.category) : undefined))
 const categoryName = computed(() => text(itemCategory.value?.name))
 
-const related = computed(() =>
-  item ? byCategory(item.category).filter(e => e.id !== item.id).slice(0, 3) : [],
-)
+// The next three in the category's order, wrapping round: every item gets
+// linked from its neighbours, not just the first three of each category.
+const related = computed(() => {
+  if (!item) return []
+  const siblings = byCategory(item.category)
+  const i = siblings.findIndex(e => e.id === item.id)
+  const own = [...siblings.slice(i + 1), ...siblings.slice(0, Math.max(i, 0))].slice(0, 3)
+  if (own.length === 3) return own
+  // A category with fewer than three others fills up from the categories that
+  // go out on the same jobs (equipmentRelated.ts), or else the ones after it.
+  const order = categories().map(c => c.id)
+  const at = order.indexOf(item.category)
+  const neighbours = RELATED_CATEGORIES[item.category] ?? [...order.slice(at + 1), ...order.slice(0, Math.max(at, 0))]
+  return [...own, ...neighbours.flatMap(id => byCategory(id))].slice(0, 3)
+})
+// With borrowed items the block is "pairs well with", not "more in this category".
+const relatedMixed = computed(() => related.value.some(e => e.category !== item?.category))
 
+// The list carries cards only: the description comes with the item's own record.
+const fullItem = item ? await useEquipmentItem(item.id) : ref<EquipmentItem | undefined>()
 const paragraphs = computed(() => {
-  const textValue = item?.description ? lt(item.description) : ''
+  const description = fullItem.value?.description
+  const textValue = description ? lt(description) : ''
   return textValue ? textValue.split('\n\n').map(p => p.trim()).filter(Boolean) : []
 })
 const highlights = computed(() => (item?.highlights ?? []).map(h => lt(h)).filter(Boolean))
-
-const facts = computed(() => [
-  ...(categoryName.value ? [{ label: t('equipmentCatalogue.facts.category'), value: categoryName.value }] : []),
-  { label: t('equipmentCatalogue.facts.quantityLabel'), value: t('equipmentCatalogue.facts.quantity') },
-  { label: t('equipmentCatalogue.facts.deliveryLabel'), value: t('equipmentCatalogue.facts.delivery') },
-  { label: t('equipmentCatalogue.facts.rentalLabel'), value: t('equipmentCatalogue.facts.rental') },
-])
 
 // Breadcrumbs renders the trail and emits the matching BreadcrumbList JSON-LD.
 // The category level links to the category's landing page.
@@ -171,7 +176,7 @@ const crumbs = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
   { label: t('nav.equipment'), to: localePath('/equipment') },
   ...(itemCategory.value ? [{ label: categoryName.value, to: path(itemCategory.value) }] : []),
-  ...(item ? [{ label: lt(item.name), to: localePath(`/equipment/${equipmentSlug(item)}`) }] : []),
+  ...(item ? [{ label: lt(item.name), to: equipmentPath(item) }] : []),
 ])
 
 if (item) {
@@ -180,15 +185,23 @@ if (item) {
   const { ogImageUrl } = useOgImage()
 
   // Make sure the rental phrase and the country appear in the SERP snippet:
-  // "{name} til leigu á Íslandi." followed by the first description paragraph
-  // when there is one (richer than the card tagline), else the tagline. Google
-  // bolds the query terms in descriptions, which lifts click-through. Trimmed
-  // to the ~160-char window at a word break.
+  // "{name} til leigu á Íslandi." (Google bolds the query terms, which lifts
+  // click-through), then the tagline, then the opening of the description, in
+  // whole sentences up to ~160 characters. When the lead leaves no room for
+  // even one more sentence, the tagline and description go without it (the
+  // title already says "til leigu").
   const metaDescription = computed(() => {
-    const lead = t('meta.rentInIceland', { name: lt(item.name) })
-    const body = paragraphs.value[0] || lt(item.tagline) || t('meta.equipment.description')
-    const full = /til leigu|for rent/i.test(body) ? body : `${lead}. ${body}`
-    return trimMetaDescription(full)
+    const lead = `${t('meta.rentInIceland', { name: lt(item.name) })}.`
+    const withLead = composeMetaDescription([lead, lt(item.tagline), paragraphs.value[0]])
+    if (withLead.length > lead.length) return withLead
+    // A tagline sentence that does not fit ends the tagline there; the rental line follows whenever it has room.
+    const suffix = t('meta.forRentInIceland')
+    const head = composeMetaDescription([lt(item.tagline)])
+    if (!head) return t('meta.equipment.description')
+    if (`${head} ${suffix}`.length <= 160) return composeMetaDescription([head, suffix, paragraphs.value[0]])
+    // The whole tagline leaves no room: its last sentence gives way to the rental line.
+    const shorter = composeMetaDescription([lt(item.tagline)], 160 - suffix.length - 1)
+    return shorter && !shorter.endsWith('…') ? `${shorter} ${suffix}` : head
   })
 
   useSeoMeta({
@@ -198,6 +211,9 @@ if (item) {
     ogDescription: () => metaDescription.value,
     // Product shots are cut-outs on white: pad to 1200×630 instead of cropping.
     ogImage: ogImageUrl(item.images[0], 'contain'),
+    // Restated here: setting og:image on a page drops the site-wide dimensions.
+    ogImageWidth: 1200,
+    ogImageHeight: 630,
     ogImageAlt: item.images[0] ? () => lt(item.name) : undefined,
   })
 
@@ -207,9 +223,10 @@ if (item) {
   // primaryImageOfPage tells Google which photo belongs to THIS page, so SERP
   // thumbnails don't borrow an image from elsewhere on the site.
   useSchemaOrg([
-    ...(item.images[0]
-      ? [defineWebPage({ primaryImageOfPage: absImage(item.images[0]) })]
-      : []),
+    defineWebPage({
+      '@type': 'ItemPage',
+      ...(item.images[0] ? { primaryImageOfPage: absImage(item.images[0]) } : {}),
+    }),
   ])
 }
 </script>

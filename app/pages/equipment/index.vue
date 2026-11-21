@@ -36,6 +36,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const { all } = await useEquipment()
+const { equipmentPath } = useItemPaths()
 const { byId, path } = await useEquipmentCategories()
 
 const steps = computed(() => [0, 1, 2].map(i => ({
@@ -63,7 +64,7 @@ useSchemaOrg([
   defineWebPage({ '@type': 'CollectionPage' }),
   defineItemList({
     itemListElement: all().map(e => ({
-      url: `${siteUrl}${localePath(`/equipment/${equipmentSlug(e)}`)}`,
+      url: `${siteUrl}${equipmentPath(e)}`,
     })),
   }),
 ])

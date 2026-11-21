@@ -74,10 +74,10 @@
       <p class="text-xs uppercase tracking-wider text-bone-400">{{ kindLabel }}</p>
       <h3 class="mt-1.5 font-heading font-semibold uppercase tracking-wide text-base lg:max-xl:text-[15px] leading-snug text-bone-100">
         <NuxtLink
-          :to="localePath(`/vehicles/${vehicle.slug}`)"
+          :to="vehiclePath(vehicle)"
           class="after:absolute after:inset-0 after:content-[''] underline-offset-4 decoration-ink-400 decoration-1 [@media(hover:hover)]:group-hover:underline focus-visible:outline-none"
         >
-          {{ shortName }}
+          {{ shortName }}<span v-if="droppedWord" class="sr-only">{{ droppedWord }}</span>
         </NuxtLink>
       </h3>
       <p v-if="tags.length" class="mt-2 flex flex-wrap gap-2">
@@ -106,10 +106,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Vehicle } from '~/types'
+import type { VehicleSummary } from '~/types'
 
 const props = withDefaults(defineProps<{
-  vehicle: Vehicle
+  vehicle: VehicleSummary
   /** @nuxt/image sizes string matching the grid the card sits in */
   sizes?: string
   /** Photo browsing on the card (arrows, counter, swipe). Off on teaser rows. */
@@ -125,6 +125,7 @@ const props = withDefaults(defineProps<{
 const { t, te } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
+const { vehiclePath } = useItemPaths()
 const cart = useCart()
 
 const inCart = computed(() => cart.has('vehicle', props.vehicle.id))
@@ -138,10 +139,24 @@ const name = computed(() => splitEquipmentName(lt(props.vehicle.name)))
 const shortName = computed(() => {
   const full = name.value.main
   const label = kindLabel.value.toLowerCase()
-  if (!full.toLowerCase().endsWith(label)) return full
-  const rest = full.slice(0, full.length - label.length).replace(/[\s\-–]+$/, '')
+  // "Six-wheeler ATV" labels a name that ends in "Six-Wheeler": try the label's first word too.
+  const suffix = [label, label.split(' ')[0]!].find(s => full.toLowerCase().endsWith(s))
+  if (!suffix) return full
+  // Only when it stands as its own word: "… WFU hjólhýsi" loses it,
+  // the compound "… lúxushjólhýsi" keeps its last word whole.
+  if (!/[\s\-–]$/.test(full.slice(0, full.length - suffix.length))) return full
+  const rest = full.slice(0, full.length - suffix.length).replace(/[\s\-–]+$/, '')
+  // "Ford Transit Cargo Van" becomes "Ford Transit"; "… WFU Luxury Caravan"
+  // would be left ending on an adjective, so it stays whole.
+  const model = props.vehicle.model
+  if (model && !rest.toLowerCase().endsWith(model.toLowerCase())) return full
   return rest.split(/\s+/).length >= 2 ? rest : full
 })
+
+// The dropped type word stays in the link text for screen readers and
+// crawlers: the link still reads "Ford Transit sendibíll".
+const droppedWord = computed(() =>
+  shortName.value === name.value.main ? '' : ` ${name.value.main.slice(shortName.value.length).replace(/^[\s\-–]+/, '')}`)
 
 const kindLabel = computed(() => {
   const key = `catalogue.kindOne.${props.vehicle.kind}`
@@ -152,7 +167,7 @@ const kindLabel = computed(() => {
 // A vehicle with neither shows its drive there (4x4, 6x6) when it has one.
 const drive = computed(() => {
   const d = props.vehicle.specs.drivetrain
-  return d && d !== '2wd' ? d.toUpperCase() : ''
+  return d && d !== '2wd' ? d : ''
 })
 const ownTags = computed(() => [
   units.value > 1 ? t('catalogue.unitsAvailable', { n: units.value }) : '',

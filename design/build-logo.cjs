@@ -4,7 +4,7 @@
 //   public/logo-cf-rentals.png       transparent, as designed (dark text) — light backgrounds
 //   public/logo-cf-rentals-dark.png  transparent, dark parts → bone-100 — the dark site chrome
 //   public/logo-512.png              lockup centred on white (schema.org logo)
-//   public/favicon.svg + favicon-32/apple-touch-icon/icon-192/icon-512 from a vector redraw of the mark
+//   public/favicon.svg + favicon.ico/favicon-32/apple-touch-icon/icon-192/icon-512 from a vector redraw of the mark
 const path = require('node:path')
 const fs = require('node:fs')
 const sharp = require('sharp')
@@ -108,12 +108,36 @@ function faviconSvg({ boxed = false, adaptive = false } = {}) {
 `
 }
 
+// /favicon.ico for clients that ask for it directly instead of reading the
+// link tags: one .ico holding 16, 32 and 48 px PNGs of the transparent mark.
+async function buildIco() {
+  const sizes = [16, 32, 48]
+  const pngs = await Promise.all(sizes.map(size =>
+    sharp(Buffer.from(faviconSvg()), { density: 72 * size / 50 }).resize(size, size).png({ compressionLevel: 9 }).toBuffer()))
+  const head = Buffer.alloc(6 + 16 * sizes.length)
+  head.writeUInt16LE(1, 2)
+  head.writeUInt16LE(sizes.length, 4)
+  let offset = head.length
+  sizes.forEach((size, i) => {
+    const at = 6 + 16 * i
+    head.writeUInt8(size, at)
+    head.writeUInt8(size, at + 1)
+    head.writeUInt16LE(1, at + 4)
+    head.writeUInt16LE(32, at + 6)
+    head.writeUInt32LE(pngs[i].length, at + 8)
+    head.writeUInt32LE(offset, at + 12)
+    offset += pngs[i].length
+  })
+  fs.writeFileSync(path.join(OUT, 'favicon.ico'), Buffer.concat([head, ...pngs]))
+}
+
 async function buildIcons() {
   fs.writeFileSync(path.join(OUT, 'favicon.svg'), faviconSvg({ adaptive: true }))
   const render = (svg, size, file) =>
     sharp(Buffer.from(svg), { density: 72 * size / 50 }).resize(size, size).png({ compressionLevel: 9 }).toFile(path.join(OUT, file))
   // Tab icons: transparent. Home-screen icons: keep the white tile (iOS paints transparency black).
   await render(faviconSvg(), 32, 'favicon-32.png')
+  await buildIco()
   const boxed = faviconSvg({ boxed: true })
   await render(boxed, 180, 'apple-touch-icon.png')
   await render(boxed, 192, 'icon-192.png')
@@ -121,6 +145,8 @@ async function buildIcons() {
 }
 
 ;(async () => {
+  // `node design/build-logo.cjs ico` writes only public/favicon.ico.
+  if (process.argv[2] === 'ico') return buildIco()
   await buildLockups()
   await buildIcons()
   for (const f of ['logo-cf-rentals.png', 'logo-cf-rentals-dark.png', 'logo-512.png', 'favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']) {

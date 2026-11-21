@@ -148,6 +148,9 @@
 
           <!-- ── One category ─────────────────────────────────────────────── -->
           <template v-else-if="category">
+            <!-- Section heading for the item list, so the outline is H1, H2
+                 (the category), H3 (its items); the chips above show it. -->
+            <h2 class="sr-only">{{ label(category.id) }}</h2>
             <div v-if="categoryItems.length" :class="[view === 'list' ? listClass : gridClass, 'mt-6']">
               <EquipmentCard
                 v-for="e in categoryItems"
@@ -176,16 +179,21 @@
               class="pt-8 first-of-type:pt-6 scroll-mt-[10.25rem] lg:scroll-mt-[7.25rem] xl:scroll-mt-[8.25rem]"
             >
               <div class="flex items-baseline justify-between gap-4 pb-2.5 border-b border-ink-700">
-                <h2 class="h3 flex items-baseline gap-3 min-w-0">
-                  <span>{{ group.title }}</span>
+                <!-- The item count sits beside the heading, not in it, so the outline reads "Rafmagn", not "Rafmagn14" -->
+                <div class="flex items-baseline gap-3 min-w-0">
+                  <h2 class="h3 min-w-0">
+                    <NuxtLink v-if="group.to" :to="group.to" class="hover:text-gold-400 transition-colors">{{ group.title }}</NuxtLink>
+                    <span v-else>{{ group.title }}</span>
+                  </h2>
                   <span class="shrink-0 font-sans text-sm font-normal normal-case tracking-normal text-bone-400 tabular-nums">{{ group.items.length }}</span>
-                </h2>
+                </div>
                 <!-- The category's own page (intro, FAQ): a quiet link, the amber stays on actions -->
                 <NuxtLink
                   v-if="group.to"
                   :to="group.to"
                   class="shrink-0 inline-flex items-center justify-end gap-1.5 max-sm:min-w-[2.75rem] max-sm:min-h-[2.75rem] max-sm:-my-3 text-[13px] text-bone-400 hover:text-gold-400 transition-colors"
                   :aria-label="`${t('equipmentCatalogue.browser.viewCategory')}: ${group.title}`"
+                  tabindex="-1"
                 >
                   <span class="max-sm:sr-only">{{ t('equipmentCatalogue.browser.viewCategory') }}</span>
                   <svg class="w-3.5 h-3.5 max-sm:w-5 max-sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -222,11 +230,11 @@
 </template>
 
 <script setup lang="ts">
-import type { EquipmentCategoryDef, EquipmentItem } from '~/types'
+import type { EquipmentCategorySummary, EquipmentItem } from '~/types'
 
 const props = defineProps<{
   /** Set on a category page; the hub leaves it out and shows every category. */
-  category?: EquipmentCategoryDef
+  category?: EquipmentCategorySummary
 }>()
 
 const { t } = useI18n()

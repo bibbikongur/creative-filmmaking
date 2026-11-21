@@ -5,7 +5,7 @@
     submission where this field ("website") comes back non-empty.
   -->
   <div aria-hidden="true" class="pointer-events-none absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden opacity-0">
-    <label :for="fieldId">Leave this field blank</label>
+    <label :for="fieldId">{{ $t('form.honeypot') }}</label>
     <input
       :id="fieldId"
       name="website"

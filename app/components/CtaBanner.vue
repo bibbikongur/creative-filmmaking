@@ -4,7 +4,7 @@
     <template v-if="image">
       <!-- The picture takes the right half on a desktop and fades into the band on its left;
            on small screens it is a clean band above the text. -->
-      <NuxtImg :src="image" alt="" class="block w-full object-cover object-[60%_62%] max-lg:aspect-[16/9] sm:max-lg:aspect-[5/2] lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[62%]" sizes="xs:100vw sm:100vw md:100vw lg:65vw xl:65vw" format="webp" loading="lazy" />
+      <NuxtImg :src="image" :alt="imageAlt ?? ''" class="block w-full object-cover object-[60%_62%] max-lg:aspect-[16/9] sm:max-lg:aspect-[5/2] lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[62%]" sizes="xs:100vw sm:100vw md:100vw lg:65vw xl:65vw" format="webp" loading="lazy" />
       <div class="absolute inset-0 hidden lg:block bg-[linear-gradient(to_right,theme(colors.ink.900)_0%,theme(colors.ink.900)_41%,rgba(20,27,34,0.72)_58%,rgba(20,27,34,0.15)_82%,rgba(20,27,34,0)_100%)]" aria-hidden="true" />
     </template>
     <div class="relative wrap" :class="image ? 'py-10 sm:py-12 lg:py-0 lg:min-h-[22rem] lg:flex lg:items-center' : 'section-sm'">
@@ -14,7 +14,7 @@
             {{ cart.count.value ? t('cta.listTitle') : (title || t('cta.title')) }}
           </h2>
           <p class="mt-4 max-w-2xl leading-relaxed" :class="image ? 'text-bone-100/85' : 'text-bone-400'">
-            {{ cart.count.value ? t('cta.listText', { n: cart.count.value }) : (text || t('cta.text')) }}
+            {{ cart.count.value ? t('cta.listText', { n: cart.count.value }, cart.count.value) : (text || t('cta.text')) }}
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-x-7 gap-y-3 shrink-0 self-start">
@@ -27,7 +27,7 @@
         <!-- The direct line, on pages that have no contact block of their own -->
         <p v-if="contact" class="text-sm text-bone-100/85">
           {{ t('about.callUs') }}:
-          <a :href="`tel:${details.phone.replace(/s/g, '')}`" class="ml-1 font-medium text-bone-100 underline decoration-bone-400 underline-offset-4 hover:decoration-bone-100 transition-colors whitespace-nowrap">{{ details.phone }}</a>
+          <a :href="`tel:${details.phone.replace(/\s/g, '')}`" class="ml-1 font-medium text-bone-100 underline decoration-bone-400 underline-offset-4 hover:decoration-bone-100 transition-colors whitespace-nowrap">{{ details.phone }}</a>
         </p>
         </div>
       </div>
@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 // Pages whose audience is wider than film crews pass their own copy.
-defineProps<{ title?: string, text?: string, button?: string, image?: string, contact?: boolean }>()
+defineProps<{ title?: string, text?: string, button?: string, image?: string, /** What the photograph shows */ imageAlt?: string, contact?: boolean }>()
 const details = useRuntimeConfig().public.contact
 // With something on the quote list, the way forward is sending that list.
 const cart = useCart()

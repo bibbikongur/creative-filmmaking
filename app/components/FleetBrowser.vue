@@ -77,11 +77,15 @@
             </NuxtLink>
           </div>
 
-          <!-- A type page with one or two vehicles is not a dead end: the rest of the fleet follows -->
+          <!-- A type page's own copy (about the type, FAQ) comes straight after its vehicles -->
+          <slot />
+
+          <!-- A type page with one or two vehicles is not a dead end: the rest of
+               the fleet follows, as compact cards, so the page stays about its type -->
           <template v-if="others.length">
-            <h2 class="h3 mt-10 pb-3 border-b border-ink-700">{{ t('catalogue.otherTitle') }}</h2>
-            <div class="mt-5 grid gap-4">
-              <VehicleRow v-for="v in others" :key="v.id" :vehicle="v" />
+            <h2 class="h3 mt-14 pb-3 border-b border-ink-700">{{ t('catalogue.otherTitle') }}</h2>
+            <div class="mt-6 card-grid">
+              <VehicleCard v-for="v in others" :key="v.id" :vehicle="v" :gallery="false" class="sm:grid-rows-subgrid sm:row-span-4" />
             </div>
           </template>
 
@@ -99,8 +103,6 @@
             </NuxtLink>
           </section>
         </div>
-
-        <slot />
       </div>
     </div>
 

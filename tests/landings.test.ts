@@ -33,9 +33,9 @@ describe('vehicle landing pages', () => {
     }
   })
 
-  it('cover every vehicle kind except pickups, and every ?category= value', () => {
+  it('cover every vehicle kind, and every ?category= value', () => {
     const kinds = new Set(vehicleLandings.map(l => l.kind))
-    for (const kind of vehicleKinds.filter(k => k !== 'pickup')) expect(kinds.has(kind), kind).toBe(true)
+    for (const kind of vehicleKinds) expect(kinds.has(kind), kind).toBe(true)
     for (const category of ['campers', 'equipment-cars', 'support-vehicles', 'trailers'] as const) {
       expect(landingForCategoryQuery[category]).toBeDefined()
     }
@@ -43,7 +43,7 @@ describe('vehicle landing pages', () => {
 
   it('every seed vehicle with a landing kind is on exactly one landing', () => {
     for (const v of vehicles) {
-      if (!v.kind || v.kind === 'pickup') continue
+      if (!v.kind) continue
       expect(vehicleLandings.filter(l => l.kind === v.kind)).toHaveLength(1)
     }
   })
@@ -78,7 +78,7 @@ describe('equipment category seeds', () => {
 
 describe('landing copy', () => {
   it('is complete in both locales', () => {
-    const required = ['kicker', 'title', 'intro1', 'metaTitle', 'metaDescription']
+    const required = ['kicker', 'title', 'aboutTitle', 'intro1', 'metaTitle', 'metaDescription']
     for (const code of ['is', 'en'] as const) {
       const messages = locale(code)
       for (const l of vehicleLandings) {

@@ -77,7 +77,7 @@
               </svg>
             </span>
           </a>
-          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" class="absolute right-px bottom-px bg-ink-950/85 px-2 py-1 text-[11px] text-bone-400 hover:text-bone-100 transition-colors">© OpenStreetMap contributors</a>
+          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" class="absolute right-px bottom-px bg-ink-950/85 px-2 py-1 text-[11px] text-bone-400 hover:text-bone-100 transition-colors">{{ t('contact.mapAttribution') }}</a>
         </figure>
 
         <!-- Form. After sending, the card holds only the confirmation, centred. -->
@@ -100,7 +100,7 @@
       <!-- The other route to a quote: the list -->
       <div class="mt-10 lg:mt-14 flex flex-wrap items-center justify-between gap-x-10 gap-y-3 border-y border-ink-700 py-5">
         <p class="text-bone-100">
-          <template v-if="cart.count.value">{{ t('contact.listNote', { n: cart.count.value }) }}</template>
+          <template v-if="cart.count.value">{{ t('contact.listNote', { n: cart.count.value }, cart.count.value) }}</template>
           <template v-else>
             <span class="font-heading font-semibold uppercase tracking-wide">{{ t('contact.listTitle') }}</span>
             <span class="ml-3 max-sm:ml-0 max-sm:mt-1 max-sm:block text-sm text-bone-400">{{ t('contact.listText') }}</span>

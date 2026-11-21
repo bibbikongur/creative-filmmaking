@@ -4,13 +4,7 @@
          category copy follows the catalogue. -->
     <header class="bg-ink-900 bg-hero-vignette border-b border-ink-800">
       <div class="wrap pt-6 pb-7 lg:pt-8 lg:pb-9">
-        <Breadcrumbs :items="crumbs" class="max-sm:hidden" />
-        <NuxtLink :to="localePath('/equipment')" class="sm:hidden inline-flex items-center gap-1.5 min-h-[2.75rem] -my-3 text-xs uppercase tracking-widest text-bone-400 hover:text-gold-400">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          {{ t('equipmentCatalogue.all') }}
-        </NuxtLink>
+        <Breadcrumbs :items="crumbs" />
         <div class="mt-5 max-w-3xl">
           <h1 class="h1 lg:text-4xl/[1.2]">{{ text(category.title) || text(category.name) }}</h1>
           <template v-if="intro[0]">
@@ -60,6 +54,7 @@ const props = defineProps<{ category: EquipmentCategoryDef }>()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const { byCategory } = await useEquipment()
+const { equipmentPath } = useItemPaths()
 const { path, text } = await useEquipmentCategories()
 
 const items = computed(() => byCategory(props.category.id))
@@ -75,27 +70,39 @@ const faqItems = computed(() => props.category.faq
 const crumbs = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
   { label: t('nav.equipment'), to: localePath('/equipment') },
-  { label: text(props.category.title) || text(props.category.name), to: path(props.category) },
+  // The short name, as in the trail of the category's item pages (the H1 below carries the long title).
+  { label: text(props.category.name), to: path(props.category) },
 ])
 
 const metaTitle = computed(() => text(props.category.metaTitle) || text(props.category.title) || text(props.category.name))
 const metaDescription = computed(() => text(props.category.metaDescription) || intro.value[0] || t('meta.equipment.description'))
 
+// The first item's photo stands for the page (share image and main image),
+// not the site-wide fleet photo.
+const { ogImageUrl } = useOgImage()
+const firstImage = items.value.find(e => e.images[0])?.images[0]
+
 useSeoMeta({
+  ...(firstImage ? { ogImage: ogImageUrl(firstImage, 'contain'), ogImageWidth: 1200, ogImageHeight: 630, ogImageAlt: () => text(props.category.title) || text(props.category.name) } : {}),
   title: () => metaTitle.value,
   description: () => metaDescription.value,
   ogTitle: () => `${metaTitle.value} · Creative Filmmaking`,
   ogDescription: () => metaDescription.value,
-  // A category with nothing in it is a thin page: keep it out of the index until it has items.
-  robots: () => (items.value.length ? undefined : 'noindex, follow'),
 })
+// A category with nothing in it is a thin page: keep it out of the index until
+// it has items. (Set only then: an undefined robots value here would remove
+// the site-wide "index, follow, max-image-preview:large" tag from the page.)
+if (!items.value.length) useSeoMeta({ robots: 'noindex, follow' })
 
 const siteUrl = useRuntimeConfig().public.siteUrl
 useSchemaOrg([
-  defineWebPage({ '@type': faqItems.value.length ? ['CollectionPage', 'FAQPage'] : 'CollectionPage' }),
+  defineWebPage({
+    '@type': faqItems.value.length ? ['CollectionPage', 'FAQPage'] : 'CollectionPage',
+    ...(firstImage ? { primaryImageOfPage: firstImage.startsWith('http') ? firstImage : `${siteUrl}${firstImage}` } : {}),
+  }),
   defineItemList({
     itemListElement: items.value.map(e => ({
-      url: `${siteUrl}${localePath(`/equipment/${equipmentSlug(e)}`)}`,
+      url: `${siteUrl}${equipmentPath(e)}`,
     })),
   }),
 ])

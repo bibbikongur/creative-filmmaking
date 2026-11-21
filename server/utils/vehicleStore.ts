@@ -58,6 +58,13 @@ const asFlag = (v: unknown): true | undefined => (v === true ? true : undefined)
 const oneOf = <T extends string>(options: readonly T[], v: unknown): T | undefined =>
   options.includes(v as T) ? (v as T) : undefined
 
+// Free text per language ({ en, is }); a plain string from older rows is kept as is.
+const asPowerOutput = (v: unknown): VehicleSpecs['powerOutput'] => {
+  if (typeof v === 'string') return v.trim() || undefined
+  const t = asLocalized(v)
+  return t.en || t.is ? t : undefined
+}
+
 /** Validate + normalize an admin-submitted vehicle. Throws 400 with a list of errors. */
 export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
   const b = (body ?? {}) as Record<string, unknown>
@@ -67,10 +74,22 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
   if (!SLUG_RE.test(slug)) errors.push('Slug must be lowercase letters and numbers separated by dashes (e.g. arctic-base-4x4-camper).')
   else if (RESERVED_VEHICLE_SLUGS.includes(slug)) errors.push(`"${slug}" is the address of a category page and can't be used as a vehicle slug.`)
 
+  // Optional English address (/en/vehicles/<slugEn>); empty = same as the slug.
+  const slugEnRaw = asText(b.slugEn).toLowerCase()
+  const slugEn = slugEnRaw && slugEnRaw !== slug ? slugEnRaw : ''
+  if (slugEn && !SLUG_RE.test(slugEn)) errors.push('English slug must be lowercase letters and numbers separated by dashes (e.g. ford-transit-box-truck).')
+  else if (slugEn && RESERVED_VEHICLE_SLUGS.includes(slugEn)) errors.push(`"${slugEn}" is the address of a category page and can't be used as a vehicle slug.`)
+
   const category = oneOf(CATEGORIES, b.category)
   if (!category) errors.push('Category is required.')
 
   const kind: VehicleKind | undefined = oneOf(vehicleKinds, b.kind)
+
+  // Manufacturer, model and model year: structured data for search engines.
+  const make = asText(b.make).slice(0, 60)
+  const model = asText(b.model).slice(0, 80)
+  const year = Math.trunc(Number(b.modelYear))
+  const modelYear = year >= 1950 && year <= 2100 ? year : undefined
 
   const name = asLocalized(b.name)
   if (!name.en) errors.push('English name is required.')
@@ -106,7 +125,7 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
     drivetrain: oneOf(DRIVETRAINS, s.drivetrain),
     transmission: oneOf(TRANSMISSIONS, s.transmission),
     fuel: oneOf(FUELS, s.fuel),
-    powerOutput: asText(s.powerOutput) || undefined,
+    powerOutput: asPowerOutput(s.powerOutput),
     generator: asFlag(s.generator),
     heating: asFlag(s.heating),
     blackoutReady: asFlag(s.blackoutReady),
@@ -127,8 +146,12 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
 
   return {
     slug,
+    ...(slugEn ? { slugEn } : {}),
     category: category!,
     ...(kind ? { kind } : {}),
+    ...(make ? { make } : {}),
+    ...(model ? { model } : {}),
+    ...(modelYear ? { modelYear } : {}),
     featured: b.featured === true,
     name,
     tagline,
@@ -137,6 +160,25 @@ export function parseVehiclePayload(body: unknown): Omit<Vehicle, 'id'> {
     specs,
     images,
     ...(plates.length ? { plates } : {}),
+  }
+}
+
+/**
+ * No two vehicles may answer to the same address in either language: a
+ * vehicle's slug and English slug must both be unused by every other vehicle.
+ */
+export function assertUniqueVehicleSlugs(candidate: Pick<Vehicle, 'id' | 'slug' | 'slugEn'>, others: Vehicle[]) {
+  const mine = [candidate.slug, candidate.slugEn].filter(Boolean) as string[]
+  for (const o of others) {
+    if (o.id === candidate.id) continue
+    const clash = mine.find(s => s === o.slug || s === o.slugEn)
+    if (clash) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Validation failed',
+        data: { errors: [`The address /vehicles/${clash} is already used by "${o.name.en}". Pick a different slug.`] },
+      })
+    }
   }
 }
 

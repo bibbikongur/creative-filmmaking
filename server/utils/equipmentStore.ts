@@ -62,6 +62,11 @@ export function parseEquipmentPayload(body: unknown, categoryIds: readonly strin
   const slug = asText(b.slug).toLowerCase()
   if (slug && !SLUG_RE.test(slug)) errors.push('Slug must be lowercase letters and numbers separated by dashes (e.g. rafstod-2-2-kva).')
 
+  // Optional English address (/en/equipment/<slugEn>); empty = same as the slug.
+  const slugEnRaw = asText(b.slugEn).toLowerCase()
+  const slugEn = slugEnRaw && slugEnRaw !== slug ? slugEnRaw : ''
+  if (slugEn && !SLUG_RE.test(slugEn)) errors.push('English slug must be lowercase letters and numbers separated by dashes (e.g. generator-2-2-kva).')
+
   const tagline = asLocalized(b.tagline)
   const description = asLocalized(b.description)
 
@@ -80,6 +85,7 @@ export function parseEquipmentPayload(body: unknown, categoryIds: readonly strin
 
   return {
     ...(slug ? { slug } : {}),
+    ...(slugEn ? { slugEn } : {}),
     category,
     name,
     tagline,
@@ -96,18 +102,22 @@ export function parseEquipmentPayload(body: unknown, categoryIds: readonly strin
  * candidate would get against every other item's, derived or explicit.
  */
 export function assertUniqueEquipmentSlug(
-  candidate: Pick<EquipmentItem, 'id' | 'name' | 'slug'>,
+  candidate: Pick<EquipmentItem, 'id' | 'name' | 'slug' | 'slugEn'>,
   others: EquipmentItem[],
   categories: EquipmentCategoryDef[] = [],
 ) {
-  const slug = equipmentSlug(candidate)
-  const clash = others.find(o => o.id !== candidate.id && equipmentSlug(o) === slug)
-  if (clash) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Validation failed',
-      data: { errors: [`The address /equipment/${slug} is already used by "${clash.name.en}". Pick a different slug.`] },
-    })
+  // Both of the item's addresses (Icelandic and, when set, English) share one
+  // namespace with every other item's addresses in either language.
+  const mine = [equipmentSlug(candidate), candidate.slugEn].filter(Boolean) as string[]
+  for (const slug of mine) {
+    const clash = others.find(o => o.id !== candidate.id && (equipmentSlug(o) === slug || o.slugEn === slug))
+    if (clash) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Validation failed',
+        data: { errors: [`The address /equipment/${slug} is already used by "${clash.name.en}". Pick a different slug.`] },
+      })
+    }
+    assertItemSlugFree(slug, categories)
   }
-  assertItemSlugFree(slug, categories)
 }

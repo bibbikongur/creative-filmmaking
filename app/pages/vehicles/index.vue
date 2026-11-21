@@ -19,12 +19,13 @@
 <script setup lang="ts">
 import type { VehicleCategory } from '~/types'
 import { categories } from '~/data/categories'
-import { landingForCategoryQuery } from '~/data/vehicleLandings'
+import { landingForCategoryQuery, vehicleLandings } from '~/data/vehicleLandings'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const { all } = await useVehicles()
+const { vehiclePath } = useItemPaths()
 
 // The old ?category= filter URLs were linked from the footer and got indexed
 // as near-duplicates of this page. Each category is a real page now, so the
@@ -51,8 +52,12 @@ const siteUrl = useRuntimeConfig().public.siteUrl
 useSchemaOrg([
   defineWebPage({ '@type': 'CollectionPage' }),
   defineItemList({
-    itemListElement: all().map(v => ({
-      url: `${siteUrl}${localePath(`/vehicles/${v.slug}`)}`,
+    // Same order as the page: types in landing order, then the rest.
+    itemListElement: [
+      ...vehicleLandings.flatMap(l => all().filter(v => v.kind === l.kind)),
+      ...all().filter(v => !v.kind || !vehicleLandings.some(l => l.kind === v.kind)),
+    ].map(v => ({
+      url: `${siteUrl}${vehiclePath(v)}`,
     })),
   }),
 ])

@@ -31,6 +31,13 @@
             <span v-if="isEdit" class="text-signal-500/80"> (changing it breaks links already shared).</span>
           </p>
         </div>
+        <div>
+          <label class="admin-label">English web address</label>
+          <input v-model.trim="form.slugEn" type="text" class="input-dark font-mono" placeholder="generator-2-2-kva">
+          <p class="mt-1 max-w-3xl text-xs text-bone-400">
+            English page address: /en/equipment/{{ form.slugEn || form.slug || '…' }}. Leave empty to use the same address in both languages.
+          </p>
+        </div>
       </div>
       <label class="mt-4 flex items-center gap-2.5 text-sm text-bone-100 cursor-pointer">
         <input v-model="form.featured" type="checkbox" class="accent-gold-500 w-4 h-4">
@@ -162,6 +169,7 @@ const form = reactive({
   // Existing rows without a stored slug show the derived one, so saving the
   // form pins the current URL instead of leaving it name-dependent.
   slug: e ? equipmentSlug(e) : '',
+  slugEn: e?.slugEn ?? '',
   category: e?.category ?? '',
   featured: e?.featured ?? false,
   name: { en: e?.name.en ?? '', is: e?.name.is ?? '' },
@@ -225,6 +233,7 @@ const errorList = computed(() =>
 const submit = () => {
   emit('save', {
     slug: form.slug,
+    slugEn: form.slugEn,
     category: form.category,
     featured: form.featured,
     name: form.name,

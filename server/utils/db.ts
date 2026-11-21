@@ -6,6 +6,7 @@ import { vehicles as seedVehicles } from '~~/app/data/vehicles'
 import { equipment as seedEquipment } from '~~/app/data/equipment'
 import { equipmentLandings, seedSlugOf } from '~~/app/data/equipmentLandings'
 import { refreshEquipmentCategoryCopy, restructureEquipmentCategories } from './equipmentCategoryRestructure'
+import { refreshCatalogueCopy } from './catalogueCopy'
 import isMessages from '~~/i18n/locales/is.json'
 import enMessages from '~~/i18n/locales/en.json'
 import type { EquipmentCategoryDef, LocalizedText } from '~~/app/types'
@@ -56,6 +57,7 @@ export function getDb(): Database.Database {
   seedEquipmentCategories(db)
   restructureEquipmentCategories(db)
   refreshEquipmentCategoryCopy(db)
+  refreshCatalogueCopy(db)
   stripStockPhotos(db)
   backfillCatalogueTimestamps(db)
   return db

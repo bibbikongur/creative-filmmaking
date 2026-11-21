@@ -34,3 +34,17 @@ export function derivedEquipmentSlug(item: Pick<EquipmentItem, 'id' | 'name'>): 
 export function equipmentSlug(item: Pick<EquipmentItem, 'id' | 'name' | 'slug'>): string {
   return item.slug || derivedEquipmentSlug(item)
 }
+
+/**
+ * URL segment of a catalogue item in a given language. Items may carry an
+ * English segment (`slugEn`) so /en/... addresses read in English
+ * ("/en/equipment/traffic-cones-50-cm"); without one both languages share
+ * the Icelandic segment, which is how every item worked before.
+ */
+export function equipmentSlugFor(item: Pick<EquipmentItem, 'id' | 'name' | 'slug' | 'slugEn'>, locale: string): string {
+  return (locale === 'en' && item.slugEn) || equipmentSlug(item)
+}
+
+export function vehicleSlugFor(vehicle: { slug: string, slugEn?: string }, locale: string): string {
+  return (locale === 'en' && vehicle.slugEn) || vehicle.slug
+}

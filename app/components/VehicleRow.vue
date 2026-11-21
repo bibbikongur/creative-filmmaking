@@ -67,7 +67,7 @@
       <div>
         <h3 class="font-heading font-semibold uppercase tracking-wide text-lg sm:text-xl leading-snug text-bone-100">
           <NuxtLink
-            :to="localePath(`/vehicles/${vehicle.slug}`)"
+            :to="vehiclePath(vehicle)"
             class="after:absolute after:inset-0 after:content-[''] underline-offset-4 decoration-ink-400 decoration-1 [@media(hover:hover)]:group-hover:underline focus-visible:outline-none"
           >
             {{ name.main }}
@@ -123,10 +123,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Vehicle } from '~/types'
+import type { VehicleSummary } from '~/types'
 
 const props = defineProps<{
-  vehicle: Vehicle
+  vehicle: VehicleSummary
   /** First row on the page: load its photo right away (it is the LCP image) */
   eager?: boolean
 }>()
@@ -134,6 +134,7 @@ const props = defineProps<{
 const { t, locale } = useI18n()
 const { lt } = useLocalized()
 const localePath = useLocalePath()
+const { vehiclePath } = useItemPaths()
 const cart = useCart()
 
 const inCart = computed(() => cart.has('vehicle', props.vehicle.id))
@@ -161,15 +162,20 @@ const allFacts = computed(() => {
   }
   push('sleeps', s.sleeps?.toString())
   push('seats', s.seats?.toString())
-  push('drivetrain', s.drivetrain && s.drivetrain !== '2wd' ? s.drivetrain.toUpperCase() : undefined)
+  push('drivetrain', s.drivetrain && s.drivetrain !== '2wd' ? s.drivetrain : undefined)
   const box = [s.boxLengthM, s.boxWidthM, s.boxHeightM].filter((n): n is number => !!n)
-  push('boxShort', box.length ? `${box.map(num).join(' × ')} m` : undefined, true)
+  // A trailer has a load bed, not a box; and its weight is its kerb weight,
+  // a caravan's its maximum weight.
+  const kind = props.vehicle.kind
+  push(kind === 'trailer' ? 'loadBedShort' : 'boxShort', box.length
+    ? (kind === 'trailer' ? `${box.map(n => num(Math.round(n * 100))).join(' × ')} cm` : `${box.map(num).join(' × ')} m`)
+    : undefined, true)
   push('payloadKg', s.payloadKg ? `${num(s.payloadKg)} kg` : undefined)
   push('towingCapacityKg', s.towingCapacityKg ? `${num(s.towingCapacityKg)} kg` : undefined)
   push('lengthM', s.lengthM ? `${num(s.lengthM)} m` : undefined)
   push('transmission', s.transmission ? t(`vehicle.specs.${s.transmission}`) : undefined)
   push('fuel', s.fuel ? t(`vehicle.specs.${s.fuel}`) : undefined)
-  push('weightKg', s.weightKg ? `${num(s.weightKg)} kg` : undefined)
+  push(kind === 'trailer' ? 'kerbWeightKg' : kind === 'caravan' ? 'grossWeightKg' : 'weightKg', s.weightKg ? `${num(s.weightKg)} kg` : undefined)
   return out
 })
 

@@ -7,10 +7,10 @@
       v-if="image"
       :src="image"
       :provider="imgProvider(image)"
-      alt=""
+      :alt="t('home.heroAlt')"
       class="absolute inset-0 w-full h-full object-cover object-[62%_55%] brightness-95"
-      sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw"
-      preload
+      sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw"
+      format="webp"
       fetchpriority="high"
     />
     <!-- Legibility scrims: bottom-up black + left-side shade behind the copy -->
