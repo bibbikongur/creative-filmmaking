@@ -8,7 +8,6 @@ import type { NewQuoteInput } from '~~/server/utils/quoteStore'
 const isRateLimited = makeRateLimiter(60_000, 5)
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const MAX_ITEMS = 40
 
 export default defineEventHandler(async (event) => {
   const raw = await readBody<QuotePayload>(event).catch(() => null)
@@ -38,7 +37,7 @@ export default defineEventHandler(async (event) => {
 
   if (!name || !email || !EMAIL_RE.test(email) || email.length > 200
     || name.length > 200 || message.length > 5000
-    || !Array.isArray(body.items) || !body.items.length || body.items.length > MAX_ITEMS) {
+    || !Array.isArray(body.items) || !body.items.length) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid submission' })
   }
 
@@ -48,7 +47,8 @@ export default defineEventHandler(async (event) => {
   }
 
   // Resolve items server-side — names/images are snapshotted from the
-  // catalogue, never trusted from the client. Unknown ids are dropped.
+  // catalogue, never trusted from the client. Unknown ids are dropped. There
+  // is no item limit: duplicates collapse, so the catalogue bounds the quote.
   const [vehicles, equipment] = await Promise.all([getVehicles(), getEquipment()])
   const items: NewQuoteInput['items'] = []
   const seen = new Set<string>()
