@@ -208,7 +208,7 @@ function stripStockPhotos(db: Database.Database) {
 // (v-012 was removed 2026-08-27 when the seed file was trimmed to the live
 // catalogue; its flag is already set in existing databases.)
 const SEED_ADDITIONS = ['v-010', 'v-011', 'v-013']
-const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024', 'e-025', 'e-026', 'e-027', 'e-028', 'e-mw1dznnq20e9', 'e-029', 'e-030']
+const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024', 'e-025', 'e-026', 'e-027', 'e-028', 'e-mw1dznnq20e9', 'e-029', 'e-030', 'e-031']
 
 // One-time content refreshes: bump the rev to push the current seed data over
 // what's in the database. Upserts — replaces the row if it exists (including

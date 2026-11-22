@@ -2176,4 +2176,57 @@ export const equipment: EquipmentItem[] = [
     ],
     featured: false,
   },
+  // Added 2026-11-22 (SEED_EQUIPMENT_ADDITIONS in server/utils/db.ts). Our own
+  // red/green signal light for set: Philips Hue Impress outdoor wall lights
+  // (small, White and Color Ambiance) that we fitted with clamps and a
+  // weatherproof cable, switched through a Hue Bridge. Lamp figures are the
+  // retailer's (Bauhaus, article 1036767); the photos are the product shots
+  // relit in red and green.
+  {
+    id: 'e-031',
+    slug: 'rautt-og-graent-tokuljos',
+    slugEn: 'red-green-recording-light',
+    category: 'safety',
+    name: {
+      en: 'Red and Green Recording Light (Philips Hue Impress)',
+      is: 'Rautt og grænt tökuljós (Philips Hue Impress)',
+    },
+    tagline: {
+      en: 'On-air light for set: red while the camera is rolling, green when it’s clear to move and talk. Switched wirelessly, Philips Hue Bridge included.',
+      is: 'Merkjaljós fyrir tökustað: rautt þegar taka er í gangi, grænt þegar óhætt er að ganga um og tala. Stýrt þráðlaust, Philips Hue Bridge fylgir.',
+    },
+    description: {
+      en: 'The red and green recording light tells everyone on set the same thing at the same moment. Red means a take is rolling: stay quiet and stay out. Green means it’s clear to walk through, talk and open doors. We built the system for our own shoots and now rent it out. It means less shouting “quiet on set” down a corridor and fewer takes lost to a door opening at the wrong time.\n\nEach light is a Philips Hue Impress: a black metal outdoor lantern with a built-in 8 W LED that gives up to 1,200 lm and shows 16 million colours. The lights change between red and green wirelessly through the Philips Hue Bridge that comes with the rental, so whoever calls the take doesn’t have to stand next to them. They are dimmable, so they can be turned down when they sit close to the shot.\n\nEach light has clamps on the back, so it mounts on the surfaces at hand, and a weatherproof 2.5 mm² cable. Stands are not included but can be added on request. The light is rated IP44 against dust and splashing water, so it works outside an entrance as well as at a studio door or in a corridor. It measures 12 × 14 × 24 cm and draws only 8 W at 230 V.\n\nThe lights suit film and commercial shoots, podcast and sound recording, live broadcasts and events. Tell us how many you need: one at the stage door, or one at every way in. Rent them with our Filming in Progress sign, cones and power stations. Delivered anywhere in Iceland.',
+      is: 'Rauða og græna tökuljósið segir öllum á tökustað það sama á sama augnabliki. Rautt þýðir að taka er í gangi: þögn og enginn inn. Grænt þýðir að óhætt er að ganga um, tala og opna dyr. Við settum kerfið saman fyrir okkar eigin tökur og leigjum það nú út. Þá þarf sjaldnar að kalla „þögn“ fram á gang og færri tökur fara forgörðum vegna þess að dyr opnast á röngum tíma.\n\nHvert ljós er Philips Hue Impress, svart útiljós úr málmi með innbyggðri 8 W LED-lýsingu sem skilar allt að 1.200 lm og sýnir 16 milljónir lita. Skipt er á milli rauðs og græns þráðlaust um Philips Hue Bridge, sem fylgir leigunni, svo sá sem stýrir tökunni þarf ekki að standa við ljósin. Ljósin eru dimmanleg og má því deyfa þau þegar þau standa nálægt tökunni.\n\nAftan á hverju ljósi eru klemmur, svo það festist á þá fleti sem eru við höndina, og á því er veðurþolinn 2,5 mm² kapall. Standar fylgja ekki en fást með ef óskað er. Ljósið er með IP44-vörn gegn ryki og vatnsslettum og nýtist því jafnt úti við inngang sem við stúdíódyr eða á gangi. Það er 12 × 14 × 24 cm og tekur aðeins 8 W við 230 V.\n\nLjósin henta í kvikmynda- og auglýsingatökur, hlaðvarps- og hljóðupptökur, beinar útsendingar og viðburði. Láttu okkur vita hve mörg ljós þú þarft: eitt við stúdíódyrnar eða eitt við hvern inngang. Leigjast með tökuskilti, keilum og rafhlöðustöðvum. Við afhendum hvert á land sem er.',
+    },
+    highlights: [
+      {
+        en: 'Red: a take is rolling. Green: clear to move and talk',
+        is: 'Rautt: taka í gangi. Grænt: óhætt að ganga um og tala',
+      },
+      {
+        en: 'Switched wirelessly, Philips Hue Bridge included',
+        is: 'Skipt þráðlaust á milli lita, Philips Hue Bridge fylgir',
+      },
+      {
+        en: 'Clamps on the back for mounting, weatherproof 2.5 mm² cable',
+        is: 'Klemmur að aftan til festingar, veðurþolinn 2,5 mm² kapall',
+      },
+      {
+        en: 'As many lights as you need, stands available on request',
+        is: 'Eins mörg ljós og þú þarft, standar fást ef óskað er',
+      },
+      {
+        en: '8 W LED, up to 1,200 lm, dimmable, IP44, 12 × 14 × 24 cm',
+        is: '8 W LED, allt að 1.200 lm, dimmanlegt, IP44, 12 × 14 × 24 cm',
+      },
+    ],
+    images: [
+      '/images/equipment/recording-light-red-green-1.jpg',
+      '/images/equipment/recording-light-red-green-2.jpg',
+      '/images/equipment/recording-light-red-green-3.jpg',
+      '/images/equipment/recording-light-red-green-4.jpg',
+    ],
+    featured: false,
+  },
 ]
