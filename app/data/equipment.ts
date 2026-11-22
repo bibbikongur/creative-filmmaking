@@ -2076,4 +2076,104 @@ export const equipment: EquipmentItem[] = [
     ],
     featured: false,
   },
+  // Added 2026-11-21 (SEED_EQUIPMENT_ADDITIONS in server/utils/db.ts). Figures
+  // are the manufacturer's for the Soundboks 4 (Metallic Grey grille).
+  {
+    id: 'e-029',
+    slug: 'soundboks-4-hatalari',
+    slugEn: 'soundboks-4-party-speaker',
+    category: 'sound',
+    name: {
+      en: 'Soundboks 4 Party Speaker',
+      is: 'Soundboks 4 hátalari',
+    },
+    tagline: {
+      en: 'Battery-powered 126 dB Bluetooth speaker with up to 40 hours of playtime, for parties, events and film sets.',
+      is: 'Þráðlaus 126 dB Bluetooth-hátalari með rafhlöðu sem endist í allt að 40 klst., fyrir veislur, viðburði og tökustaði.',
+    },
+    description: {
+      en: 'The Soundboks 4 is a battery-powered speaker for parties and events where there is no mains power and no way to run cables: garden parties, weddings, company events, sports days, camping trips and wrap parties on location. It reaches up to 126 dB, which the manufacturer rates as more than enough for a room of 200 people, and the battery lasts up to 40 hours at medium volume or about 6 hours at full volume.\n\nA phone connects over Bluetooth in seconds. The speaker also has two XLR/jack combo inputs for microphones, instruments or a mixer, plus a 3.5 mm input and output, so it handles speeches, announcements and music playback on set as well. TeamUp links up to five Soundboks speakers wirelessly.\n\nIt is built for outdoor use: a reinforced cabinet, silicone corners that take the knocks and electronics protected to IP65 against rain and dust, though it must never be submerged. It works from −10 to +40 °C, weighs 16.1 kg, measures about 65 × 43 × 33 cm and has steel carry handles. Rent it on its own or with our power stations, tents, tables and chairs. Delivered anywhere in Iceland.',
+      is: 'Soundboks 4 er þráðlaus hátalari fyrir veislur og viðburði þar sem ekkert rafmagn er að fá og engin leið að leggja snúrur: garðveislur, brúðkaup, árshátíðir, íþróttamót, útilegur og lokahóf á tökustað. Hann skilar allt að 126 dB, sem framleiðandinn segir meira en nóg fyrir 200 manna rými, og rafhlaðan endist í allt að 40 klukkustundir á miðlungsstyrk eða um 6 klukkustundir á fullum styrk.\n\nSíminn tengist með Bluetooth á nokkrum sekúndum. Á hátalaranum eru líka tvö XLR/jack-inntök fyrir hljóðnema, hljóðfæri eða mixer og 3,5 mm inngangur og útgangur, svo hann nýtist jafnt fyrir ræður, tilkynningar og tónlist í tökum. Með TeamUp tengjast allt að fimm Soundboks-hátalarar saman þráðlaust.\n\nHátalarinn er smíðaður fyrir útinotkun: styrkt hús, sílikonhorn sem taka við höggum og rafbúnaður með IP65-vörn gegn regni og ryki, þótt hann megi aldrei fara á kaf. Hann virkar í −10 til +40 °C, vegur 16,1 kg, er um 65 × 43 × 33 cm og með burðarhandföng úr stáli. Leigist stakur eða með rafhlöðustöðvum, tjöldum, borðum og stólum. Við afhendum hvert á land sem er.',
+    },
+    highlights: [
+      {
+        en: '126 dB maximum volume, enough for a room of 200',
+        is: '126 dB hámarksstyrkur, nóg fyrir 200 manna rými',
+      },
+      {
+        en: 'Battery: up to 40 hours at medium volume, about 6 hours at full volume',
+        is: 'Rafhlaða: allt að 40 klst. á miðlungsstyrk, um 6 klst. á fullum styrk',
+      },
+      {
+        en: 'Bluetooth 5.0, two XLR/jack combo inputs, 3.5 mm in and out',
+        is: 'Bluetooth 5.0, tvö XLR/jack-inntök, 3,5 mm inngangur og útgangur',
+      },
+      {
+        en: 'TeamUp: up to five Soundboks speakers linked wirelessly',
+        is: 'TeamUp: allt að fimm Soundboks-hátalarar tengdir þráðlaust',
+      },
+      {
+        en: 'Built for the outdoors: IP65-rated electronics, works from −10 to +40 °C',
+        is: 'Gerður fyrir útinotkun: IP65-varinn rafbúnaður, virkar í −10 til +40 °C',
+      },
+    ],
+    images: [
+      '/images/equipment/soundboks-4-1.jpg',
+      '/images/equipment/soundboks-4-2.jpg',
+      '/images/equipment/soundboks-4-3.jpg',
+      '/images/equipment/soundboks-4-4.jpg',
+    ],
+    featured: false,
+  },
+  // Added 2026-11-21 (SEED_EQUIPMENT_ADDITIONS in server/utils/db.ts). Figures
+  // are DJI's for the Mavic 4 Pro 512GB (Creator Combo); the transmission range
+  // is the CE figure, which is the one that applies in Iceland.
+  {
+    id: 'e-030',
+    slug: 'dji-mavic-4-pro-droni',
+    slugEn: 'dji-mavic-4-pro-drone',
+    category: 'drones',
+    name: {
+      en: 'DJI Mavic 4 Pro Drone (Creator Combo)',
+      is: 'DJI Mavic 4 Pro dróni (Creator Combo)',
+    },
+    tagline: {
+      en: 'Drone with a 100 MP Hasselblad camera, 6K video, the DJI RC Pro 2 controller and three batteries.',
+      is: 'Dróni með 100 MP Hasselblad-myndavél, 6K-myndbandi, DJI RC Pro 2 fjarstýringu og þremur rafhlöðum.',
+    },
+    description: {
+      en: 'The DJI Mavic 4 Pro Creator Combo is a complete aerial kit in one shoulder bag: the drone with 512 GB of built-in storage, the DJI RC Pro 2 controller with a 7-inch screen, three batteries, a charging hub for all three, a 240 W charger and a USB-C cable.\n\nThe main camera is a 100 MP Hasselblad with a 4/3 CMOS sensor, a 28 mm equivalent lens and an f/2.0 to f/11 aperture, and it records 6K video at up to 60 fps. Two tele cameras, 70 mm (48 MP) and 168 mm (50 MP), record 4K. The Infinity Gimbal rotates through 360°, for vertical footage and rolling shots straight from the camera. The Creator Combo records H.264 ALL-I in 10-bit 4:2:2 and supports D-Log, D-Log M and HLG.\n\nFlight time is up to 51 minutes per battery, the drone resists wind of up to 12 m/s and works from −10 to 40 °C. Obstacle sensing in every direction works down to 0.1 lux, and O4+ video transmission reaches up to 15 km (CE). The drone weighs about 1,063 g and carries the EU C2 class mark. Rent it on its own or with our power stations and vehicles. Delivered anywhere in Iceland.',
+      is: 'DJI Mavic 4 Pro Creator Combo er heill loftmyndapakki í einni hliðartösku: dróninn með 512 GB innbyggðu geymsluplássi, DJI RC Pro 2 fjarstýring með 7 tommu skjá, þrjár rafhlöður, hleðslustöð fyrir þær allar, 240 W hleðslutæki og USB-C snúra.\n\nAðalmyndavélin er 100 MP Hasselblad með 4/3 CMOS-myndflögu, 28 mm jafngildislinsu og ljósopi f/2.0 til f/11, og hún tekur 6K-myndband í allt að 60 römmum á sekúndu. Tvær aðdráttarmyndavélar, 70 mm (48 MP) og 168 mm (50 MP), taka 4K. Infinity Gimbal snýst 360°, svo lóðrétt myndefni og snúningsskot koma beint úr myndavélinni. Creator Combo tekur upp í H.264 ALL-I, 10 bita 4:2:2, og styður D-Log, D-Log M og HLG.\n\nFlugtíminn er allt að 51 mínúta á rafhlöðu, dróninn þolir vind upp í 12 m/s og vinnur í −10 til 40 °C. Hindranaskynjun í allar áttir virkar niður í 0,1 lux og O4+ myndsendingin dregur allt að 15 km (CE). Dróninn vegur um 1.063 g og er með C2-flokksmerkingu (EU). Leigist stakur eða með rafhlöðustöðvum og bílunum okkar. Við afhendum hvert á land sem er.',
+    },
+    highlights: [
+      {
+        en: '100 MP Hasselblad main camera (4/3 CMOS), plus 70 mm and 168 mm tele cameras',
+        is: '100 MP Hasselblad-aðalmyndavél (4/3 CMOS), auk 70 mm og 168 mm aðdráttarmyndavéla',
+      },
+      {
+        en: '6K video at up to 60 fps, 4K at up to 120 fps',
+        is: '6K-myndband í allt að 60 römmum á sekúndu, 4K í allt að 120',
+      },
+      {
+        en: 'Up to 51 minutes of flight per battery, three batteries and a charging hub included',
+        is: 'Allt að 51 mínútu flugtími á rafhlöðu, þrjár rafhlöður og hleðslustöð fylgja',
+      },
+      {
+        en: 'DJI RC Pro 2 controller with a 7-inch screen, 512 GB of storage in the drone',
+        is: 'DJI RC Pro 2 fjarstýring með 7 tommu skjá, 512 GB geymslupláss í drónanum',
+      },
+      {
+        en: 'Obstacle sensing in every direction down to 0.1 lux, wind resistance up to 12 m/s',
+        is: 'Hindranaskynjun í allar áttir niður í 0,1 lux, þolir vind upp í 12 m/s',
+      },
+    ],
+    images: [
+      '/images/equipment/dji-mavic-4-pro-1.jpg',
+      '/images/equipment/dji-mavic-4-pro-2.jpg',
+      '/images/equipment/dji-mavic-4-pro-3.jpg',
+      '/images/equipment/dji-mavic-4-pro-4.jpg',
+      '/images/equipment/dji-mavic-4-pro-5.jpg',
+    ],
+    featured: false,
+  },
 ]

@@ -1,99 +1,98 @@
 <template>
-  <div class="wrap section-sm">
-    <Breadcrumbs :items="crumbs" />
+  <div>
+    <div class="wrap pt-6 sm:pt-8 pb-14 lg:pb-20">
+      <Breadcrumbs :items="crumbs" collapse />
 
-    <div class="mt-8 grid gap-10 lg:grid-cols-5">
-      <!-- Gallery -->
-      <div class="lg:col-span-3">
-        <VehicleGallery :images="vehicle.images" :alt="t('meta.vehicleTitle', { name: lt(vehicle.name) })" />
-      </div>
+      <ListingLayout class="mt-4 sm:mt-6">
+        <template #gallery>
+          <VehicleGallery :images="vehicle.images" :alt="t('meta.vehicleTitle', { name: lt(vehicle.name) })" />
+        </template>
 
-      <!-- Summary -->
-      <div class="lg:col-span-2">
-        <p class="kicker">{{ kindLabel }}</p>
-        <!-- "til leigu" in the visible H1 — matches the search query directly. -->
-        <h1 class="h1 lg:text-4xl mt-3">
-          {{ t('meta.vehicleTitle', { name: lt(vehicle.name) }) }}
-        </h1>
-        <p class="mt-4 text-lg text-bone-400 leading-relaxed">
-          {{ lt(vehicle.tagline) }}
-        </p>
-
-        <!-- pre-line: a paragraph may be a short list of "label: value" lines -->
-        <div class="mt-6 space-y-4 text-sm text-bone-400 leading-relaxed whitespace-pre-line">
-          <p v-for="(paragraph, i) in paragraphs" :key="i">{{ paragraph }}</p>
-        </div>
-
-        <!-- Highlights -->
-        <h2 class="h4 mt-8">
-          {{ t('vehicle.highlightsTitle') }}
-        </h2>
-        <ul class="mt-4 space-y-2.5">
-          <li v-for="(h, i) in vehicle.highlights" :key="i" class="flex items-start gap-3 text-sm text-bone-400">
-            <svg class="w-4 h-4 mt-0.5 shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            {{ lt(h) }}
-          </li>
-        </ul>
-
-        <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <a href="#request-offer" class="btn-gold flex-1">
-            {{ t('common.requestOffer') }}
-          </a>
-          <AddToCartButton type="vehicle" :id="vehicle.id" class="flex-1" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Specs + offer form -->
-    <div class="mt-16 grid gap-12 lg:grid-cols-5">
-      <div class="lg:col-span-2">
-        <h2 class="h3">
-          {{ t('vehicle.specsTitle') }}
-        </h2>
-        <div class="mt-6">
-          <SpecTable :specs="vehicle.specs" :kind="vehicle.kind" />
-        </div>
-      </div>
-
-      <div id="request-offer" class="lg:col-span-3 scroll-mt-28">
-        <div class="panel">
-          <h2 class="h3">
-            {{ t('vehicle.requestTitle') }}
-          </h2>
-          <p class="mt-2 text-sm text-bone-400 leading-relaxed">
-            {{ t('vehicle.requestIntro') }}
+        <!-- The rail: what it is, how to get a price, and the figures -->
+        <template #title>
+          <!-- On a phone the back link above the photo already names the type -->
+          <p class="flex flex-wrap items-center gap-x-4 gap-y-2 max-sm:mb-3" :class="units > 1 ? '' : 'max-sm:hidden'">
+            <span class="kicker max-sm:hidden">{{ kindLabel }}</span>
+            <span v-if="units > 1" class="inline-flex items-center border border-ink-500 px-2 py-0.5 text-xs font-medium text-bone-100 whitespace-nowrap">{{ t('catalogue.unitsAvailable', { n: units }) }}</span>
           </p>
-          <div class="mt-7">
-            <QuoteForm :interest="lt(vehicle.name)" message-required />
-          </div>
-        </div>
-      </div>
+          <!-- "til leigu" in the visible H1 — matches the search query directly. The
+               name carries the weight; the rental phrase follows it a step quieter. -->
+          <i18n-t keypath="meta.vehicleTitle" tag="h1" scope="global" class="h1 lg:text-3xl/[1.2] 2xl:text-4xl/[1.2] sm:mt-3 !font-medium !text-bone-400 [text-wrap:balance]">
+            <template #name><span class="font-semibold text-bone-100">{{ lt(vehicle.name) }}</span></template>
+          </i18n-t>
+          <p class="mt-3 sm:mt-4 text-lg lg:max-xl:text-base text-bone-100/85 leading-relaxed [text-wrap:pretty]">
+            {{ lt(vehicle.tagline) }}
+          </p>
+        </template>
+
+        <template #quote>
+          <ListingQuoteBox type="vehicle" :id="vehicle.id" :max="units > 1 ? units : undefined" />
+        </template>
+
+        <template v-if="specSplit.facts.length || (!showSpecTable && specSplit.rest.length)" #facts="{ wide }">
+          <ListingFacts :facts="specSplit.facts" :more="showSpecTable ? [] : specSplit.rest" :wide="wide" />
+        </template>
+
+        <template #details>
+          <!-- Scannable first: the points that are not figures, then the prose -->
+          <section v-if="vehicle.highlights.length" class="pt-8 border-t border-ink-700">
+            <h2 class="h3">{{ t('vehicle.highlightsTitle') }}</h2>
+            <ul class="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+              <li v-for="(h, i) in vehicle.highlights" :key="i" class="flex items-start gap-3 text-[15px] leading-relaxed text-bone-100/85">
+                <svg class="w-4 h-4 mt-1 shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                {{ keepUnits(lt(h)) }}
+              </li>
+            </ul>
+          </section>
+
+          <ListingDescription v-if="paragraphs.length" :paragraphs="paragraphs" class="mt-10 pt-8 border-t border-ink-700" />
+
+          <!-- The full table only where it says more than the tiles beside the photo -->
+          <section v-if="showSpecTable" class="mt-10 pt-8 border-t border-ink-700">
+            <h2 class="h3">{{ t('vehicle.specsTitle') }}</h2>
+            <div class="mt-5">
+              <SpecTable :specs="vehicle.specs" :kind="vehicle.kind" />
+            </div>
+          </section>
+
+          <ListingGoodToKnow type="vehicle" class="mt-10 pt-8 border-t border-ink-700" />
+        </template>
+      </ListingLayout>
     </div>
 
-    <!-- Equipment that travels with this vehicle -->
-    <section v-if="pairsWith.length" class="mt-20">
-      <div class="flex flex-wrap items-end justify-between gap-6">
-        <SectionHeading :kicker="t('vehicle.pairsWithKicker')" :title="t('vehicle.pairsWith')" :intro="t('vehicle.pairsWithIntro')" />
-        <NuxtLink :to="localePath('/equipment')" class="btn-outline btn-sm">
-          {{ t('home.featuredEquipmentAll') }}
-        </NuxtLink>
-      </div>
-      <div class="mt-8 card-grid">
-        <EquipmentCard v-for="e in pairsWith" :key="e.id" :item="e" :category-label="categoryLabel(e.category)" />
-      </div>
-    </section>
+    <ListingEnquiry :name="lt(vehicle.name)" :image="vehicle.images[0]" />
 
-    <!-- More in this category -->
-    <section v-if="related.length" class="mt-20">
-      <SectionHeading :kicker="t('nav.fleet')" :title="t('catalogue.otherTitle')" />
-      <div class="mt-8 card-grid">
-        <VehicleCard v-for="v in related" :key="v.id" :vehicle="v" class="sm:grid-rows-subgrid sm:row-span-4" />
-      </div>
-    </section>
+    <div class="wrap py-14 lg:py-20 space-y-16 lg:space-y-20">
+      <!-- Equipment that travels with this vehicle -->
+      <section v-if="pairsWith.length">
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+          <SectionHeading :kicker="t('vehicle.pairsWithKicker')" :title="t('vehicle.pairsWith')" :intro="t('vehicle.pairsWithIntro')" />
+          <NuxtLink :to="localePath('/equipment')" class="btn-outline btn-sm">
+            {{ t('home.featuredEquipmentAll') }}
+          </NuxtLink>
+        </div>
+        <CardRow class="mt-8" :count="pairsWith.length">
+          <EquipmentCard v-for="e in pairsWith" :key="e.id" :item="e" :category-label="categoryLabel(e.category)" dense accent :gallery="false" :price-note="false" sizes="xs:75vw sm:320px lg:25vw" />
+        </CardRow>
+      </section>
 
-    <StickyCta href="#request-offer" :label="t('common.requestOffer')" />
+      <!-- More in this category -->
+      <section v-if="related.length">
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+          <SectionHeading :kicker="t('nav.fleet')" :title="t('catalogue.otherTitle')" />
+          <NuxtLink :to="localePath('/vehicles')" class="btn-outline btn-sm">
+            {{ t('home.featuredAll') }}
+          </NuxtLink>
+        </div>
+        <CardRow class="mt-8" :count="related.length">
+          <VehicleCard v-for="v in related" :key="v.id" :vehicle="v" :gallery="false" :price-note="false" sizes="xs:75vw sm:320px lg:25vw" />
+        </CardRow>
+      </section>
+    </div>
+
+    <StickyCta type="vehicle" :id="vehicle.id" :max="units > 1 ? units : undefined" :name="lt(vehicle.name)" :image="vehicle.images[0]" :hide-beside="['listing-actions', 'request-offer']" />
   </div>
 </template>
 
@@ -111,13 +110,13 @@ const { featured: featuredEquipment, all: allEquipment } = await useEquipment()
 const { label: categoryLabel } = await useEquipmentCategories()
 
 // Cross-sell: the equipment that goes out with this type of vehicle (see
-// vehiclePairings.ts), topped up with the featured items so there are three.
+// vehiclePairings.ts), topped up with the featured items so there are four.
 const pairsWith = computed(() => {
   const wanted = (found?.kind ? VEHICLE_PAIRINGS[found.kind] : [])
     .map(id => allEquipment().find(e => e.id === id))
     .filter((e): e is NonNullable<typeof e> => Boolean(e))
   const rest = [...featuredEquipment(), ...allEquipment()].filter(e => !wanted.includes(e))
-  return [...wanted, ...rest].slice(0, 3)
+  return [...new Set([...wanted, ...rest])].slice(0, 4)
 })
 
 // A vehicle answers to its slug and, when it has one, its English slug.
@@ -136,6 +135,14 @@ if (param !== vehicleSlugFor(vehicle, locale.value)) {
 // and the language switcher point at the translated address.
 useLocalisedSlugs({ is: vehicle.slug, en: vehicleSlugFor(vehicle, 'en') })
 
+const units = computed(() => vehicle.specs.units ?? 1)
+
+// The deciding figures go on tiles beside the photo. The full table is shown only
+// when it has at least three rows the tiles do not: otherwise those few rows
+// follow the tiles as a line of features, and nothing is said twice.
+const specRows = useSpecRows(() => vehicle.specs, () => vehicle.kind)
+const specSplit = computed(() => splitSpecRows(specRows.value, vehicle.specs))
+const showSpecTable = computed(() => specSplit.value.rest.length >= 3)
 const kindLabel = computed(() => (vehicle.kind ? t(`catalogue.kindOne.${vehicle.kind}`) : t(`categories.${vehicle.category}`)))
 
 // The list carries cards only: the description comes with the vehicle's own record.
@@ -153,7 +160,7 @@ const related = computed(() => {
   const i = fleet.findIndex(v => v.id === vehicle.id)
   const others = [...fleet.slice(i + 1), ...fleet.slice(0, Math.max(i, 0))]
   const same = others.filter(v => vehicle.kind && v.kind === vehicle.kind)
-  return [...same, ...others.filter(v => !same.includes(v))].slice(0, 3)
+  return [...same, ...others.filter(v => !same.includes(v))].slice(0, 4)
 })
 
 // Breadcrumbs renders the trail and emits the matching BreadcrumbList JSON-LD.

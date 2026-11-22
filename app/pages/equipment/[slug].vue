@@ -3,85 +3,78 @@
        landing page when the slug belongs to a category, otherwise an item. -->
   <EquipmentLandingPage v-if="category" :category="category" />
 
-  <div v-else-if="item" class="wrap section-sm">
-    <Breadcrumbs :items="crumbs" />
+  <div v-else-if="item">
+    <div class="wrap pt-6 sm:pt-8 pb-14 lg:pb-20">
+      <Breadcrumbs :items="crumbs" collapse />
 
-    <div class="mt-8 grid gap-10 lg:grid-cols-5">
-      <!-- Gallery -->
-      <div class="lg:col-span-3">
-        <VehicleGallery :images="item.images" :alt="t('meta.vehicleTitle', { name: lt(item.name) })" fit="contain" />
-      </div>
-
-      <!-- Summary -->
-      <div class="lg:col-span-2">
-        <p v-if="categoryName" class="kicker">{{ categoryName }}</p>
-        <!-- "til leigu" in the visible H1 — the headline matches what people
-             actually search for, without polluting the item names themselves. -->
-        <h1 class="h1 lg:text-4xl mt-3">
-          {{ t('meta.vehicleTitle', { name: lt(item.name) }) }}
-        </h1>
-        <p v-if="lt(item.tagline)" class="mt-4 text-lg text-bone-400 leading-relaxed">
-          {{ lt(item.tagline) }}
-        </p>
-
-        <!-- Detail copy (admin "Description"): what it is, what it is for, what comes with it. -->
-        <div v-if="paragraphs.length" class="mt-6 space-y-4 text-sm text-bone-400 leading-relaxed whitespace-pre-line">
-          <p v-for="(paragraph, i) in paragraphs" :key="i">{{ paragraph }}</p>
-        </div>
-
-        <!-- Highlights -->
-        <template v-if="highlights.length">
-          <h2 class="h4 mt-8">
-            {{ t('vehicle.highlightsTitle') }}
-          </h2>
-          <ul class="mt-4 space-y-2.5">
-            <li v-for="(h, i) in highlights" :key="i" class="flex items-start gap-3 text-sm text-bone-400">
-              <svg class="w-4 h-4 mt-0.5 shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              {{ h }}
-            </li>
-          </ul>
+      <ListingLayout class="mt-4 sm:mt-6">
+        <template #gallery>
+          <VehicleGallery :images="item.images" :alt="t('meta.vehicleTitle', { name: lt(item.name) })" fit="contain" />
         </template>
 
-        <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <a href="#request-offer" class="btn-gold flex-1">
-            {{ t('common.requestOffer') }}
-          </a>
-          <AddToCartButton type="equipment" :id="item.id" class="flex-1" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Offer form -->
-    <div class="mt-16 max-w-3xl">
-      <div id="request-offer" class="scroll-mt-28">
-        <div class="panel">
-          <h2 class="h3">
-            {{ t('vehicle.requestTitle') }}
-          </h2>
-          <p class="mt-2 text-sm text-bone-400 leading-relaxed">
-            {{ t('vehicle.requestIntro') }}
+        <!-- The rail: what it is, how to get a price, and its key points -->
+        <template #title>
+          <!-- On a phone the back link above the photo already names the category -->
+          <p v-if="categoryName" class="kicker max-sm:hidden">{{ categoryName }}</p>
+          <!-- "til leigu" in the visible H1 — the headline matches what people
+               actually search for, without polluting the item names themselves. The
+               name carries the weight; the rental phrase follows it a step quieter. -->
+          <i18n-t keypath="meta.vehicleTitle" tag="h1" scope="global" class="h1 lg:text-3xl/[1.2] 2xl:text-4xl/[1.2] sm:mt-3 !font-medium !text-bone-400 [text-wrap:balance]">
+            <template #name><span class="font-semibold text-bone-100">{{ lt(item.name) }}</span></template>
+          </i18n-t>
+          <p v-if="lt(item.tagline)" class="mt-3 sm:mt-4 text-lg lg:max-xl:text-base text-bone-100/85 leading-relaxed [text-wrap:pretty]">
+            {{ lt(item.tagline) }}
           </p>
-          <div class="mt-7">
-            <QuoteForm :interest="lt(item.name)" message-required />
-          </div>
-        </div>
-      </div>
+        </template>
+
+        <template #quote>
+          <ListingQuoteBox type="equipment" :id="item.id" />
+        </template>
+
+        <!-- Highlights: an item's figures live here (it has no spec table) -->
+        <template v-if="highlights.length" #facts="{ wide }">
+          <ListingHighlights :items="highlights" :wide="wide" />
+        </template>
+
+        <template #details>
+          <!-- Detail copy (admin "Description"): what it is, what it is for, what comes with it. -->
+          <ListingDescription v-if="paragraphs.length" :paragraphs="paragraphs" class="pt-8 border-t border-ink-700" />
+          <ListingGoodToKnow type="equipment" class="pt-8 border-t border-ink-700" :class="paragraphs.length ? 'mt-10' : ''" />
+        </template>
+      </ListingLayout>
     </div>
 
-    <!-- More in this category (a small category borrows from the ones that go out with it) -->
-    <section v-if="related.length" class="mt-20">
-      <SectionHeading
-        :kicker="relatedMixed ? t('vehicle.pairsWithKicker') : categoryName"
-        :title="relatedMixed ? t('vehicle.pairsWith') : t('vehicle.moreInCategory')"
-      />
-      <div class="mt-8 card-grid">
-        <EquipmentCard v-for="e in related" :key="e.id" :item="e" :category-label="label(e.category)" />
-      </div>
-    </section>
+    <ListingEnquiry :name="lt(item.name)" :image="item.images[0]" fit="contain" />
 
-    <StickyCta href="#request-offer" :label="t('common.requestOffer')" />
+    <div class="wrap py-14 lg:py-20 space-y-16 lg:space-y-20">
+      <!-- What goes out on the same jobs: items from the categories that travel with this one -->
+      <section v-if="companions.length">
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+          <SectionHeading :kicker="t('vehicle.pairsWithKicker')" :title="t('vehicle.pairsWith')" :intro="t('vehicle.pairsWithIntro')" />
+          <NuxtLink :to="localePath('/equipment')" class="btn-outline btn-sm">
+            {{ t('home.featuredEquipmentAll') }}
+          </NuxtLink>
+        </div>
+        <CardRow class="mt-8" :count="companions.length">
+          <EquipmentCard v-for="e in companions" :key="e.id" :item="e" :category-label="label(e.category)" dense accent :gallery="false" :price-note="false" sizes="xs:75vw sm:320px lg:25vw" />
+        </CardRow>
+      </section>
+
+      <!-- The alternatives: more of the same category -->
+      <section v-if="siblings.length">
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+          <SectionHeading :kicker="categoryName" :title="t('vehicle.moreInCategory')" />
+          <NuxtLink v-if="itemCategory" :to="path(itemCategory)" class="btn-outline btn-sm">
+            {{ t('equipmentCatalogue.browser.viewCategory') }}
+          </NuxtLink>
+        </div>
+        <CardRow class="mt-8" :count="siblings.length">
+          <EquipmentCard v-for="e in siblings" :key="e.id" :item="e" dense accent :gallery="false" :price-note="false" sizes="xs:75vw sm:320px lg:25vw" />
+        </CardRow>
+      </section>
+    </div>
+
+    <StickyCta type="equipment" :id="item.id" :name="lt(item.name)" :image="item.images[0]" fit="contain" :hide-beside="['listing-actions', 'request-offer']" />
   </div>
 </template>
 
@@ -143,23 +136,37 @@ if (item) {
 const itemCategory = computed(() => (item ? byId(item.category) : undefined))
 const categoryName = computed(() => text(itemCategory.value?.name))
 
-// The next three in the category's order, wrapping round: every item gets
-// linked from its neighbours, not just the first three of each category.
-const related = computed(() => {
+// The alternatives: the next four in the category's order, wrapping round, so
+// every item is linked from its neighbours and not just the first four.
+const siblings = computed(() => {
   if (!item) return []
-  const siblings = byCategory(item.category)
-  const i = siblings.findIndex(e => e.id === item.id)
-  const own = [...siblings.slice(i + 1), ...siblings.slice(0, Math.max(i, 0))].slice(0, 3)
-  if (own.length === 3) return own
-  // A category with fewer than three others fills up from the categories that
-  // go out on the same jobs (equipmentRelated.ts), or else the ones after it.
+  const own = byCategory(item.category)
+  const i = own.findIndex(e => e.id === item.id)
+  return [...own.slice(i + 1), ...own.slice(0, Math.max(i, 0))].slice(0, 4)
+})
+
+// What goes out with it: items from the categories that travel on the same jobs
+// (equipmentRelated.ts), or else the categories after this one in the catalogue.
+// One from each category in turn, starting at a point that moves with the item's
+// place in its own category, so these links spread over those categories too.
+const companions = computed(() => {
+  if (!item) return []
   const order = categories().map(c => c.id)
   const at = order.indexOf(item.category)
-  const neighbours = RELATED_CATEGORIES[item.category] ?? [...order.slice(at + 1), ...order.slice(0, Math.max(at, 0))]
-  return [...own, ...neighbours.flatMap(id => byCategory(id))].slice(0, 3)
+  const lists = (RELATED_CATEGORIES[item.category] ?? [...order.slice(at + 1), ...order.slice(0, Math.max(at, 0))])
+    .map(id => byCategory(id))
+    .filter(list => list.length)
+    .slice(0, 4)
+  const i = Math.max(byCategory(item.category).findIndex(e => e.id === item.id), 0)
+  const picked: EquipmentItem[] = []
+  for (let round = 0; picked.length < 4 && round < 4; round++) {
+    for (const list of lists) {
+      const e = list[(i + round) % list.length]!
+      if (picked.length < 4 && !picked.includes(e)) picked.push(e)
+    }
+  }
+  return picked
 })
-// With borrowed items the block is "pairs well with", not "more in this category".
-const relatedMixed = computed(() => related.value.some(e => e.category !== item?.category))
 
 // The list carries cards only: the description comes with the item's own record.
 const fullItem = item ? await useEquipmentItem(item.id) : ref<EquipmentItem | undefined>()

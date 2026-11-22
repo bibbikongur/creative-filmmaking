@@ -160,7 +160,9 @@
     "lighting": "Lighting",
     "catering": "Catering",
     "costume": "Costume & Makeup",
-    "tools": "Tools"
+    "tools": "Tools",
+    "sound": "Speakers",
+    "drones": "Drones"
   },
   "equipmentCatalogue": {
     "kicker": "Equipment",
@@ -273,6 +275,34 @@
       "loadBedShort": "Load bed (L × W × H)",
       "twoWheelDrive": "2WD"
     }
+  },
+  "listing": {
+    "keyFacts": "Key facts",
+    "aboutTitle": "Description",
+    "onList": "On your quote list. Send the list and get one price for everything.",
+    "listHas": "You have {n} item on your quote list. Add this one and send them together. | You have {n} items on your quote list. Add this one and send them together.",
+    "sendList": "Send quote list ({n})",
+    "goodToKnow": "Good to know",
+    "listHint": "Renting more than this? Add it to your quote list and get one price for everything.",
+    "assurances": [
+      "Reply within one working day",
+      "No obligation",
+      "Collect at Grensásvegur 1, Reykjavík, or delivered anywhere in Iceland"
+    ],
+    "steps": [
+      {
+        "title": "Send the enquiry",
+        "text": "With your dates and location."
+      },
+      {
+        "title": "Get a quote",
+        "text": "Within one working day, with no obligation."
+      },
+      {
+        "title": "Collect or get it delivered",
+        "text": "In Reykjavík, or delivered anywhere in Iceland."
+      }
+    ]
   },
   "cart": {
     "kicker": "Your selection",
@@ -769,6 +799,68 @@
         "intro2": "Tools rent on their own or with our vehicles and the rest of the kit, delivered anywhere in Iceland. Request a quote.",
         "metaTitle": "Tool Rental for Film Shoots",
         "metaDescription": "12 V and 24 V jump starters, an air pump, a step ladder and a tow rope for rent for film shoots and work sites. Rents with our vehicles and the rest of the kit. Delivery anywhere in Iceland."
+      },
+      "sound": {
+        "kicker": "Equipment",
+        "title": "Speakers for rent in Iceland",
+        "intro1": "Speakers for rent in Iceland for parties, events and film shoots. The Soundboks 4 is a wireless Bluetooth speaker that runs on its own battery, so it goes where there is no socket: the garden, the campsite, the sports field, a warehouse or a remote location.",
+        "intro2": "It reaches up to 126 dB, and the battery lasts up to 40 hours at medium volume or about 6 hours at full volume. Besides Bluetooth it has two XLR/jack combo inputs for microphones, instruments and a mixer, so it works for music, speeches and announcements alike.",
+        "intro3": "The speaker rents on its own or with power stations, tents, tables and chairs. Delivered anywhere in Iceland. Request a quote.",
+        "metaTitle": "Party Speaker Rental in Iceland: Soundboks 4",
+        "metaDescription": "Rent a Soundboks 4 party speaker in Iceland for parties, events and shoots. 126 dB, up to 40 hours of battery, Bluetooth and mic inputs. Delivered nationwide.",
+        "faq": [
+          {
+            "q": "How loud is the Soundboks 4?",
+            "a": "Up to 126 dB. The manufacturer rates that as more than enough for a room of 200 people."
+          },
+          {
+            "q": "How long does the battery last?",
+            "a": "Up to 40 hours at medium volume and about 6 hours at full volume. Battery life depends on the volume and on how bass-heavy the music is."
+          },
+          {
+            "q": "Can I connect a microphone or an instrument to the speaker?",
+            "a": "Yes. The speaker has two combo inputs that take both XLR and 6.3 mm jack, for microphones, instruments or a mixer, plus a 3.5 mm input and output."
+          },
+          {
+            "q": "Can the speaker be used outdoors in the rain?",
+            "a": "Yes, it is built for outdoor use. The electronics are protected to IP65 against rain and dust and the speaker works from −10 to +40 °C. It must never be submerged in water, though."
+          },
+          {
+            "q": "Can it play while the battery is charging?",
+            "a": "Yes, even at full volume, with a Soundboks charger or a USB-C PD charger that delivers at least 65 W."
+          }
+        ]
+      },
+      "drones": {
+        "kicker": "Equipment",
+        "title": "Drones for rent in Iceland",
+        "intro1": "Drones for rent in Iceland for film shoots, commercials, events, property photography and travel. The DJI Mavic 4 Pro Creator Combo is a complete aerial kit: a drone with a 100 MP Hasselblad camera and two tele cameras, the DJI RC Pro 2 controller, three batteries, a charging hub and a shoulder bag.",
+        "intro2": "The main camera records 6K video at up to 60 fps, and the Creator Combo records H.264 ALL-I in 10-bit 4:2:2 to 512 GB of built-in storage. Flight time is up to 51 minutes per battery, and the charging hub brings all three batteries to full in about 90 minutes with the 240 W charger.",
+        "intro3": "The drone rents on its own or with our power stations and vehicles. Delivered anywhere in Iceland. Request a quote.",
+        "metaTitle": "Drone Rental in Iceland: DJI Mavic 4 Pro",
+        "metaDescription": "Rent a DJI Mavic 4 Pro drone in Iceland: 100 MP Hasselblad camera, 6K video, up to 51 minutes of flight, RC Pro 2 controller and three batteries.",
+        "faq": [
+          {
+            "q": "What comes with the drone?",
+            "a": "The DJI Mavic 4 Pro with 512 GB of storage, the DJI RC Pro 2 controller, three batteries, a charging hub for three batteries, a 240 W charger, a USB-C cable and a shoulder bag."
+          },
+          {
+            "q": "How long does the drone fly on one battery?",
+            "a": "Up to 51 minutes according to the manufacturer, in ideal conditions. Three batteries are included and the charging hub brings them all to full in about 90 minutes."
+          },
+          {
+            "q": "Can the drone handle Icelandic wind and cold?",
+            "a": "According to the manufacturer the drone resists wind of up to 12 m/s and works from −10 to 40 °C."
+          },
+          {
+            "q": "Which recording formats does the drone support?",
+            "a": "6K at up to 60 fps and 4K at up to 120 fps. The Creator Combo records H.264 ALL-I in 10-bit 4:2:2 as well as H.265, and supports D-Log, D-Log M and HLG. Photos are up to 100 MP in JPEG and DNG."
+          },
+          {
+            "q": "Which class is the drone?",
+            "a": "The DJI Mavic 4 Pro carries the EU C2 class mark and weighs about 1,063 g."
+          }
+        ]
       }
     }
   },

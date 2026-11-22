@@ -31,7 +31,7 @@
           <NuxtLink v-if="cart.count.value" :to="localePath('/cart')" class="btn-gold btn-sm whitespace-nowrap">
             {{ t('equipmentCatalogue.browser.listWithCount', { n: cart.count.value }) }}
           </NuxtLink>
-          <NuxtLink v-else :to="localePath('/contact')" class="btn-gold btn-sm whitespace-nowrap">
+          <NuxtLink v-else :to="localePath('/contact')" class="btn-sm whitespace-nowrap" :class="onListing ? 'btn-outline' : 'btn-gold'">
             {{ t('nav.cta') }}
           </NuxtLink>
           <LanguageSwitcher />
@@ -47,7 +47,7 @@
           <NuxtLink v-if="cart.count.value" :to="localePath('/cart')" class="hidden md:inline-flex btn-gold btn-sm whitespace-nowrap mr-2" @click="mobileOpen = false">
             {{ t('equipmentCatalogue.browser.listWithCount', { n: cart.count.value }) }}
           </NuxtLink>
-          <NuxtLink v-else :to="localePath('/contact')" class="hidden md:inline-flex btn-gold btn-sm whitespace-nowrap mr-2" @click="mobileOpen = false">
+          <NuxtLink v-else :to="localePath('/contact')" class="hidden md:inline-flex btn-sm whitespace-nowrap mr-2" :class="onListing ? 'btn-outline' : 'btn-gold'" @click="mobileOpen = false">
             {{ t('nav.cta') }}
           </NuxtLink>
           <CartLink v-if="cart.count.value" class="md:hidden" @click="mobileOpen = false" />
@@ -122,6 +122,11 @@ const navItems = [
 
 // /vehicles/kassabilar and /equipment/<item> belong to their section's nav item.
 const route = useRoute()
+// On an item's own page the amber button belongs to the page ("Request a quote"
+// beside the photo): the header's turns to an outline there so the two do not
+// compete. With something on the quote list it is the list again, in amber.
+const routeBaseName = useRouteBaseName()
+const onListing = computed(() => ['vehicles-slug', 'equipment-slug'].includes(String(routeBaseName(route) ?? '')))
 const inSection = (to: string) => to !== '/' && route.path.startsWith(`${localePath(to)}/`)
 
 const mobileOpen = ref(false)

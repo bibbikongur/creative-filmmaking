@@ -9,7 +9,7 @@
        The title link is stretched over the whole card; controls sit above it. -->
   <article
     ref="card"
-    class="group relative min-w-0 bg-ink-800 ring-1 transition-shadow duration-200 grid grid-rows-[auto_1fr_auto_auto] gap-y-0"
+    class="group relative min-w-0 bg-ink-800 ring-1 transition-shadow duration-200 grid grid-cols-1 grid-rows-[auto_1fr_auto_auto] gap-y-0"
     :class="[focusRing, inCart ? 'ring-2 ring-gold-500' : 'ring-ink-700/70 [@media(hover:hover)]:hover:ring-ink-400']"
     @touchstart.passive="swipeStart"
     @touchend.passive="swipeEnd"
@@ -99,7 +99,7 @@
 
     <!-- Slot 4: where a price would be, and the action -->
     <div class="px-4 pb-4 pt-3 sm:pt-4">
-      <p class="mb-2 text-[11px] uppercase tracking-widest text-bone-400">{{ t('equipmentCatalogue.browser.priceNote') }}</p>
+      <p v-if="priceNote" class="mb-2 text-[11px] uppercase tracking-widest text-bone-400">{{ t('equipmentCatalogue.browser.priceNote') }}</p>
       <AddToCartButton type="vehicle" :id="vehicle.id" :max="units > 1 ? units : undefined" compact block :primary="primary" :accent="!primary" class="relative z-10" />
     </div>
   </article>
@@ -116,7 +116,10 @@ const props = withDefaults(defineProps<{
   gallery?: boolean
   /** Filled gold add button; otherwise an outline that fills on hover */
   primary?: boolean
+  /** The "price on request" line above the button; off where the page already says it once */
+  priceNote?: boolean
 }>(), {
+  priceNote: true,
   sizes: 'xs:100vw sm:50vw md:33vw',
   gallery: true,
   primary: false,
@@ -209,6 +212,9 @@ const probe = () => {
     canvas.height = size
     const ctx = canvas.getContext('2d', { willReadFrequently: true })
     if (!ctx) return
+    // White underneath: a transparent PNG is a cut-out too, and its clear corners would read as black.
+    ctx.fillStyle = '#fff'
+    ctx.fillRect(0, 0, size, size)
     ctx.drawImage(img, 0, 0, size, size)
     const corners = [[0, 0], [size - 1, 0], [0, size - 1], [size - 1, size - 1]] as const
     cutout.value = corners.every(([x, y]) => {

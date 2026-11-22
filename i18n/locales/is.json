@@ -160,7 +160,9 @@
     "lighting": "Lýsing",
     "catering": "Catering",
     "costume": "Búningar og makeup",
-    "tools": "Verkfæri"
+    "tools": "Verkfæri",
+    "sound": "Hátalarar",
+    "drones": "Drónar"
   },
   "equipmentCatalogue": {
     "kicker": "Búnaður",
@@ -273,6 +275,34 @@
       "loadBedShort": "Innanmál (L × B × H)",
       "twoWheelDrive": "Eindrif"
     }
+  },
+  "listing": {
+    "keyFacts": "Helstu upplýsingar",
+    "aboutTitle": "Lýsing",
+    "onList": "Á tilboðslistanum þínum. Sendu listann og fáðu eitt verð fyrir allt.",
+    "listHas": "Þú ert með {n} stk. á tilboðslistanum. Bættu þessu við og sendu allt saman.",
+    "sendList": "Senda tilboðslista ({n})",
+    "goodToKnow": "Gott að vita",
+    "listHint": "Vantar þig fleira? Settu þetta á tilboðslistann og fáðu eitt verð fyrir allt.",
+    "assurances": [
+      "Svar innan eins virks dags",
+      "Engin skuldbinding",
+      "Sótt að Grensásvegi 1 í Reykjavík eða afhent hvert á land sem er"
+    ],
+    "steps": [
+      {
+        "title": "Sendu fyrirspurn",
+        "text": "Með dagsetningum og stað."
+      },
+      {
+        "title": "Fáðu tilboð",
+        "text": "Innan eins virks dags, án skuldbindinga."
+      },
+      {
+        "title": "Sæktu eða fáðu afhent",
+        "text": "Í Reykjavík, eða afhent hvert á land sem er."
+      }
+    ]
   },
   "cart": {
     "kicker": "Listinn þinn",
@@ -769,6 +799,68 @@
         "intro2": "Verkfærin leigjast stök eða með bílunum okkar og öðrum búnaði, afhent hvert á land sem er. Óskaðu eftir tilboði.",
         "metaTitle": "Verkfæri til leigu fyrir tökustaði",
         "metaDescription": "Starttæki 12 V og 24 V, loftdæla, stigi og dráttartóg til leigu fyrir kvikmyndatökur og vinnusvæði. Leigist með bílum og öðrum búnaði. Afhending um land allt."
+      },
+      "sound": {
+        "kicker": "Búnaður",
+        "title": "Hátalarar til leigu",
+        "intro1": "Hátalarar til leigu fyrir veislur, viðburði og tökustaði. Soundboks 4 er þráðlaus Bluetooth-hátalari sem gengur á rafhlöðu, svo hann fer þangað sem engin innstunga er: í garðinn, á tjaldsvæðið, á íþróttavöllinn, í skemmuna eða út á tökustað.",
+        "intro2": "Hann skilar allt að 126 dB og rafhlaðan endist í allt að 40 klukkustundir á miðlungsstyrk eða um 6 klukkustundir á fullum styrk. Auk Bluetooth eru á honum tvö XLR/jack-inntök fyrir hljóðnema, hljóðfæri og mixer, svo hann dugar jafnt fyrir tónlist, ræður og tilkynningar.",
+        "intro3": "Hátalarinn leigist stakur eða með rafhlöðustöðvum, tjöldum, borðum og stólum. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+        "metaTitle": "Hátalari til leigu: Soundboks 4 með rafhlöðu",
+        "metaDescription": "Soundboks 4 hátalari til leigu fyrir veislur, viðburði og tökur. 126 dB, rafhlaða í allt að 40 klst., Bluetooth og hljóðnemainntök. Afhending um land allt.",
+        "faq": [
+          {
+            "q": "Hversu hátt spilar Soundboks 4?",
+            "a": "Allt að 126 dB. Framleiðandinn segir það meira en nóg fyrir 200 manna rými."
+          },
+          {
+            "q": "Hversu lengi endist rafhlaðan?",
+            "a": "Allt að 40 klukkustundir á miðlungsstyrk og um 6 klukkustundir á fullum styrk. Endingin fer eftir hljóðstyrk og því hversu bassamikil tónlistin er."
+          },
+          {
+            "q": "Get ég tengt hljóðnema eða hljóðfæri við hátalarann?",
+            "a": "Já. Á hátalaranum eru tvö inntök sem taka bæði XLR og 6,3 mm jack, fyrir hljóðnema, hljóðfæri eða mixer, auk 3,5 mm inngangs og útgangs."
+          },
+          {
+            "q": "Má nota hátalarann úti í rigningu?",
+            "a": "Já, hann er gerður fyrir útinotkun. Rafbúnaðurinn er með IP65-vörn gegn regni og ryki og hátalarinn virkar í −10 til +40 °C. Hann má þó aldrei fara á kaf í vatn."
+          },
+          {
+            "q": "Er hægt að spila á meðan rafhlaðan hleðst?",
+            "a": "Já, líka á fullum styrk, með Soundboks-hleðslutæki eða USB-C PD hleðslutæki sem skilar að minnsta kosti 65 W."
+          }
+        ]
+      },
+      "drones": {
+        "kicker": "Búnaður",
+        "title": "Drónar til leigu",
+        "intro1": "Drónar til leigu fyrir kvikmyndatökur, auglýsingar, viðburði, fasteignamyndir og ferðalagið. DJI Mavic 4 Pro Creator Combo er heill loftmyndapakki: dróni með 100 MP Hasselblad-myndavél og tveimur aðdráttarmyndavélum, DJI RC Pro 2 fjarstýring, þrjár rafhlöður, hleðslustöð og hliðartaska.",
+        "intro2": "Aðalmyndavélin tekur 6K-myndband í allt að 60 römmum á sekúndu og Creator Combo tekur upp í H.264 ALL-I, 10 bita 4:2:2, á 512 GB innbyggt geymslupláss. Flugtíminn er allt að 51 mínúta á rafhlöðu og hleðslustöðin fullhleður allar þrjár rafhlöðurnar á um 90 mínútum með 240 W hleðslutækinu.",
+        "intro3": "Dróninn leigist stakur eða með rafhlöðustöðvum og bílunum okkar. Við afhendum hvert á land sem er. Óskaðu eftir tilboði.",
+        "metaTitle": "Dróni til leigu: DJI Mavic 4 Pro Creator Combo",
+        "metaDescription": "DJI Mavic 4 Pro dróni til leigu: 100 MP Hasselblad, 6K-myndband, allt að 51 mín. flugtími, RC Pro 2 fjarstýring og þrjár rafhlöður. Afhending um land allt.",
+        "faq": [
+          {
+            "q": "Hvað fylgir með drónanum?",
+            "a": "DJI Mavic 4 Pro með 512 GB geymsluplássi, DJI RC Pro 2 fjarstýring, þrjár rafhlöður, hleðslustöð fyrir þrjár rafhlöður, 240 W hleðslutæki, USB-C snúra og hliðartaska."
+          },
+          {
+            "q": "Hversu lengi flýgur dróninn á einni rafhlöðu?",
+            "a": "Allt að 51 mínútu samkvæmt framleiðanda, við bestu aðstæður. Þrjár rafhlöður fylgja og hleðslustöðin fullhleður þær allar á um 90 mínútum."
+          },
+          {
+            "q": "Þolir dróninn íslenskan vind og kulda?",
+            "a": "Samkvæmt framleiðanda þolir dróninn vind upp í 12 m/s og vinnur í −10 til 40 °C."
+          },
+          {
+            "q": "Hvaða upptökusnið styður dróninn?",
+            "a": "6K í allt að 60 römmum á sekúndu og 4K í allt að 120. Creator Combo tekur upp í H.264 ALL-I, 10 bita 4:2:2, auk H.265, og styður D-Log, D-Log M og HLG. Ljósmyndir eru allt að 100 MP í JPEG og DNG."
+          },
+          {
+            "q": "Í hvaða flokki er dróninn?",
+            "a": "DJI Mavic 4 Pro er með C2-flokksmerkingu (EU) og vegur um 1.063 g."
+          }
+        ]
       }
     }
   },

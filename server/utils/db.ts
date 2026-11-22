@@ -58,6 +58,7 @@ export function getDb(): Database.Database {
   restructureEquipmentCategories(db)
   refreshEquipmentCategoryCopy(db)
   refreshCatalogueCopy(db)
+  seedCategoryAdditions(db)
   stripStockPhotos(db)
   backfillCatalogueTimestamps(db)
   return db
@@ -72,6 +73,21 @@ function seedEquipmentCategories(db: Database.Database) {
   const flag = 'seeded:equipment-categories:1'
   if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) return
 
+  const insert = db.prepare('INSERT OR IGNORE INTO equipment_categories (id, sort, status, data, updated_at) VALUES (?, ?, ?, ?, ?)')
+  const now = new Date().toISOString()
+  db.transaction(() => {
+    equipmentLandings.forEach((l, i) => {
+      insert.run(l.id, i, 'active', JSON.stringify(categorySeedData(l)), now)
+    })
+    db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
+  })()
+  console.log(`[db] equipment_categories: seeded ${equipmentLandings.length} categories`)
+}
+
+type CategorySeedData = Omit<EquipmentCategoryDef, 'id' | 'sort' | 'status' | 'updatedAt'>
+
+/** A category row as the seed describes it: URLs from equipmentLandings.ts, names and landing copy from the locale files. */
+function categorySeedData(l: (typeof equipmentLandings)[number]): CategorySeedData {
   const get = (obj: unknown, path: string): unknown =>
     path.split('.').reduce<unknown>((o, k) => (o == null ? o : (o as Record<string, unknown>)[k]), obj)
   const text = (code: 'is' | 'en', path: string) => {
@@ -80,32 +96,65 @@ function seedEquipmentCategories(db: Database.Database) {
   }
   const pair = (path: string): LocalizedText => ({ is: text('is', path), en: text('en', path) })
 
-  const insert = db.prepare('INSERT OR IGNORE INTO equipment_categories (id, sort, status, data, updated_at) VALUES (?, ?, ?, ?, ?)')
-  const now = new Date().toISOString()
-  db.transaction(() => {
-    equipmentLandings.forEach((l, i) => {
-      const intro = [1, 2, 3].map(n => pair(`${l.key}.intro${n}`)).filter(p => p.is || p.en)
-      const faqIs = (get(isMessages, `${l.key}.faq`) as { q: string, a: string }[] | undefined) ?? []
-      const faqEn = (get(enMessages, `${l.key}.faq`) as { q: string, a: string }[] | undefined) ?? []
-      const faq = Array.from({ length: Math.max(faqIs.length, faqEn.length) }, (_, n) => ({
-        q: { is: faqIs[n]?.q ?? '', en: faqEn[n]?.q ?? '' },
-        a: { is: faqIs[n]?.a ?? '', en: faqEn[n]?.a ?? '' },
-      }))
-      const data: Omit<EquipmentCategoryDef, 'id' | 'sort' | 'status' | 'updatedAt'> = {
-        slug: { is: seedSlugOf(l, 'is'), en: seedSlugOf(l, 'en') },
-        name: pair(`equipmentCategories.${l.id}`),
-        title: pair(`${l.key}.title`),
-        metaTitle: pair(`${l.key}.metaTitle`),
-        metaDescription: pair(`${l.key}.metaDescription`),
-        intro,
-        faq,
-        previousSlugs: [],
+  const intro = [1, 2, 3].map(n => pair(`${l.key}.intro${n}`)).filter(p => p.is || p.en)
+  const faqIs = (get(isMessages, `${l.key}.faq`) as { q: string, a: string }[] | undefined) ?? []
+  const faqEn = (get(enMessages, `${l.key}.faq`) as { q: string, a: string }[] | undefined) ?? []
+  const faq = Array.from({ length: Math.max(faqIs.length, faqEn.length) }, (_, n) => ({
+    q: { is: faqIs[n]?.q ?? '', en: faqEn[n]?.q ?? '' },
+    a: { is: faqIs[n]?.a ?? '', en: faqEn[n]?.a ?? '' },
+  }))
+  return {
+    slug: { is: seedSlugOf(l, 'is'), en: seedSlugOf(l, 'en') },
+    name: pair(`equipmentCategories.${l.id}`),
+    title: pair(`${l.key}.title`),
+    metaTitle: pair(`${l.key}.metaTitle`),
+    metaDescription: pair(`${l.key}.metaDescription`),
+    intro,
+    faq,
+    previousSlugs: [],
+  }
+}
+
+// Categories added to the seed after a database was first populated. The seed
+// above never re-runs, so each late addition is listed here and inserted
+// exactly once (meta flag), after the categories that are already there. It is
+// skipped when the admin already has a category with that id, or when one of
+// its addresses is taken by another category (current or former slug) or by an
+// item. After that the row is the admin's, like every other category.
+const SEED_CATEGORY_ADDITIONS = ['sound', 'drones']
+
+function seedCategoryAdditions(db: Database.Database) {
+  for (const id of SEED_CATEGORY_ADDITIONS) {
+    const flag = `seeded:equipment-category:${id}`
+    if (db.prepare('SELECT value FROM meta WHERE key = ?').get(flag)) continue
+
+    const landing = equipmentLandings.find(l => l.id === id)
+    if (landing && !db.prepare('SELECT id FROM equipment_categories WHERE id = ?').get(id)) {
+      const data = categorySeedData(landing)
+      const wanted = [data.slug.is, data.slug.en]
+      const categoryRows = db.prepare('SELECT data FROM equipment_categories').all() as { data: string }[]
+      const itemRows = db.prepare('SELECT data FROM equipment').all() as { data: string }[]
+      const taken = new Set<string>()
+      for (const r of categoryRows) {
+        const c = JSON.parse(r.data) as Partial<EquipmentCategoryDef>
+        for (const s of [c.slug?.is, c.slug?.en, ...(c.previousSlugs ?? [])]) if (s) taken.add(s)
       }
-      insert.run(l.id, i, 'active', JSON.stringify(data), now)
-    })
+      for (const r of itemRows) {
+        const e = JSON.parse(r.data) as { slug?: string, slugEn?: string }
+        for (const s of [e.slug, e.slugEn]) if (s) taken.add(s)
+      }
+      if (wanted.some(s => taken.has(s))) {
+        console.warn(`[db] equipment_categories: late addition ${id} skipped, /equipment/${wanted.find(s => taken.has(s))} is already in use`)
+      }
+      else {
+        const { m } = db.prepare('SELECT COALESCE(MAX(sort), -1) AS m FROM equipment_categories').get() as { m: number }
+        db.prepare('INSERT INTO equipment_categories (id, sort, status, data, updated_at) VALUES (?, ?, ?, ?, ?)')
+          .run(id, m + 1, 'active', JSON.stringify(data), new Date().toISOString())
+        console.log(`[db] equipment_categories: seeded late addition ${id}`)
+      }
+    }
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run(flag, '1')
-  })()
-  console.log(`[db] equipment_categories: seeded ${equipmentLandings.length} categories`)
+  }
 }
 
 // One-time cleanup: rows that existed before updated_at stamping went live
@@ -159,7 +208,7 @@ function stripStockPhotos(db: Database.Database) {
 // (v-012 was removed 2026-08-27 when the seed file was trimmed to the live
 // catalogue; its flag is already set in existing databases.)
 const SEED_ADDITIONS = ['v-010', 'v-011', 'v-013']
-const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024', 'e-025', 'e-026', 'e-027', 'e-028', 'e-mw1dznnq20e9']
+const SEED_EQUIPMENT_ADDITIONS = ['e-016', 'e-017', 'e-018', 'e-019', 'e-020', 'e-021', 'e-022', 'e-023', 'e-024', 'e-025', 'e-026', 'e-027', 'e-028', 'e-mw1dznnq20e9', 'e-029', 'e-030']
 
 // One-time content refreshes: bump the rev to push the current seed data over
 // what's in the database. Upserts — replaces the row if it exists (including

@@ -68,13 +68,15 @@
     @touchstart.passive="swipeStart"
     @touchend.passive="swipeEnd"
     :class="dense
-      ? ['grid grid-rows-[auto_auto_1fr_auto] gap-y-0 min-w-0', focusRing, 'ring-1', inCart ? 'ring-2 ring-gold-500' : 'ring-ink-700/70 [@media(hover:hover)]:hover:ring-ink-400']
+      ? ['grid grid-cols-1 grid-rows-[auto_auto_1fr_auto] gap-y-0 min-w-0', focusRing, 'ring-1', inCart ? 'ring-2 ring-gold-500' : 'ring-ink-700/70 [@media(hover:hover)]:hover:ring-ink-400']
       : 'flex flex-col border-t-2 border-transparent hover:border-gold-500 focus-within:border-gold-500 transition-colors'"
   >
     <!-- Image. Equipment photos are opaque white manufacturer cutouts, so they live in a
          deliberate white "product well" (shared with the detail gallery) rather than fighting
-         the dark stage. -->
+         the dark stage. A photograph among them (found by looking at its corners once it
+         has loaded) fills the frame instead of floating in the well. -->
     <div
+      ref="well"
       class="relative overflow-hidden"
       :class="[item.images.length ? (dense ? 'bg-bone-100' : 'bg-product-well') : 'bg-ink-900', dense ? 'aspect-[3/2]' : 'aspect-card']"
     >
@@ -84,11 +86,13 @@
         :src="item.images[active]!"
         :provider="imgProvider(item.images[active]!)"
         :alt="lt(item.name)"
-        class="w-full h-full object-contain transition-transform duration-500 motion-safe:group-hover:scale-105"
-        :class="dense ? 'p-2.5 mix-blend-multiply' : 'p-4'"
+        class="w-full h-full transition-transform duration-500 motion-safe:group-hover:scale-105"
+        :class="photo ? 'object-cover' : (dense ? 'object-contain p-2.5 mix-blend-multiply' : 'object-contain p-4')"
         :sizes="sizes"
         format="webp"
         loading="lazy"
+        data-probe
+        @load="probe"
       />
       <ImagePlaceholder v-else />
       <span v-if="categoryLabel && !dense" class="absolute top-3 left-3 px-2.5 py-1 bg-ink-950/70 backdrop-blur text-gold-400 text-[11px] uppercase tracking-widest font-semibold">
@@ -182,7 +186,7 @@
         </div>
 
         <div class="px-3 pb-3 sm:px-4 sm:pb-4 pt-3">
-          <p class="mb-2 text-[11px] uppercase tracking-widest text-bone-400">{{ t('equipmentCatalogue.browser.priceNote') }}</p>
+          <p v-if="priceNote" class="mb-2 text-[11px] uppercase tracking-widest text-bone-400">{{ t('equipmentCatalogue.browser.priceNote') }}</p>
           <AddToCartButton type="equipment" :id="item.id" compact block :primary="primary" :accent="accent" class="relative z-10" />
         </div>
       </template>
@@ -236,7 +240,10 @@ const props = withDefaults(defineProps<{
   accent?: boolean
   /** Photo browsing on the card (arrows, dots, swipe). Off on teaser rows. */
   gallery?: boolean
+  /** The "price on request" line above the button (dense); off where the page already says it once */
+  priceNote?: boolean
 }>(), {
+  priceNote: true,
   categoryLabel: '',
   sizes: 'xs:100vw sm:50vw md:33vw',
   layout: 'grid',
@@ -277,6 +284,17 @@ const firstDesktopSpec = computed(() => (name.value.detail ? 1 : 0))
 const focusRing = '[&:has(a:focus-visible)]:outline [&:has(a:focus-visible)]:outline-2 [&:has(a:focus-visible)]:outline-offset-2 [&:has(a:focus-visible)]:outline-gold-400'
 
 const active = ref(0)
+
+// Cut-out on white, or a photograph that should fill the frame? Read off the
+// loaded image (utils/imageKind.ts); a cut-out until then.
+const well = ref<HTMLElement | null>(null)
+const photo = ref(false)
+const probe = () => {
+  const img = well.value?.querySelector<HTMLImageElement>('img[data-probe]')
+  if (img) photo.value = isFramePhotograph(img)
+}
+// An image that finished loading before the page came alive never fires "load" here.
+onMounted(() => nextTick(probe))
 
 // Sideways swipe on a card with several photos: next / previous photo.
 let swipeX = 0

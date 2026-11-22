@@ -35,6 +35,10 @@ export const equipmentLandings: EquipmentLandingSeed[] = [
   { id: 'costume', paths: { is: '/equipment/buningar-og-makeup', en: '/equipment/costume-and-makeup' }, key: 'landings.equipment.costume' },
   { id: 'tools', paths: { is: '/equipment/verkfaeri', en: '/equipment/tools' }, key: 'landings.equipment.tools' },
   { id: 'cleaning', paths: { is: '/equipment/thrif', en: '/equipment/cleaning' }, key: 'landings.equipment.cleaning' },
+  // Added 2026-11-21 with the first speaker and drone listings. Existing
+  // databases get them through SEED_CATEGORY_ADDITIONS in server/utils/db.ts.
+  { id: 'sound', paths: { is: '/equipment/hatalarar', en: '/equipment/speakers' }, key: 'landings.equipment.sound' },
+  { id: 'drones', paths: { is: '/equipment/dronar', en: '/equipment/drones' }, key: 'landings.equipment.drones' },
 ]
 
 /** Last path segment per locale of a seed landing. */

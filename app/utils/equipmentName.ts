@@ -8,9 +8,9 @@ export const splitEquipmentName = (full: string): { main: string, detail: string
   return m ? { main: m[1]!, detail: m[2]! } : { main: full, detail: '' }
 }
 
-/** "21 kW" and "20 m" never split across lines: number and unit stay together. */
+/** "21 kW", "20 m" and "6100 K" never split across lines: number and unit stay together. */
 export const keepUnits = (text: string): string =>
-  text.replace(/(\d)\s+(?=(kVA|kW|kg|km|cm|mm|lm|stk|amp|[mlVAWt])\b)/gi, '$1\u00A0')
+  text.replace(/(\d)\s+(?=(kVA|kWh|kW|Wh|kg|km|cm|mm|lm|dB|stk|amp|[mlVAWtK])\b)/gi, '$1\u00A0')
 
 // Second elements of the compounds that show up in equipment names. A long
 // Icelandic compound may only break at the joint in front of one of these
