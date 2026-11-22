@@ -59,6 +59,7 @@
             <span v-if="lineTotal(item) != null" class="block font-heading text-lg font-semibold tabular-nums text-bone-100">{{ fmt(lineTotal(item)! + extrasTotal(item)) }}</span>
             <span v-else class="block text-sm text-gold-400">Price missing</span>
             <span v-if="item.itemType === 'vehicle' && extrasTotal(item) > 0" class="block text-xs tabular-nums text-ink-400">incl. {{ fmt(extrasTotal(item)) }} add-ons</span>
+            <span v-if="discountAmount > 0 && lineTotal(item) != null" class="block text-xs tabular-nums text-gold-400">{{ fmt((lineTotal(item)! + extrasTotal(item)) * netFactor) }} after discount</span>
           </p>
         </div>
 
@@ -103,6 +104,7 @@
               <span v-if="lineTotal(item) != null" class="text-bone-100">{{ fmt(lineTotal(item)!) }}</span>
               <span v-else class="text-ink-400">–</span>
               <span v-if="item.qty > 1 && lineTotal(item) != null" class="block text-[11px] text-ink-400">{{ item.qty }} × {{ fmt(lineTotal(item)! / item.qty) }}</span>
+              <span v-for="t in discountNotes(lineTotal(item), prices[item.id], per(modes[item.id]))" :key="t" class="block text-[11px] text-gold-400">{{ t }}</span>
             </p>
           </div>
 
@@ -129,7 +131,10 @@
               >
               <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}{{ per(modes[item.id]) }}</span>
             </span>
-                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">{{ rowTotal(insuranceTotal(item)) }}</p>
+                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">
+                  {{ rowTotal(insuranceTotal(item)) }}
+                  <span v-for="t in discountNotes(insuranceTotal(item), extras[item.id]!.insPrice, per(modes[item.id]))" :key="t" class="block text-[11px] text-gold-400">{{ t }}</span>
+                </p>
               </template>
             </div>
 
@@ -172,7 +177,10 @@
               >
               <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}{{ per(modes[item.id]) }}</span>
             </span>
-                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">{{ rowTotal(driverTotal(item)) }}</p>
+                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">
+                  {{ rowTotal(driverTotal(item)) }}
+                  <span v-for="t in discountNotes(driverTotal(item), extras[item.id]!.driverPrice, per(modes[item.id]))" :key="t" class="block text-[11px] text-gold-400">{{ t }}</span>
+                </p>
               </template>
             </div>
 
@@ -204,7 +212,10 @@
               >
               <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs text-ink-400" aria-hidden="true">{{ currencySuffix }}/km</span>
             </span>
-                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">{{ rowTotal(kmTotal(item)) }}</p>
+                <p class="text-right text-sm tabular-nums text-bone-100 max-md:col-span-2">
+                  {{ rowTotal(kmTotal(item)) }}
+                  <span v-for="t in discountNotes(kmTotal(item), extras[item.id]!.kmPrice, '/km')" :key="t" class="block text-[11px] text-gold-400">{{ t }}</span>
+                </p>
               </template>
             </div>
           </template>
@@ -543,6 +554,28 @@ const total = computed(() => subtotal.value - discountAmount.value + vatAmount.v
 const fmt = (n: number) => currency.value === 'EUR'
   ? `€${n.toLocaleString('en-US', { maximumFractionDigits: 2 })}`
   : `${Math.round(n).toLocaleString('is-IS')} kr.`
+
+// The offer PDF prints every line at its price after the discount, so the
+// form shows the same figures while pricing. The discount is spread over the
+// lines and add-ons in proportion (server/utils/offerDiscount.ts); the PDF may
+// differ by a króna where it carries the rounding from one line to the next.
+const netFactor = computed(() => subtotal.value > 0 ? (subtotal.value - discountAmount.value) / subtotal.value : 1)
+// A króna rate under 1,000 kr. keeps its aurar, as on the PDF (45 kr./km less 10% is 40.5).
+const fmtRate = (n: number) => {
+  const v = round2(n)
+  return currency.value === 'ISK' && v < 1000 && !Number.isInteger(v)
+    ? `${v.toLocaleString('is-IS', { maximumFractionDigits: 2 })} kr.`
+    : fmt(v)
+}
+// Lines under a row total: the total after the discount, then the unit price
+// after it unless that is the same figure (a single flat-priced unit).
+const discountNotes = (rowAmount: number | null, rate: number | null | undefined, suffix: string): string[] => {
+  if (!(discountAmount.value > 0) || rowAmount == null || !(rowAmount > 0)) return []
+  return [
+    `${fmt(rowAmount * netFactor.value)} after discount`,
+    ...(isNum(rate) && rate !== rowAmount ? [`${fmtRate(rate * netFactor.value)}${suffix}`] : []),
+  ]
+}
 
 const extrasPayload = (id: number) => {
   const e = extras[id]

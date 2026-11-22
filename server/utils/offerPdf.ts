@@ -4,6 +4,7 @@ import { promises as fs } from 'node:fs'
 import { basename, join, normalize, resolve } from 'node:path'
 import type { LocaleCode, Offer, OfferItem, OfferItemExtra, Quote } from '~~/app/types'
 import { INSURANCE_EXCESS } from '~~/app/data/insurance'
+import { discountedLines } from './offerDiscount'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Offer PDF — generated from the stored offer snapshot, so it can be
@@ -34,6 +35,7 @@ const STRINGS = {
     period: 'Period',
     amount: 'Amount',
     subtotal: 'Subtotal',
+    listSubtotal: 'Subtotal before discount',
     discount: 'Discount',
     vat: 'VAT',
     totalInclVat: 'Total incl. VAT',
@@ -77,6 +79,7 @@ const STRINGS = {
     period: 'Tímabil',
     amount: 'Upphæð',
     subtotal: 'Millisamtala',
+    listSubtotal: 'Millisamtala fyrir afslátt',
     discount: 'Afsláttur',
     vat: 'VSK',
     totalInclVat: 'Samtals með VSK',
@@ -321,14 +324,21 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   // Item · qty · price · period · amount. The period column only exists when
   // something on the offer is priced per day or per week, and the qty column
   // is only as wide as the widest quantity on this offer.
+  //
+  // On a discounted offer every price and amount is the one the customer pays,
+  // with the list figure struck through underneath it.
+  const discounted = discountedLines(offer)
   const hasPeriod = offer.items.some(i => (i.pricing === 'day' && i.days) || (i.pricing === 'week' && i.weeks))
   const perUnit = (pricing: OfferItem['pricing']) => pricing === 'day' ? s.perDay : pricing === 'week' ? s.perWeek : ''
   const periodOf = (item: OfferItem) => item.pricing === 'day' && item.days
     ? s.days(item.days)
     : item.pricing === 'week' && item.weeks ? s.weeks(item.weeks) : ''
   const qtyText = (e: OfferItemExtra) => e.kind === 'km' ? `${num(e.qty)} km` : num(e.qty)
-  const rateText = (item: OfferItem) => `${money(item.unitPrice)}${perUnit(item.pricing)}`
-  const extraRateText = (item: OfferItem, e: OfferItemExtra) => `${money(e.unitPrice)}${e.kind === 'km' ? s.perKm : perUnit(item.pricing)}`
+  // A discounted króna rate under 1,000 kr. keeps its aurar (45 kr./km less 10% is 40.5, not 41);
+  // on anything larger they would only be noise.
+  const rateMoney = (n: number) => offer.currency === 'ISK' && n < 1000 && !Number.isInteger(n) ? `${num(n)} kr.` : money(n)
+  const rateText = (item: OfferItem, price = item.unitPrice) => `${rateMoney(price)}${perUnit(item.pricing)}`
+  const extraRateText = (item: OfferItem, e: OfferItemExtra, price = e.unitPrice) => `${rateMoney(price)}${e.kind === 'km' ? s.perKm : perUnit(item.pricing)}`
   const groupTotal = (item: OfferItem) => item.lineTotal + (item.extras ?? []).reduce((sum, e) => sum + e.total, 0)
   const headW = (text: string) => doc.font('Helvetica-Bold').fontSize(7).widthOfString(text.toUpperCase(), { characterSpacing: 0.8 })
   const widest = (font: string, texts: string[]) => {
@@ -337,10 +347,18 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   }
   const fit = (head: string, font: string, texts: string[]) => Math.ceil(Math.max(headW(head), widest(font, texts))) + 2
   const qtyW = fit(s.qty, 'Helvetica', offer.items.flatMap(i => [num(i.qty), ...(i.extras ?? []).map(qtyText)]))
-  const rateW = fit(s.rate, 'Helvetica', offer.items.flatMap(i => [rateText(i), ...(i.extras ?? []).map(e => extraRateText(i, e))]))
+  const rateW = fit(s.rate, 'Helvetica', offer.items.flatMap((i, n) => [
+    rateText(i),
+    ...(i.extras ?? []).map(e => extraRateText(i, e)),
+    ...(discounted ? [rateText(i, discounted[n]!.unitPrice), ...(i.extras ?? []).map((e, k) => extraRateText(i, e, discounted[n]!.extras[k]!.unitPrice))] : []),
+  ]))
   const periodW = hasPeriod ? fit(s.period, 'Helvetica', offer.items.map(periodOf)) : 0
   const inset = 8
-  const amountW = fit(s.amount, 'Helvetica-Bold', offer.items.flatMap(i => [money(i.lineTotal), money(groupTotal(i))])) + inset
+  const amountW = fit(s.amount, 'Helvetica-Bold', offer.items.flatMap((i, n) => [
+    money(i.lineTotal),
+    money(groupTotal(i)),
+    ...(discounted ? [money(discounted[n]!.lineTotal), money(discounted[n]!.groupTotal)] : []),
+  ])) + inset
   const thumbW = 38
   const thumbH = 28
   const colGap = 14
@@ -380,14 +398,13 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
   // room for the totals and the closing notes, so neither the grand total nor
   // the acceptance note ever sits alone on a page.
   const vat = offer.vatAmount ?? 0
-  const hasDiscount = offer.discountAmount > 0
+  const hasDiscount = !!discounted
   const net = offer.subtotal - offer.discountAmount
   const totalsW = rightW
   const totalsX = rightX
   const notesW = leftW
-  // With a single line on the offer the subtotal would only repeat the figure right above it.
-  const showSubtotal = hasDiscount && offer.items.length > 1
-  const ledgerRows = (showSubtotal ? 1 : 0) + (hasDiscount ? 1 : 0) + (vat > 0 ? 2 : 0)
+  // The lines above already carry the discounted amounts, so the sums start from the list subtotal.
+  const ledgerRows = (hasDiscount ? 2 : 0) + (vat > 0 ? 2 : 0)
   const vatNote = vat > 0 ? s.vatNoteItemized(num(offer.vatRate)) : s.vatNote
   const totalsH = (ledgerRows ? ledgerRows * 17 + 4 : 0) + 30 + 6 + 10
   doc.font('Helvetica').fontSize(9)
@@ -403,9 +420,15 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
       tableHeader(true)
     }
   }
-  const cell = (text: string, x: number, w: number, textY: number, opts: { bold?: boolean, color?: string, size?: number, inset?: number } = {}) =>
+  const cell = (text: string, x: number, w: number, textY: number, opts: { bold?: boolean, color?: string, size?: number, inset?: number, strike?: boolean } = {}) =>
     doc.font(opts.bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(opts.size ?? 9.5).fillColor(opts.color ?? INK)
-      .text(text, x - 40, textY, { width: w + 40 - (opts.inset ?? 0), align: 'right', lineBreak: false })
+      .text(text, x - 40, textY, { width: w + 40 - (opts.inset ?? 0), align: 'right', lineBreak: false, strike: opts.strike })
+  // The list figure a discounted one replaces: small, muted and struck through, right under it.
+  const listCell = (text: string, x: number, w: number, textY: number, cellInset = 0) =>
+    cell(text, x, w, textY, { size: 7.5, color: MUTED, strike: true, inset: cellInset })
+  // Room the two-line figures need in an item row and in an add-on row.
+  const figuresH = discounted ? 21 : 0
+  const extraFiguresH = discounted ? 19 : 0
   const extraLabel = (e: OfferItemExtra) => e.kind === 'insurance'
     ? s.insurance(s.tiers[e.tier ?? 'bronze'])
     : e.kind === 'driver' ? (e.unlimited ? s.driversUnlimited : s.driver(e.qty)) : s.km
@@ -418,15 +441,22 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     doc.font('Helvetica-Bold').fontSize(10)
     const nameH = Math.min(37, doc.heightOfString(name, { width: nameW, lineGap: 0.5 }))
     doc.font('Helvetica').fontSize(8)
+    // Under a one-line name the struck-through list figures sit beside the note, so it keeps to the name column.
+    const itemNoteW = nameH < figuresH ? nameW : noteW
     // Up to four lines of note; only something longer than that is shortened.
-    const noteH = note ? Math.min(42, doc.heightOfString(note, { width: noteW, lineGap: 1 })) : 0
-    const blockH = nameH + (note ? 3 + noteH : 0)
+    const noteH = note ? Math.min(42, doc.heightOfString(note, { width: itemNoteW, lineGap: 1 })) : 0
+    const blockH = Math.max(nameH + (note ? 3 + noteH : 0), figuresH)
     const rowH = Math.max(thumbH, blockH)
+    const line = discounted?.[idx]
     doc.font('Helvetica').fontSize(9)
     const extraLabelH = (e: OfferItemExtra) => Math.min(22, doc.heightOfString(extraLabel(e), { width: nameW - 10 }))
+    const extraRowH = (e: OfferItemExtra) => 5 + Math.max(
+      extraLabelH(e) + (e.kind === 'insurance' && INSURANCE_EXCESS[e.tier ?? 'bronze'] ? 10 : 0),
+      extraFiguresH,
+    )
+    const groupRowH = discounted ? 29 : 20
     // Extras stay with their item; the last item also stays with the closing block.
-    const extrasH = extras.reduce((h, e) => h + 5 + extraLabelH(e) + (e.kind === 'insurance' && INSURANCE_EXCESS[e.tier ?? 'bronze'] ? 10 : 0), 0)
-      + (extras.length ? 6 + 20 : 0)
+    const extrasH = extras.reduce((h, e) => h + extraRowH(e), 0) + (extras.length ? 6 + groupRowH : 0)
     ensureRoom(rowH + extrasH + 16 + (isLastItem ? tailH : 0))
 
     // The photo sits in a hairline frame. No photo (a service, a new item): no frame, same indent.
@@ -444,17 +474,22 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
       .text(name, col.name, textY, { width: nameW, ellipsis: true, height: 39, lineGap: 0.5 })
     if (note) {
       doc.font('Helvetica').fontSize(8).fillColor(GRAY)
-        .text(note, col.name, textY + nameH + 3, { width: noteW, ellipsis: true, height: 42, lineGap: 1 })
+        .text(note, col.name, textY + nameH + 3, { width: itemNoteW, ellipsis: true, height: 42, lineGap: 1 })
     }
     cell(num(item.qty), col.qty, qtyW, textY)
-    cell(rateText(item), col.rate, rateW, textY)
+    cell(rateText(item, line?.unitPrice), col.rate, rateW, textY)
     if (hasPeriod) cell(periodOf(item), col.period, periodW, textY, { color: GRAY })
-    // Bold marks the figures that add up to the subtotal: a plain line's amount, or a vehicle's total with add-ons.
-    cell(money(item.lineTotal), col.amount, amountW, textY, { bold: !extras.length, inset })
+    // Bold marks the figures that add up to the total: a plain line's amount, or a vehicle's total with add-ons.
+    cell(money(line?.lineTotal ?? item.lineTotal), col.amount, amountW, textY, { bold: !extras.length, inset })
+    if (line) {
+      listCell(rateText(item), col.rate, rateW, textY + 11.5)
+      listCell(money(item.lineTotal), col.amount, amountW, textY + 11.5, inset)
+    }
     y += rowH + (extras.length ? 6 : 0)
 
     // Vehicle add-ons: indented under the vehicle, priced over the same period
-    extras.forEach((extra) => {
+    extras.forEach((extra, k) => {
+      const net = line?.extras[k]
       // Insurance carries its excess on a second line so the renter sees what
       // they are liable for per incident, in the offer currency (ISK alongside
       // when the offer is in EUR).
@@ -473,17 +508,22 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
       }
       // Unlimited drivers is per vehicle, so its qty is the vehicle count.
       cell(qtyText(extra), col.qty, qtyW, y, { size: 9 })
-      cell(extraRateText(item, extra), col.rate, rateW, y, { size: 9 })
+      cell(extraRateText(item, extra, net?.unitPrice), col.rate, rateW, y, { size: 9 })
       if (hasPeriod && extra.kind !== 'km') cell(periodOf(item), col.period, periodW, y, { size: 9, color: GRAY })
-      cell(money(extra.total), col.amount, amountW, y, { size: 9, inset })
-      y += 5 + labelH + (excessLine ? 10 : 0)
+      cell(money(net?.total ?? extra.total), col.amount, amountW, y, { size: 9, inset })
+      if (net) {
+        listCell(extraRateText(item, extra), col.rate, rateW, y + 10.5)
+        listCell(money(extra.total), col.amount, amountW, y + 10.5, inset)
+      }
+      y += 5 + Math.max(labelH + (excessLine ? 10 : 0), extraFiguresH)
     })
     if (extras.length) {
       // What this vehicle comes to with its add-ons
       hairline(y + 1, LINE, 0.5, col.name, right)
       cell(s.withExtras, col.name + 40, col.amount - col.name - colGap - 40, y + 7, { size: 8.5, color: GRAY })
-      cell(money(groupTotal(item)), col.amount, amountW, y + 6.5, { bold: true, inset })
-      y += 20
+      cell(money(line?.groupTotal ?? groupTotal(item)), col.amount, amountW, y + 6.5, { bold: true, inset })
+      if (line) listCell(money(groupTotal(item)), col.amount, amountW, y + 18, inset)
+      y += groupRowH
     }
     y += 8
     // The table closes with a firmer rule than the one between rows.
@@ -515,8 +555,8 @@ export async function generateOfferPdf(quote: Quote, offer: Offer): Promise<Buff
     doc.fillColor(color).text(v, totalsX, ty, { width: totalsW - inset, align: 'right' })
     ty += 17
   }
-  if (showSubtotal) ledgerRow(s.subtotal, money(offer.subtotal))
   if (hasDiscount) {
+    ledgerRow(s.listSubtotal, money(offer.subtotal))
     const discountLabel = offer.discountType === 'percent' ? `${s.discount} (${num(offer.discountValue ?? 0)}%)` : s.discount
     // ASCII hyphen: the U+2212 minus sign is outside WinAnsi and won't render.
     ledgerRow(discountLabel, `-${money(offer.discountAmount)}`, GOLD)
